@@ -4,7 +4,7 @@
 import abc
 from typing import Optional
 
-from onescience.models.graphcast.flax import denoisers_base
+from onescience.flax_models.graphcast import denoisers_base
 import xarray
 
 

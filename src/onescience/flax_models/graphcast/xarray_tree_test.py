@@ -2,7 +2,7 @@
 """Tests for xarray_tree."""
 
 from absl.testing import absltest
-from onescience.models.graphcast.flax import xarray_tree
+from onescience.flax_models.graphcast import xarray_tree
 import numpy as np
 import xarray
 

@@ -7,8 +7,8 @@ from typing import Any, cast, Optional, Tuple
 
 import chex
 from dinosaur import spherical_harmonic
-from onescience.models.graphcast.flax import xarray_jax
-from onescience.models.graphcast.flax import xarray_tree
+from onescience.flax_models.graphcast import xarray_jax
+from onescience.flax_models.graphcast import xarray_tree
 import haiku as hk
 import jax
 import jax.numpy as jnp

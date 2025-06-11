@@ -5,9 +5,9 @@
 from typing import Optional, cast
 
 from absl import logging
-from onescience.models.graphcast.flax import predictor_base
-from onescience.models.graphcast.flax import xarray_jax
-from onescience.models.graphcast.flax import xarray_tree
+from onescience.flax_models.graphcast import predictor_base
+from onescience.flax_models.graphcast import xarray_jax
+from onescience.flax_models.graphcast import xarray_tree
 import haiku as hk
 import jax
 import xarray

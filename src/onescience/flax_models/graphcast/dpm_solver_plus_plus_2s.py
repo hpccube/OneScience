@@ -3,11 +3,11 @@
 
 from typing import Optional
 
-from onescience.models.graphcast.flax import casting
-from onescience.models.graphcast.flax import denoisers_base
-from onescience.models.graphcast.flax import samplers_base as base
-from onescience.models.graphcast.flax import samplers_utils as utils
-from onescience.models.graphcast.flax import xarray_jax
+from onescience.flax_models.graphcast import casting
+from onescience.flax_models.graphcast import denoisers_base
+from onescience.flax_models.graphcast import samplers_base as base
+from onescience.flax_models.graphcast import samplers_utils as utils
+from onescience.flax_models.graphcast import xarray_jax
 import haiku as hk
 import jax.numpy as jnp
 import xarray

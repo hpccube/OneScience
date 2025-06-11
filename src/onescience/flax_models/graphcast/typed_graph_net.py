@@ -3,7 +3,7 @@
 
 from typing import Callable, Mapping, Optional, Union
 
-from onescience.models.graphcast.flax import typed_graph
+from onescience.flax_models.graphcast import typed_graph
 import jax.numpy as jnp
 import jax.tree_util as tree
 import jraph

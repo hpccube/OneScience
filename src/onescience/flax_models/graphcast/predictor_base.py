@@ -5,8 +5,8 @@ import abc
 
 from typing import Tuple
 
-from onescience.models.graphcast.flax import losses
-from onescience.models.graphcast.flax import xarray_jax
+from onescience.flax_models.graphcast import losses
+from onescience.flax_models.graphcast import xarray_jax
 import jax.numpy as jnp
 import xarray
 

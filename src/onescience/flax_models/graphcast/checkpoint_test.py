@@ -6,7 +6,7 @@ import io
 from typing import Any, Optional, Union
 
 from absl.testing import absltest
-from onescience.models.graphcast.flax import checkpoint
+from onescience.flax_models.graphcast import checkpoint
 import numpy as np
 
 

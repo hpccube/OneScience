@@ -26,9 +26,9 @@ import functools
 from typing import Callable, List, Mapping, Optional, Tuple
 
 import chex
-from onescience.models.graphcast.flax import mlp as mlp_builder
-from onescience.models.graphcast.flax import typed_graph
-from onescience.models.graphcast.flax import typed_graph_net
+from onescience.flax_models.graphcast import mlp as mlp_builder
+from onescience.flax_models.graphcast import typed_graph
+from onescience.flax_models.graphcast import typed_graph_net
 import haiku as hk
 import jax
 import jax.numpy as jnp

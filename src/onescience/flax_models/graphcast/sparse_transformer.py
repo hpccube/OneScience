@@ -15,8 +15,8 @@ import dataclasses
 import logging
 from typing import Any, Callable, Literal, Optional, Tuple
 
-from onescience.models.graphcast.flax import mlp as mlp_builder
-from onescience.models.graphcast.flax import sparse_transformer_utils as utils
+from onescience.flax_models.graphcast import mlp as mlp_builder
+from onescience.flax_models.graphcast import sparse_transformer_utils as utils
 import haiku as hk
 import jax
 from jax.experimental.pallas.ops.tpu import splash_attention

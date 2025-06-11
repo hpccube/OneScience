@@ -9,8 +9,8 @@ to the original domain.
 import logging
 from typing import Optional, Tuple
 
-from onescience.models.graphcast.flax import predictor_base
-from onescience.models.graphcast.flax import xarray_tree
+from onescience.flax_models.graphcast import predictor_base
+from onescience.flax_models.graphcast import xarray_tree
 import xarray
 
 

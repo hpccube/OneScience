@@ -2,8 +2,8 @@
 """Tests for graphcast.grid_mesh_connectivity."""
 
 from absl.testing import absltest
-from onescience.models.graphcast.flax import grid_mesh_connectivity
-from onescience.models.graphcast.flax import icosahedral_mesh
+from onescience.flax_models.graphcast import grid_mesh_connectivity
+from onescience.flax_models.graphcast import icosahedral_mesh
 import numpy as np
 
 

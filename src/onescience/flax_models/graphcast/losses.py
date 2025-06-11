@@ -3,7 +3,7 @@
 
 from typing import Mapping
 
-from onescience.models.graphcast.flax import xarray_tree
+from onescience.flax_models.graphcast import xarray_tree
 import numpy as np
 from typing_extensions import Protocol
 import xarray

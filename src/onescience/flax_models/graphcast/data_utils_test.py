@@ -4,7 +4,7 @@
 import datetime
 from absl.testing import absltest
 from absl.testing import parameterized
-from onescience.models.graphcast.flax import data_utils
+from onescience.flax_models.graphcast import data_utils
 import numpy as np
 import xarray as xa
 

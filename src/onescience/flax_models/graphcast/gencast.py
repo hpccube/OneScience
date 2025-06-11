@@ -11,14 +11,14 @@ Throughout we will refer to notation and equations from [1].
 from typing import Any, Optional, Tuple
 
 import chex
-from onescience.models.graphcast.flax import casting
-from onescience.models.graphcast.flax import denoiser
-from onescience.models.graphcast.flax import dpm_solver_plus_plus_2s
-from onescience.models.graphcast.flax import graphcast
-from onescience.models.graphcast.flax import losses
-from onescience.models.graphcast.flax import predictor_base
-from onescience.models.graphcast.flax import samplers_utils
-from onescience.models.graphcast.flax import xarray_jax
+from onescience.flax_models.graphcast import casting
+from onescience.flax_models.graphcast import denoiser
+from onescience.flax_models.graphcast import dpm_solver_plus_plus_2s
+from onescience.flax_models.graphcast import graphcast
+from onescience.flax_models.graphcast import losses
+from onescience.flax_models.graphcast import predictor_base
+from onescience.flax_models.graphcast import samplers_utils
+from onescience.flax_models.graphcast import xarray_jax
 import haiku as hk
 import jax
 import xarray

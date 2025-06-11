@@ -1,240 +1,205 @@
 
-"""Support for wrapping a general Predictor to act as a Denoiser."""
+"""A predictor that runs multiple graph neural networks on mesh data.
 
-import dataclasses
-from typing import Any, Callable, Mapping, Optional, Sequence, Tuple
+It learns to interpolate between the grid and the mesh nodes, with the loss
+and the rollouts ultimately computed at the grid level.
+
+It uses ideas similar to those in Keisler (2022):
+
+Reference:
+  https://arxiv.org/pdf/2202.07575.pdf
+
+It assumes data across time and level is stacked, and operates only operates in
+a 2D mesh over latitudes and longitudes.
+"""
+
+from typing import Any, Callable, Mapping, Optional
 
 import chex
-from onescience.models.graphcast.flax import deep_typed_graph_net
-from onescience.models.graphcast.flax import denoisers_base as base
-from onescience.models.graphcast.flax import grid_mesh_connectivity
-from onescience.models.graphcast.flax import icosahedral_mesh
-from onescience.models.graphcast.flax import model_utils
-from onescience.models.graphcast.flax import sparse_transformer
-from onescience.models.graphcast.flax import transformer
-from onescience.models.graphcast.flax import typed_graph
-from onescience.models.graphcast.flax import xarray_jax
-import haiku as hk
-import jax
+from onescience.flax_models.graphcast import deep_typed_graph_net
+from onescience.flax_models.graphcast import grid_mesh_connectivity
+from onescience.flax_models.graphcast import icosahedral_mesh
+from onescience.flax_models.graphcast import losses
+from onescience.flax_models.graphcast import model_utils
+from onescience.flax_models.graphcast import predictor_base
+from onescience.flax_models.graphcast import typed_graph
+from onescience.flax_models.graphcast import xarray_jax
 import jax.numpy as jnp
+import jraph
 import numpy as np
-from scipy import sparse
 import xarray
 
-
 Kwargs = Mapping[str, Any]
-NoiseLevelEncoder = Callable[[jnp.ndarray], jnp.ndarray]
+
+GNN = Callable[[jraph.GraphsTuple], jraph.GraphsTuple]
 
 
-class FourierFeaturesMLP(hk.Module):
-  """A simple MLP applied to Fourier features of values or their logarithms."""
+# https://www.ecmwf.int/en/forecasts/dataset/ecmwf-reanalysis-v5
+PRESSURE_LEVELS_ERA5_37 = (
+    1, 2, 3, 5, 7, 10, 20, 30, 50, 70, 100, 125, 150, 175, 200, 225, 250, 300,
+    350, 400, 450, 500, 550, 600, 650, 700, 750, 775, 800, 825, 850, 875, 900,
+    925, 950, 975, 1000)
 
-  def __init__(self,
-               base_period: float,
-               num_frequencies: int,
-               output_sizes: Sequence[int],
-               apply_log_first: bool = False,
-               w_init: ... = None,
-               activation: ... = jax.nn.gelu,
-               **mlp_kwargs
-               ):
-    """Initializes the module.
+# https://www.ecmwf.int/en/forecasts/datasets/set-i
+PRESSURE_LEVELS_HRES_25 = (
+    1, 2, 3, 5, 7, 10, 20, 30, 50, 70, 100, 150, 200, 250, 300, 400, 500, 600,
+    700, 800, 850, 900, 925, 950, 1000)
 
-    Args:
-      base_period:
-        See model_utils.fourier_features. Note this would apply to log inputs if
-        apply_log_first is used.
-      num_frequencies:
-        See model_utils.fourier_features.
-      output_sizes:
-        Layer sizes for the MLP.
-      apply_log_first:
-        Whether to take the log of the inputs before computing Fourier features.
-      w_init:
-        Weights initializer for the MLP, default setting aims to produce
-        approx unit-variance outputs given the input sin/cos features.
-      activation:
-      **mlp_kwargs:
-        Further settings for the MLP.
-    """
-    super().__init__()
-    self._base_period = base_period
-    self._num_frequencies = num_frequencies
-    self._apply_log_first = apply_log_first
-    if w_init is None:
-      # Scale of 2 is appropriate for input layer as sin/cos fourier features
-      # have variance 0.5 for random inputs. Also reasonable to use for later
-      # layers as relu activation cuts variance in half for inputs to later
-      # layers and gelu something close enough too.
-      w_init = hk.initializers.VarianceScaling(
-          2.0, mode="fan_in", distribution="uniform"
-      )
-    self._mlp = hk.nets.MLP(
-        output_sizes=output_sizes,
-        w_init=w_init,
-        activation=activation,
-        **mlp_kwargs)
+# https://agupubs.onlinelibrary.wiley.com/doi/full/10.1029/2020MS002203
+PRESSURE_LEVELS_WEATHERBENCH_13 = (
+    50, 100, 150, 200, 250, 300, 400, 500, 600, 700, 850, 925, 1000)
 
-  def __call__(self, values: jnp.ndarray) -> jnp.ndarray:
-    if self._apply_log_first:
-      values = jnp.log(values)
+PRESSURE_LEVELS = {
+    13: PRESSURE_LEVELS_WEATHERBENCH_13,
+    25: PRESSURE_LEVELS_HRES_25,
+    37: PRESSURE_LEVELS_ERA5_37,
+}
 
-    features = model_utils.fourier_features(
-        values, self._base_period, self._num_frequencies)
+# The list of all possible atmospheric variables. Taken from:
+# https://confluence.ecmwf.int/display/CKB/ERA5%3A+data+documentation#ERA5:datadocumentation-Table9
+ALL_ATMOSPHERIC_VARS = (
+    "potential_vorticity",
+    "specific_rain_water_content",
+    "specific_snow_water_content",
+    "geopotential",
+    "temperature",
+    "u_component_of_wind",
+    "v_component_of_wind",
+    "specific_humidity",
+    "vertical_velocity",
+    "vorticity",
+    "divergence",
+    "relative_humidity",
+    "ozone_mass_mixing_ratio",
+    "specific_cloud_liquid_water_content",
+    "specific_cloud_ice_water_content",
+    "fraction_of_cloud_cover",
+)
 
-    return self._mlp(features)
+TARGET_SURFACE_VARS = (
+    "2m_temperature",
+    "mean_sea_level_pressure",
+    "10m_v_component_of_wind",
+    "10m_u_component_of_wind",
+    "total_precipitation_6hr",
+)
+TARGET_SURFACE_NO_PRECIP_VARS = (
+    "2m_temperature",
+    "mean_sea_level_pressure",
+    "10m_v_component_of_wind",
+    "10m_u_component_of_wind",
+)
+TARGET_ATMOSPHERIC_VARS = (
+    "temperature",
+    "geopotential",
+    "u_component_of_wind",
+    "v_component_of_wind",
+    "vertical_velocity",
+    "specific_humidity",
+)
+TARGET_ATMOSPHERIC_NO_W_VARS = (
+    "temperature",
+    "geopotential",
+    "u_component_of_wind",
+    "v_component_of_wind",
+    "specific_humidity",
+)
+EXTERNAL_FORCING_VARS = (
+    "toa_incident_solar_radiation",
+)
+GENERATED_FORCING_VARS = (
+    "year_progress_sin",
+    "year_progress_cos",
+    "day_progress_sin",
+    "day_progress_cos",
+)
+FORCING_VARS = EXTERNAL_FORCING_VARS + GENERATED_FORCING_VARS
+STATIC_VARS = (
+    "geopotential_at_surface",
+    "land_sea_mask",
+)
 
 
 @chex.dataclass(frozen=True, eq=True)
-class NoiseEncoderConfig:
-  """Configures the noise level encoding.
+class TaskConfig:
+  """Defines inputs and targets on which a model is trained and/or evaluated."""
+  input_variables: tuple[str, ...]
+  # Target variables which the model is expected to predict.
+  target_variables: tuple[str, ...]
+  forcing_variables: tuple[str, ...]
+  pressure_levels: tuple[int, ...]
+  input_duration: str
+
+TASK = TaskConfig(
+    input_variables=(
+        TARGET_SURFACE_VARS + TARGET_ATMOSPHERIC_VARS + FORCING_VARS +
+        STATIC_VARS),
+    target_variables=TARGET_SURFACE_VARS + TARGET_ATMOSPHERIC_VARS,
+    forcing_variables=FORCING_VARS,
+    pressure_levels=PRESSURE_LEVELS_ERA5_37,
+    input_duration="12h",
+)
+TASK_13 = TaskConfig(
+    input_variables=(
+        TARGET_SURFACE_VARS + TARGET_ATMOSPHERIC_VARS + FORCING_VARS +
+        STATIC_VARS),
+    target_variables=TARGET_SURFACE_VARS + TARGET_ATMOSPHERIC_VARS,
+    forcing_variables=FORCING_VARS,
+    pressure_levels=PRESSURE_LEVELS_WEATHERBENCH_13,
+    input_duration="12h",
+)
+TASK_13_PRECIP_OUT = TaskConfig(
+    input_variables=(
+        TARGET_SURFACE_NO_PRECIP_VARS + TARGET_ATMOSPHERIC_VARS + FORCING_VARS +
+        STATIC_VARS),
+    target_variables=TARGET_SURFACE_VARS + TARGET_ATMOSPHERIC_VARS,
+    forcing_variables=FORCING_VARS,
+    pressure_levels=PRESSURE_LEVELS_WEATHERBENCH_13,
+    input_duration="12h",
+)
+
+
+@chex.dataclass(frozen=True, eq=True)
+class ModelConfig:
+  """Defines the architecture of the GraphCast neural network architecture.
 
   Properties:
-    apply_log_first: Whether to take the log of the inputs before computing
-      Fourier features.
-    base_period: The base period to use. This should be greater or equal to the
-      range of the values, or to the period if the values have periodic
-      semantics (e.g. 2pi if they represent angles). Frequencies used will be
-      integer multiples of 1/base_period.
-    num_frequencies: The number of frequencies to use, we will use integer
-      multiples of 1/base_period from 1 up to num_frequencies inclusive. (We
-      don't include a zero frequency as this would just give constant features
-      which are redundant if a bias term is present).
-    output_sizes: Layer sizes for the MLP.
-  """
-  apply_log_first: bool = True
-  base_period: float = 16.0
-  num_frequencies: int = 32
-  # 2-layer MLP applied to Fourier features
-  output_sizes: tuple[int, int] = (32, 16)
-
-
-@chex.dataclass(eq=True)
-class SparseTransformerConfig:
-  """Sparse Transformer config."""
-  # Neighbours to attend to.
-  attention_k_hop: int
-  # Primary width, the number of channels on the carrier path.
-  d_model: int
-  # Depth, or num transformer blocks. One 'layer' is attn + ffw.
-  num_layers: int = 16
-  # Number of heads for self-attention.
-  num_heads: int = 4
-  # Attention type.
-  attention_type: str = "splash_mha"
-  # mask type if splash attention being used.
-  mask_type: str = "lazy"
-  block_q: int = 1024
-  block_kv: int = 512
-  block_kv_compute: int = 256
-  block_q_dkv: int = 512
-  block_kv_dkv: int = 1024
-  block_kv_dkv_compute: int = 1024
-  # Init scale for final ffw layer (divided by depth)
-  ffw_winit_final_mult: float = 0.0
-  # Init scale for mha w (divided by depth).
-  attn_winit_final_mult: float = 0.0
-  # Number of hidden units in the MLP blocks. Defaults to 4 * d_model.
-  ffw_hidden: int = 2048
-  # Name for haiku module.
-  name: Optional[str] = None
-
-
-@chex.dataclass(eq=True)
-class DenoiserArchitectureConfig:
-  """Defines the GenCast architecture.
-
-  Properties:
-    sparse_transformer_config: Config for the mesh transformer.
+    resolution: The resolution of the data, in degrees (e.g. 0.25 or 1.0).
     mesh_size: How many refinements to do on the multi-mesh.
+    gnn_msg_steps: How many Graph Network message passing steps to do.
     latent_size: How many latent features to include in the various MLPs.
     hidden_layers: How many hidden layers for each MLP.
     radius_query_fraction_edge_length: Scalar that will be multiplied by the
-      length of the longest edge of the finest mesh to define the radius of
-      connectivity to use in the Grid2Mesh graph. Reasonable values are
-      between 0.6 and 1. 0.6 reduces the number of grid points feeding into
-      multiple mesh nodes and therefore reduces edge count and memory use, but
-      1 gives better predictions.
-    norm_conditioning_features: List of feature names which will be used to
-      condition the GNN via norm_conditioning, rather than as regular
-      features. If this is provided, the GNN has to support the
-      `global_norm_conditioning` argument. For now it only supports global
-      norm conditioning (e.g. the same vector conditions all edges and nodes
-      normalization), which means features passed here must not have "lat" or
-      "lon" axes. In the future it may support node level norm conditioning
-      too.
-    grid2mesh_aggregate_normalization: Optional constant to normalize the output
-      of aggregate_edges_for_nodes_fn in the mesh2grid GNN. This can be used to
-        reduce the shock the model undergoes when switching resolution, which
-        increases the number of edges connected to a node.
-    node_output_size: Size of the output node representations for
-        each node type. For node types not specified here, the latent node
-        representation from the output of the processor will be returned.
+        length of the longest edge of the finest mesh to define the radius of
+        connectivity to use in the Grid2Mesh graph. Reasonable values are
+        between 0.6 and 1. 0.6 reduces the number of grid points feeding into
+        multiple mesh nodes and therefore reduces edge count and memory use, but
+        1 gives better predictions.
+    mesh2grid_edge_normalization_factor: Allows explicitly controlling edge
+        normalization for mesh2grid edges. If None, defaults to max edge length.
+        This supports using pre-trained model weights with a different graph
+        structure to what it was trained on.
   """
-
-  sparse_transformer_config: SparseTransformerConfig
+  resolution: float
   mesh_size: int
-  latent_size: int = 512
-  hidden_layers: int = 1
-  radius_query_fraction_edge_length: float = 0.6
-  norm_conditioning_features: tuple[str, ...] = ("noise_level_encodings",)
-  grid2mesh_aggregate_normalization: Optional[float] = None
-  node_output_size: Optional[int] = None
+  latent_size: int
+  gnn_msg_steps: int
+  hidden_layers: int
+  radius_query_fraction_edge_length: float
+  mesh2grid_edge_normalization_factor: Optional[float] = None
 
 
-class Denoiser(base.Denoiser):
-  """Wraps a general deterministic Predictor to act as a Denoiser.
-
-  This passes an encoding of the noise level as an additional input to the
-  Predictor as an additional input 'noise_level_encodings' with shape
-  ('batch', 'noise_level_encoding_channels'). It passes the noisy_targets as
-  additional forcings (since they are also per-target-timestep data that the
-  predictor needs to condition on) with the same names as the original target
-  variables.
-  """
-
-  def __init__(
-      self,
-      noise_encoder_config: Optional[NoiseEncoderConfig],
-      denoiser_architecture_config: DenoiserArchitectureConfig,
-  ):
-    self._predictor = _DenoiserArchitecture(
-        denoiser_architecture_config=denoiser_architecture_config,
-    )
-    # Use default values if not specified.
-    if noise_encoder_config is None:
-      noise_encoder_config = NoiseEncoderConfig()
-    self._noise_level_encoder = FourierFeaturesMLP(**noise_encoder_config)
-
-  def __call__(
-      self,
-      inputs: xarray.Dataset,
-      noisy_targets: xarray.Dataset,
-      noise_levels: xarray.DataArray,
-      forcings: Optional[xarray.Dataset] = None,
-      **kwargs) -> xarray.Dataset:
-    if forcings is None: forcings = xarray.Dataset()
-    forcings = forcings.assign(noisy_targets)
-
-    if noise_levels.dims != ("batch",):
-      raise ValueError("noise_levels expected to be shape (batch,).")
-    noise_level_encodings = self._noise_level_encoder(
-        xarray_jax.unwrap_data(noise_levels)
-    )
-    noise_level_encodings = xarray_jax.Variable(
-        ("batch", "noise_level_encoding_channels"), noise_level_encodings
-    )
-    inputs = inputs.assign(noise_level_encodings=noise_level_encodings)
-
-    return self._predictor(
-        inputs=inputs,
-        targets_template=noisy_targets,
-        forcings=forcings,
-        **kwargs)
+@chex.dataclass(frozen=True, eq=True)
+class CheckPoint:
+  params: dict[str, Any]
+  model_config: ModelConfig
+  task_config: TaskConfig
+  description: str
+  license: str
 
 
-class _DenoiserArchitecture:
-  """GenCast Predictor.
+class GraphCast(predictor_base.Predictor):
+  """GraphCast Predictor.
 
   The model works on graphs that take into account:
   * Mesh nodes: nodes for the vertices of the mesh.
@@ -253,19 +218,17 @@ class _DenoiserArchitecture:
     only.
   * Mesh2Grid graph: Graph that contains all nodes. This graph is strictly
     bipartite with edges going from mesh nodes to grid nodes such that each grid
-    node is connected to 3 nodes of the mesh triangular face that contains
+    nodes is connected to 3 nodes of the mesh triangular face that contains
     the grid points. The mesh2grid_gnn will operate in this graph. It will
     process the updated latent state of the mesh nodes, and the latent state
     of the grid nodes, to produce the final output for the grid nodes.
 
   The model is built on top of `TypedGraph`s so the different types of nodes and
   edges can be stored and treated separately.
+
   """
 
-  def __init__(
-      self,
-      denoiser_architecture_config: DenoiserArchitectureConfig,
-  ):
+  def __init__(self, model_config: ModelConfig, task_config: TaskConfig):
     """Initializes the predictor."""
     self._spatial_features_kwargs = dict(
         add_node_positions=False,
@@ -276,87 +239,81 @@ class _DenoiserArchitecture:
         relative_latitude_local_coordinates=True,
     )
 
-    # Construct the mesh.
-    mesh = icosahedral_mesh.get_last_triangular_mesh_for_sphere(
-        splits=denoiser_architecture_config.mesh_size
-    )
-    # Permute the mesh to a banded structure so we can run sparse attention
-    # operations.
-    self._mesh = _permute_mesh_to_banded(mesh=mesh)
+    # Specification of the multimesh.
+    self._meshes = (
+        icosahedral_mesh.get_hierarchy_of_triangular_meshes_for_sphere(
+            splits=model_config.mesh_size))
 
     # Encoder, which moves data from the grid to the mesh with a single message
     # passing step.
-    self._grid2mesh_gnn = (
-        deep_typed_graph_net.DeepTypedGraphNet(
-            activation="swish",
-            aggregate_normalization=(
-                denoiser_architecture_config.grid2mesh_aggregate_normalization
-            ),
-            edge_latent_size=dict(
-                grid2mesh=denoiser_architecture_config.latent_size
-            ),
-            embed_edges=True,
-            embed_nodes=True,
-            f32_aggregation=True,
-            include_sent_messages_in_node_update=False,
-            mlp_hidden_size=denoiser_architecture_config.latent_size,
-            mlp_num_hidden_layers=denoiser_architecture_config.hidden_layers,
-            name="grid2mesh_gnn",
-            node_latent_size=dict(
-                grid_nodes=denoiser_architecture_config.latent_size,
-                mesh_nodes=denoiser_architecture_config.latent_size
-            ),
-            node_output_size=None,
-            num_message_passing_steps=1,
-            use_layer_norm=True,
-            use_norm_conditioning=True,
-        )
+    self._grid2mesh_gnn = deep_typed_graph_net.DeepTypedGraphNet(
+        embed_nodes=True,  # Embed raw features of the grid and mesh nodes.
+        embed_edges=True,  # Embed raw features of the grid2mesh edges.
+        edge_latent_size=dict(grid2mesh=model_config.latent_size),
+        node_latent_size=dict(
+            mesh_nodes=model_config.latent_size,
+            grid_nodes=model_config.latent_size),
+        mlp_hidden_size=model_config.latent_size,
+        mlp_num_hidden_layers=model_config.hidden_layers,
+        num_message_passing_steps=1,
+        use_layer_norm=True,
+        include_sent_messages_in_node_update=False,
+        activation="swish",
+        f32_aggregation=True,
+        aggregate_normalization=None,
+        name="grid2mesh_gnn",
     )
 
-    # Processor - performs multiple rounds of message passing on the mesh.
-    self._mesh_gnn = transformer.MeshTransformer(
-        name="mesh_transformer",
-        transformer_ctor=sparse_transformer.Transformer,
-        transformer_kwargs=dataclasses.asdict(
-            denoiser_architecture_config.sparse_transformer_config
-        ),
+    # Processor, which performs message passing on the multi-mesh.
+    self._mesh_gnn = deep_typed_graph_net.DeepTypedGraphNet(
+        embed_nodes=False,  # Node features already embdded by previous layers.
+        embed_edges=True,  # Embed raw features of the multi-mesh edges.
+        node_latent_size=dict(mesh_nodes=model_config.latent_size),
+        edge_latent_size=dict(mesh=model_config.latent_size),
+        mlp_hidden_size=model_config.latent_size,
+        mlp_num_hidden_layers=model_config.hidden_layers,
+        num_message_passing_steps=model_config.gnn_msg_steps,
+        use_layer_norm=True,
+        include_sent_messages_in_node_update=False,
+        activation="swish",
+        f32_aggregation=False,
+        name="mesh_gnn",
     )
+
+    num_surface_vars = len(
+        set(task_config.target_variables) - set(ALL_ATMOSPHERIC_VARS))
+    num_atmospheric_vars = len(
+        set(task_config.target_variables) & set(ALL_ATMOSPHERIC_VARS))
+    num_outputs = (num_surface_vars +
+                   len(task_config.pressure_levels) * num_atmospheric_vars)
 
     # Decoder, which moves data from the mesh back into the grid with a single
     # message passing step.
-    self._mesh2grid_gnn = (
-        deep_typed_graph_net.DeepTypedGraphNet(
-            activation="swish",
-            edge_latent_size=dict(
-                mesh2grid=denoiser_architecture_config.latent_size
-            ),
-            embed_nodes=False,
-            f32_aggregation=False,
-            include_sent_messages_in_node_update=False,
-            mlp_hidden_size=denoiser_architecture_config.latent_size,
-            mlp_num_hidden_layers=denoiser_architecture_config.hidden_layers,
-            name="mesh2grid_gnn",
-            node_latent_size=dict(
-                grid_nodes=denoiser_architecture_config.latent_size,
-                mesh_nodes=denoiser_architecture_config.latent_size,
-            ),
-            node_output_size={
-                "grid_nodes": denoiser_architecture_config.node_output_size
-            },
-            num_message_passing_steps=1,
-            use_layer_norm=True,
-            use_norm_conditioning=True,
-        )
+    self._mesh2grid_gnn = deep_typed_graph_net.DeepTypedGraphNet(
+        # Require a specific node dimensionaly for the grid node outputs.
+        node_output_size=dict(grid_nodes=num_outputs),
+        embed_nodes=False,  # Node features already embdded by previous layers.
+        embed_edges=True,  # Embed raw features of the mesh2grid edges.
+        edge_latent_size=dict(mesh2grid=model_config.latent_size),
+        node_latent_size=dict(
+            mesh_nodes=model_config.latent_size,
+            grid_nodes=model_config.latent_size),
+        mlp_hidden_size=model_config.latent_size,
+        mlp_num_hidden_layers=model_config.hidden_layers,
+        num_message_passing_steps=1,
+        use_layer_norm=True,
+        include_sent_messages_in_node_update=False,
+        activation="swish",
+        f32_aggregation=False,
+        name="mesh2grid_gnn",
     )
 
-    self._norm_conditioning_features = (
-        denoiser_architecture_config.norm_conditioning_features
-    )
     # Obtain the query radius in absolute units for the unit-sphere for the
     # grid2mesh model, by rescaling the `radius_query_fraction_edge_length`.
-    self._query_radius = (
-        _get_max_edge_distance(self._mesh)
-        * denoiser_architecture_config.radius_query_fraction_edge_length
+    self._query_radius = (_get_max_edge_distance(self._finest_mesh)
+                          * model_config.radius_query_fraction_edge_length)
+    self._mesh2grid_edge_normalization_factor = (
+        model_config.mesh2grid_edge_normalization_factor
     )
 
     # Other initialization is delayed until the first call (`_maybe_init`)
@@ -381,45 +338,79 @@ class _DenoiserArchitecture:
     self._mesh_graph_structure = None
     self._mesh2grid_graph_structure = None
 
+  @property
+  def _finest_mesh(self):
+    return self._meshes[-1]
+
   def __call__(self,
                inputs: xarray.Dataset,
                targets_template: xarray.Dataset,
                forcings: xarray.Dataset,
+               is_training: bool = False,
                ) -> xarray.Dataset:
     self._maybe_init(inputs)
 
     # Convert all input data into flat vectors for each of the grid nodes.
     # xarray (batch, time, lat, lon, level, multiple vars, forcings)
     # -> [num_grid_nodes, batch, num_channels]
-    grid_node_features, global_norm_conditioning = (
-        self._inputs_to_grid_node_features_and_norm_conditioning(
-            inputs, forcings
-        )
-    )
+    grid_node_features = self._inputs_to_grid_node_features(inputs, forcings)
 
+    # Transfer data for the grid to the mesh,
     # [num_mesh_nodes, batch, latent_size], [num_grid_nodes, batch, latent_size]
-    (latent_mesh_nodes, latent_grid_nodes) = self._run_grid2mesh_gnn(
-        grid_node_features, global_norm_conditioning
-    )
+    (latent_mesh_nodes, latent_grid_nodes
+     ) = self._run_grid2mesh_gnn(grid_node_features)
 
     # Run message passing in the multimesh.
     # [num_mesh_nodes, batch, latent_size]
-    updated_latent_mesh_nodes = self._run_mesh_gnn(
-        latent_mesh_nodes, global_norm_conditioning
-    )
+    updated_latent_mesh_nodes = self._run_mesh_gnn(latent_mesh_nodes)
 
-    # Transfer data from the mesh to the grid.
+    # Transfer data frome the mesh to the grid.
     # [num_grid_nodes, batch, output_size]
     output_grid_nodes = self._run_mesh2grid_gnn(
-        updated_latent_mesh_nodes, latent_grid_nodes, global_norm_conditioning
-    )
+        updated_latent_mesh_nodes, latent_grid_nodes)
 
-    # Convert output flat vectors for the grid nodes to the format of the
-    # output. [num_grid_nodes, batch, output_size] -> xarray (batch, one time
-    # step, lat, lon, level, multiple vars)
+    # Conver output flat vectors for the grid nodes to the format of the output.
+    # [num_grid_nodes, batch, output_size] ->
+    # xarray (batch, one time step, lat, lon, level, multiple vars)
     return self._grid_node_outputs_to_prediction(
-        output_grid_nodes, targets_template
-    )
+        output_grid_nodes, targets_template)
+
+  def loss_and_predictions(  # pytype: disable=signature-mismatch  # jax-ndarray
+      self,
+      inputs: xarray.Dataset,
+      targets: xarray.Dataset,
+      forcings: xarray.Dataset,
+      ) -> tuple[predictor_base.LossAndDiagnostics, xarray.Dataset]:
+    # Forward pass.
+    predictions = self(
+        inputs, targets_template=targets, forcings=forcings, is_training=True)
+    # Compute loss.
+    loss = losses.weighted_mse_per_level(
+        predictions, targets,
+        per_variable_weights={
+            # Any variables not specified here are weighted as 1.0.
+            # A single-level variable, but an important headline variable
+            # and also one which we have struggled to get good performance
+            # on at short lead times, so leaving it weighted at 1.0, equal
+            # to the multi-level variables:
+            "2m_temperature": 1.0,
+            # New single-level variables, which we don't weight too highly
+            # to avoid hurting performance on other variables.
+            "10m_u_component_of_wind": 0.1,
+            "10m_v_component_of_wind": 0.1,
+            "mean_sea_level_pressure": 0.1,
+            "total_precipitation_6hr": 0.1,
+        })
+    return loss, predictions  # pytype: disable=bad-return-type  # jax-ndarray
+
+  def loss(  # pytype: disable=signature-mismatch  # jax-ndarray
+      self,
+      inputs: xarray.Dataset,
+      targets: xarray.Dataset,
+      forcings: xarray.Dataset,
+      ) -> predictor_base.LossAndDiagnostics:
+    loss, _ = self.loss_and_predictions(inputs, targets, forcings)
+    return loss  # pytype: disable=bad-return-type  # jax-ndarray
 
   def _maybe_init(self, sample_inputs: xarray.Dataset):
     """Inits everything that has a dependency on the input coordinates."""
@@ -435,11 +426,11 @@ class _DenoiserArchitecture:
 
   def _init_mesh_properties(self):
     """Inits static properties that have to do with mesh nodes."""
-    self._num_mesh_nodes = self._mesh.vertices.shape[0]
+    self._num_mesh_nodes = self._finest_mesh.vertices.shape[0]
     mesh_phi, mesh_theta = model_utils.cartesian_to_spherical(
-        self._mesh.vertices[:, 0],
-        self._mesh.vertices[:, 1],
-        self._mesh.vertices[:, 2])
+        self._finest_mesh.vertices[:, 0],
+        self._finest_mesh.vertices[:, 1],
+        self._finest_mesh.vertices[:, 2])
     (
         mesh_nodes_lat,
         mesh_nodes_lon,
@@ -469,7 +460,7 @@ class _DenoiserArchitecture:
     (grid_indices, mesh_indices) = grid_mesh_connectivity.radius_query_indices(
         grid_latitude=self._grid_lat,
         grid_longitude=self._grid_lon,
-        mesh=self._mesh,
+        mesh=self._finest_mesh,
         radius=self._query_radius)
 
     # Edges sending info from grid to mesh.
@@ -515,10 +506,10 @@ class _DenoiserArchitecture:
 
   def _init_mesh_graph(self) -> typed_graph.TypedGraph:
     """Build Mesh graph."""
+    merged_mesh = icosahedral_mesh.merge_meshes(self._meshes)
+
     # Work simply on the mesh edges.
-    # N.B.To make sure ordering is preserved, any changes to faces_to_edges here
-    # should be reflected in the other 2 calls to faces_to_edges in this file.
-    senders, receivers = icosahedral_mesh.faces_to_edges(self._mesh.faces)
+    senders, receivers = icosahedral_mesh.faces_to_edges(merged_mesh.faces)
 
     # Precompute structural node and edge features according to config options.
     # Structural features are those that depend on the fixed values of the
@@ -561,7 +552,7 @@ class _DenoiserArchitecture:
      mesh_indices) = grid_mesh_connectivity.in_mesh_triangle_indices(
          grid_latitude=self._grid_lat,
          grid_longitude=self._grid_lon,
-         mesh=self._mesh)
+         mesh=self._finest_mesh)
 
     # Edges sending info from mesh to grid.
     senders = mesh_indices
@@ -577,7 +568,7 @@ class _DenoiserArchitecture:
          receivers_node_lon=self._grid_nodes_lon,
          senders=senders,
          receivers=receivers,
-         edge_normalization_factor=None,
+         edge_normalization_factor=self._mesh2grid_edge_normalization_factor,
          **self._spatial_features_kwargs,
      )
 
@@ -604,7 +595,6 @@ class _DenoiserArchitecture:
     return mesh2grid_graph
 
   def _run_grid2mesh_gnn(self, grid_node_features: chex.Array,
-                         global_norm_conditioning: Optional[chex.Array] = None,
                          ) -> tuple[chex.Array, chex.Array]:
     """Runs the grid2mesh_gnn, extracting latent mesh and grid nodes."""
 
@@ -655,14 +645,12 @@ class _DenoiserArchitecture:
         })
 
     # Run the GNN.
-    grid2mesh_out = self._grid2mesh_gnn(input_graph, global_norm_conditioning)
+    grid2mesh_out = self._grid2mesh_gnn(input_graph)
     latent_mesh_nodes = grid2mesh_out.nodes["mesh_nodes"].features
     latent_grid_nodes = grid2mesh_out.nodes["grid_nodes"].features
     return latent_mesh_nodes, latent_grid_nodes
 
-  def _run_mesh_gnn(self, latent_mesh_nodes: chex.Array,
-                    global_norm_conditioning: Optional[chex.Array] = None
-                    ) -> chex.Array:
+  def _run_mesh_gnn(self, latent_mesh_nodes: chex.Array) -> chex.Array:
     """Runs the mesh_gnn, extracting updated latent mesh nodes."""
 
     # Add the structural edge features of this graph. Note we don't need
@@ -695,14 +683,11 @@ class _DenoiserArchitecture:
         edges={mesh_edges_key: new_edges}, nodes={"mesh_nodes": nodes})
 
     # Run the GNN.
-    return self._mesh_gnn(input_graph,
-                          global_norm_conditioning=global_norm_conditioning
-                          ).nodes["mesh_nodes"].features
+    return self._mesh_gnn(input_graph).nodes["mesh_nodes"].features
 
   def _run_mesh2grid_gnn(self,
                          updated_latent_mesh_nodes: chex.Array,
                          latent_grid_nodes: chex.Array,
-                         global_norm_conditioning: Optional[chex.Array] = None,
                          ) -> chex.Array:
     """Runs the mesh2grid_gnn, extracting the output grid nodes."""
 
@@ -734,32 +719,17 @@ class _DenoiserArchitecture:
         })
 
     # Run the GNN.
-    output_graph = self._mesh2grid_gnn(input_graph, global_norm_conditioning)
+    output_graph = self._mesh2grid_gnn(input_graph)
     output_grid_nodes = output_graph.nodes["grid_nodes"].features
 
     return output_grid_nodes
 
-  def _inputs_to_grid_node_features_and_norm_conditioning(
+  def _inputs_to_grid_node_features(
       self,
       inputs: xarray.Dataset,
       forcings: xarray.Dataset,
-      ) -> Tuple[chex.Array, Optional[chex.Array]]:
-    """xarray ->[n_grid_nodes, batch, n_channels], [batch, n_cond channels]."""
-
-    if self._norm_conditioning_features:
-      norm_conditioning_inputs = inputs[list(self._norm_conditioning_features)]
-      inputs = inputs.drop_vars(list(self._norm_conditioning_features))
-
-      if "lat" in norm_conditioning_inputs or "lon" in norm_conditioning_inputs:
-        raise ValueError("Features with lat or lon dims are not currently "
-                         "supported for norm conditioning.")
-      global_norm_conditioning = xarray_jax.unwrap_data(
-          model_utils.dataset_to_stacked(norm_conditioning_inputs,
-                                         preserved_dims=("batch",),
-                                         ).transpose("batch", ...))
-
-    else:
-      global_norm_conditioning = None
+      ) -> chex.Array:
+    """xarrays -> [num_grid_nodes, batch, num_channels]."""
 
     # xarray `Dataset` (batch, time, lat, lon, level, multiple vars)
     # to xarray `DataArray` (batch, lat, lon, channels)
@@ -772,20 +742,18 @@ class _DenoiserArchitecture:
     # to single numpy array with shape [lat_lon_node, batch, channels]
     grid_xarray_lat_lon_leading = model_utils.lat_lon_to_leading_axes(
         stacked_inputs)
-    # ["node", "batch", "features"]
-    grid_node_features = xarray_jax.unwrap(
-        grid_xarray_lat_lon_leading.data
-    ).reshape((-1,) + grid_xarray_lat_lon_leading.data.shape[2:])
-    return grid_node_features, global_norm_conditioning
+    return xarray_jax.unwrap(grid_xarray_lat_lon_leading.data).reshape(
+        (-1,) + grid_xarray_lat_lon_leading.data.shape[2:])
 
   def _grid_node_outputs_to_prediction(
       self,
       grid_node_outputs: chex.Array,
       targets_template: xarray.Dataset,
-  ) -> xarray.Dataset:
+      ) -> xarray.Dataset:
     """[num_grid_nodes, batch, num_outputs] -> xarray."""
 
     # numpy array with shape [lat_lon_node, batch, channels]
+    # to xarray `DataArray` (batch, lat, lon, channels)
     assert self._grid_lat is not None and self._grid_lon is not None
     grid_shape = (self._grid_lat.shape[0], self._grid_lon.shape[0])
     grid_outputs_lat_lon_leading = grid_node_outputs.reshape(
@@ -810,30 +778,7 @@ def _add_batch_second_axis(data, batch_size):
 
 
 def _get_max_edge_distance(mesh):
-  # N.B.To make sure ordering is preserved, any changes to faces_to_edges here
-  # should be reflected in the other 2 calls to faces_to_edges in this file.
   senders, receivers = icosahedral_mesh.faces_to_edges(mesh.faces)
   edge_distances = np.linalg.norm(
       mesh.vertices[senders] - mesh.vertices[receivers], axis=-1)
   return edge_distances.max()
-
-
-def _permute_mesh_to_banded(mesh):
-  """Permutes the mesh nodes such that adjacency matrix has banded structure."""
-  # Build adjacency matrix.
-  # N.B.To make sure ordering is preserved, any changes to faces_to_edges here
-  # should be reflected in the other 2 calls to faces_to_edges in this file.
-  senders, receivers = icosahedral_mesh.faces_to_edges(mesh.faces)
-  num_mesh_nodes = mesh.vertices.shape[0]
-  adj_mat = sparse.csr_matrix((num_mesh_nodes, num_mesh_nodes))
-  adj_mat[senders, receivers] = 1
-  # Permutation to banded (this algorithm is deterministic, a given sparse
-  # adjacency matrix will yield the same permutation every time this is run).
-  mesh_permutation = sparse.csgraph.reverse_cuthill_mckee(
-      adj_mat, symmetric_mode=True
-  )
-  vertex_permutation_map = {j: i for i, j in enumerate(mesh_permutation)}
-  permute_func = np.vectorize(lambda x: vertex_permutation_map[x])
-  return icosahedral_mesh.TriangularMesh(
-      vertices=mesh.vertices[mesh_permutation], faces=permute_func(mesh.faces)
-  )

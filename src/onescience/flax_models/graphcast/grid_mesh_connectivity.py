@@ -1,7 +1,7 @@
 
 """Tools for converting from regular grids on a sphere, to triangular meshes."""
 
-from onescience.models.graphcast.flax import icosahedral_mesh
+from onescience.flax_models.graphcast import icosahedral_mesh
 import numpy as np
 import scipy
 import trimesh

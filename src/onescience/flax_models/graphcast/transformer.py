@@ -8,7 +8,7 @@ with a [nodes, batch, ...] ordering of the inputs.
 
 from typing import Any, Mapping, Optional
 
-from onescience.models.graphcast.flax import typed_graph
+from onescience.flax_models.graphcast import typed_graph
 import haiku as hk
 import jax
 import jax.numpy as jnp

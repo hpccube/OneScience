@@ -3,7 +3,7 @@
 
 from absl.testing import absltest
 import chex
-from onescience.models.graphcast.flax import xarray_jax
+from onescience.flax_models.graphcast import xarray_jax
 import jax
 import jax.numpy as jnp
 import numpy as np

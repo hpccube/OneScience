@@ -4,7 +4,7 @@
 from absl.testing import absltest
 from absl.testing import parameterized
 import chex
-from onescience.models.graphcast.flax import icosahedral_mesh
+from onescience.flax_models.graphcast import icosahedral_mesh
 import numpy as np
 
 

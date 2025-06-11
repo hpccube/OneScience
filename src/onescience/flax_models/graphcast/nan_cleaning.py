@@ -7,7 +7,7 @@ NaNless predictions.
 
 from typing import Optional, Tuple
 
-from onescience.models.graphcast.flax import predictor_base as base
+from onescience.flax_models.graphcast import predictor_base as base
 import numpy as np
 import xarray
 

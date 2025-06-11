@@ -6,8 +6,8 @@ from typing import Iterator, Optional, Sequence
 from absl import logging
 import chex
 import dask.array
-from onescience.models.graphcast.flax import xarray_jax
-from onescience.models.graphcast.flax import xarray_tree
+from onescience.flax_models.graphcast import xarray_jax
+from onescience.flax_models.graphcast import xarray_tree
 import jax
 import numpy as np
 import typing_extensions

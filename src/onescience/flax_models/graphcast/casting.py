@@ -5,7 +5,7 @@ import contextlib
 from typing import Any, Mapping, Tuple
 
 import chex
-from onescience.models.graphcast.flax import predictor_base
+from onescience.flax_models.graphcast import predictor_base
 import haiku as hk
 import jax
 import jax.numpy as jnp

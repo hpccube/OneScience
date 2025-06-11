@@ -5,15 +5,15 @@ import math
 import re
 from typing import Optional
 
-from onescience.models.graphcast.flax import autoregressive
-from onescience.models.graphcast.flax import casting
-from onescience.models.graphcast.flax import checkpoint
-from onescience.models.graphcast.flax import data_utils
-from onescience.models.graphcast.flax import graphcast
-from onescience.models.graphcast.flax import normalization
-from onescience.models.graphcast.flax import rollout
-from onescience.models.graphcast.flax import xarray_jax
-from onescience.models.graphcast.flax import xarray_tree
+from onescience.flax_models.graphcast import autoregressive
+from onescience.flax_models.graphcast import casting
+from onescience.flax_models.graphcast import checkpoint
+from onescience.flax_models.graphcast import data_utils
+from onescience.flax_models.graphcast import graphcast
+from onescience.flax_models.graphcast import normalization
+from onescience.flax_models.graphcast import rollout
+from onescience.flax_models.graphcast import xarray_jax
+from onescience.flax_models.graphcast import xarray_tree
 from IPython.display import HTML
 import ipywidgets as widgets
 import haiku as hk
