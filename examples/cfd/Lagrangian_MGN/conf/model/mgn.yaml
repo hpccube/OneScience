@@ -1,0 +1,18 @@
+_target_: onescience.models.meshgraphnet.MeshGraphNet
+_convert_: all
+
+input_dim_nodes: ???  # can be set in 2D/3D versions of the model.
+input_dim_edges: ???
+output_dim: ???
+processor_size: 10
+aggregation: sum
+hidden_dim_processor: 128
+hidden_dim_node_encoder: 256
+hidden_dim_edge_encoder: 256
+hidden_dim_node_decoder: 256
+mlp_activation_fn: relu
+do_concat_trick: false
+num_processor_checkpoint_segments: 0
+recompute_activation: false
+
+# See MeshGraphNet implementation for more details and additional arguments.

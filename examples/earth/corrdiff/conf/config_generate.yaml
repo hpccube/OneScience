@@ -1,0 +1,20 @@
+hydra:
+  job:
+    chdir: true
+    name: generation
+  run:
+    dir: ./outputs/${hydra:job.name}
+
+# Get defaults
+defaults:
+
+  # Dataset
+  - dataset/cwb_generate
+
+  # Sampler
+  - sampler/stochastic
+  #- sampler/deterministic
+
+  # Generation
+  - generation/base
+    #- generation/patched_based

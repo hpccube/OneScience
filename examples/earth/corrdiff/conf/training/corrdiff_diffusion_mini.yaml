@@ -1,0 +1,28 @@
+defaults:
+  - corrdiff_diffusion
+
+
+# Hyperparameters
+hp:
+    training_duration: 8000000
+    # Training duration based on the number of processed samples
+    total_batch_size: 256
+    # Total batch size
+    batch_size_per_gpu: "auto"
+    # Batch size per GPU
+    lr_rampup: 0
+    # Rampup for learning rate, in number of samples
+
+# Performance
+perf:
+    fp_optimizations: amp-bf16
+    # Floating point mode, one of ["fp32", "fp16", "amp-fp16", "amp-bf16"]
+    # "amp-{fp16,bf16}" activates Automatic Mixed Precision (AMP) with {float16,bfloat16}
+    dataloader_workers: 1
+    # DataLoader worker processes
+
+# I/O
+io:
+    regression_checkpoint_path: checkpoints/regression_mini.mdlus
+    # Where to load the regression checkpoint
+    print_progress_freq: 10000

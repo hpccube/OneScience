@@ -1,0 +1,20 @@
+hydra:
+  job:
+    chdir: true
+    name: mini_generation
+  run:
+    dir: ./outputs/${hydra:job.name}
+
+# Get defaults
+defaults:
+
+  # Dataset
+  - dataset/hrrrmini
+
+  # Sampler
+  - sampler/stochastic
+  #- sampler/deterministic
+
+  # Generation
+  - generation/mini
+    #- generation/patched_based

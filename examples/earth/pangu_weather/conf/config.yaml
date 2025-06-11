@@ -1,0 +1,37 @@
+experiment_name: "onescience-Launch-Dev"
+experiment_desc: "onescience launch development"
+run_desc: "Pangu ERA5 Training"
+
+hydra:
+  job:
+    chdir: True
+  run:
+    dir: ./outputs/
+
+start_epoch: 0
+max_epoch: 100
+
+train:
+  data_dir: "./hdf5_tas_data1/train/"
+  stats_dir: "./hdf5_tas_data1/stats/"
+  num_samples_per_year: 1456
+  batch_size: 1
+  patch_size: [1, 1]
+  num_workers: 8
+val:
+  data_dir: "./hdf5_tas_data1/test/"
+  stats_dir: "./hdf5_tas_data1/stats/"
+  num_samples_per_year: 4
+  batch_size: 1
+  patch_size: [1, 1]
+  num_workers: 8
+
+pangu:
+  img_size: [721, 1440]
+  patch_size: [2, 4, 4]
+  embed_dim: 192
+  num_heads: [6, 12, 12, 6]
+  window_size: [2, 6, 12]
+
+mask_dir: "./hdf5_tas_data1/static"
+mask_dtype: "float32"

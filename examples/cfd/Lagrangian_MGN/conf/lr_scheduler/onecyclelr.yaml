@@ -1,0 +1,4 @@
+_target_: torch.optim.lr_scheduler.OneCycleLR
+
+max_lr: 1e-4
+total_steps:  # if not set via the command line, will be set in the code.

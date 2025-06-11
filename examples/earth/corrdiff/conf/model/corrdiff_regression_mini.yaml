@@ -1,0 +1,7 @@
+defaults:
+  - corrdiff_regression
+
+model_args:
+  model_channels: 64
+  channel_mult: [1, 2, 2]
+  attn_resolutions: [16]

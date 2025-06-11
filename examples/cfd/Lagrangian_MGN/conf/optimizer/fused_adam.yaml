@@ -1,0 +1,4 @@
+defaults:
+  - adam
+
+_target_: apex.optimizers.FusedAdam

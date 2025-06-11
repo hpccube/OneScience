@@ -1,0 +1,21 @@
+defaults:
+  - /data@data.train: lagrangian_dataset
+  - /data@data.valid: lagrangian_dataset
+  - /data@data.test: lagrangian_dataset
+  - /model: mgn_2d
+  - /loss: mseloss
+  - /optimizer: fused_adam
+  - /lr_scheduler: cosine
+
+data:
+  name: MultiMaterial
+  num_node_types: 9
+  train:
+    num_sequences: 1000
+  valid:
+    num_sequences: 100
+  test:
+    num_sequences: 100
+
+model:
+  input_dim_nodes: 25  # 9 node types instead of 6.
