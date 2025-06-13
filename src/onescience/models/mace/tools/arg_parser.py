@@ -1,8 +1,6 @@
-###########################################################################################
+
 # Parsing functionalities
-# Authors: Ilyes Batatia, Gregor Simm, David Kovacs
-# This program is distributed under the MIT License (see MIT.md)
-###########################################################################################
+
 
 import argparse
 import os

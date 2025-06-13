@@ -1,8 +1,8 @@
-###########################################################################################
+
 # Training utils
-# Authors: David Kovacs, Ilyes Batatia
-# This program is distributed under the MIT License (see MIT.md)
-###########################################################################################
+
+
+
 
 import argparse
 import ast

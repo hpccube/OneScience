@@ -1,8 +1,6 @@
-###########################################################################################
+
 # Radial basis and cutoff
-# Authors: Ilyes Batatia, Gregor Simm
-# This program is distributed under the MIT License (see MIT.md)
-###########################################################################################
+
 
 import logging
 

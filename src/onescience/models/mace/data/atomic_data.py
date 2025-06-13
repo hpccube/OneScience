@@ -1,8 +1,5 @@
-###########################################################################################
+
 # Atomic Data Class for handling molecules as graphs
-# Authors: Ilyes Batatia, Gregor Simm
-# This program is distributed under the MIT License (see MIT.md)
-###########################################################################################
 
 from copy import deepcopy
 from typing import Optional, Sequence

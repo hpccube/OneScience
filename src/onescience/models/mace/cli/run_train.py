@@ -1,8 +1,8 @@
-###########################################################################################
+
 # Training script for MACE
-# Authors: Ilyes Batatia, Gregor Simm, David Kovacs
-# This program is distributed under the MIT License (see MIT.md)
-###########################################################################################
+
+
+
 
 import ast
 import glob

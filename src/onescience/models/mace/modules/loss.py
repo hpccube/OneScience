@@ -1,8 +1,6 @@
-###########################################################################################
+
 # Implementation of different loss functions
-# Authors: Ilyes Batatia, Gregor Simm
-# This program is distributed under the MIT License (see MIT.md)
-###########################################################################################
+
 
 from typing import Optional
 

@@ -1,8 +1,8 @@
-###########################################################################################
+
 # Script for evaluating configurations contained in an xyz file with a trained model
-# Authors: Ilyes Batatia, Gregor Simm
-# This program is distributed under the MIT License (see MIT.md)
-###########################################################################################
+
+
+
 
 import argparse
 
