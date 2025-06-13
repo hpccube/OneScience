@@ -1,7 +1,7 @@
 import pytest
 import torch
 
-from onescience.models.mace.radial import AgnesiTransform, ZBLBasis
+from onescience.models.mace.modules.radial import AgnesiTransform, ZBLBasis
 
 
 @pytest.fixture

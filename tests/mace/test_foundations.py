@@ -9,14 +9,12 @@ from e3nn import o3
 from e3nn.util import jit
 from scipy.spatial.transform import Rotation as R
 
-from onescience.datapipes import mace as data
-from onescience.utils import mace as tools
-from onescience.models import mace as modules
-from onescience.utils.mace.calculators import mace_mp, mace_off
-from onescience.utils.mace import torch_geometric
-from onescience.utils.mace.finetuning_utils import load_foundations_elements
-from onescience.utils.mace.scripts_utils import extract_config_mace_model, remove_pt_head
-from onescience.utils.mace.utils import AtomicNumberTable
+from onescience.models.mace import data, modules, tools
+from onescience.models.mace.calculators import mace_mp, mace_off
+from onescience.models.mace.tools import torch_geometric
+from onescience.models.mace.tools.finetuning_utils import load_foundations_elements
+from onescience.models.mace.tools.scripts_utils import extract_config_mace_model, remove_pt_head
+from onescience.models.mace.tools.utils import AtomicNumberTable
 
 MODEL_PATH = (
     Path(__file__).parent.parent

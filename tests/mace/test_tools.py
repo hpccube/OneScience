@@ -5,7 +5,7 @@ import torch
 import torch.nn.functional
 from torch import nn, optim
 
-from onescience.utils.mace import (
+from onescience.models.mace.tools import (
     AtomicNumberTable,
     CheckpointHandler,
     CheckpointState,

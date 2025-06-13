@@ -8,11 +8,9 @@ import pytest
 import torch
 from ase import build
 
-
-from onescience.datapipes import mace as mace_data
-
-from onescience.utils.mace.calculators.foundations_models import mace_mp
-from onescience.utils.mace import AtomicNumberTable, torch_geometric, torch_tools
+from onescience.models.mace import data as mace_data
+from onescience.models.mace.calculators.foundations_models import mace_mp
+from onescience.models.mace.tools import AtomicNumberTable, torch_geometric, torch_tools
 
 
 def is_mace_full_bench():
