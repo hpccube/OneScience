@@ -6,7 +6,7 @@ import h5py
 import numpy as np
 import torch
 
-from onescience.datapipes.mace import (
+from onescience.models.mace.data import (
     AtomicData,
     Configuration,
     HDF5Dataset,
@@ -14,7 +14,7 @@ from onescience.datapipes.mace import (
     get_neighborhood,
     save_configurations_as_HDF5,
 )
-from onescience.utils.mace import AtomicNumberTable, torch_geometric
+from onescience.models.mace.tools import AtomicNumberTable, torch_geometric
 
 mace_path = Path(__file__).parent.parent
 

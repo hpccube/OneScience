@@ -4,8 +4,8 @@ import torch
 import torch.nn.functional
 from e3nn import o3
 
-from onescience.datapipes.mace import AtomicData, Configuration
-from onescience.models.mace import (
+from onescience.models.mace.data import AtomicData, Configuration
+from onescience.models.mace.modules import (
     AtomicEnergiesBlock,
     BesselBasis,
     PolynomialCutoff,
@@ -15,8 +15,8 @@ from onescience.models.mace import (
     compute_mean_rms_energy_forces,
     compute_statistics,
 )
-from onescience.utils.mace import AtomicNumberTable, scatter, to_numpy, torch_geometric
-from onescience.utils.mace.scripts_utils import dict_to_array
+from onescience.models.mace.tools import AtomicNumberTable, scatter, to_numpy, torch_geometric
+from onescience.models.mace.tools.scripts_utils import dict_to_array
 
 
 @pytest.fixture(name="config")

@@ -12,9 +12,9 @@ from ase.atoms import Atoms
 from ase.calculators.test import gradient_test
 from ase.constraints import ExpCellFilter
 
-from onescience.utils.mace.calculators import mace_mp, mace_off
-from onescience.utils.mace.calculators.mace import MACECalculator
-from onescience.models.mace.models import ScaleShiftMACE
+from onescience.models.mace.calculators import mace_mp, mace_off
+from onescience.models.mace.calculators.mace import MACECalculator
+from onescience.models.mace.modules.models import ScaleShiftMACE
 
 try:
     import cuequivariance as cue  # pylint: disable=unused-import
