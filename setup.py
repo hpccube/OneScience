@@ -34,8 +34,30 @@ install_requires = [
     'pandas>=2.2.2',
     'omegaconf>=2.3.0',
     'dask>=2024.11.1',
+    'mpi4py',
     'seaborn',
     'torchdata<=0.9.0',
+    'openfermion==1.5.1',
+    'pyscf==2.1.1',
+    'pybind11',
+    'torchmetrics',
+    'e3nn==0.4.4',
+    'deepxde',
+    'ase',
+    'rdkit',
+    'xtb',
+    'pymatgen',
+    'torch-runstats>=0.2.0',
+    'torch-ema>=0.3.0',
+    'matscipy',
+    'python-hostlist',
+    'configargparse',
+    'opt_einsum',
+    'prettytable',
+    'lmdb',
+    'orjson',
+    'matplotlib'
+
 ]
 
 
