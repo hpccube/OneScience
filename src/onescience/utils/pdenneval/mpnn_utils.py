@@ -249,12 +249,27 @@ class GraphCreator(nn.Module):
         data = torch.Tensor()
         labels = torch.Tensor()
         for (dp, step) in zip(datapoints, steps):
-            d = dp[step - self.tw:step]
-            l = dp[step:self.tw + step]
+            # 确保起始索引不小于0
+            start_idx = max(0, step - self.tw)
+            d = dp[start_idx: step]  # 形状 [?, ...]
+            
+            # 如果长度不足，进行填充
+            if d.size(0) < self.tw:
+                padding = torch.zeros((self.tw - d.size(0), *d.shape[1:]), dtype=d.dtype)
+                d = torch.cat([padding, d], dim=0)  # 在前面填充
+            
+            # 获取标签数据（保持原有逻辑）
+            end_index = min(step + self.tw, dp.size(0))
+            l = dp[step: end_index]
+            if l.size(0) < self.tw:
+                padding = torch.zeros((self.tw - l.size(0), *l.shape[1:]), dtype=l.dtype)
+                l = torch.cat([l, padding], dim=0)
+            
+            # 拼接到批次
             data = torch.cat((data, d[None, :]), dim=0)
             labels = torch.cat((labels, l[None, :]), dim=0)
 
-        return data, labels # (bs, tw, x1, ..., xd, v)
+        return data, labels  # (bs, tw, x1, ..., xd, v)
     
     def create_graph(self,
                      data: torch.Tensor,

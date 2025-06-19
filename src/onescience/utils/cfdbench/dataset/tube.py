@@ -20,7 +20,6 @@ def load_case_data(case_dir: Path) -> Tuple[np.ndarray, Dict[str, float]]:
     The shape of both u and v is (time steps, height, width)
     """
     case_params = load_json(case_dir / "case.json")
-    # print(case_params)
 
     u_file = case_dir / "u.npy"
     v_file = case_dir / "v.npy"
@@ -264,13 +263,6 @@ class TubeFlowAutoDataset(CfdAutoDataset):
                 inp_magn = torch.sqrt(inp[0] ** 2 + inp[1] ** 2)
                 out_magn = torch.sqrt(out[0] ** 2 + out[1] ** 2)
                 diff = torch.abs(inp_magn - out_magn).mean()
-                # print(f"Mean difference: {diff}")
-                if diff < self.stable_state_diff:
-                    print(
-                        f"Converged at {i} out of {num_steps},"
-                        f" {this_case_params}"
-                    )
-                    break
                 assert not torch.isnan(inp).any()
                 assert not torch.isnan(out).any()
                 all_inputs.append(inp)
@@ -301,6 +293,7 @@ def get_tube_datasets(
     norm_props: bool,
     norm_bc: bool,
     seed: int = 0,
+    rank: int = 0,
 ) -> Tuple[TubeFlowDataset, TubeFlowDataset, TubeFlowDataset]:
     """
     Returns: (train_data, dev_data, test_data)
@@ -343,8 +336,10 @@ def get_tube_auto_datasets(
     delta_time: float = 0.1,
     stable_state_diff: float = 0.001,
     seed: int = 0,
+    rank: int = 0, 
 ) -> Tuple[TubeFlowAutoDataset, TubeFlowAutoDataset, TubeFlowAutoDataset]:
-    print(data_dir, subset_name)
+    if rank==0:
+        print(data_dir, subset_name)
     case_dirs = []
     for name in ["prop", "bc", "geo"]:
         if name in subset_name:
@@ -366,13 +361,14 @@ def get_tube_auto_datasets(
     train_case_dirs = case_dirs[:num_train]
     dev_case_dirs = case_dirs[num_train : num_train + num_dev]
     test_case_dirs = case_dirs[num_train + num_dev :]
-    print("==== Number of cases in different splits ====")
-    print(
-        f"train: {len(train_case_dirs)}, "
-        f"dev: {len(dev_case_dirs)}, "
-        f"test: {len(test_case_dirs)}"
-    )
-    print("=============================================")
+    if rank==0:
+        print("==== Number of cases in different splits ====")
+        print(
+            f"train: {len(train_case_dirs)}, "
+            f"dev: {len(dev_case_dirs)}, "
+            f"test: {len(test_case_dirs)}"
+        )
+        print("=============================================")
     kwargs: dict[str, Any] = dict(
         delta_time=delta_time,
         stable_state_diff=stable_state_diff,

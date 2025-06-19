@@ -1,4 +1,5 @@
 import deepxde as dde
+dde.backend.set_default_backend("pytorch")
 import numpy as np
 import pickle
 import matplotlib.pyplot as plt
@@ -738,8 +739,9 @@ def _run_training(scenario, epochs, learning_rate, model_update, flnm,
 
     print(model_name)
 
+    os.makedirs("./checkpoint", exist_ok=True)
     checker = dde.callbacks.ModelCheckpoint(
-        f"{model_name}.pt", save_better_only=True, period=5000
+        f"./checkpoint/{model_name}.pt", save_better_only=True, period=5000
     )
 
     model.compile("adam", 
@@ -760,10 +762,10 @@ def _run_training(scenario, epochs, learning_rate, model_update, flnm,
 
     # prepare data for metrics eval
     test_pred = dataset.unravel_tensor(
-        test_pred, n_last_time_steps=10, n_components=n_components
+        test_pred, n_last_time_steps=1, n_components=n_components
     )
     test_gt = dataset.unravel_tensor(
-        test_gt, n_last_time_steps=10, n_components=n_components
+        test_gt, n_last_time_steps=1, n_components=n_components
     )
 
     if if_single_run:

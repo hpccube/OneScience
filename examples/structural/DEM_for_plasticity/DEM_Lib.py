@@ -572,7 +572,7 @@ class DeepMixedMethod:
             grid.cell_data[ n ] =  Data[:,idx]
 
 
-        #############################################################################################
+        ##
         # Abaqus comparison
         step -= 1
         Out1 = np.load( base + ref_file + '_Abaqus.npy' )

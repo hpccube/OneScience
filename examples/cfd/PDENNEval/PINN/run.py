@@ -3,7 +3,8 @@ import yaml
 from functools import reduce
 
 from timeit import default_timer
-
+import deepxde as dde
+dde.backend.set_default_backend("pytorch")
 sys.path.append(os.path.dirname(os.path.dirname(os.path.abspath(__file__))))
 
 
@@ -32,7 +33,7 @@ def main(config):
 
 
 if __name__ == "__main__":
-    config_path="./config/args/"
+    #config_path="./config/"
     config = sys.argv[1]
-    main(config_path+config)
+    main(config)
     print("Done.")

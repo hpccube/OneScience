@@ -66,7 +66,7 @@ def init_weights(m):
         torch.nn.init.xavier_uniform_(m.weight)
         m.bias.data.fill_(0.01)
 
-model = FLS2D(in_dim=3, hidden_dim=512, out_dim=2, num_layer=4).to(device)
+model = FLS2D(in_dim=3, hidden_dim=128, out_dim=2, num_layer=4).to(device)
 model.apply(init_weights)
 optim = LBFGS(model.parameters(), line_search_fn='strong_wolfe')
 

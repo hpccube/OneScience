@@ -1,38 +1,40 @@
 # WAN
 
-## Poisson equation
+不同的脚本对应不同的PDE方程
 
-### Part 1: high dimension problems
+>```python
+># the solved problems of different files
+>WAN_Ad1.py  # 1D Advection equation
+>WAN_DS1.py  # 1D Diffusion-Sorption equation
+>WAN_Bu1.py  # 1D Burgers equation 
+>WAN_AC1.py  # 1D Allen-Cahn equation
+>WAN_DR1.py  # 1D Diffusion-Reaction equation
+>WAN_AC2.py  # 2D Allen-Cahn equation
+>WAN_DF2.py  # 2D Darcy-Flow equation
+>WAN_BS2.py  # 2D Black-Scholes equation
+>```
 
-#### 1. training codes
-
+## 训练
 ```python
-python WAN_Poisson-PH.py --d 2 --i 15000 --s 0 --b 1000
-# --d the dimension of specific problem
-# --i the epochs
-# --s seed
-# --b the weight of the boundary loss 
+ # training codes
+ python WAN_Ad1.py --s 0 --i 15000 --b 1000
+ python WAN_DS1.py --s 0 --i 15000 --b 1000
+ python WAN_Bu1.py --s 0 --i 15000 --b 1000
+ python WAN_AC1.py --s 0 --i 15000 --b 1000 
+ python WAN_DR1.py --s 0 --i 15000 --b 1000
+ python WAN_AC2.py --s 0 --i 15000 --b 1000
+ python WAN_DF2.py --s 0 --i 15000 --b 1000
+ python WAN_BS2.py --s 0 --i 15000 --b 1000
 ```
+### 命令行参数说明
 
-#### 2. testing codes
+- `--s`  ：随机种子，用于控制实验的随机性，保证结果可复现。
 
-- L2RE: the resulting file 'metric-2D.csv' stores it.
-- mERR: the resulting file 'metric-2D.csv' stores it.
-- the infer time: the resulting file 'metric-2D.csv' stores it.
-- the training time: File 'main.ipynb' computes training time based the input 'epoch_time-2D.csv' .
-- the convergence time: File 'main.ipynb' computes convergence time based the input 'epoch_time-2D.csv' .
+- `--d`  ：空间维度，指定所求解的泊松方程的维度。
 
-Other dimension problems can  refer the situation in 2D.
+- `--co` ：使用的 GPU 编号，支持多 GPU 情况下指定具体设备。
 
-- **Part 2 and 3 is the same as Part 1 in testing codes.**
+- `--i`  ：训练迭代次数，控制训练过程中梯度更新的总步数。
 
-### Part 2: Singularity problem
-
-#### 1. training codes
-
-```python
-python WAN_Poisson-PS.py --s 0
-```
-
-- Metrics accessed thought the similar method as in the Part1 of Function Learning-based NN Methods.
+- `--b`  ：beta 参数值，控制的是边界条件损失（loss_bd）和初始条件损失（loss_init）在总损失中的权重。
 

@@ -40,7 +40,7 @@ def init_weights(m):
 
 # Train PINNs 
 
-model = QRes1D(in_dim=2, hidden_dim=256, out_dim=1, num_layer=4).to(device)
+model = QRes1D(in_dim=2, hidden_dim=128, out_dim=1, num_layer=4).to(device)
 
 model.apply(init_weights)
 optim = LBFGS(model.parameters(), line_search_fn='strong_wolfe')
