@@ -69,7 +69,7 @@ __global__ void LayerNormForward(T* input, T* output, T* gamma, T* beta, float* 
     int lane_id = threadIdx.x % WarpSize;
     int row_offset = blockIdx.x * WarpNum + warp_id;
 
-    float* shared_data_warp = shared_data + warp_id*cols;
+    T* shared_data_warp = (T*)shared_data + warp_id*cols;
 
     if (row_offset < rows) {
         T* row_input = input + (long long)(row_offset) * (long long)(cols); // Starting point for input data
@@ -85,8 +85,8 @@ __global__ void LayerNormForward(T* input, T* output, T* gamma, T* beta, float* 
         // load data to shared memory
 #pragma unroll
         for(int idx = lane_id; idx < cols; idx += WarpSize) {
-            shared_data_warp[idx] = static_cast<float>(row_input[idx]);
-            WelfordOnline(shared_data_warp[idx], &thread_mean, &thread_m2, &thread_count);
+            shared_data_warp[idx] = row_input[idx];
+            WelfordOnline(static_cast<float>(shared_data_warp[idx]), &thread_mean, &thread_m2, &thread_count);
         }
 
         WelfordWarpAllReduce(thread_mean, thread_m2, thread_count, &warp_mean, &warp_m2,
@@ -99,10 +99,23 @@ __global__ void LayerNormForward(T* input, T* output, T* gamma, T* beta, float* 
             mean[row_offset] = row_mean;
             invvar[row_offset] = row_inv_var;
         }
-
+        int process_type = (gamma != NULL)*2 + (beta != NULL);
+        if (process_type == 0) {
 #pragma unroll
-        for(int idx = lane_id; idx < cols; idx += WarpSize) {
-            row_output[idx] = static_cast<T>((shared_data_warp[idx] - row_mean) * row_inv_var) * gamma[idx] + beta[idx];
+            for(int idx = lane_id; idx < cols; idx += WarpSize)
+                row_output[idx] = static_cast<T>((static_cast<float>(shared_data_warp[idx]) - row_mean) * row_inv_var);
+        } else if (process_type == 1) {
+#pragma unroll
+            for(int idx = lane_id; idx < cols; idx += WarpSize)
+                row_output[idx] = static_cast<T>((static_cast<float>(shared_data_warp[idx]) - row_mean) * row_inv_var + beta[idx]);
+        } else if(process_type == 2) {
+#pragma unroll
+            for(int idx = lane_id; idx < cols; idx += WarpSize)
+                row_output[idx] = static_cast<T>((static_cast<float>(shared_data_warp[idx]) - row_mean) * row_inv_var * gamma[idx]);
+        } else {
+#pragma unroll
+            for(int idx = lane_id; idx < cols; idx += WarpSize)
+                row_output[idx] = static_cast<T>((static_cast<float>(shared_data_warp[idx]) - row_mean) * row_inv_var * gamma[idx] + beta[idx]);
         }
     }
 }
@@ -113,21 +126,23 @@ void cuda_layer_norm(at::Tensor* output, at::Tensor* mean, at::Tensor* invvar, a
     int grid = (rows + WarpNum - 1) / WarpNum; // each warp process one line
     dim3 block(BlockSzie);
     // add shared memory size
-    int shared_meory_size = WarpNum*sizeof(float)*cols;
     if (output->dtype() == torch::kFloat32) {
+        int shared_meory_size = WarpNum*sizeof(float)*cols;
         LayerNormForward<float><<<grid, block, shared_meory_size>>>(
-            (float*)input->data_ptr(), (float*)output->data_ptr(), (float*)gamma->data_ptr(),
-            (float*)beta->data_ptr(), (float*)mean->data_ptr(), (float*)invvar->data_ptr(), rows,
-            cols, epsilon);
+            (float*)input->data_ptr(), (float*)output->data_ptr(), 
+            gamma != NULL ? (float*)gamma->data_ptr() : NULL, beta != NULL ? (float*)beta->data_ptr() : NULL, 
+            (float*)mean->data_ptr(), (float*)invvar->data_ptr(), rows, cols, epsilon);
     } else if (output->dtype() == torch::kFloat16) {
+        int shared_meory_size = WarpNum*sizeof(at::Half)*cols;
         LayerNormForward<at::Half><<<grid, block, shared_meory_size>>>(
             (at::Half*)input->data_ptr(), (at::Half*)output->data_ptr(),
-            (at::Half*)gamma->data_ptr(), (at::Half*)beta->data_ptr(), (float*)mean->data_ptr(),
-            (float*)invvar->data_ptr(), rows, cols, epsilon);
+            gamma != NULL ? (at::Half*)gamma->data_ptr() : NULL, beta != NULL ? (at::Half*)beta->data_ptr() : NULL, 
+            (float*)mean->data_ptr(), (float*)invvar->data_ptr(), rows, cols, epsilon);
     } else if (output->dtype() == torch::kBFloat16) {
+        int shared_meory_size = WarpNum*sizeof(at::BFloat16)*cols;
         LayerNormForward<at::BFloat16><<<grid, block, shared_meory_size>>>(
             (at::BFloat16*)input->data_ptr(), (at::BFloat16*)output->data_ptr(),
-            (at::BFloat16*)gamma->data_ptr(), (at::BFloat16*)beta->data_ptr(),
+            gamma != NULL ? (at::BFloat16*)gamma->data_ptr() : NULL, beta != NULL ? (at::BFloat16*)beta->data_ptr() : NULL,
             (float*)mean->data_ptr(), (float*)invvar->data_ptr(), rows, cols, epsilon);
     }
 }
@@ -154,15 +169,15 @@ constexpr int num_per_block = 4;
 constexpr int block_dim_x = 32;
 constexpr int block_dim_y = 32 / num_per_block;
 
-template <typename T, typename U, typename V>
+template <typename T, typename V>
 __global__ void LayerNormParamGradStep1(int rows, int cols, const V* __restrict__ dy,
-                                        const T* __restrict__ x, const U* __restrict__ mean,
-                                        const U* __restrict__ inv_var,
-                                        U* __restrict__ tmp_gamma_diff, U* __restrict__ tmp_beta_diff) {
-  __shared__ U dgamma[32][33];
-  __shared__ U dbeta[32][33];
-  U dgamma_sum[num_per_block];
-  U dbeta_sum[num_per_block];
+                                        const T* __restrict__ x, const float* __restrict__ mean,
+                                        const float* __restrict__ inv_var,
+                                        float* __restrict__ tmp_gamma_diff, float* __restrict__ tmp_beta_diff) {
+  __shared__ float dgamma[32][33];
+  __shared__ float dbeta[32][33];
+  float dgamma_sum[num_per_block];
+  float dbeta_sum[num_per_block];
 #pragma unroll
   for (int index = 0; index < num_per_block; ++index) {
     dgamma_sum[index] = 0;
@@ -176,10 +191,10 @@ __global__ void LayerNormParamGradStep1(int rows, int cols, const V* __restrict_
         int row_id = i + index * blockDim.y;
         if (row_id < rows) {
           int offset = row_id * cols + col_id;
-          const U dy_val = static_cast<U>(dy[offset]);
-          const U x_val = static_cast<U>(x[offset]);
-          const U mean_val = mean[row_id];
-          const U inv_var_val = inv_var[row_id];
+          const float dy_val = static_cast<float>(dy[offset]);
+          const float x_val = static_cast<float>(x[offset]);
+          const float mean_val = mean[row_id];
+          const float inv_var_val = inv_var[row_id];
           dgamma_sum[index] += dy_val * (x_val - mean_val) * inv_var_val;
           dbeta_sum[index] += dy_val;
         }
@@ -196,10 +211,10 @@ __global__ void LayerNormParamGradStep1(int rows, int cols, const V* __restrict_
   for (int index = 0; index < num_per_block; ++index) {
     const int col_id = blockIdx.x * blockDim.x + threadIdx.y + index * blockDim.y;
     if (col_id < cols) {
-      U gamma_sum = dgamma[threadIdx.x][threadIdx.y + index * blockDim.y];
-      U beta_sum = dbeta[threadIdx.x][threadIdx.y + index * blockDim.y];
-      U global_dgamma = WarpReduce<U>(gamma_sum);
-      U global_dbeta = WarpReduce<U>(beta_sum);
+      float gamma_sum = dgamma[threadIdx.x][threadIdx.y + index * blockDim.y];
+      float beta_sum = dbeta[threadIdx.x][threadIdx.y + index * blockDim.y];
+      float global_dgamma = WarpReduce<float>(gamma_sum);
+      float global_dbeta = WarpReduce<float>(beta_sum);
       if (threadIdx.x == 0) {
         const int offset = blockIdx.y * cols + col_id;
         tmp_gamma_diff[offset] = global_dgamma;
@@ -209,21 +224,110 @@ __global__ void LayerNormParamGradStep1(int rows, int cols, const V* __restrict_
   }
 }
 
-template <typename U, typename V>
-__global__ void LayerNormParamGradStep2(const U* part_grad_gamma, const U* part_grad_beta,
+template <typename T, typename V>
+__global__ void LayerNormGammaGradStep1(int rows, int cols, const V* __restrict__ dy,
+                                        const T* __restrict__ x, const float* __restrict__ mean,
+                                        const float* __restrict__ inv_var, float* __restrict__ tmp_gamma_diff) {
+  __shared__ float dgamma[32][33];
+  float dgamma_sum[num_per_block];
+#pragma unroll
+  for (int index = 0; index < num_per_block; ++index) {
+    dgamma_sum[index] = 0;
+  }
+  const int col_id = blockIdx.x * blockDim.x + threadIdx.x;
+  if (col_id < cols) {
+    for (int i = blockIdx.y * tile_size + threadIdx.y; i < rows; i += tile_size * gridDim.y) {
+#pragma unroll
+      for (int index = 0; index < num_per_block; ++index) {
+        int row_id = i + index * blockDim.y;
+        if (row_id < rows) {
+          int offset = row_id * cols + col_id;
+          const float dy_val = static_cast<float>(dy[offset]);
+          const float x_val = static_cast<float>(x[offset]);
+          const float mean_val = mean[row_id];
+          const float inv_var_val = inv_var[row_id];
+          dgamma_sum[index] += dy_val * (x_val - mean_val) * inv_var_val;
+        }
+      }
+    }
+  }
+#pragma unroll
+  for (int index = 0; index < num_per_block; ++index) {
+    dgamma[index * blockDim.y + threadIdx.y][threadIdx.x] = dgamma_sum[index];
+  }
+  __syncthreads();
+#pragma unroll
+  for (int index = 0; index < num_per_block; ++index) {
+    const int col_id = blockIdx.x * blockDim.x + threadIdx.y + index * blockDim.y;
+    if (col_id < cols) {
+      float gamma_sum = dgamma[threadIdx.x][threadIdx.y + index * blockDim.y];
+      float global_dgamma = WarpReduce<float>(gamma_sum);
+      if (threadIdx.x == 0) {
+        const int offset = blockIdx.y * cols + col_id;
+        tmp_gamma_diff[offset] = global_dgamma;
+      }
+    }
+  }
+}
+
+template <typename T, typename V>
+__global__ void LayerNormBetaGradStep1(int rows, int cols, const V* __restrict__ dy,
+                                        const T* __restrict__ x, const float* __restrict__ mean,
+                                        const float* __restrict__ inv_var, float* __restrict__ tmp_beta_diff) {
+  __shared__ float dbeta[32][33];
+  float dbeta_sum[num_per_block];
+#pragma unroll
+  for (int index = 0; index < num_per_block; ++index) {
+    dbeta_sum[index] = 0;
+  }
+  const int col_id = blockIdx.x * blockDim.x + threadIdx.x;
+  if (col_id < cols) {
+    for (int i = blockIdx.y * tile_size + threadIdx.y; i < rows; i += tile_size * gridDim.y) {
+#pragma unroll
+      for (int index = 0; index < num_per_block; ++index) {
+        int row_id = i + index * blockDim.y;
+        if (row_id < rows) {
+          int offset = row_id * cols + col_id;
+          const float dy_val = static_cast<float>(dy[offset]);
+          dbeta_sum[index] += dy_val;
+        }
+      }
+    }
+  }
+#pragma unroll
+  for (int index = 0; index < num_per_block; ++index) {
+    dbeta[index * blockDim.y + threadIdx.y][threadIdx.x] = dbeta_sum[index];
+  }
+  __syncthreads();
+#pragma unroll
+  for (int index = 0; index < num_per_block; ++index) {
+    const int col_id = blockIdx.x * blockDim.x + threadIdx.y + index * blockDim.y;
+    if (col_id < cols) {
+      float beta_sum = dbeta[threadIdx.x][threadIdx.y + index * blockDim.y];
+      float global_dbeta = WarpReduce<float>(beta_sum);
+      if (threadIdx.x == 0) {
+        const int offset = blockIdx.y * cols + col_id;
+        tmp_beta_diff[offset] = global_dbeta;
+      }
+    }
+  }
+}
+
+template <typename V>
+__global__ void LayerNormParamGradStep2(const float* part_grad_gamma, const float* part_grad_beta,
                                         const int part_size, const int n1, const int n2,
                                         V* grad_gamma, V* grad_beta) {
     // sum partial gradients for gamma and beta
-    SharedMemory<U> shared;
-    U* buf = shared.getPointer();
+    SharedMemory<float> shared;
+    float* buf = shared.getPointer();
     int i2 = blockIdx.x * blockDim.x + threadIdx.x;
     if (i2 < n2) {
         // each warp does sequential reductions until reduced part_size is num_warps
         // int num_warp_reductions = part_size / blockDim.y;
-        U sum_gamma = U(0);
-        U sum_beta = U(0);
-        const U* part_grad_gamma_ptr = part_grad_gamma + i2;
-        const U* part_grad_beta_ptr = part_grad_beta + i2;
+        float sum_gamma = float(0);
+        float sum_beta = float(0);
+        const float* part_grad_gamma_ptr = part_grad_gamma + i2;
+        const float* part_grad_beta_ptr = part_grad_beta + i2;
         for (int row_idx = threadIdx.y; row_idx < part_size; row_idx += blockDim.y) {
             sum_gamma += part_grad_gamma_ptr[row_idx * n2];
             sum_beta += part_grad_beta_ptr[row_idx * n2];
@@ -254,10 +358,82 @@ __global__ void LayerNormParamGradStep2(const U* part_grad_gamma, const U* part_
     }
 }
 
-template <typename T, typename U, typename V>
+template <typename V>
+__global__ void LayerNormGammaGradStep2(const float* part_grad_gamma, const int part_size, const int n1, const int n2, V* grad_gamma) {
+    // sum partial gradients for gamma and beta
+    SharedMemory<float> shared;
+    float* buf = shared.getPointer();
+    int i2 = blockIdx.x * blockDim.x + threadIdx.x;
+    if (i2 < n2) {
+        // each warp does sequential reductions until reduced part_size is num_warps
+        // int num_warp_reductions = part_size / blockDim.y;
+        float sum_gamma = float(0);
+        const float* part_grad_gamma_ptr = part_grad_gamma + i2;
+        for (int row_idx = threadIdx.y; row_idx < part_size; row_idx += blockDim.y) {
+            sum_gamma += part_grad_gamma_ptr[row_idx * n2];
+        }
+        // inter-warp reductions
+        for (int offset = blockDim.y / 2; offset >= 1; offset /= 2) {
+            // top half write to shared memory
+            if (threadIdx.y >= offset && threadIdx.y < 2 * offset) {
+                const int write_idx = (threadIdx.y - offset) * blockDim.x + threadIdx.x;
+                buf[write_idx] = sum_gamma;
+            }
+            __syncthreads();
+            // bottom half sums
+            if (threadIdx.y < offset) {
+                const int read_idx = threadIdx.y * blockDim.x + threadIdx.x;
+                sum_gamma += buf[read_idx];
+            }
+            __syncthreads();
+        }
+        // write out fully summed gradients
+        if (threadIdx.y == 0) {
+            grad_gamma[i2] = sum_gamma;
+        }
+    }
+}
+
+template <typename V>
+__global__ void LayerNormBetaGradStep2(const float* part_grad_beta, const int part_size, const int n1, const int n2, V* grad_beta) {
+    // sum partial gradients for gamma and beta
+    SharedMemory<float> shared;
+    float* buf = shared.getPointer();
+    int i2 = blockIdx.x * blockDim.x + threadIdx.x;
+    if (i2 < n2) {
+        // each warp does sequential reductions until reduced part_size is num_warps
+        // int num_warp_reductions = part_size / blockDim.y;
+        float sum_beta = float(0);
+        const float* part_grad_beta_ptr = part_grad_beta + i2;
+        for (int row_idx = threadIdx.y; row_idx < part_size; row_idx += blockDim.y) {
+            sum_beta += part_grad_beta_ptr[row_idx * n2];
+        }
+        // inter-warp reductions
+        for (int offset = blockDim.y / 2; offset >= 1; offset /= 2) {
+            // top half write to shared memory
+            if (threadIdx.y >= offset && threadIdx.y < 2 * offset) {
+                const int write_idx = (threadIdx.y - offset) * blockDim.x + threadIdx.x;
+                buf[write_idx] = sum_beta;
+            }
+            __syncthreads();
+            // bottom half sums
+            if (threadIdx.y < offset) {
+                const int read_idx = threadIdx.y * blockDim.x + threadIdx.x;
+                sum_beta += buf[read_idx];
+            }
+            __syncthreads();
+        }
+        // write out fully summed gradients
+        if (threadIdx.y == 0) {
+            grad_beta[i2] = sum_beta;
+        }
+    }
+}
+
+template <typename T, typename V>
 __global__ void LayerNormInputGrad(const V* __restrict__ dout, const T* __restrict__ input,
-                                   const int rows, const int cols, const U* __restrict__ mean,
-                                   const U* __restrict__ invvar, U epsilon, const V* gamma,
+                                   const int rows, const int cols, const float* __restrict__ mean,
+                                   const float* __restrict__ invvar, float epsilon, const V* gamma,
                                    T* grad_input) {
     int WarpPerBlock = blockDim.x / WarpSize;
     int thread_idx = threadIdx.x;
@@ -269,8 +445,8 @@ __global__ void LayerNormInputGrad(const V* __restrict__ dout, const T* __restri
     float* shared_gamma = shared_data + 2*WarpPerBlock*cols;
     int row_stride = gridDim.x*WarpPerBlock;
     for(int row = blockIdx.x*WarpPerBlock+warp_idx; row < rows; row += row_stride) {
-        U mean_r = mean[row];
-        U invvar_r = invvar[row];
+        float mean_r = mean[row];
+        float invvar_r = invvar[row];
         // load dout, input and gamma
         long long data_offset = (long long)(row) * cols;
         const V* dout_r = dout + data_offset;
@@ -284,7 +460,7 @@ __global__ void LayerNormInputGrad(const V* __restrict__ dout, const T* __restri
         if(warp_idx == 0) {
 #pragma unroll
             for(int col = lane_idx; col < cols; col += WarpSize) {
-                shared_gamma[col] = float(gamma[col]);
+                shared_gamma[col] = gamma != NULL ? float(gamma[col]) : 1.0f;
             }
         }
         __syncthreads();
@@ -312,14 +488,14 @@ __global__ void LayerNormInputGrad(const V* __restrict__ dout, const T* __restri
     }
 }
 
-template <typename T, typename U, typename V>
+template <typename T, typename V>
 int GetGirdDimY(const int64_t num_instances, const int64_t norm_size) {
     const int grid_dim_x = (norm_size + tile_size - 1) / tile_size;
     const int max_grid_dim_y = (num_instances + tile_size - 1) / tile_size;
     const int block_size = block_dim_x * block_dim_y;
     int max_active_blocks = 0;
     cudaOccupancyMaxActiveBlocksPerMultiprocessor(
-        &max_active_blocks, LayerNormParamGradStep1<T, U, V>, block_size, 0);
+        &max_active_blocks, LayerNormParamGradStep1<T, V>, block_size, 0);
     int waves = 1;
     int dev;
     cudaGetDevice(&dev);
@@ -330,30 +506,61 @@ int GetGirdDimY(const int64_t num_instances, const int64_t norm_size) {
     return std::max(grid_dim_y, 1);
 }
 
-template <typename T, typename U, typename V>
-void HostLayerNormGradient(const V* dout, const U* mean, const U* invvar, at::Tensor* input, int n1,
+template <typename T, typename V>
+void HostLayerNormGradient(const V* dout, const float* mean, const float* invvar, at::Tensor* input, int n1,
                            int n2, const V* gamma, const V* beta, double epsilon, T* grad_input,
                            V* grad_gamma, V* grad_beta) {
     auto stream = at::cuda::getCurrentCUDAStream().stream();
 
     if (gamma != NULL && beta != NULL) {
         // compute grad_gamma(j) and grad_beta(j)
-        const int part_size = GetGirdDimY<T, U, V>(n1, n2);
+        const int part_size = GetGirdDimY<T, V>(n1, n2);
         const int grid_dim_x = (n2 + tile_size - 1) / tile_size;
         const int grid_dim_y = part_size;
 
         at::Tensor part_grad_gamma = at::empty({part_size, n2}, input->options().dtype(at::ScalarType::Float));
         at::Tensor part_grad_beta = at::empty_like(part_grad_gamma);
-        LayerNormParamGradStep1<T, U, V><<<dim3(grid_dim_x, grid_dim_y), dim3(32, 32 / num_per_block)>>>(
-            n1, n2, dout, input->DATA_PTR<T>(), mean, invvar, part_grad_gamma.DATA_PTR<U>(), part_grad_beta.DATA_PTR<U>()
+        LayerNormParamGradStep1<T, V><<<dim3(grid_dim_x, grid_dim_y), dim3(32, 32 / num_per_block)>>>(
+            n1, n2, dout, input->DATA_PTR<T>(), mean, invvar, part_grad_gamma.DATA_PTR<float>(), part_grad_beta.DATA_PTR<float>()
         );
 
         const dim3 threads3(32, 8, 1);
         const dim3 blocks3((n2 + 32 - 1) / 32, 1, 1);
-        const int nshared3 = threads3.x * threads3.y * sizeof(U);
+        const int nshared3 = threads3.x * threads3.y * sizeof(float);
         LayerNormParamGradStep2<<<blocks3, threads3, nshared3, stream>>>(
-            part_grad_gamma.DATA_PTR<U>(), part_grad_beta.DATA_PTR<U>(), part_size, n1, n2,
+            part_grad_gamma.DATA_PTR<float>(), part_grad_beta.DATA_PTR<float>(), part_size, n1, n2,
             grad_gamma, grad_beta);
+    } else if (gamma != NULL && beta == NULL) {
+        // compute grad_gamma(j) and grad_beta(j)
+        const int part_size = GetGirdDimY<T, V>(n1, n2);
+        const int grid_dim_x = (n2 + tile_size - 1) / tile_size;
+        const int grid_dim_y = part_size;
+
+        at::Tensor part_grad_gamma = at::empty({part_size, n2}, input->options().dtype(at::ScalarType::Float));
+        LayerNormGammaGradStep1<T, V><<<dim3(grid_dim_x, grid_dim_y), dim3(32, 32 / num_per_block)>>>(
+            n1, n2, dout, input->DATA_PTR<T>(), mean, invvar, part_grad_gamma.DATA_PTR<float>());
+
+        const dim3 threads3(32, 8, 1);
+        const dim3 blocks3((n2 + 32 - 1) / 32, 1, 1);
+        const int nshared3 = threads3.x * threads3.y * sizeof(float);
+        LayerNormGammaGradStep2<<<blocks3, threads3, nshared3, stream>>>(
+            part_grad_gamma.DATA_PTR<float>(), part_size, n1, n2, grad_gamma);
+    } else if (gamma == NULL && beta!= NULL) {
+        // compute grad_gamma(j) and grad_beta(j)
+        const int part_size = GetGirdDimY<T, V>(n1, n2);
+        const int grid_dim_x = (n2 + tile_size - 1) / tile_size;
+        const int grid_dim_y = part_size;
+
+        at::Tensor part_grad_beta = at::empty({part_size, n2}, input->options().dtype(at::ScalarType::Float));
+        LayerNormBetaGradStep1<T, V><<<dim3(grid_dim_x, grid_dim_y), dim3(32, 32 / num_per_block)>>>(
+            n1, n2, dout, input->DATA_PTR<T>(), mean, invvar, part_grad_beta.DATA_PTR<float>()
+        );
+
+        const dim3 threads3(32, 8, 1);
+        const dim3 blocks3((n2 + 32 - 1) / 32, 1, 1);
+        const int nshared3 = threads3.x * threads3.y * sizeof(float);
+        LayerNormBetaGradStep2<<<blocks3, threads3, nshared3, stream>>>(
+            part_grad_beta.DATA_PTR<float>(), part_size, n1, n2, grad_beta);
     }
 
     const uint64_t maxGridY = at::cuda::getCurrentDeviceProperties()->maxGridSize[1];
@@ -364,14 +571,14 @@ void HostLayerNormGradient(const V* dout, const U* mean, const U* invvar, at::Te
 
     int max_active_blocks = 0;
     cudaOccupancyMaxActiveBlocksPerMultiprocessor(
-        &max_active_blocks, LayerNormInputGrad<T, U, V>, BlockDim, nshared);
+        &max_active_blocks, LayerNormInputGrad<T, V>, BlockDim, nshared);
     int dev;
     cudaGetDevice(&dev);
     int sm_count;
     cudaDeviceGetAttribute(&sm_count, cudaDevAttrMultiProcessorCount, dev);
 
     const dim3 blocks1(std::min((uint64_t)((n1 + WarpNumPerBlock - 1)/WarpNumPerBlock), (uint64_t)(max_active_blocks * sm_count)));
-    LayerNormInputGrad<<<blocks1, threads1, nshared>>>(dout, input->DATA_PTR<T>(), n1, n2, mean, invvar, U(epsilon), gamma, grad_input);
+    LayerNormInputGrad<<<blocks1, threads1, nshared>>>(dout, input->DATA_PTR<T>(), n1, n2, mean, invvar, float(epsilon), gamma, grad_input);
 }
 
 void cuda_layer_norm_gradient(at::Tensor* dout, at::Tensor* mean, at::Tensor* invvar,
@@ -381,14 +588,12 @@ void cuda_layer_norm_gradient(at::Tensor* dout, at::Tensor* mean, at::Tensor* in
                               at::Tensor* grad_beta) {
     using namespace at;
     DISPATCH_FLOAT_HALF_AND_BFLOAT_INOUT_TYPES(
-        input->scalar_type(), gamma->scalar_type(), "cuda_layer_norm_gradient_kernel",
+        input->scalar_type(), dout->scalar_type(), "cuda_layer_norm_gradient_kernel",
         HostLayerNormGradient(dout->DATA_PTR<scalar_t_out>(), mean->DATA_PTR<float>(),
                               invvar->DATA_PTR<float>(), input, n1, n2,
-                              // TMJ pass NULL argument for gamma, beta, grad_gamma and grad_beta
-                              // if gamma Tensor is NULL on input.
                               gamma != NULL ? gamma->DATA_PTR<scalar_t_out>() : NULL,
-                              gamma != NULL ? beta->DATA_PTR<scalar_t_out>() : NULL, epsilon,
+                              beta != NULL ? beta->DATA_PTR<scalar_t_out>() : NULL, epsilon,
                               grad_input->DATA_PTR<scalar_t_in>(),
                               gamma != NULL ? grad_gamma->DATA_PTR<scalar_t_out>() : NULL,
-                              gamma != NULL ? grad_beta->DATA_PTR<scalar_t_out>() : NULL);)
+                              beta != NULL ? grad_beta->DATA_PTR<scalar_t_out>() : NULL);)
 }

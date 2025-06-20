@@ -901,7 +901,6 @@ def merge_all_chain_features(
     )
     if msa_entity_type == "rna":
         np_example = rna_merge(
-            is_homomer_or_monomer=is_homomer_or_monomer,
             all_chain_features=all_chain_features,
             merge_method=merge_method,
             msa_crop_size=max_size,

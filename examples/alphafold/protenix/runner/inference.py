@@ -32,7 +32,10 @@ class InferenceRunner(object):
         self.init_basics()
         self.init_model()
         self.load_checkpoint()
-        self.init_dumper(need_atom_confidence=configs.need_atom_confidence)
+        self.init_dumper(
+            need_atom_confidence=configs.need_atom_confidence,
+            sorted_by_ranking_score=configs.sorted_by_ranking_score,
+        )
 
     def init_env(self) -> None:
         self.print(
@@ -58,7 +61,7 @@ class InferenceRunner(object):
             self.print(f"env: {env}")
             assert (
                 env is not None
-            ), "if use ds4sci, set env as https://www.deepspeed.ai/tutorials/ds4sci_evoformerattention/"
+            ), "if use ds4sci, set `CUTLASS_PATH` env as https://www.deepspeed.ai/tutorials/ds4sci_evoformerattention/"
             if env is not None:
                 logging.info(
                     "The kernels will be compiled when DS4Sci_EvoformerAttention is called for the first time."
@@ -97,14 +100,18 @@ class InferenceRunner(object):
             }
         self.model.load_state_dict(
             state_dict=checkpoint["model"],
-            strict=True,
+            strict=self.configs.load_strict,
         )
         self.model.eval()
         self.print(f"Finish loading checkpoint.")
 
-    def init_dumper(self, need_atom_confidence: bool = False):
+    def init_dumper(
+        self, need_atom_confidence: bool = False, sorted_by_ranking_score: bool = True
+    ):
         self.dumper = DataDumper(
-            base_dir=self.dump_dir, need_atom_confidence=need_atom_confidence
+            base_dir=self.dump_dir,
+            need_atom_confidence=need_atom_confidence,
+            sorted_by_ranking_score=sorted_by_ranking_score,
         )
 
     # Adapted from runner.train.Trainer.evaluate
@@ -141,32 +148,40 @@ class InferenceRunner(object):
         self.model.configs = new_configs
 
 
-def download_infercence_cache(configs: Any, model_version: str = "v0.2.0") -> None:
-    current_file_path = os.path.abspath(__file__)
-    current_directory = os.path.dirname(current_file_path)
-    code_directory = os.path.dirname(current_directory)
+def download_infercence_cache(configs: Any, model_version: str = "v0.5.0") -> None:
 
-    data_cache_dir = os.path.join(code_directory, "release_data/ccd_cache")
-    os.makedirs(data_cache_dir, exist_ok=True)
-    for cache_name, fname in [
-        ("ccd_components_file", "components.v20240608.cif"),
-        ("ccd_components_rdkit_mol_file", "components.v20240608.cif.rdkit_mol.pkl"),
-    ]:
-        if not opexists(cache_path := os.path.abspath(opjoin(data_cache_dir, fname))):
+    for cache_name in ("ccd_components_file", "ccd_components_rdkit_mol_file"):
+        cur_cache_fpath = configs["data"][cache_name]
+        if not opexists(cur_cache_fpath):
+            os.makedirs(os.path.dirname(cur_cache_fpath), exist_ok=True)
             tos_url = URL[cache_name]
-            logger.info(f"Downloading data cache from\n {tos_url}...")
-            urllib.request.urlretrieve(tos_url, cache_path)
+            assert os.path.basename(tos_url) == os.path.basename(cur_cache_fpath), (
+                f"{cache_name} file name is incorrect, `{tos_url}` and "
+                f"`{cur_cache_fpath}`. Please check and try again."
+            )
+            logger.info(
+                f"Downloading data cache from\n {tos_url}... to {cur_cache_fpath}"
+            )
+            urllib.request.urlretrieve(tos_url, cur_cache_fpath)
 
     checkpoint_path = configs.load_checkpoint_path
-    checkpoint_path = os.path.join(
-        code_directory, f"release_data/checkpoint/model_{model_version}.pt"
-    )
 
     if not opexists(checkpoint_path):
         os.makedirs(os.path.dirname(checkpoint_path), exist_ok=True)
         tos_url = URL[f"model_{model_version}"]
-        logger.info(f"Downloading model checkpoint from\n {tos_url}...")
+        logger.info(
+            f"Downloading model checkpoint from\n {tos_url}... to {checkpoint_path}"
+        )
         urllib.request.urlretrieve(tos_url, checkpoint_path)
+        try:
+            ckpt = torch.load(checkpoint_path)
+            del ckpt
+        except:
+            os.remove(checkpoint_path)
+            raise RuntimeError(
+                "Download model checkpoint failed, please download by yourself with "
+                f"wget {tos_url} -O {checkpoint_path}"
+            )        
 
 
 def update_inference_configs(configs: Any, N_token: int):
@@ -188,25 +203,29 @@ def update_inference_configs(configs: Any, N_token: int):
 def infer_predict(runner: InferenceRunner, configs: Any) -> None:
     # Data
     logger.info(f"Loading data from\n{configs.input_json_path}")
-    dataloader = get_inference_dataloader(configs=configs)
+    try:
+        dataloader = get_inference_dataloader(configs=configs)
+    except Exception as e:
+        error_message = f"{e}:\n{traceback.format_exc()}"
+        logger.info(error_message)
+        with open(opjoin(runner.error_dir, "error.txt"), "a") as f:
+            f.write(error_message)
+        return
 
     num_data = len(dataloader.dataset)
     for seed in configs.seeds:
-        seed_everything(seed=seed, deterministic=True)
+        seed_everything(seed=seed, deterministic=configs.deterministic)
         for batch in dataloader:
             try:
                 data, atom_array, data_error_message = batch[0]
+                sample_name = data["sample_name"]
 
                 if len(data_error_message) > 0:
                     logger.info(data_error_message)
-                    with open(
-                        opjoin(runner.error_dir, f"{data['sample_name']}.txt"),
-                        "w",
-                    ) as f:
+                    with open(opjoin(runner.error_dir, f"{sample_name}.txt"), "a") as f:
                         f.write(data_error_message)
                     continue
 
-                sample_name = data["sample_name"]
                 logger.info(
                     (
                         f"[Rank {DIST_WRAPPER.rank} ({data['sample_index'] + 1}/{num_data})] {sample_name}: "
@@ -235,15 +254,10 @@ def infer_predict(runner: InferenceRunner, configs: Any) -> None:
                 error_message = f"[Rank {DIST_WRAPPER.rank}]{data['sample_name']} {e}:\n{traceback.format_exc()}"
                 logger.info(error_message)
                 # Save error info
-                if opexists(
-                    error_path := opjoin(runner.error_dir, f"{sample_name}.txt")
-                ):
-                    os.remove(error_path)
-                with open(error_path, "w") as f:
+                with open(opjoin(runner.error_dir, f"{sample_name}.txt"), "a") as f:
                     f.write(error_message)
                 if hasattr(torch.cuda, "empty_cache"):
                     torch.cuda.empty_cache()
-                raise RuntimeError(f"run infer failed: {str(e)}")
 
 
 def main(configs: Any) -> None:
@@ -261,7 +275,7 @@ def run() -> None:
         filemode="w",
     )
     configs_base["use_deepspeed_evo_attention"] = (
-        os.environ.get("USE_DEEPSPEED_EVO_ATTTENTION", False) == "true"
+        os.environ.get("USE_DEEPSPEED_EVO_ATTENTION", False) == "true"
     )
     configs = {**configs_base, **{"data": data_configs}, **inference_configs}
     configs = parse_configs(
@@ -269,17 +283,9 @@ def run() -> None:
         arg_str=parse_sys_args(),
         fill_required_with_null=True,
     )
-    if inference_configs["load_checkpoint_path"] is None:
-        download_infercence_cache(configs, model_version="v0.2.0")
+    #if inference_configs["load_checkpoint_path"] is None:
+    download_infercence_cache(configs, model_version="v0.5.0")
     main(configs)
-
-
-def run_default() -> None:
-    inference_configs["load_checkpoint_path"] = "/af3-dev/release_model/model_v0.2.0.pt"
-    configs_base["model"]["N_cycle"] = 10
-    configs_base["sample_diffusion"]["N_sample"] = 5
-    configs_base["sample_diffusion"]["N_step"] = 200
-    run()
 
 
 if __name__ == "__main__":

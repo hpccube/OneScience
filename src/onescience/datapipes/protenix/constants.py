@@ -1,3 +1,19 @@
+# Copyright 2024 ByteDance and/or its affiliates.
+#
+# Licensed under the Apache License, Version 2.0 (the "License");
+# you may not use this file except in compliance with the License.
+# You may obtain a copy of the License at
+#
+#      http://www.apache.org/licenses/LICENSE-2.0
+#
+# Unless required by applicable law or agreed to in writing, software
+# distributed under the License is distributed on an "AS IS" BASIS,
+# WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
+# See the License for the specific language governing permissions and
+# limitations under the License.
+
+from rdkit.Chem import GetPeriodicTable
+
 EvaluationChainInterface = [
     "intra_ligand",
     "intra_dna",
@@ -22,10 +38,16 @@ EntityPolyTypeDict = {
     "ligand": ["cyclic-pseudo-peptide", "other"],
 }
 
+CRYSTALLIZATION_METHODS = {
+    "X-RAY DIFFRACTION",
+    "NEUTRON DIFFRACTION",
+    "ELECTRON CRYSTALLOGRAPHY",
+    "POWDER CRYSTALLOGRAPHY",
+    "FIBER DIFFRACTION",
+}
 
 ### Protein Constants ###
 # https://mmcif.wwpdb.org/dictionaries/mmcif_pdbx_v40.dic/Items/_entity_poly.pdbx_seq_one_letter_code_can.html
-from rdkit.Chem import GetPeriodicTable
 
 mmcif_restype_1to3 = {
     "A": "ALA",
@@ -270,18 +292,23 @@ RNA_STD_RESIDUES = {
     "G": 22,
     "C": 23,
     "U": 24,
-    "N": 29,
+    "N": 25,
 }
 
 DNA_STD_RESIDUES = {
-    "DA": 25,
-    "DG": 26,
-    "DC": 27,
-    "DT": 28,
+    "DA": 26,
+    "DG": 27,
+    "DC": 28,
+    "DT": 29,
     "DN": 30,
 }
 
+GAP = {"-": 31}
 STD_RESIDUES = PRO_STD_RESIDUES | RNA_STD_RESIDUES | DNA_STD_RESIDUES
+STD_RESIDUES_WITH_GAP = STD_RESIDUES | GAP
+STD_RESIDUES_WITH_GAP_ID_TO_NAME = {
+    idx: res_type for res_type, idx in STD_RESIDUES_WITH_GAP.items()
+}
 
 rna_order_with_x = {
     "A": 0,

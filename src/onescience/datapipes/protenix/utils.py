@@ -1,4 +1,6 @@
+import argparse
 import copy
+import functools
 import os
 import re
 from collections import defaultdict
@@ -25,6 +27,44 @@ def remove_numbers(s: str) -> str:
         str: a string with numbers removed.
     """
     return re.sub(r"\d+", "", s)
+
+
+def int_to_letters(n: int) -> str:
+    """
+    Convert int to letters.
+    Useful for converting chain index to label_asym_id.
+
+    Args:
+        n (int): int number
+    Returns:
+        str: letters. e.g. 1 -> A, 2 -> B, 27 -> AA, 28 -> AB
+    """
+    result = ""
+    while n > 0:
+        n, remainder = divmod(n - 1, 26)
+        result = chr(65 + remainder) + result
+    return result
+
+
+def get_inter_residue_bonds(atom_array: AtomArray) -> np.ndarray:
+    """get inter residue bonds by checking chain_id and res_id
+
+    Args:
+        atom_array (AtomArray): Biotite AtomArray, must have chain_id and res_id
+
+    Returns:
+        np.ndarray: inter residue bonds, shape = (n,2)
+    """
+    if atom_array.bonds is None:
+        return []
+    idx_i = atom_array.bonds._bonds[:, 0]
+    idx_j = atom_array.bonds._bonds[:, 1]
+    chain_id_diff = atom_array.chain_id[idx_i] != atom_array.chain_id[idx_j]
+    res_id_diff = atom_array.res_id[idx_i] != atom_array.res_id[idx_j]
+    diff_mask = chain_id_diff | res_id_diff
+    inter_residue_bonds = atom_array.bonds._bonds[diff_mask]
+    inter_residue_bonds = inter_residue_bonds[:, :2]  # remove bond type
+    return inter_residue_bonds
 
 
 def get_starts_by(
@@ -54,6 +94,26 @@ def get_starts_by(
         return np.concatenate(([0], starts, [atom_array.array_length()]))
     else:
         return np.concatenate(([0], starts))
+
+
+def atom_select(atom_array: AtomArray, select_dict: dict, as_mask=False) -> np.ndarray:
+    """return index of atom_array that match select_dict
+
+    Args:
+        atom_array (AtomArray): Biotite AtomArray
+        select_dict (dict): select dict, eg: {'element': 'C'}
+        as_mask (bool, optional): return mask of atom_array. Defaults to False.
+
+    Returns:
+        np.ndarray: index of atom_array that match select_dict
+    """
+    mask = np.ones(len(atom_array), dtype=bool)
+    for k, v in select_dict.items():
+        mask = mask & (getattr(atom_array, k) == v)
+    if as_mask:
+        return mask
+    else:
+        return np.where(mask)[0]
 
 
 def get_ligand_polymer_bond_mask(
@@ -106,6 +166,37 @@ def get_ligand_polymer_bond_mask(
             lig_polymer_bond_indices
         ]  # np.array([[atom1, atom2, bond_order]...])
     return lig_polymer_bonds
+
+@functools.lru_cache
+def parse_pdb_cluster_file_to_dict(
+    cluster_file: str, remove_uniprot: bool = True
+) -> dict[str, tuple]:
+    """parse PDB cluster file, and return a pandas dataframe
+    example cluster file:
+    https://cdn.rcsb.org/resources/sequence/clusters/clusters-by-entity-40.txt
+
+    Args:
+        cluster_file (str): cluster_file path
+    Returns:
+        dict(str, tuple(str, str)): {pdb_id}_{entity_id} --> [cluster_id, cluster_size]
+    """
+    pdb_cluster_dict = {}
+    with open(cluster_file) as f:
+        for line in f:
+            pdb_clusters = []
+            for ids in line.strip().split():
+                if remove_uniprot:
+                    if ids.startswith("AF_") or ids.startswith("MA_"):
+                        continue
+                pdb_clusters.append(ids)
+            cluster_size = len(pdb_clusters)
+            if cluster_size == 0:
+                continue
+            # use first member as cluster id.
+            cluster_id = f"pdb_cluster_{pdb_clusters[0]}"
+            for ids in pdb_clusters:
+                pdb_cluster_dict[ids.lower()] = (cluster_id, cluster_size)
+    return pdb_cluster_dict
 
 
 def get_clean_data(atom_array: AtomArray) -> AtomArray:
@@ -198,6 +289,21 @@ class CIFWriter:
         self.atom_array = atom_array
         self.entity_poly_type = entity_poly_type
 
+    def _get_entity_block(self):
+        if self.entity_poly_type is None:
+            return {}
+        entity_ids_in_atom_array = np.sort(np.unique(self.atom_array.label_entity_id))
+        entity_block_dict = defaultdict(list)
+        for entity_id in entity_ids_in_atom_array:
+            if entity_id not in self.entity_poly_type:
+                entity_type = "non-polymer"
+            else:
+                entity_type = "polymer"
+            entity_block_dict["id"].append(entity_id)
+            entity_block_dict["pdbx_description"].append(".")
+            entity_block_dict["type"].append(entity_type)
+        return pdbx.CIFCategory(entity_block_dict)
+
     def _get_entity_poly_and_entity_poly_seq_block(self):
         entity_poly = defaultdict(list)
         for entity_id, entity_type in self.entity_poly_type.items():
@@ -215,6 +321,9 @@ class CIFWriter:
             entity_poly["entity_id"].append(entity_id)
             entity_poly["pdbx_strand_id"].append(label_asym_ids_str)
             entity_poly["type"].append(entity_type)
+
+        if not entity_poly:
+            return {}
 
         entity_poly_seq = defaultdict(list)
         for entity_id, label_asym_ids_str in zip(
@@ -273,6 +382,7 @@ class CIFWriter:
 
         block_dict = {"entry": pdbx.CIFCategory({"id": entry_id})}
         if self.entity_poly_type:
+            block_dict["entity"] = self._get_entity_block()
             block_dict.update(self._get_entity_poly_and_entity_poly_seq_block())
 
         block = pdbx.CIFBlock(block_dict)
@@ -285,6 +395,11 @@ class CIFWriter:
         pdbx.set_structure(cif, self.atom_array, include_bonds=include_bonds)
         block = cif.block
         atom_site = block.get("atom_site")
+
+        occ = atom_site.get("occupancy")
+        if occ is None:
+            atom_site["occupancy"] = np.ones(len(self.atom_array), dtype=float)
+
         atom_site["label_entity_id"] = self.atom_array.label_entity_id
         cif.write(output_path)
 
@@ -338,11 +453,13 @@ def make_dummy_feature(
         features_dict["template_all_atom_positions"] = torch.zeros(
             feat_shape["template_all_atom_positions"]
         )
+    if features_dict["msa"].dim() < 2:
+        raise ValueError(f"msa must be 2D, get shape: {features_dict['msa'].shape}")
     return features_dict
 
 
 def data_type_transform(
-    feat_or_label_dict: Mapping[str, torch.Tensor]
+    feat_or_label_dict: Mapping[str, torch.Tensor],
 ) -> tuple[dict[str, torch.Tensor], dict[str, torch.Tensor], AtomArray]:
     for key, value in feat_or_label_dict.items():
         if key in IntDataList:
@@ -531,10 +648,49 @@ def pdb_to_cif(input_fname: str, output_fname: str, entry_id: str = None):
     seq_to_entity_id = {}
     cnt = 0
     chain_starts = struc.get_chain_starts(atom_array, add_exclusive_stop=True)
+
+    # split chains by hetero
+    new_chain_starts = []
+    for c_start, c_stop in zip(chain_starts[:-1], chain_starts[1:]):
+        new_chain_starts.append(c_start)
+        chain_start_hetero = atom_array.hetero[c_start]
+        hetero_diff = np.where(atom_array.hetero[c_start:c_stop] != chain_start_hetero)
+        if hetero_diff[0].shape[0] > 0:
+            new_chain_start = c_start + hetero_diff[0][0]
+            new_chain_starts.append(new_chain_start)
+
+    new_chain_starts += [chain_starts[-1]]
+
+    # # split HETATM chains by res id
+    new_chain_starts2 = []
+    for c_start, c_stop in zip(new_chain_starts[:-1], new_chain_starts[1:]):
+        new_chain_starts2.append(c_start)
+        res_id_diff = np.diff(atom_array.res_id[c_start:c_stop])
+        uncont_res_starts = np.where(res_id_diff >= 1)
+
+        if uncont_res_starts[0].shape[0] > 0:
+            for res_start_atom_idx in uncont_res_starts[0]:
+                new_chain_start = c_start + res_start_atom_idx + 1
+                # atom_array.hetero is True if "HETATM"
+                if (
+                    atom_array.hetero[new_chain_start]
+                    and atom_array.hetero[new_chain_start - 1]
+                ):
+                    new_chain_starts2.append(new_chain_start)
+
+    chain_starts = new_chain_starts2 + [chain_starts[-1]]
+
     label_entity_id = np.zeros(len(atom_array), dtype=np.int32)
     atom_index = np.arange(len(atom_array), dtype=np.int32)
     res_id = copy.deepcopy(atom_array.res_id)
+
+    chain_id = copy.deepcopy(atom_array.chain_id)
+    chain_count = 0
     for c_start, c_stop in zip(chain_starts[:-1], chain_starts[1:]):
+        chain_count += 1
+        new_chain_id = int_to_letters(chain_count)
+        chain_id[c_start:c_stop] = new_chain_id
+
         chain_array = atom_array[c_start:c_stop]
         residue_starts = struc.get_residue_starts(chain_array, add_exclusive_stop=True)
         resname_seq = [name for name in chain_array[residue_starts[:-1]].res_name]
@@ -588,8 +744,11 @@ def pdb_to_cif(input_fname: str, output_fname: str, entry_id: str = None):
 
     # add label atom id
     atom_array.set_annotation("label_atom_id", atom_array.atom_name)
+
     # add label asym id
+    atom_array.chain_id = chain_id  # reset chain_id
     atom_array.set_annotation("label_asym_id", atom_array.chain_id)
+
     # add label seq id
     atom_array.res_id = res_id  # reset res_id
     atom_array.set_annotation("label_seq_id", atom_array.res_id)
@@ -600,3 +759,15 @@ def pdb_to_cif(input_fname: str, output_fname: str, entry_id: str = None):
         entry_id=entry_id or os.path.basename(output_fname),
         include_bonds=True,
     )
+
+
+if __name__ == "__main__":
+    parser = argparse.ArgumentParser()
+    parser.add_argument(
+        "--pdb_file", type=str, required=True, help="The pdb file to parse"
+    )
+    parser.add_argument(
+        "--cif_file", type=str, required=True, help="The cif file path to generate"
+    )
+    args = parser.parse_args()
+    pdb_to_cif(args.pdb_file, args.cif_file)
