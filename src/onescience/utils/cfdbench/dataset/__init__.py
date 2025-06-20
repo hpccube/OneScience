@@ -13,6 +13,7 @@ def get_dataset(
     data_dir: Path,
     norm_props: bool,
     norm_bc: bool,
+    rank: int = 0, 
 ) -> Tuple[CfdDataset, CfdDataset, CfdDataset]:
     """
     Args:
@@ -22,13 +23,15 @@ def get_dataset(
     problem_name = data_name.split("_")[0]
     subset_name = data_name[len(problem_name) + 1 :]
     assert problem_name in ["cavity", "tube", "dam", "cylinder"]
-    print(f"Loading problem: {problem_name}, subset: {subset_name}")
+    if rank == 0:
+        print(f"Loading problem: {problem_name}, subset: {subset_name}")
     if problem_name == "tube":
         train_data, dev_data, test_data = get_tube_datasets(
             data_dir / problem_name,
             subset_name=subset_name,
             norm_props=norm_props,
             norm_bc=norm_bc,
+            rank=rank,
         )
         return train_data, dev_data, test_data
     elif problem_name == "cavity":
@@ -38,6 +41,7 @@ def get_dataset(
             case_name=subset_name,
             norm_props=norm_props,
             norm_bc=norm_bc,
+            rank=rank,
         )
         return train_data, dev_data, test_data
     elif problem_name == "dam":
@@ -46,6 +50,7 @@ def get_dataset(
             case_name=subset_name,
             norm_props=norm_props,
             norm_bc=norm_bc,
+            rank=rank,
         )
         return train_data, dev_data, test_data
     elif problem_name == "cylinder":
@@ -54,6 +59,7 @@ def get_dataset(
             case_name=subset_name,
             norm_props=norm_props,
             norm_bc=norm_bc,
+            rank=rank,
         )
         return train_data, dev_data, test_data
     else:
@@ -67,6 +73,7 @@ def get_auto_dataset(
     norm_props: bool,
     norm_bc: bool,
     load_splits: list = ["train", "dev", "test"],
+    rank: int = 0, 
 ) -> Tuple[
     Optional[CfdAutoDataset],
     Optional[CfdAutoDataset],
@@ -81,7 +88,8 @@ def get_auto_dataset(
     assert problem_name in ["cavity", "tube", "dam", "cylinder"]
     subset_name = data_name[len(problem_name) + 1 :]
     assert delta_time > 0
-    print("Loading data...")
+    if rank==0:
+        print("Loading data...")
     if problem_name == "tube":
         train_data, dev_data, test_data = get_tube_auto_datasets(
             data_dir / problem_name,
@@ -89,6 +97,7 @@ def get_auto_dataset(
             delta_time=delta_time,
             norm_props=norm_props,
             norm_bc=norm_bc,
+            rank=rank,
         )
         return train_data, dev_data, test_data
     elif problem_name == "cavity":
@@ -98,6 +107,7 @@ def get_auto_dataset(
             norm_props=norm_props,
             norm_bc=norm_bc,
             delta_time=delta_time,
+            rank=rank,
         )
         return train_data, dev_data, test_data
     elif problem_name == "dam":
@@ -107,6 +117,7 @@ def get_auto_dataset(
             norm_props=norm_props,
             norm_bc=norm_bc,
             delta_time=delta_time,
+            rank=rank,
         )
         return train_data, dev_data, test_data
     elif problem_name == "cylinder":
@@ -117,6 +128,7 @@ def get_auto_dataset(
             norm_bc=norm_bc,
             delta_time=delta_time,
             load_splits=load_splits,
+            rank=rank,
         )
         return train_data, dev_data, test_data
     else:

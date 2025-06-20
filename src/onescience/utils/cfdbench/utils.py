@@ -146,7 +146,7 @@ def plot(inp: Tensor, label: Tensor, pred: Tensor, out_path: Path):
     # fig.colorbar(last_im, cax=cbar_ax)
 
     # Add some spacing between the subplots
-    fig.tight_layout()
+    # fig.tight_layout()
     plt.savefig(out_path, dpi=300, bbox_inches="tight")
     plt.clf()
     plt.close()
@@ -179,7 +179,7 @@ def get_best_ckpt(output_dir: Path) -> Union[Path, None]:
 
 def load_ckpt(model, ckpt_path: Path) -> None:
     print(f"Loading checkpoint from {ckpt_path}")
-    model.load_state_dict(torch.load(ckpt_path, map_location="cpu"))
+    model.load_state_dict(torch.load(ckpt_path, map_location="cpu", weights_only=True))
 
 
 def get_output_dir(args: Args, is_auto: bool = False) -> Path:

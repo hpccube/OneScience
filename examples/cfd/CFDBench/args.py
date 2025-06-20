@@ -7,10 +7,10 @@ class Args(Tap):
     """The directory to save the results to"""
     lr: float = 1e-3  # Initial learning rate
     lr_step_size: int = 20  # LR decays every lr_step_size epochs
-    num_epochs: int = 100  # Number of epochs to train for
-    eval_interval: int = 10
+    num_epochs: int = 200  # Number of epochs to train for
+    eval_interval: int = 20
     """Evaluate every eval_interval epochs, and save checkpoint."""
-    log_interval: int = 50  # Log training progress every log_interval batches
+    log_interval: int = 20  # Log training progress every log_interval batches
 
     loss_name: str = "nmse"
     """

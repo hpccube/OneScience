@@ -40,7 +40,7 @@ def init_weights(m):
         m.bias.data.fill_(0.01)
 
 # Train FLS 
-model = FLS1D(in_dim=2, hidden_dim=512, out_dim=1, num_layer=4).to(device)
+model = FLS1D(in_dim=2, hidden_dim=128, out_dim=1, num_layer=4).to(device)
 
 model.apply(init_weights)
 optim = LBFGS(model.parameters(), line_search_fn='strong_wolfe')

@@ -12,10 +12,11 @@
 
 该文件夹包含文件 dataX 和 dataY，其中第一个文件提供了981个管道流样本的几何输入信息，而dataY文件则提供了这些样本的真实CFD解，包括使用simpleFOAM求解器得到的速度（Ux和Uy）场和压力（p）场。图1详细描述了每个文件的结构。
 
-<figure style="text-align: center;">
-  <img src="./ReadmeFiles/DataStruct.png" style="width:60%;" alt="" />
-  <figcaption><b>图 1.</b> DeepCFD数据集结构</figcaption>
-</figure>
+<p align="center">
+<img src="../../../doc/deepcfd_DataStruct.png" height = "300" alt="" align=center />
+<br><br>
+<b>图 1.</b> DeepCFD 数据集结构
+</p>
 
 数据集dataX和dataY具有相同的维度(Ns, Nc, Nx, Ny)，其中第一维是样本数(Ns)，第二维是通道数(Nc)，第三和第四维分别是x方向和y方向上的元素数目(Nx和Ny)。对于输入数据dataX，第一个通道是从障碍物表面计算的符号距离函数(SDF)，第二个通道是多标签流体区域通道，第三个通道是从顶部/底部表面计算的符号距离函数(SDF)。对于输出数据dataY文件，第一个通道是水平速度分量Ux，第二个通道是垂直速度分量Uy，第三个通道是压力场。
 
@@ -84,43 +85,31 @@ sbatch slurm.sh
 
 ## 可视化 - OpenFOAM vs DeepCFD
 
-图2-图11展示了不同形状的管道流样本的预测结果，并与OpenFOAM求解的结果做了对比。图2-图3显示了圆形管道流的预测结果
+图2-图3展示了不同形状的管道流样本的预测结果，并与OpenFOAM求解的结果做了对比。图2-图3显示了圆形管道流的预测结果
 
 
-<figure style="text-align: center;">
-  <img src="./ReadmeFiles/circle1.png" style="width:80%;" alt="" />
-  <figcaption><b>图 2.</b> CFD（simpleFOAM）真实结果与 DeepCFD 预测结果的对比，展示速度分量和压力场，以及基于基于圆形形状1的流场绝对误差</figcaption>
-</figure>
+<p align="center">
+<img src="../../../doc/deepcfd_circle1.png" height = "400" alt="" align=center />
+<br><br>
+<b>图 2.</b> CFD（simpleFOAM）真实结果与 DeepCFD 预测结果的对比，展示速度分量和压力场，以及基于基于圆形形状1的流场绝对误差
+</p>
 
-<figure style="text-align: center;">
-  <img src="./ReadmeFiles/circle2.png" style="width:80%;" alt="" />
-  <figcaption><b>图 2.</b> CFD（simpleFOAM）真实结果与 DeepCFD 预测结果的对比，展示速度分量和压力场，以及基于圆形形状2的流场绝对误差</figcaption>
-</figure>
+<p align="center">
+<img src="../../../doc/deepcfd_circle2.png" height = "400" alt="" align=center />
+<br><br>
+<b>图 3.</b> CFD（simpleFOAM）真实结果与 DeepCFD 预测结果的对比，展示速度分量和压力场，以及基于圆形形状2的流场绝对误差
+</p>
+
 
 
 ## DeepCFD 网络结构
 
 图4显示了DeepCFD的U-Net架构:
-
-
-<figure style="text-align: center;">
-  <img src="./ReadmeFiles/arch.png" style="width:80%;" alt="" />
-  <figcaption><b>图 4.</b>  DeepCFD U-Net 架构</figcaption>
-</figure>
-
-表一列显示了DeepCFD的超参数:
-
-> Table 1. DeepCFD hyper-parameters.
-
-| Parameter     | Value         | 
-| ------------- |--------------:|
-| Learning rate | 1e-3          | 
-| Kernel size   | 5             | 
-| Filters       | [8,16,32,32]  | 
-| Batch size    | 64            | 
-| Weight decay  | 0.005         | 
-| Batch norm    | off           | 
-| Weight norm   | off           | 
+<p align="center">
+<img src="../../../doc/deepcfd_arch.png" height = "400" alt="" align=center />
+<br><br>
+<b>图 4.</b> DeepCFD U-Net 架构
+</p>
 
 ## 文章链接
 

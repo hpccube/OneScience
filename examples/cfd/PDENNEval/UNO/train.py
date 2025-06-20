@@ -317,7 +317,7 @@ def main(args):
         print(f"[Epoch {epoch}] train_l2: {train_l2}, train_l_inf: {train_l_inf}, time_spend: {time:.3f}")
         ## save latest
         saved_path = os.path.join(saved_dir, saved_model_name)
-        model_state_dict = model.module.state_dict() if torch.cuda.device_count() > 1 else model.state_dict()
+        model_state_dict = model.state_dict()
         torch.save({"epoch": epoch+1, "loss": min_val_loss,
             "model_state_dict": model_state_dict,
             "optimizer_state_dict": optimizer.state_dict()
@@ -331,11 +331,12 @@ def main(args):
                 min_val_loss = val_l2_full
                 ## save best
                 torch.save({"epoch": epoch + 1, "loss": min_val_loss,
-                    "model_state_dict": model.module.state_dict() if torch.cuda.device_count() > 1 else model.state_dict(),
+                    "model_state_dict": model.state_dict(),
                     "optimizer_state_dict": optimizer.state_dict()
                     }, saved_path + "-best.pt")
     print("Done.")
     loss_history = np.array(loss_history)
+    os.makedirs('./log/loss', exist_ok=True)
     np.save('./log/loss/' + args['pde_name'] + '_loss_history.npy', loss_history)
     print("avg_time : {0:.5f}".format(total_time / (args["epochs"] - start_epoch)))
 
@@ -348,4 +349,3 @@ if __name__ == "__main__":
     setup_seed(args["seed"])
     print(args)
     main(args)
-# print(torch.cuda.device_count())

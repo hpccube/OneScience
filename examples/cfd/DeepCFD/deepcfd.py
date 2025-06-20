@@ -11,8 +11,6 @@ import torch.optim as optim
 from torch.utils.data import TensorDataset
 from torch.autograd import Variable
 from onescience.distributed.manager import DistributedManager
-from torch.nn.parallel import DistributedDataParallel
-from torch.utils.data.distributed import DistributedSampler
 #控制使用卡的数量
 #os.environ["CUDA_VISIBLE_DEVICES"] = "0,1"  
 
