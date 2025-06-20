@@ -1156,6 +1156,77 @@ class MSELoss(nn.Module):
         return loss
 
 
+def calculate_atom_bespoke_lddt(
+    pred_coordinate: torch.Tensor,
+    true_coordinate: torch.Tensor,
+    is_nucleotide: torch.Tensor,
+    is_polymer: torch.Tensor,
+    rep_atom_mask: torch.Tensor,
+    is_nucleotide_threshold: float = 30.0,
+    is_not_nucleotide_threshold: float = 15.0,
+) -> torch.Tensor:
+    """calculate the bespoke lddt as described in Sec 4.3.1.
+    Args:
+        pred_coordinate (torch.Tensor):
+            [..., N_sample, N_atom, 3]
+        true_coordinate (torch.Tensor):
+            [..., N_atom]
+        is_nucleotide (torch.Tensor):
+            [N_atom] or [..., N_atom]
+        is_polymer (torch.Tensor):
+            [N_atom]
+        rep_atom_mask (torch.Tensor):
+            [N_atom]
+    Returns:
+        torch.Tensor: per-atom lddt
+            [..., N_sample, N_atom, 1]
+        torch.Tensor: per-atom lddt weight
+            [..., N_sample, N_atom, 1]
+    """
+
+    N_atom = true_coordinate.size(-2)
+    atom_m_mask = (rep_atom_mask * is_polymer).bool()  # [N_atom]
+    # Distance: d_lm
+    pred_d_lm = torch.cdist(
+        pred_coordinate, pred_coordinate[..., atom_m_mask, :]
+    )  # [..., N_sample, N_atom, N_atom(m)]
+    true_d_lm = torch.cdist(
+        true_coordinate, true_coordinate[..., atom_m_mask, :]
+    )  # [..., N_atom, N_atom(m)]
+    delta_d_lm = torch.abs(
+        pred_d_lm - true_d_lm.unsqueeze(dim=-3)
+    )  # [..., N_sample, N_atom, N_atom(m)]
+    # Pair-wise lddt
+    thresholds = [0.5, 1, 2, 4]
+    lddt_lm = (
+        torch.stack([delta_d_lm < t for t in thresholds], dim=-1)
+        .to(dtype=delta_d_lm.dtype)
+        .mean(dim=-1)
+    )  # [..., N_sample, N_atom, N_atom(m)]
+    # Select atoms that are within certain threshold to l in ground truth
+    # Restrict to bespoke inclusion radius
+    is_nucleotide = is_nucleotide[
+        ..., atom_m_mask
+    ].bool()  # [N_atom(m)] or [..., N_atom(m)]
+    locality_mask = (true_d_lm < is_nucleotide_threshold) * is_nucleotide.unsqueeze(
+        dim=-2
+    ) + (true_d_lm < is_not_nucleotide_threshold) * (
+        ~is_nucleotide.unsqueeze(dim=-2)
+    )  # [..., N_atom, N_atom(m)]
+    # Remove self-distance computation
+    diagonal_mask = ((1 - torch.eye(n=N_atom)).bool().to(true_d_lm.device))[
+        ..., atom_m_mask
+    ]  # [N_atom, N_atom(m)]
+    pair_mask = (locality_mask * diagonal_mask).unsqueeze(
+        dim=-3
+    )  # [..., 1, N_atom, N_atom(m)]
+    per_atom_lddt = torch.sum(
+        lddt_lm * pair_mask, dim=-1, keepdim=True
+    )  # [...,  N_sample, N_atom, 1]
+    per_atom_weight = torch.sum(pair_mask.to(dtype=lddt_lm.dtype), dim=-1, keepdim=True)
+    return per_atom_lddt, per_atom_weight
+
+
 class PLDDTLoss(nn.Module):
     """
     Implements PLDDT Loss in AF3, different from the paper description.
@@ -1197,90 +1268,19 @@ class PLDDTLoss(nn.Module):
         self.is_nucleotide_threshold = is_nucleotide_threshold
         self.is_not_nucleotide_threshold = is_not_nucleotide_threshold
 
-    def calculate_label(
+    def bins_from_lddt(
         self,
-        pred_coordinate: torch.Tensor,
-        true_coordinate: torch.Tensor,
-        is_nucleotide: torch.Tensor,
-        is_polymer: torch.Tensor,
-        rep_atom_mask: torch.Tensor,
-    ) -> torch.Tensor:
-        """calculate the lddt as described in Sec 4.3.1.
-
-        Args:
-            pred_coordinate (torch.Tensor):
-                [..., N_sample, N_atom, 3]
-            true_coordinate (torch.Tensor):
-                [..., N_atom]
-            is_nucleotide (torch.Tensor):
-                [N_atom] or [..., N_atom]
-            is_polymer (torch.Tensor):
-                [N_atom]
-            rep_atom_mask (torch.Tensor):
-                [N_atom]
-
-        Returns:
-            torch.Tensor: per-atom lddt
-                [..., N_sample, N_atom]
-        """
-
-        N_atom = true_coordinate.size(-2)
-        atom_m_mask = (rep_atom_mask * is_polymer).bool()  # [N_atom]
-        # Distance: d_lm
-        pred_d_lm = torch.cdist(
-            pred_coordinate, pred_coordinate[..., atom_m_mask, :]
-        )  # [..., N_sample, N_atom, N_atom(m)]
-        true_d_lm = torch.cdist(
-            true_coordinate, true_coordinate[..., atom_m_mask, :]
-        )  # [..., N_atom, N_atom(m)]
-        delta_d_lm = torch.abs(
-            pred_d_lm - true_d_lm.unsqueeze(dim=-3)
-        )  # [..., N_sample, N_atom, N_atom(m)]
-
-        # Pair-wise lddt
-        thresholds = [0.5, 1, 2, 4]
-        lddt_lm = (
-            torch.stack([delta_d_lm < t for t in thresholds], dim=-1)
-            .to(dtype=delta_d_lm.dtype)
-            .mean(dim=-1)
-        )  # [..., N_sample, N_atom, N_atom(m)]
-
-        # Select atoms that are within certain threshold to l in ground truth
-        # Restrict to bespoke inclusion radius
-        is_nucleotide = is_nucleotide[
-            ..., atom_m_mask
-        ].bool()  # [N_atom(m)] or [..., N_atom(m)]
-        locality_mask = (
-            true_d_lm < self.is_nucleotide_threshold
-        ) * is_nucleotide.unsqueeze(dim=-2) + (
-            true_d_lm < self.is_not_nucleotide_threshold
-        ) * (
-            ~is_nucleotide.unsqueeze(dim=-2)
-        )  # [..., N_atom, N_atom(m)]
-
-        # Remove self-distance computation
-        diagonal_mask = ((1 - torch.eye(n=N_atom)).bool().to(true_d_lm.device))[
-            ..., atom_m_mask
-        ]  # [N_atom, N_atom(m)]
-
-        pair_mask = (locality_mask * diagonal_mask).unsqueeze(
-            dim=-3
-        )  # [..., 1, N_atom, N_atom(m)]
-
-        per_atom_lddt = torch.sum(
-            lddt_lm * pair_mask, dim=-1, keepdim=True
-        )  # [...,  N_sample, N_atom, 1]
+        per_atom_lddt: torch.Tensor,
+        per_atom_weight: torch.Tensor,
+    ):
         if self.normalize:
-            per_atom_lddt = per_atom_lddt / (
-                torch.sum(pair_mask.to(dtype=per_atom_lddt.dtype), dim=-1, keepdim=True)
-                + self.eps
-            )
+            per_atom_lddt = per_atom_lddt / (per_atom_weight + self.eps)
         # Distribute into bins
         boundaries = torch.linspace(
             start=self.min_bin,
             end=self.max_bin,
             steps=self.no_bins + 1,
-            device=true_coordinate.device,
+            device=per_atom_lddt.device,
         )  # [N_bins]
 
         true_bins = torch.sum(
@@ -1294,6 +1294,34 @@ class PLDDTLoss(nn.Module):
         )  # [...,  N_sample, N_atom, N_bins]
 
         return true_bins
+
+    def forward_given_atom_lddt(
+        self,
+        logits: torch.Tensor,
+        per_atom_lddt: torch.Tensor,
+        per_atom_weight: torch.Tensor,
+    ):
+        """
+        Args:
+        per_atom_lddt
+            [..., N_sample, N_atom, 1]
+        per_atom_weight
+            [..., N_sample, N_atom, 1]
+        Returns:
+            torch.Tensor: per-atom lddt bins
+                [..., N_sample, N_atom, N_bins]
+        """
+        with torch.no_grad():
+            true_bins = self.bins_from_lddt(per_atom_lddt, per_atom_weight).detach()
+        plddt_loss = softmax_cross_entropy(
+            logits=logits,
+            labels=true_bins,
+        )  # [..., N_sample, N_atom_with_coords]
+        # Average over atoms
+        plddt_loss = plddt_loss.mean(dim=-1)  # [..., N_sample]
+        # Average over samples
+        plddt_loss = plddt_loss.mean(dim=-1)  # [...]
+        return loss_reduction(plddt_loss, method=self.reduction)
 
     def forward(
         self,
@@ -1341,26 +1369,23 @@ class PLDDTLoss(nn.Module):
         is_polymer = is_polymer.bool()
 
         with torch.no_grad():
-            true_bins = self.calculate_label(
+            per_atom_lddt, per_atom_weight = calculate_atom_bespoke_lddt(
                 pred_coordinate=pred_coordinate[..., coordinate_mask, :],
                 true_coordinate=true_coordinate[..., coordinate_mask, :],
                 is_nucleotide=is_nucleotide[coordinate_mask],
                 is_polymer=is_polymer[coordinate_mask],
                 rep_atom_mask=rep_atom_mask[coordinate_mask],
-            ).detach()  # [..., N_sample, N_atom_with_coords, N_bins]
+                is_nucleotide_threshold=self.is_nucleotide_threshold,
+                is_not_nucleotide_threshold=self.is_not_nucleotide_threshold,
+            )
 
-        plddt_loss = softmax_cross_entropy(
+        loss = self.forward_given_atom_lddt(
             logits=logits[..., coordinate_mask, :],
-            labels=true_bins,
-        )  # [..., N_sample, N_atom_with_coords]
+            per_atom_lddt=per_atom_lddt,
+            per_atom_weight=per_atom_weight,
+        )
 
-        # Average over atoms
-        plddt_loss = plddt_loss.mean(dim=-1)  # [..., N_sample]
-
-        # Average over samples
-        plddt_loss = plddt_loss.mean(dim=-1)  # [...]
-
-        return loss_reduction(plddt_loss, method=self.reduction)
+        return loss
 
 
 class ProtenixLoss(nn.Module):
@@ -1664,16 +1689,26 @@ class ProtenixLoss(nn.Module):
             )
 
         if all(x in pred_dict for x in ["plddt", "pde", "pae", "resolved"]):
+            with torch.no_grad():
+                coord_mask = label_dict["coordinate_mask"].bool()
+                per_atom_lddt, per_atom_weight = calculate_atom_bespoke_lddt(
+                    pred_coordinate=pred_dict[confidence_coordinate][
+                        ..., coord_mask, :
+                    ].detach(),
+                    true_coordinate=label_dict["coordinate"][..., coord_mask, :],
+                    is_nucleotide=(feat_dict["is_rna"] + feat_dict["is_dna"])[
+                        coord_mask
+                    ].bool(),
+                    is_polymer=1 - feat_dict["is_ligand"][coord_mask],
+                    rep_atom_mask=feat_dict["plddt_m_rep_atom_mask"][coord_mask].bool(),
+                    **self.lddt_radius,
+                )
             loss_fns.update(
                 {
-                    "plddt_loss": lambda: self.plddt_loss(
-                        logits=pred_dict["plddt"],
-                        pred_coordinate=pred_dict[confidence_coordinate].detach(),
-                        true_coordinate=label_dict["coordinate"],
-                        coordinate_mask=label_dict["coordinate_mask"],
-                        rep_atom_mask=feat_dict["plddt_m_rep_atom_mask"],
-                        is_nucleotide=feat_dict["is_rna"] + feat_dict["is_dna"],
-                        is_polymer=1 - feat_dict["is_ligand"],
+                    "plddt_loss": lambda: self.plddt_loss.forward_given_atom_lddt(
+                        logits=pred_dict["plddt"][..., coord_mask, :],
+                        per_atom_lddt=per_atom_lddt,
+                        per_atom_weight=per_atom_weight,
                     ),
                     "pde_loss": lambda: self.pde_loss(
                         logits=pred_dict["pde"],

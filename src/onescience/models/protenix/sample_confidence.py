@@ -93,7 +93,7 @@ def _compute_full_data_and_summary(
     del pae_logits
 
     summary_confidence = {}
-    summary_confidence["plddt"] = full_data["atom_plddt"].mean(dim=-1)  # [N_s, ]
+    summary_confidence["plddt"] = full_data["atom_plddt"].mean(dim=-1) * 100  # [N_s, ]
     summary_confidence["gpde"] = (
         full_data["token_pair_pde"] * full_data["contact_probs"]
     ).sum(dim=[-1, -2]) / full_data["contact_probs"].sum(dim=[-1, -2])
@@ -108,6 +108,14 @@ def _compute_full_data_and_summary(
         **get_bin_params(configs.loss.pae)
     )  # [N_s, ]
 
+    # Add: 'chain_gpde', 'chain_pair_gpde'
+    summary_confidence.update(
+        calculate_chain_based_gpde(
+            token_pair_pde=full_data["token_pair_pde"],
+            contact_probs=full_data["contact_probs"],
+            asym_id=token_asym_id,
+        )
+    )
     # Add: 'chain_pair_iptm', 'chain_pair_iptm_global' 'chain_iptm', 'chain_ptm'
     summary_confidence.update(
         calculate_chain_based_ptm(
@@ -557,6 +565,66 @@ def calculate_chain_based_ptm(
         "chain_pair_iptm": chain_pair_iptm,
         "chain_pair_iptm_global": chain_pair_iptm_global,
     }
+
+def calculate_chain_based_gpde(
+    token_pair_pde: torch.Tensor,
+    contact_probs: torch.Tensor,
+    asym_id: torch.LongTensor,
+    eps: float = 1e-8,
+) -> dict[str, torch.Tensor]:
+    """Calculate chain-based gPDE values.
+
+    Args:
+        token_pair_pde (torch.Tensor): PDE (Predicted Distance Error) of token-token pairs.
+            [..., N_token, N_token]
+        contact_probs (torch.Tensor): Contact probabilities.
+            [..., N_token, N_token]
+        asym_id (torch.LongTensor): Asymmetric ID for tokens.
+
+    Returns:
+        dict[str, torch.Tensor]: Dictionary containing chain-based gPDE values.
+            - chain_gpde (torch.Tensor): Intra-chain gPDE.
+            - chain_pair_gpde (torch.Tensor): Interface gPDE.
+    """
+
+    asym_id = asym_id.long()
+    unique_asym_ids = torch.unique(asym_id)
+    N_chain = len(unique_asym_ids)
+    assert N_chain == asym_id.max() + 1  # make sure it is from 0 to N_chain-1
+
+    batch_shape = token_pair_pde.shape[:-2]
+    device = token_pair_pde.device
+
+    def _cal_gpde(token_mask_1, token_mask_2):
+        masked_contact_probs = contact_probs[..., token_mask_1, :][..., token_mask_2]
+        masked_pde = token_pair_pde[..., token_mask_1, :][..., token_mask_2]
+        return (masked_pde * masked_contact_probs).sum(dim=(-1, -2)) / (
+            masked_contact_probs.sum(dim=(-1, -2)) + eps
+        )
+
+    # Chain_gpde
+    chain_gpde = torch.zeros(size=batch_shape + (N_chain,), device=device)
+    for aid in range(N_chain):
+        chain_gpde[..., aid] = _cal_gpde(
+            token_mask_1=asym_id == aid,
+            token_mask_2=asym_id == aid,
+        )
+
+    # Chain_pair_pde
+    chain_pair_gpde = torch.zeros(size=batch_shape + (N_chain, N_chain), device=device)
+    for aid_1 in range(N_chain):
+        for aid_2 in range(N_chain):
+            if aid_1 == aid_2:
+                continue
+            if aid_2 < aid_1:
+                chain_pair_gpde[..., aid_1, aid_2] = chain_pair_gpde[..., aid_2, aid_1]
+                continue
+            chain_pair_gpde[..., aid_1, aid_2] = _cal_gpde(
+                token_mask_1=asym_id == aid_1,
+                token_mask_2=asym_id == aid_2,
+            )
+
+    return {"chain_gpde": chain_gpde, "chain_pair_gpde": chain_pair_gpde}
 
 
 def calculate_chain_based_plddt(

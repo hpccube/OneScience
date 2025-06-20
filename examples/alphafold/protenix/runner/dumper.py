@@ -1,6 +1,7 @@
 import os
 from pathlib import Path
 
+import numpy as np
 import torch
 from biotite.structure import AtomArray
 
@@ -29,9 +30,15 @@ def get_clean_full_confidence(full_confidence_dict: dict) -> dict:
 
 
 class DataDumper:
-    def __init__(self, base_dir, need_atom_confidence: bool = False):
+    def __init__(
+        self,
+        base_dir,
+        need_atom_confidence: bool = False,
+        sorted_by_ranking_score: bool = True,
+    ) -> None:
         self.base_dir = base_dir
         self.need_atom_confidence = need_atom_confidence
+        self.sorted_by_ranking_score = sorted_by_ranking_score
 
     def dump(
         self,
@@ -90,14 +97,32 @@ class DataDumper:
         """
         prediction_save_dir = os.path.join(dump_dir, "predictions")
         os.makedirs(prediction_save_dir, exist_ok=True)
+
         # Dump structure
+        b_factor = None
+        if "full_data" in pred_dict:
+            all_atom_plddt = []
+            # len(pred_dict["full_data"]) == N_sample
+            for each_sample_dict in pred_dict["full_data"]:
+                if "atom_plddt" in each_sample_dict:
+                    # atom_plddt.shape == [N_atom]
+                    atom_plddt = each_sample_dict["atom_plddt"]
+                    if atom_plddt.dtype == torch.bfloat16:
+                        atom_plddt = atom_plddt.to(torch.float32)
+                    all_atom_plddt.append(atom_plddt.cpu().numpy() * 100.0)
+
+            if len(all_atom_plddt) == len(pred_dict["full_data"]):
+                b_factor = all_atom_plddt
+        sorted_indices = self._get_ranker_indices(data=pred_dict)
         self._save_structure(
             pred_coordinates=pred_dict["coordinate"],
             prediction_save_dir=prediction_save_dir,
             sample_name=pdb_id,
             atom_array=atom_array,
             entity_poly_type=entity_poly_type,
-            seed=seed
+            seed=seed,
+            sorted_indices=sorted_indices,
+            b_factor=b_factor,
         )
         # Dump confidence
         self._save_confidence(
@@ -105,6 +130,7 @@ class DataDumper:
             prediction_save_dir=prediction_save_dir,
             sample_name=pdb_id,
             seed=seed,
+            sorted_indices=sorted_indices,
         )
 
     def _save_structure(
@@ -115,13 +141,22 @@ class DataDumper:
         atom_array: AtomArray,
         entity_poly_type: dict[str, str],
         seed: int,
+        sorted_indices: None,
+        b_factor: torch.Tensor = None,
     ):
         assert atom_array is not None
         N_sample = pred_coordinates.shape[0]
-        for idx in range(N_sample):
+        if sorted_indices is None:
+            sorted_indices = range(N_sample)  # do not rank the output file
+        for idx, rank in enumerate(sorted_indices):
             output_fpath = os.path.join(
-                prediction_save_dir, f"{sample_name}_seed_{seed}_sample_{idx}.cif"
+                prediction_save_dir,
+                f"{sample_name}_seed_{seed}_sample_{rank}.cif",
             )
+            if b_factor is not None:
+                # b_factor.shape == [N_sample, N_atom]
+                atom_array.set_annotation("b_factor", np.round(b_factor[idx], 2))
+
             save_structure_cif(
                 atom_array=atom_array,
                 pred_coordinate=pred_coordinates[idx],
@@ -130,13 +165,29 @@ class DataDumper:
                 pdb_id=sample_name,
             )
 
+    def _get_ranker_indices(self, data: dict):
+        N_sample = len(data["summary_confidence"])
+        if self.sorted_by_ranking_score:
+            value = torch.tensor(
+                [
+                    data["summary_confidence"][i]["ranking_score"]
+                    for i in range(N_sample)
+                ]
+            )
+            sorted_indices = [
+                i for i in torch.argsort(torch.argsort(value, descending=True))
+            ]
+        else:
+            sorted_indices = [i for i in range(N_sample)]
+        return sorted_indices
+
     def _save_confidence(
         self,
         data: dict,
         prediction_save_dir: str,
         sample_name: str,
         seed: int,
-        sorted_by_ranking_score: bool = True,
+        sorted_indices: None,
     ):
         N_sample = len(data["summary_confidence"])
         for idx in range(N_sample):
@@ -144,15 +195,9 @@ class DataDumper:
                 data["full_data"][idx] = get_clean_full_confidence(
                     data["full_data"][idx]
                 )
-        sorted_indices = range(N_sample)
-        if sorted_by_ranking_score:
-            sorted_indices = sorted(
-                range(N_sample),
-                key=lambda i: data["summary_confidence"][i]["ranking_score"],
-                reverse=True,
-            )
-
-        for rank, idx in enumerate(sorted_indices):
+        if sorted_indices is None:
+            sorted_indices = range(N_sample)
+        for idx, rank in enumerate(sorted_indices):
             output_fpath = os.path.join(
                 prediction_save_dir,
                 f"{sample_name}_seed_{seed}_summary_confidence_sample_{rank}.json",
@@ -161,6 +206,6 @@ class DataDumper:
             if self.need_atom_confidence:
                 output_fpath = os.path.join(
                     prediction_save_dir,
-                    f"{sample_name}_full_data_sample_{idx}.json",
+                    f"{sample_name}_full_data_sample_{rank}.json",
                 )
                 save_json(data["full_data"][idx], output_fpath, indent=None)

@@ -3,12 +3,12 @@ scipy
 ml_collections
 tqdm
 pandas
-dm-tree~=0.1.6
-rdkit==2023.03.01
+dm-tree
+rdkit
 biopython==1.83
 modelcif==0.7
 biotite==1.0.1
-gemmi==0.6.5
+gemmi
 pdbeccdutils==0.8.5
 scikit-learn==1.2.2
 scikit-learn-extra

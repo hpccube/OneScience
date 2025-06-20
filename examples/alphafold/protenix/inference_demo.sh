@@ -8,9 +8,9 @@ seed=101
 use_deepspeed_evo_attention=false
 input_json_path="./infer_datasets/example.json"
 # wget -P /af3-dev/release_model/ https://af3-dev.tos-cn-beijing.volces.com/release_model/model_v0.2.0.pt
-load_checkpoint_path="/af3-dev/release_model/model_v0.2.0.pt"
+load_checkpoint_path="/af3-dev/release_model/model_v0.5.0.pt"
 dump_dir="./output"
-
+export PYTHONPATH=<current_path>:$PYTHONPATH
 python3 runner/inference.py \
 --seeds ${seed} \
 --dtype bf16 \

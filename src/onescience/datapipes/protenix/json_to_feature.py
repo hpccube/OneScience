@@ -9,6 +9,7 @@ from onescience.datapipes.protenix.featurizer import Featurizer
 from onescience.datapipes.protenix.json_parser import add_entity_atom_array, remove_leaving_atoms
 from onescience.datapipes.protenix.parser import AddAtomArrayAnnot
 from onescience.datapipes.protenix.tokenizer import AtomArrayTokenizer, TokenArray
+from onescience.datapipes.protenix.utils import int_to_letters
 
 logger = logging.getLogger(__name__)
 
@@ -56,23 +57,6 @@ class SampleDictToFeatures:
                     ]
         return entity_poly_type
 
-    @staticmethod
-    def int_to_letters(n: int) -> str:
-        """
-        Convert int to letters.
-        Useful for converting chain index to label_asym_id.
-
-        Args:
-            n (int): int number
-        Returns:
-            str: letters. e.g. 1 -> A, 2 -> B, 27 -> AA, 28 -> AB
-        """
-        result = ""
-        while n > 0:
-            n, remainder = divmod(n - 1, 26)
-            result = chr(65 + remainder) + result
-        return result
-
     def build_full_atom_array(self) -> AtomArray:
         """
         By assembling the AtomArray of each entity, a complete AtomArray is created.
@@ -88,7 +72,7 @@ class SampleDictToFeatures:
 
                 entity_atom_array = None
                 for asym_chain_count in range(1, entity["count"] + 1):
-                    asym_id_str = str(self.int_to_letters(asym_chain_idx + 1))
+                    asym_id_str = int_to_letters(asym_chain_idx + 1)
                     asym_chain = copy.deepcopy(entity["atom_array"])
                     chain_id = [asym_id_str] * len(asym_chain)
                     copy_id = [asym_chain_count] * len(asym_chain)
@@ -169,11 +153,26 @@ class SampleDictToFeatures:
         bond_count = {}
         for bond_info_dict in self.input_dict["covalent_bonds"]:
             bond_atoms = []
-            for i in ["left", "right"]:
-                entity_id = int(bond_info_dict[f"{i}_entity"])
-                copy_id = bond_info_dict.get(f"{i}_copy")
-                position = int(bond_info_dict[f"{i}_position"])
-                atom_name = bond_info_dict[f"{i}_atom"]
+            for idx, i in enumerate(["left", "right"]):
+                entity_id = int(
+                    bond_info_dict.get(
+                        f"{i}_entity", bond_info_dict.get(f"entity{idx+1}")
+                    )
+                )
+                copy_id = bond_info_dict.get(
+                    f"{i}_copy", bond_info_dict.get(f"copy{idx+1}")
+                )
+                position = int(
+                    bond_info_dict.get(
+                        f"{i}_position", bond_info_dict.get(f"position{idx+1}")
+                    )
+                )
+                atom_name = bond_info_dict.get(
+                    f"{i}_atom", bond_info_dict.get(f"atom{idx+1}")
+                )
+
+                if copy_id is not None:
+                    copy_id = int(copy_id)
 
                 if isinstance(atom_name, str):
                     if atom_name.isdigit():
@@ -182,9 +181,9 @@ class SampleDictToFeatures:
 
                 if isinstance(atom_name, int):
                     # Convert AtomMap in SMILES to atom name in AtomArray
-                    entity_dict = self.input_dict["sequences"][
+                    entity_dict = list(self.input_dict["sequences"][
                         int(entity_id - 1)
-                    ].values()
+                    ].values())[0]
                     assert "atom_map_to_atom_name" in entity_dict
                     atom_name = entity_dict["atom_map_to_atom_name"][atom_name]
 
@@ -196,11 +195,11 @@ class SampleDictToFeatures:
                     atom_indices.size > 0
                 ), f"No atom found for {atom_name} in entity {entity_id} at position {position}."
                 bond_atoms.append(atom_indices)
-
-            assert len(bond_atoms[0]) == len(
-                bond_atoms[1]
-            ), f'Can not create bonds because the "count" of entity {bond_info_dict["left_entity"]} \
-                and {bond_info_dict["right_entity"]} are not equal. '
+            assert len(bond_atoms[0]) == len(bond_atoms[1]), (
+                'Can not create bonds because the "count" of entity1 '
+                f'({bond_info_dict.get("left_entity", bond_info_dict.get("entity1"))}) '
+                f'and entity2 ({bond_info_dict.get("right_entity", bond_info_dict.get("entity2"))}) are not equal. '
+            )
 
             # Create bond between each asym chain pair
             for atom_idx1, atom_idx2 in zip(bond_atoms[0], bond_atoms[1]):

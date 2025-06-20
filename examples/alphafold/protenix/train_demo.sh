@@ -1,6 +1,6 @@
 # export LAYERNORM_TYPE=fast_layernorm
 # export USE_DEEPSPEED_EVO_ATTTENTION=true
-
+export PYTHONPATH=<current_path>:$PYTHONPATH
 python3 ./runner/train.py \
 --run_name protenix_train \
 --seed 42 \

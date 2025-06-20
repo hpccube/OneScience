@@ -1,3 +1,5 @@
+import copy
+import random
 import time
 from typing import Any, Optional
 
@@ -413,7 +415,9 @@ class Protenix(nn.Module):
         if mode == "inference" and N_token > 2000:
             torch.cuda.empty_cache()
         # Distogram logits: log contact_probs only, to reduce the dimension
-        pred_dict["contact_probs"] = sample_confidence.compute_contact_prob(
+        pred_dict["contact_probs"] = autocasting_disable_decorator(True)(
+            sample_confidence.compute_contact_prob
+        )(
             distogram_logits=self.distogram_head(z),
             **sample_confidence.get_bin_params(self.configs.loss.distogram),
         )  # [N_token, N_token]
@@ -461,28 +465,31 @@ class Protenix(nn.Module):
             interested_atom_mask = None
         else:
             interested_atom_mask = label_dict.get("interested_ligand_mask", None)
-        pred_dict["summary_confidence"], pred_dict["full_data"] = (
-            sample_confidence.compute_full_data_and_summary(
-                configs=self.configs,
-                pae_logits=pred_dict["pae"],
-                plddt_logits=pred_dict["plddt"],
-                pde_logits=pred_dict["pde"],
-                contact_probs=pred_dict.get(
-                    "per_sample_contact_probs", pred_dict["contact_probs"]
-                ),
-                token_asym_id=input_feature_dict["asym_id"],
-                token_has_frame=input_feature_dict["has_frame"],
-                atom_coordinate=pred_dict["coordinate"],
-                atom_to_token_idx=input_feature_dict["atom_to_token_idx"],
-                atom_is_polymer=1 - input_feature_dict["is_ligand"],
-                N_recycle=N_cycle,
-                interested_atom_mask=interested_atom_mask,
-                return_full_data=True,
-                mol_id=(input_feature_dict["mol_id"] if mode != "inference" else None),
-                elements_one_hot=(
-                    input_feature_dict["ref_element"] if mode != "inference" else None
-                ),
-            )
+        (
+            pred_dict["summary_confidence"],
+            pred_dict["full_data"],
+        ) = autocasting_disable_decorator(True)(
+            sample_confidence.compute_full_data_and_summary
+        )(
+            configs=self.configs,
+            pae_logits=pred_dict["pae"],
+            plddt_logits=pred_dict["plddt"],
+            pde_logits=pred_dict["pde"],
+            contact_probs=pred_dict.get(
+                "per_sample_contact_probs", pred_dict["contact_probs"]
+            ),
+            token_asym_id=input_feature_dict["asym_id"],
+            token_has_frame=input_feature_dict["has_frame"],
+            atom_coordinate=pred_dict["coordinate"],
+            atom_to_token_idx=input_feature_dict["atom_to_token_idx"],
+            atom_is_polymer=1 - input_feature_dict["is_ligand"],
+            N_recycle=N_cycle,
+            interested_atom_mask=interested_atom_mask,
+            return_full_data=True,
+            mol_id=(input_feature_dict["mol_id"] if mode != "inference" else None),
+            elements_one_hot=(
+                input_feature_dict["ref_element"] if mode != "inference" else None
+            ),
         )
 
         return pred_dict, log_dict, time_tracker
@@ -565,6 +572,9 @@ class Protenix(nn.Module):
             log_dict.update(perm_log_dict)
 
         # Confidence: use mini-rollout prediction, and detach token embeddings
+        drop_embedding = (
+            random.random() < self.configs.model.confidence_embedding_drop_rate
+        )
         plddt_pred, pae_pred, pde_pred, resolved_pred = self.run_confidence_head(
             input_feature_dict=input_feature_dict,
             s_inputs=s_inputs,
@@ -572,6 +582,7 @@ class Protenix(nn.Module):
             z_trunk=z,
             pair_mask=None,
             x_pred_coords=coordinate_mini,
+            use_embedding=not drop_embedding,
             use_memory_efficient_kernel=self.configs.use_memory_efficient_kernel,
             use_deepspeed_evo_attention=self.configs.use_deepspeed_evo_attention
             and deepspeed_evo_attention_condition_satisfy,
@@ -596,6 +607,9 @@ class Protenix(nn.Module):
         # x_denoised: [..., N_sample, N_atom, 3]
         # x_noise_level: [..., N_sample]
         N_sample = self.diffusion_batch_size
+        drop_conditioning = (
+            random.random() < self.configs.model.condition_embedding_drop_rate
+        )
         _, x_denoised, x_noise_level = autocasting_disable_decorator(
             self.configs.skip_amp.sample_diffusion_training
         )(sample_diffusion_training)(
@@ -608,10 +622,13 @@ class Protenix(nn.Module):
             z_trunk=z,
             N_sample=N_sample,
             diffusion_chunk_size=self.configs.diffusion_chunk_size,
+            use_conditioning=not drop_conditioning,
         )
         pred_dict.update(
             {
-                "distogram": self.distogram_head(z),
+                "distogram": autocasting_disable_decorator(True)(self.distogram_head)(
+                    z
+                ),
                 # [..., N_sample=48, N_atom, 3]: diffusion loss
                 "coordinate": x_denoised,
                 "noise_level": x_noise_level,

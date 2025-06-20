@@ -1,13 +1,13 @@
 # pylint: disable=C0114
 from functools import partial
-from typing import Any, Optional, Union
+from typing import Any, Optional
 
 import torch
 import torch.nn as nn
 
 from onescience.models.protenix.modules.primitives import LinearNoBias, Transition
 from onescience.models.protenix.modules.transformer import AttentionPairBias
-from onescience.models.protenix.utils import sample_msa_feature_dict_random_without_replacement
+from onescience.models.protenix.utils import pad_at_dim, sample_msa_feature_dict_random_without_replacement
 from onescience.models.openfold.dropout import DropoutRowwise
 from onescience.models.openfold.outer_product_mean import (
     OuterProductMean,  # Alg 9 in AF3
@@ -20,7 +20,7 @@ from onescience.models.openfold.triangular_multiplicative_update import (
 from onescience.models.openfold.triangular_multiplicative_update import (
     TriangleMultiplicationOutgoing,  # Alg 12 in AF3
 )
-from onescience.utils.openfold.checkpointing import checkpoint_blocks
+from onescience.utils.openfold.checkpointing import checkpoint_blocks, get_checkpoint_fn
 
 
 class PairformerBlock(nn.Module):
@@ -72,7 +72,7 @@ class PairformerBlock(nn.Module):
         self.c_s = c_s
         if self.c_s > 0:
             self.attention_pair_bias = AttentionPairBias(
-                has_s=False, n_heads=n_heads, c_a=c_s, c_z=c_z
+                has_s=False, create_offset_ln_z=True, n_heads=n_heads, c_a=c_s, c_z=c_z
             )
             self.single_transition = Transition(c_in=c_s, n=4)
 
@@ -127,7 +127,7 @@ class PairformerBlock(nn.Module):
             z = z.transpose(-2, -3).contiguous()
             z += self.tri_att_end(
                 z,
-                mask=pair_mask.tranpose(-1, -2) if pair_mask is not None else None,
+                mask=pair_mask.transpose(-1, -2) if pair_mask is not None else None,
                 use_memory_efficient_kernel=use_memory_efficient_kernel,
                 use_deepspeed_evo_attention=use_deepspeed_evo_attention,
                 use_lma=use_lma,
@@ -136,14 +136,6 @@ class PairformerBlock(nn.Module):
             )
             z = z.transpose(-2, -3).contiguous()
             z += self.pair_transition(z)
-            if self.c_s > 0:
-                s += self.attention_pair_bias(
-                    a=s,
-                    s=None,
-                    z=z,
-                )
-                s += self.single_transition(s)
-            return s, z
         else:
             tmu_update = self.tri_mul_out(
                 z, mask=pair_mask, inplace_safe=inplace_safe, _add_with_inplace=False
@@ -170,7 +162,7 @@ class PairformerBlock(nn.Module):
             z = z + self.dropout_row(
                 self.tri_att_end(
                     z,
-                    mask=pair_mask.tranpose(-1, -2) if pair_mask is not None else None,
+                    mask=pair_mask.transpose(-1, -2) if pair_mask is not None else None,
                     use_memory_efficient_kernel=use_memory_efficient_kernel,
                     use_deepspeed_evo_attention=use_deepspeed_evo_attention,
                     use_lma=use_lma,
@@ -181,14 +173,14 @@ class PairformerBlock(nn.Module):
             z = z.transpose(-2, -3)
 
             z = z + self.pair_transition(z)
-            if self.c_s > 0:
-                s = s + self.attention_pair_bias(
-                    a=s,
-                    s=None,
-                    z=z,
-                )
-                s = s + self.single_transition(s)
-            return s, z
+        if self.c_s > 0:
+            s = s + self.attention_pair_bias(
+                a=s,
+                s=None,
+                z=z,
+            )
+            s = s + self.single_transition(s)
+        return s, z
 
 
 class PairformerStack(nn.Module):
@@ -342,13 +334,13 @@ class MSAPairWeightedAveraging(nn.Module):
             in_features=self.c_z, out_features=self.n_heads
         )
         self.linear_no_bias_mg = LinearNoBias(
-            in_features=self.c_m, out_features=self.c * self.n_heads
+            in_features=self.c_m, out_features=self.c * self.n_heads, initializer="zeros",
         )
         # Weighted average with gating
         self.softmax_w = nn.Softmax(dim=-2)
         # Output projection
         self.linear_no_bias_out = LinearNoBias(
-            in_features=self.c * self.n_heads, out_features=self.c_m
+            in_features=self.c * self.n_heads, out_features=self.c_m, initializer="zeros",
         )
 
     def forward(self, m: torch.Tensor, z: torch.Tensor) -> torch.Tensor:
@@ -386,6 +378,9 @@ class MSAPairWeightedAveraging(nn.Module):
             *o.shape[:-2], self.n_heads * self.c
         )  # [...,n_msa_sampled, n_token, n_heads * c]
         m = self.linear_no_bias_out(o)  # [...,n_msa_sampled, n_token, c_m]
+        if (not self.training) and m.shape[-3] > 5120:
+            del v, b, g, w, wv, o
+            torch.cuda.empty_cache()
         return m
 
 
@@ -394,7 +389,14 @@ class MSAStack(nn.Module):
     Implements MSAStack Line7-Line8 in Algorithm 8
     """
 
-    def __init__(self, c_m: int = 64, c: int = 8, dropout: float = 0.15) -> None:
+    def __init__(
+        self,
+        c_m: int = 64,
+        c: int = 8,
+        dropout: float = 0.15,
+        msa_chunk_size: Optional[int] = 2048,
+        msa_max_size: Optional[int] = 16384,
+    ) -> None:
         """
         Args:
             c_m (int, optional): hidden dim [for msa embedding]. Defaults to 64.
@@ -406,6 +408,8 @@ class MSAStack(nn.Module):
         self.msa_pair_weighted_averaging = MSAPairWeightedAveraging(c=self.c)
         self.dropout_row = DropoutRowwise(dropout)
         self.transition_m = Transition(c_in=c_m, n=4)
+        self.msa_chunk_size = msa_chunk_size
+        self.msa_max_size = msa_max_size
 
     def forward(self, m: torch.Tensor, z: torch.Tensor) -> torch.Tensor:
         """
@@ -419,8 +423,112 @@ class MSAStack(nn.Module):
             torch.Tensor: updated msa embedding
                 [...,n_msa_sampled, n_token, c_m]
         """
-        m = m + self.dropout_row(self.msa_pair_weighted_averaging(m, z))
-        m = m + self.transition_m(m)
+        chunk_size = self.msa_chunk_size
+        if self.training:
+            # Padded m to avoid static graph change in DDP training, which will raise
+            # RuntimeError: Your training graph has changed in this iteration,
+            # e.g., one parameter is unused in first iteration, but then got used in the second iteration.
+            # this is not compatible with static_graph set to True
+            m_new = pad_at_dim(
+                m, dim=-3, pad_length=(0, self.msa_max_size - m.shape[-3]), value=0
+            )
+            assert (m_new[: m.shape[-3], :, :] == m).all()
+            msa_pair_weighted = self.chunk_forward(
+                self.msa_pair_weighted_averaging, m_new, z, chunk_size
+            )
+            m = m + self.dropout_row(msa_pair_weighted[: m.shape[-3], :, :])
+            m_new = pad_at_dim(
+                m, dim=-3, pad_length=(0, self.msa_max_size - m.shape[-3]), value=0
+            )
+            m_transition = self.chunk_forward(
+                self.transition_m, m_new, None, chunk_size
+            )
+            m = m + m_transition[: m.shape[-3], :, :]
+            if (not self.training) and (z.shape[-2] > 2000 or m.shape[-3] > 5120):
+                del msa_pair_weighted, m_transition
+                torch.cuda.empty_cache()
+        else:
+            m = self.inference_forward(m, z, chunk_size)
+        return m
+
+    def chunk_forward(
+        self,
+        module: nn.Module,
+        m: torch.Tensor,
+        z: torch.Tensor,
+        chunk_size: int = 2048,
+    ) -> torch.Tensor:
+        """
+        Args:
+            m (torch.Tensor): msa embedding
+                [..., n_msa_sampled, n_token, c_m]
+            z (torch.Tensor): pair embedding
+                [..., n_token, n_token, c_z]
+            chunk_size (int): size of each chunk for gradient checkpointing
+
+        Returns:
+            torch.Tensor: updated msa embedding
+                [..., n_msa_sampled, n_token, c_m]
+        """
+
+        def fixed_length_chunk(m, chunk_length, dim=0):
+            dim_size = m.size(dim)
+            chunk_num = (dim_size + chunk_length - 1) // chunk_length
+            chunks = []
+
+            for i in range(chunk_num):
+                start = i * chunk_length
+                end = min(start + chunk_length, dim_size)
+                chunk = m.narrow(dim, start, end - start)
+                chunks.append(chunk)
+
+            return chunks
+
+        checkpoint_fn = get_checkpoint_fn()
+        # Split the tensor `m` into chunks along the first dimension
+        # m_chunks = torch.chunk(m, chunk_size, dim=0)
+        m_chunks = fixed_length_chunk(m, chunk_size, dim=0)
+
+        # Process each chunk with gradient checkpointing
+        if z is not None:
+            processed_chunks = [checkpoint_fn(module, chunk, z) for chunk in m_chunks]
+        else:
+            processed_chunks = [checkpoint_fn(module, chunk) for chunk in m_chunks]
+        if (not self.training) and m.shape[-3] > 5120:
+            del m_chunks
+            torch.cuda.empty_cache()
+        # Concatenate the processed chunks back together
+        m = torch.cat(processed_chunks, dim=0)
+        if (not self.training) and m.shape[-3] > 5120:
+            del processed_chunks
+            torch.cuda.empty_cache()
+        return m
+
+    def inference_forward(
+        self, m: torch.Tensor, z: torch.Tensor, chunk_size: int = 2048
+    ) -> torch.Tensor:
+        """Inplace slice forward for saving memory
+        Args:
+            m (torch.Tensor): msa embedding
+                [..., n_msa_sampled, n_token, c_m]
+            z (torch.Tensor): pair embedding
+                [..., n_token, n_token, c_z]
+            chunk_num (int): size of each chunk for gradient checkpointing
+
+        Returns:
+            torch.Tensor: updated msa embedding
+                [..., n_msa_sampled, n_token, c_m]
+        """
+        num_msa = m.shape[-3]
+        no_chunks = num_msa // chunk_size + (num_msa % chunk_size != 0)
+        for i in range(no_chunks):
+            start = i * chunk_size
+            end = min((i + 1) * chunk_size, num_msa)
+            # Use inplace to save memory
+            m[start:end, :, :] += self.msa_pair_weighted_averaging(
+                m[start:end, :, :], z
+            )
+            m[start:end, :, :] += self.transition_m(m[start:end, :, :])
         return m
 
 
@@ -437,6 +545,8 @@ class MSABlock(nn.Module):
         is_last_block: bool = False,
         msa_dropout: float = 0.15,
         pair_dropout: float = 0.25,
+        msa_chunk_size: Optional[int] = 2048,
+        msa_max_size: Optional[int] = 16384,
     ) -> None:
         """
         Args:
@@ -458,7 +568,12 @@ class MSABlock(nn.Module):
         )
         if not self.is_last_block:
             # MSA stack
-            self.msa_stack = MSAStack(c_m=self.c_m, dropout=msa_dropout)
+            self.msa_stack = MSAStack(
+                c_m=self.c_m,
+                dropout=msa_dropout,
+                msa_chunk_size=msa_chunk_size,
+                msa_max_size=msa_max_size,
+            )
         # Pair stack
         self.pair_stack = PairformerBlock(c_z=c_z, c_s=0, dropout=pair_dropout)
 
@@ -493,9 +608,13 @@ class MSABlock(nn.Module):
                 [...,n_token, n_token, c_z]
         """
         # Communication
+        if (not self.training) and z.shape[-2] > 2000:
+            torch.cuda.empty_cache()
         z = z + self.outer_product_mean_msa(
             m, inplace_safe=inplace_safe, chunk_size=chunk_size
         )
+        if (not self.training) and z.shape[-2] > 2000:
+            torch.cuda.empty_cache()
         if not self.is_last_block:
             # MSA stack
             m = self.msa_stack(m, z)
@@ -510,7 +629,8 @@ class MSABlock(nn.Module):
             inplace_safe=inplace_safe,
             chunk_size=chunk_size,
         )
-
+        if (not self.training) and (z.shape[-2] > 2000 or m.shape[-3] > 5120):
+            torch.cuda.empty_cache()
         if not self.is_last_block:
             return m, z
         else:
@@ -531,6 +651,8 @@ class MSAModule(nn.Module):
         msa_dropout: float = 0.15,
         pair_dropout: float = 0.25,
         blocks_per_ckpt: Optional[int] = 1,
+        msa_chunk_size: Optional[int] = 2048,
+        msa_max_size: Optional[int] = 16384,
         msa_configs: dict = None,
     ) -> None:
         """Main Entry of MSAModule
@@ -555,6 +677,8 @@ class MSAModule(nn.Module):
         self.c_m = c_m
         self.c_s_inputs = c_s_inputs
         self.blocks_per_ckpt = blocks_per_ckpt
+        self.msa_chunk_size = msa_chunk_size
+        self.msa_max_size = msa_max_size
         self.input_feature = {
             "msa": 32,
             "has_deletion": 1,
@@ -572,6 +696,8 @@ class MSAModule(nn.Module):
             self.msa_configs["test_cutoff"] = msa_configs["sample_cutoff"].get(
                 "test", 16384
             )
+            # the default msa_max_size is 16384 if not specified
+            self.msa_max_size = self.msa_configs["train_cutoff"]
         if "min_size" in msa_configs:
             self.msa_configs["train_lowerb"] = msa_configs["min_size"].get("train", 1)
             self.msa_configs["test_lowerb"] = msa_configs["min_size"].get("test", 1)
@@ -592,6 +718,8 @@ class MSAModule(nn.Module):
                 is_last_block=(i + 1 == n_blocks),
                 msa_dropout=msa_dropout,
                 pair_dropout=pair_dropout,
+                msa_chunk_size=self.msa_chunk_size,
+                msa_max_size=self.msa_max_size,
             )
             self.blocks.append(block)
 
@@ -625,6 +753,27 @@ class MSAModule(nn.Module):
         if clear_cache_between_blocks:
             blocks = [partial(clear_cache, b) for b in blocks]
         return blocks
+
+    def one_hot_fp32(
+        self, tensor: torch.Tensor, num_classes: int, dtype=torch.float32
+    ) -> torch.Tensor:
+        """like F.one_hot, but output dtype is float32.
+
+        Args:
+            tensor (torch.Tensor): the input tensor
+            num_classes (int): num_classes
+            dtype (torch.float32, optional): the output dtype. Defaults to torch.float32.
+
+        Returns:
+            torch.Tensor: the one-hot encoded tensor with shape
+                [..., n_msa_sampled, N_token, num_classes]
+        """
+        shape = tensor.shape
+        one_hot_tensor = torch.zeros(
+            *shape, num_classes, dtype=dtype, device=tensor.device
+        )
+        one_hot_tensor.scatter_(len(shape), tensor.unsqueeze(-1), 1)
+        return one_hot_tensor
 
     def forward(
         self,
@@ -664,7 +813,10 @@ class MSAModule(nn.Module):
 
         if "msa" not in input_feature_dict:
             return z
-
+        # Check msa shape!
+        # IndexError: Dimension out of range (expected to be in range of [-1, 0], but got -2)
+        if input_feature_dict["msa"].dim() < 2:
+            return z
         msa_feat = sample_msa_feature_dict_random_without_replacement(
             feat_dict=input_feature_dict,
             dim_dict={feat_name: -2 for feat_name in self.input_feature},
@@ -681,10 +833,18 @@ class MSAModule(nn.Module):
             strategy=self.msa_configs["strategy"],
         )
         # pylint: disable=E1102
-        msa_feat["msa"] = torch.nn.functional.one_hot(
-            msa_feat["msa"],
-            num_classes=self.input_feature["msa"],
-        )
+        if not self.training and z.shape[-2] > 2000:
+            # msa_feat["msa"] is torch.int64, we convert it
+            # to torch.float32 for saving half of the CUDA memory
+            msa_feat["msa"] = self.one_hot_fp32(
+                msa_feat["msa"],
+                num_classes=self.input_feature["msa"],
+            )
+        else:
+            msa_feat["msa"] = torch.nn.functional.one_hot(
+                msa_feat["msa"],
+                num_classes=self.input_feature["msa"],
+            )
 
         target_shape = msa_feat["msa"].shape[:-1]
         msa_sample = torch.cat(
@@ -694,6 +854,12 @@ class MSAModule(nn.Module):
             ],
             dim=-1,
         )  # [..., N_msa_sample, N_token, 32 + 1 + 1]
+        # Msa_feat is very large, if N_MSA=16384 and N_token=4000,
+        # msa_feat["msa"] consumes about 16G CUDA memory, so we
+        # need to clear cache to avoid OOM
+        if not self.training:
+            del msa_feat
+            torch.cuda.empty_cache()
         # Line2
         msa_sample = self.linear_no_bias_m(msa_sample)
 

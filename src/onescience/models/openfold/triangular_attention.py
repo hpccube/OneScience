@@ -32,7 +32,7 @@ class TriangleAttention(nn.Module):
 
         self.layer_norm = LayerNorm(self.c_in)
 
-        self.linear = Linear(c_in, self.no_heads, bias=False, init="normal")
+        self.linear = Linear(c_in, self.no_heads, bias=False)
 
         self.mha = Attention(
             self.c_in, self.c_in, self.c_in, self.c_hidden, self.no_heads
