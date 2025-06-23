@@ -15,6 +15,8 @@
 """config load"""
 from pprint import pformat
 import yaml
+import os
+from pathlib import Path
 
 class Config:
     """
@@ -32,6 +34,26 @@ class Config:
 
     def __repr__(self):
         return self.__str__()
+    
+def get_config_path(config_name: str) -> str:
+    """
+    Get the path to a config file within the protoken package.
+    
+    Args:
+        config_name: Name of the config file (e.g., 'encoder', 'decoder', 'vq')
+    
+    Returns:
+        Path to the config file
+    """
+    try:
+        from importlib import resources
+        with resources.path('onescience.flax_models.protoken.config', f'{config_name}.yaml') as config_path:
+            return str(config_path)
+    except ImportError:
+        # Fallback for older Python versions or if resources is not available
+        current_dir = Path(__file__).parent.parent
+        config_path = current_dir / 'config' / f'{config_name}.yaml'
+        return str(config_path)
 
 def load_config(path):
     """

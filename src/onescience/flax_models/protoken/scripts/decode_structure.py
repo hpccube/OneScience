@@ -7,8 +7,8 @@ from tqdm import tqdm
 
 def arg_parse():
     parser = argparse.ArgumentParser(description='Inputs for decode_structure.py')
-    parser.add_argument('--decoder_config', help='decoder config')
-    parser.add_argument('--vq_config', help='vq config')
+    parser.add_argument('--decoder_config', default=None, help='decoder config (如果不指定，将自动使用包内配置)')
+    parser.add_argument('--vq_config', default=None, help='vq config (如果不指定，将自动使用包内配置)')
     parser.add_argument('--input_path', help='Location of input file.')
     parser.add_argument('--output_dir', help='Location of output file.')
     parser.add_argument('--load_ckpt_path', type=str, help='Location of checkpoint file.')
@@ -28,7 +28,7 @@ from functools import partial
 from flax import linen as nn
 from onescience.flax_models.protoken.model.decoder import VQ_Decoder, Protein_Decoder
 from onescience.flax_models.protoken.data.protein_utils import save_pdb_from_aux
-from onescience.flax_models.protoken.common.config_load import load_config
+from onescience.flax_models.protoken.common.config_load import load_config, get_config_path
 from jax.tree_util import tree_map
 
 from onescience.flax_models.protoken.config.global_config import GLOBAL_CONFIG
@@ -56,9 +56,13 @@ def decode():
     input_data_list = input_data_list + [input_data_list[-1], ] * (NDATAS - len(input_data_list))
 
     ##### initialize models
-    decoder_cfg = load_config(args.decoder_config)
+    # 如果用户没有指定配置文件路径，自动使用包内配置文件
+    decoder_config_path = args.decoder_config or get_config_path('decoder')
+    vq_config_path = args.vq_config or get_config_path('vq')
+    
+    decoder_cfg = load_config(decoder_config_path)
     decoder_cfg.seq_len = NRES
-    vq_cfg = load_config(args.vq_config)
+    vq_cfg = load_config(vq_config_path)
     
     modules = {
         "vq_decoder": {"module": VQ_Decoder, 

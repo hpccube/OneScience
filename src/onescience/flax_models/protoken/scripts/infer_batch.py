@@ -9,10 +9,13 @@ warnings.filterwarnings("ignore")
 def arg_parse():
     parser = argparse.ArgumentParser(description='Inputs for main.py')
     # CONFIG
-    parser.add_argument('--encoder_config', default="./config/encoder.yaml", help='encoder config')
-    parser.add_argument('--decoder_config', default="./config/decoder.yaml", help='decoder config')
-    parser.add_argument('--vq_config', default='./config/vq.yaml', help='vq config')
-    
+    # parser.add_argument('--encoder_config', default="./config/encoder.yaml", help='encoder config')
+    # parser.add_argument('--decoder_config', default="./config/decoder.yaml", help='decoder config')
+    # parser.add_argument('--vq_config', default='./config/vq.yaml', help='vq config')
+    # CONFIG - 默认使用包内配置文件，用户也可以覆盖
+    parser.add_argument('--encoder_config', default=None, help='encoder config (如果不指定，将自动使用包内配置)')
+    parser.add_argument('--decoder_config', default=None, help='decoder config (如果不指定，将自动使用包内配置)')
+    parser.add_argument('--vq_config', default=None, help='vq config (如果不指定，将自动使用包内配置)')
     # PDB DIR
     parser.add_argument('--pdb_dir_path', help='Location of dir path of pdb files.')
     parser.add_argument('--save_dir_path', help='The path for saving inference output')
@@ -43,7 +46,7 @@ from onescience.flax_models.protoken.inference.inference import InferenceVQWithL
 from onescience.flax_models.protoken.data.protein_utils import save_pdb_from_aux
 from onescience.flax_models.protoken.train.utils import split_multiple_rng_keys
 from onescience.flax_models.protoken.train.sharding import _sharding
-from onescience.flax_models.protoken.common.config_load import load_config
+from onescience.flax_models.protoken.common.config_load import load_config, get_config_path
 from onescience.flax_models.protoken.data.dataset import protoken_basic_generator
 from onescience.flax_models.protoken.data.utils import make_2d_features
 import datetime
@@ -108,8 +111,14 @@ def inference(pdb_dir_path, save_dir_path, load_ckpt_path,
     END_IDX_LIST[-1] = min(END_IDX_LIST[-1], NDATAS)
     
     ##### initialize models
-    encoder_cfg = load_config(args.encoder_config)
-    decoder_cfg = load_config(args.decoder_config)
+    # encoder_cfg = load_config(args.encoder_config)
+    # decoder_cfg = load_config(args.decoder_config)
+    encoder_config_path = args.encoder_config or get_config_path('encoder')
+    decoder_config_path = args.decoder_config or get_config_path('decoder')
+    vq_config_path = args.vq_config or get_config_path('vq')
+    
+    encoder_cfg = load_config(encoder_config_path)
+    decoder_cfg = load_config(decoder_config_path)
     encoder_cfg.seq_len = NRES
     decoder_cfg.seq_len = NRES
             
@@ -119,7 +128,8 @@ def inference(pdb_dir_path, save_dir_path, load_ckpt_path,
     protein_decoder = Protein_Decoder(GLOBAL_CONFIG, decoder_cfg)
     
     #### vq
-    vq_cfg = load_config(args.vq_config)
+    # vq_cfg = load_config(args.vq_config)
+    vq_cfg = load_config(vq_config_path)
     vq_tokenizer = VQTokenizer(vq_cfg, dtype=jnp.float32)
     
     with_loss_cell = InferenceVQWithLossCell(

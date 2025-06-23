@@ -9,9 +9,12 @@ warnings.filterwarnings("ignore")
 def arg_parse():
     parser = argparse.ArgumentParser(description='Inputs for main.py')
     # CONFIG
-    parser.add_argument('--encoder_config', help='encoder config')
-    parser.add_argument('--decoder_config', help='decoder config')
-    parser.add_argument('--vq_config', help='vq config')
+    # parser.add_argument('--encoder_config', help='encoder config')
+    # parser.add_argument('--decoder_config', help='decoder config')
+    # parser.add_argument('--vq_config', help='vq config')
+    parser.add_argument('--encoder_config', default=None, help='encoder config (如果不指定，将自动使用包内配置)')
+    parser.add_argument('--decoder_config', default=None, help='decoder config (如果不指定，将自动使用包内配置)')
+    parser.add_argument('--vq_config', default=None, help='vq config (如果不指定，将自动使用包内配置)')
     
     # PDB DIR
     parser.add_argument('--pdb_path', help='The path of the pdb file.')
@@ -42,7 +45,7 @@ from onescience.flax_models.protoken.tokenizer.vector_quantization import VQToke
 from onescience.flax_models.protoken.inference.inference import InferenceVQWithLossCell
 from onescience.flax_models.protoken.data.protein_utils import save_pdb_from_aux
 from onescience.flax_models.protoken.train.utils import split_multiple_rng_keys
-from onescience.flax_models.protoken.common.config_load import load_config
+from onescience.flax_models.protoken.common.config_load import load_config, get_config_path
 from onescience.flax_models.protoken.data.dataset import protoken_basic_generator
 from onescience.flax_models.protoken.data.utils import make_2d_features
 import datetime
