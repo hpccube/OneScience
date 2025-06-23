@@ -38,7 +38,7 @@ install_requires = [
     'seaborn',
     'torchdata<=0.9.0',
     'openfermion==1.5.1',
-    'pyscf==2.1.1',
+    # 'pyscf==2.1.1',
     'pybind11',
     'torchmetrics',
     'e3nn==0.4.4',
@@ -56,8 +56,16 @@ install_requires = [
     'prettytable',
     'lmdb',
     'orjson',
-    'matplotlib'
+    'matplotlib',
+    
+    'contextlib2',
+    'ml-collections==0.1.1',
+    'dm-tree==0.1.8',
+    'dm-haiku==0.0.12',
 
+    'diffrax==0.6.0',
+    'biopandas==0.5.1',
+    'biopython==1.84',
 ]
 
 
