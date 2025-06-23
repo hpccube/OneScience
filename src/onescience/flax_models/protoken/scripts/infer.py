@@ -91,8 +91,14 @@ def inference(pdb_path, save_dir_path, load_ckpt_path,
     print(f'Saving pdb at: {pdb_saving_path},')
 
     ##### initialize models
-    encoder_cfg = load_config(args.encoder_config)
-    decoder_cfg = load_config(args.decoder_config)
+    # encoder_cfg = load_config(args.encoder_config)
+    # decoder_cfg = load_config(args.decoder_config)
+    encoder_config_path = args.encoder_config or get_config_path('encoder')
+    decoder_config_path = args.decoder_config or get_config_path('decoder')
+    vq_config_path = args.vq_config or get_config_path('vq')
+    
+    encoder_cfg = load_config(encoder_config_path)
+    decoder_cfg = load_config(decoder_config_path)
     encoder_cfg.seq_len = NRES
     decoder_cfg.seq_len = NRES
             
@@ -102,7 +108,8 @@ def inference(pdb_path, save_dir_path, load_ckpt_path,
     protein_decoder = Protein_Decoder(GLOBAL_CONFIG, decoder_cfg)
     
     #### vq
-    vq_cfg = load_config(args.vq_config)
+    # vq_cfg = load_config(args.vq_config)
+    vq_cfg = load_config(vq_config_path)
     vq_tokenizer = VQTokenizer(vq_cfg, dtype=jnp.float32)
     
     with_loss_cell = InferenceVQWithLossCell(
