@@ -1,0 +1,10 @@
+num_code: 512 # 128 # 1024 # 128 for nres=32
+dim_in: 256
+dim_code: 32
+train: True
+l2_norm: True 
+stochastic_sampling: False
+sampling_temperature: 0.01
+
+entropy_temperature: 1.0
+entropy_loss_type: "disabled"

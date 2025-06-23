@@ -1,0 +1,106 @@
+seq_len: 384
+
+common:
+  pair_feat_dim: 64
+  template_feat_dim: 9
+  single_channel: 256
+  pair_channel: 128
+  postln_scale: 1.0
+
+pair_update_evoformer_stack_num: 2
+single_update_transformer_stack_num: 4
+co_update_evoformer_stack_num: 2
+
+evoformer:
+  hidden_dim: 256
+  num_head: 8
+  intermediate_dim: 4
+  outerproduct_dim: 32
+  gating: True
+  sink_attention: False
+  dropout_rate: 0.05
+  norm_method: "rmsnorm"
+  init_method: "AF2" 
+  init_sigma: 0.02
+  swish_beta: 1.
+
+transformer:
+  hidden_dim: 256 
+  num_head: 8 
+  intermediate_dim: 4 
+  gating: False
+  sink_attention: False
+  dropout_rate: 0.05
+  norm_method: "rmsnorm" 
+  init_method: "AF2" 
+  init_sigma: 0.02
+  swish_beta: 1.
+
+distogram:
+  first_break: 2.5
+  last_break: 20.0
+  num_bins: 36
+  weight: 0.3
+
+rel_pos:
+  exact_distance: 16
+  num_buckets: 32
+  max_distance: 64
+
+extended_structure_module:
+  sink_attention: False
+  stop_grad_ipa: True
+  single_channel: 384 
+  pair_channel: 128
+  num_layer: 8
+  position_scale: 10.0
+  num_channel: 384 
+  num_head: 12
+  num_layer_in_transition: 3
+  num_point_qk: 4
+  num_point_v: 8
+  num_scalar_qk: 16
+  num_scalar_v: 16
+  dropout: 0.05
+  sidechain:
+    num_channel: 128
+
+
+frame_initializer:
+  sink_attention: False 
+  stop_grad_ipa: False 
+  single_channel: 384
+  pair_channel: 128
+  num_layer: 1
+  num_channel: 384
+  num_head: 12
+  num_layer_in_transition: 3
+  num_point_qk: 4
+  num_point_v: 8
+  num_scalar_qk: 16
+  num_scalar_v: 16
+  dropout: 0.05
+  sidechain:
+    num_channel: 128
+
+
+predicted_lddt:
+  fold_iteration:
+    sink_attention: False
+    stop_grad_ipa: True 
+    single_channel: 384 
+    pair_channel: 128
+    num_layer: 8
+    position_scale: 10.0
+    num_channel: 384
+    num_head: 12
+    num_layer_in_transition: 3
+    num_point_qk: 4
+    num_point_v: 8
+    num_scalar_qk: 16
+    num_scalar_v: 16
+    dropout: 0.05
+    sidechain:
+      num_channel: 128
+  num_channel: 128
+  num_bins: 50
