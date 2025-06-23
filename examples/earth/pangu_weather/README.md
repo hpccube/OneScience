@@ -60,8 +60,9 @@ sbatch slurm.sh
 
 ```bash
 python inference.py
+```
 
-```误差计算：
+误差计算：
 
 ```bash
 python result.py
