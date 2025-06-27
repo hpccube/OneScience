@@ -66,6 +66,7 @@ install_requires = [
     'diffrax==0.6.0',
     'biopandas==0.5.1',
     'biopython==1.84',
+    'pyrsistent',
 ]
 
 
