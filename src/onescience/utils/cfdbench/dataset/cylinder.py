@@ -25,7 +25,6 @@ def load_case_data(case_dir: Path) -> Tuple[np.ndarray, Dict[str, float]]:
     The shape of both u and v is (time steps, height, width)
     """
     case_params = load_json(case_dir / "case.json")
-    # print(case_params)
 
     u_file = case_dir / "u.npy"
     v_file = case_dir / "v.npy"
@@ -274,7 +273,6 @@ class CylinderFlowAutoDataset(CfdAutoDataset):
         """
         # Cache preprocessing for speedup
         if self.cache_dir.exists():
-            print(f"Loading from cache: {self.cache_dir}")
             self.inputs = torch.load(self.cache_dir / "inputs.pt")
             self.labels = torch.load(self.cache_dir / "labels.pt")
             self.case_ids = torch.load(self.cache_dir / "case_ids.pt")
@@ -315,12 +313,6 @@ class CylinderFlowAutoDataset(CfdAutoDataset):
                 inp_magn = torch.sqrt(inp[0] ** 2 + inp[1] ** 2)
                 out_magn = torch.sqrt(out[0] ** 2 + out[1] ** 2)
                 diff = torch.abs(inp_magn - out_magn).mean()
-                # print(f"Mean difference: {diff}")
-                if diff < self.stable_state_diff:
-                    print(
-                        f"Converged at {i} / {num_steps}, {this_case_params}"
-                    )
-                    break
                 assert not torch.isnan(inp).any()
                 assert not torch.isnan(out).any()
                 all_inputs.append(inp)
@@ -348,8 +340,6 @@ class CylinderFlowAutoDataset(CfdAutoDataset):
             k: torch.tensor(v, dtype=torch.float32)
             for k, v in case_params.items()
         }
-        # print(inputs.shape)
-        # print(label.shape)
         return inputs, label, case_params
 
     def __len__(self):
@@ -362,8 +352,10 @@ def get_cylinder_datasets(
     norm_props: bool,
     norm_bc: bool,
     seed: int = 0,
+    rank: int = 0,
 ) -> Tuple[CfdDataset, CfdDataset, CfdDataset]:
-    print(data_dir, case_name)
+    if rank == 0:
+        print(data_dir, case_name)
     case_dirs = []
     for name in ["prop", "bc", "geo"]:
         if name in case_name:
@@ -385,13 +377,14 @@ def get_cylinder_datasets(
     train_case_dirs = case_dirs[:num_train]
     dev_case_dirs = case_dirs[num_train : num_train + num_dev]
     test_case_dirs = case_dirs[num_train + num_dev :]
-    print("==== Number of cases in different splits ====")
-    print(
-        f"train: {len(train_case_dirs)}, "
-        f"dev: {len(dev_case_dirs)}, "
-        f"test: {len(test_case_dirs)}"
-    )
-    print("=============================================")
+    if rank == 0:
+        print("==== Number of cases in different splits ====")
+        print(
+            f"train: {len(train_case_dirs)}, "
+            f"dev: {len(dev_case_dirs)}, "
+            f"test: {len(test_case_dirs)}"
+        )
+        print("=============================================")
     kwargs: dict[str, Any] = dict(
         norm_props=norm_props,
         norm_bc=norm_bc,
@@ -411,6 +404,7 @@ def get_cylinder_auto_datasets(
     stable_state_diff: float = 0.001,
     seed: int = 0,
     load_splits: List[str] = ["train", "dev", "test"],
+    rank: int = 0,
 ) -> Tuple[
     Optional[CylinderFlowAutoDataset],
     Optional[CylinderFlowAutoDataset],

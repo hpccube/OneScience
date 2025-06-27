@@ -31,7 +31,7 @@ pip install -r requirements.txt
 
 2. 数据准备
 
-实验数据由[AlfRANS](https://github.com/Extrality/AirfRANS)提供。您可以通过此[链接](https://data.isir.upmc.fr/extrality/NeurIPS_2022/Dataset.zip)直接下载（9.3GB），可以通过此通过此[链接](https://airfrans.readthedocs.io/en/latest/notes/introduction.html)查看数据集的一些描述。
+原始数据可以此处[[下载]](http://www.nobuyuki-umetani.com/publication/mlcfd_data.zip)，由[Nobuyuki Umetani](https://dl.acm.org/doi/abs/10.1145/3197517.3201325)提供。
 
 3. 训练和评估模型
 

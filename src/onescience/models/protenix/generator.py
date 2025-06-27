@@ -240,6 +240,7 @@ def sample_diffusion_training(
     z_trunk: torch.Tensor,
     N_sample: int = 1,
     diffusion_chunk_size: Optional[int] = None,
+    use_conditioning: bool = True,
 ) -> tuple[torch.Tensor, ...]:
     """Implements diffusion training as described in AF3 Appendix at page 23.
     It performances denoising steps from time 0 to time T.
@@ -291,6 +292,7 @@ def sample_diffusion_training(
             s_inputs=s_inputs,
             s_trunk=s_trunk,
             z_trunk=z_trunk,
+            use_conditioning=use_conditioning,
         )
     else:
         x_denoised = []
@@ -311,6 +313,7 @@ def sample_diffusion_training(
                 s_inputs=s_inputs,
                 s_trunk=s_trunk,
                 z_trunk=z_trunk,
+                use_conditioning=use_conditioning,
             )
             x_denoised.append(x_denoised_i)
         x_denoised = torch.cat(x_denoised, dim=-3)

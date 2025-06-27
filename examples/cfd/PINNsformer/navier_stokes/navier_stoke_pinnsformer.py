@@ -64,6 +64,7 @@ t_train = torch.tensor(t_train, dtype=torch.float32, requires_grad=True).to(devi
 u_train = torch.tensor(u_train, dtype=torch.float32, requires_grad=True).to(device)
 v_train = torch.tensor(v_train, dtype=torch.float32, requires_grad=True).to(device)
 
+
 class MyDataset(Dataset):
     def __init__(self, x, y, t, u, v):
         self.x = x
@@ -79,125 +80,15 @@ class MyDataset(Dataset):
         return self.x[idx], self.y[idx], self.t[idx], self.u[idx], self.v[idx]
         
 dataset = MyDataset(x_train, y_train, t_train, u_train, v_train)
-batch_size = 128  
+batch_size = 1000  
 dataloader = DataLoader(dataset, batch_size=batch_size, shuffle=False)
-
-
-class WaveAct(nn.Module):
-    def __init__(self):
-        super(WaveAct, self).__init__() 
-        self.w1 = nn.Parameter(torch.ones(1), requires_grad=True)
-        self.w2 = nn.Parameter(torch.ones(1), requires_grad=True)
-
-    def forward(self, x):
-        return self.w1 * torch.sin(x) + self.w2 * torch.cos(x)
-
-class FeedForward(nn.Module):
-    def __init__(self, d_model, d_ff=256):
-        super(FeedForward, self).__init__() 
-        self.linear = nn.Sequential(*[
-            nn.Linear(d_model, d_ff),
-            WaveAct(),
-            nn.Linear(d_ff, d_ff),
-            WaveAct(),
-            nn.Linear(d_ff, d_model)
-        ])
-
-    def forward(self, x):
-        return self.linear(x)
-
-
-class EncoderLayer(nn.Module):
-    def __init__(self, d_model, heads):
-        super(EncoderLayer, self).__init__()
-
-        self.attn = nn.MultiheadAttention(embed_dim=d_model, num_heads=heads, batch_first=True)
-        self.ff = FeedForward(d_model)
-        self.act1 = WaveAct()
-        self.act2 = WaveAct()
-        
-    def forward(self, x):
-        x2 = self.act1(x)
-        x = x + self.attn(x2,x2,x2)[0]
-        x2 = self.act2(x)
-        x = x + self.ff(x2)
-        return x
-
-
-class DecoderLayer(nn.Module):
-    def __init__(self, d_model, heads):
-        super(DecoderLayer, self).__init__()
-
-        self.attn = nn.MultiheadAttention(embed_dim=d_model, num_heads=heads, batch_first=True)
-        self.ff = FeedForward(d_model)
-        self.act1 = WaveAct()
-        self.act2 = WaveAct()
-
-    def forward(self, x, e_outputs): 
-        x2 = self.act1(x)
-        x = x + self.attn(x2, e_outputs, e_outputs)[0]
-        x2 = self.act2(x)
-        x = x + self.ff(x2)
-        return x
-
-
-class Encoder(nn.Module):
-    def __init__(self, d_model, N, heads):
-        super(Encoder, self).__init__()
-        self.N = N
-        self.layers = get_clones(EncoderLayer(d_model, heads), N)
-        self.act = WaveAct()
-
-    def forward(self, x):
-        for i in range(self.N):
-            x = self.layers[i](x)
-        return self.act(x)
-
-
-class Decoder(nn.Module):
-    def __init__(self, d_model, N, heads):
-        super(Decoder, self).__init__()
-        self.N = N
-        self.layers = get_clones(DecoderLayer(d_model, heads), N)
-        self.act = WaveAct()
-        
-    def forward(self, x, e_outputs):
-        for i in range(self.N):
-            x = self.layers[i](x, e_outputs)
-        return self.act(x)
-
-
-
-class PINNsformer(nn.Module):
-    def __init__(self, d_out, d_model, d_hidden, N, heads):
-        super(PINNsformer, self).__init__()
-
-        self.linear_emb = nn.Linear(3, d_model)
-
-        self.encoder = Encoder(d_model, N, heads)
-        self.decoder = Decoder(d_model, N, heads)
-        self.linear_out = nn.Sequential(*[
-            nn.Linear(d_model, d_hidden),
-            WaveAct(),
-            nn.Linear(d_hidden, d_hidden),
-            WaveAct(),
-            nn.Linear(d_hidden, d_out)
-        ])
-
-    def forward(self, x, y, t):
-        src = torch.cat((x,y,t), dim=-1)
-        src = self.linear_emb(src)
-        e_outputs = self.encoder(src)
-        d_output = self.decoder(src, e_outputs)
-        output = self.linear_out(d_output)
-        return output
 
 def init_weights(m):
     if isinstance(m, nn.Linear):
         torch.nn.init.xavier_uniform_(m.weight)
         m.bias.data.fill_(0.01)
 
-model = PINNsformer(d_out=2, d_hidden=512, d_model=32, N=1, heads=2).to(device)
+model = PINNsformer2D(d_out=2, d_hidden=128, d_model=32, N=1, heads=2).to(device)
 model.apply(init_weights)
 optim = LBFGS(model.parameters(), line_search_fn='strong_wolfe')
 
@@ -208,50 +99,42 @@ print(get_n_params(model))
 
 loss_track = []
 
-for epoch in range(100):  # 假设训练 10 个 epoch
-    for batch in tqdm(dataloader):
-        x_batch, y_batch, t_batch, u_batch, v_batch = batch
-        
-        def closure():
-            psi_and_p = model(x_batch, y_batch, t_batch)
-            psi = psi_and_p[:,:,0:1]
-            p = psi_and_p[:,:,1:2]
+for i in tqdm(range(1000)):
+    def closure():
+        psi_and_p = model(x_train, y_train, t_train)
+        psi = psi_and_p[:,:,0:1]
+        p = psi_and_p[:,:,1:2]
 
-            u = torch.autograd.grad(psi, y_batch, grad_outputs=torch.ones_like(psi), retain_graph=True, create_graph=True)[0]
-            v = - torch.autograd.grad(psi, x_batch, grad_outputs=torch.ones_like(psi), retain_graph=True, create_graph=True)[0]
+        u = torch.autograd.grad(psi, y_train, grad_outputs=torch.ones_like(psi), retain_graph=True, create_graph=True)[0]
+        v = - torch.autograd.grad(psi, x_train, grad_outputs=torch.ones_like(psi), retain_graph=True, create_graph=True)[0]
 
-            u_t = torch.autograd.grad(u, t_batch, grad_outputs=torch.ones_like(u), retain_graph=True, create_graph=True)[0]
-            u_x = torch.autograd.grad(u, x_batch, grad_outputs=torch.ones_like(u), retain_graph=True, create_graph=True)[0]
-            u_y = torch.autograd.grad(u, y_batch, grad_outputs=torch.ones_like(u), retain_graph=True, create_graph=True)[0]
-            u_xx = torch.autograd.grad(u, x_batch, grad_outputs=torch.ones_like(u_x), retain_graph=True, create_graph=True)[0]
-            u_yy = torch.autograd.grad(u, y_batch, grad_outputs=torch.ones_like(u_y), retain_graph=True, create_graph=True)[0]
+        u_t = torch.autograd.grad(u, t_train, grad_outputs=torch.ones_like(u), retain_graph=True, create_graph=True)[0]
+        u_x = torch.autograd.grad(u, x_train, grad_outputs=torch.ones_like(u), retain_graph=True, create_graph=True)[0]
+        u_y = torch.autograd.grad(u, y_train, grad_outputs=torch.ones_like(u), retain_graph=True, create_graph=True)[0]
+        u_xx = torch.autograd.grad(u, x_train, grad_outputs=torch.ones_like(u_x), retain_graph=True, create_graph=True)[0]
+        u_yy = torch.autograd.grad(u, y_train, grad_outputs=torch.ones_like(u_y), retain_graph=True, create_graph=True)[0]
 
-            v_t = torch.autograd.grad(v, t_batch, grad_outputs=torch.ones_like(v), retain_graph=True, create_graph=True)[0]
-            v_x = torch.autograd.grad(v, x_batch, grad_outputs=torch.ones_like(v), retain_graph=True, create_graph=True)[0]
-            v_y = torch.autograd.grad(v, y_batch, grad_outputs=torch.ones_like(v), retain_graph=True, create_graph=True)[0]
-            v_xx = torch.autograd.grad(v, x_batch, grad_outputs=torch.ones_like(v_x), retain_graph=True, create_graph=True)[0]
-            v_yy = torch.autograd.grad(v, y_batch, grad_outputs=torch.ones_like(v_y), retain_graph=True, create_graph=True)[0]
+        v_t = torch.autograd.grad(v, t_train, grad_outputs=torch.ones_like(v), retain_graph=True, create_graph=True)[0]
+        v_x = torch.autograd.grad(v, x_train, grad_outputs=torch.ones_like(v), retain_graph=True, create_graph=True)[0]
+        v_y = torch.autograd.grad(v, y_train, grad_outputs=torch.ones_like(v), retain_graph=True, create_graph=True)[0]
+        v_xx = torch.autograd.grad(v, x_train, grad_outputs=torch.ones_like(v_x), retain_graph=True, create_graph=True)[0]
+        v_yy = torch.autograd.grad(v, y_train, grad_outputs=torch.ones_like(v_y), retain_graph=True, create_graph=True)[0]
 
-            p_x = torch.autograd.grad(p, x_batch, grad_outputs=torch.ones_like(p), retain_graph=True, create_graph=True)[0]
-            p_y = torch.autograd.grad(p, y_batch, grad_outputs=torch.ones_like(p), retain_graph=True, create_graph=True)[0]
+        p_x = torch.autograd.grad(p, x_train, grad_outputs=torch.ones_like(p), retain_graph=True, create_graph=True)[0]
+        p_y = torch.autograd.grad(p, y_train, grad_outputs=torch.ones_like(p), retain_graph=True, create_graph=True)[0]
 
-            f_u = u_t + (u * u_x + v * u_y) + p_x - 0.01 * (u_xx + u_yy) 
-            f_v = v_t + (u * v_x + v * v_y) + p_y - 0.01 * (v_xx + v_yy)
+        f_u = u_t + (u*u_x + v*u_y) + p_x - 0.01*(u_xx + u_yy) 
+        f_v = v_t + (u*v_x + v*v_y) + p_y - 0.01*(v_xx + v_yy)
 
-            loss = (
-                torch.mean((u[:, 0] - u_batch) ** 2) +
-                torch.mean((v[:, 0] - v_batch) ** 2) +
-                torch.mean(f_u ** 2) +
-                torch.mean(f_v ** 2)
-            )
+        loss = torch.mean((u[:,0] - u_train)**2) + torch.mean((v[:,0] - v_train)**2) + torch.mean(f_u**2) + torch.mean(f_v**2)
 
-            loss_track.append(loss.item())
+        loss_track.append(loss.item())
 
-            optim.zero_grad()
-            loss.backward()
-            return loss
+        optim.zero_grad()
+        loss.backward()
+        return loss
 
-        optim.step(closure)
+    optim.step(closure)
 if not os.path.exists('./model'):
     os.makedirs('./model')
 torch.save(model.state_dict(), './model/ns_pinnsformer.pt')

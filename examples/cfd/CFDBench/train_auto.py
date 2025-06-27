@@ -11,14 +11,17 @@ from torch import Tensor
 from torch.optim import Adam, lr_scheduler
 from tqdm import tqdm
 
-from dataset.base import CfdAutoDataset
-from dataset import get_auto_dataset
-from models.base_model import AutoCfdModel
-from models.auto_deeponet import AutoDeepONet
-from models.auto_edeeponet import AutoEDeepONet
-from models.auto_deeponet_cnn import AutoDeepONetCnn
-from models.auto_ffn import AutoFfn
-from utils import (
+from onescience.utils.cfdbench.dataset.base import CfdAutoDataset
+from onescience.utils.cfdbench.dataset import get_auto_dataset
+from onescience.models.cfdbench.base_model import AutoCfdModel
+from onescience.models.cfdbench.auto_deeponet import AutoDeepONet
+from onescience.models.cfdbench.auto_edeeponet import AutoEDeepONet
+from onescience.models.cfdbench.auto_deeponet_cnn import AutoDeepONetCnn
+from onescience.models.cfdbench.auto_ffn import AutoFfn
+from onescience.distributed.manager import DistributedManager
+from torch.nn.parallel import DistributedDataParallel as DDP
+from torch.utils.data.distributed import DistributedSampler
+from onescience.utils.cfdbench.utils import (
     dump_json,
     plot,
     plot_loss,
@@ -26,7 +29,7 @@ from utils import (
     load_best_ckpt,
     plot_predictions,
 )
-from utils_auto import init_model
+from onescience.utils.cfdbench.utils_auto import init_model
 from args import Args
 
 
@@ -64,25 +67,35 @@ def evaluate(
     output_dir: Path,
     batch_size: int = 2,
     plot_interval: int = 1,
-    measure_time: bool = True,
+    measure_time: bool = False,
 ):
+    # Only rank 0 process performs evaluation
+    dist = DistributedManager()
+    if dist.world_size > 1 and dist.rank != 0:
+        return {"scores": {}, "preds": []}
+    
+    # Unwrap DDP model if necessary
+    model_eval = model.module if hasattr(model, "module") else model
+    model_eval.eval()
+
     if measure_time:
         assert batch_size == 1
 
     loader = DataLoader(
         data, batch_size=batch_size, shuffle=False, collate_fn=collate_fn
     )
-    scores = {name: [] for name in model.loss_fn.get_score_names()}
+    scores = {name: [] for name in model_eval.loss_fn.get_score_names()}
     input_scores = deepcopy(scores)
     all_preds: List[Tensor] = []
-    print("=== Evaluating ===")
+    
+    print(f"=== Evaluating (rank {dist.rank}) ===")
     print(f"# examples: {len(data)}")
     print(f"Batch size: {batch_size}")
     print(f"# batches: {len(loader)}")
     print(f"Plot interval: {plot_interval}")
     print(f"Output dir: {output_dir}")
+    
     start_time = time.time()
-    model.eval()
     with torch.inference_mode():
         for step, batch in enumerate(tqdm(loader)):
             # inputs, labels, case_params = batch
@@ -90,25 +103,25 @@ def evaluate(
             labels = batch["label"]  # (b, 2, h, w)
 
             # Compute difference between the input and label
-            input_loss: dict = model.loss_fn(
+            input_loss: dict = model_eval.loss_fn(
                 labels=labels[:, :1], preds=inputs[:, :1]
             )
             for key in input_scores:
                 input_scores[key].append(input_loss[key].cpu().tolist())
 
             # Compute the prediction and its loss
-            outputs: dict = model(**batch)
+            outputs: dict = model_eval(**batch)
             loss: dict = outputs["loss"]
             preds: Tensor = outputs["preds"]
             height, width = labels.shape[2:]
 
             # When using DeepONetAuto, the prediction is a flattened.
             preds = preds.view(-1, 1, height, width)  # (b, 1, h, w)
-            # loss = model.loss_fn(labels=labels[:, :1], preds=preds)
             for key in scores:
                 scores[key].append(loss[key].cpu().tolist())
-            # preds = preds.repeat(1, 3, 1, 1)
+                
             all_preds.append(preds.cpu().detach())
+            
             if step % plot_interval == 0 and not measure_time:
                 # Dump input, label and prediction flow images.
                 image_dir = output_dir / "images"
@@ -155,14 +168,22 @@ def test(
     infer_steps: int = 200,
     plot_interval: int = 10,
     batch_size: int = 1,
-    measure_time: bool = True,
+    measure_time: bool = False,
 ):
+    # Only rank 0 process performs testing
+    dist = DistributedManager()
+    if dist.world_size > 1 and dist.rank != 0:
+        return
+    
     assert infer_steps > 0
     assert plot_interval > 0
-    output_dir.mkdir(exist_ok=True, parents=True)
-    print("=== Testing ===")
+    if dist.rank == 0:
+        output_dir.mkdir(exist_ok=True, parents=True)
+    
+    print(f"=== Testing (rank {dist.rank}) ===")
     print(f"batch_size: {batch_size}")
     print(f"Plot interval: {plot_interval}")
+    
     result = evaluate(
         model,
         data,
@@ -171,10 +192,14 @@ def test(
         plot_interval=plot_interval,
         measure_time=measure_time,
     )
+    
     preds = result["preds"]
     scores = result["scores"]
-    torch.save(preds, output_dir / "preds.pt")
-    dump_json(scores, output_dir / "scores.json")
+    
+    if dist.rank == 0:
+        torch.save(preds, output_dir / "preds.pt")
+        dump_json(scores, output_dir / "scores.json")
+    
     print("=== Testing done ===")
 
 
@@ -193,65 +218,51 @@ def train(
     eval_interval: int = 2,
     measure_time: bool = False,
 ):
-    """
-    Main function for training.
-
-    ### Parameters
-    - model
-    - train_data
-    - dev_data
-    - output_dir
-    ...
-    - log_interval: log loss, learning rate etc. every `log_interval` steps.
-    - measure_time: if `True`, will only run one epoch and print the time.
-    """
+    dist = DistributedManager()
+    
+    # Create distributed sampler and data loader
+    sampler = DistributedSampler(train_data) if dist.world_size > 1 else None
     train_loader = DataLoader(
-        train_data, batch_size=batch_size, shuffle=True, collate_fn=collate_fn
+        train_data,
+        batch_size=batch_size,
+        collate_fn=collate_fn,
+        sampler=sampler,
+        shuffle=False,  # 由sampler控制shuffle
+        drop_last=True,  # 添加drop_last确保批次大小一致
     )
-    output_dir.mkdir(exist_ok=True, parents=True)
+    if dist.rank == 0:
+        output_dir.mkdir(exist_ok=True, parents=True)
+        print("====== Training ======")
+        print(f"# batch: {batch_size} (per GPU)")
+        print(f"# examples: {len(train_data)}")
+        print(f"# step: {len(train_loader)}")
+        print(f"# epoch: {num_epochs}")
+        print(f"# GPUs: {dist.world_size}")
 
     optimizer = Adam(model.parameters(), lr=lr)
     scheduler = lr_scheduler.StepLR(
         optimizer, step_size=lr_step_size, gamma=lr_gamma
     )
 
-    print("====== Training ======")
-    print(f"# batch: {batch_size}")
-    print(f"# examples: {len(train_data)}")
-    print(f"# step: {len(train_loader)}")
-    print(f"# epoch: {num_epochs}")
-
     start_time = time.time()
     global_step = 0
     train_losses = []
 
     for ep in range(num_epochs):
+        # Set epoch for distributed sampler
+        if sampler is not None:
+            sampler.set_epoch(ep)
+        
         ep_start_time = time.time()
         ep_train_losses = []
+        model.train()
+        
         for step, batch in enumerate(train_loader):
             # Forward
             outputs: dict = model(**batch)
-            if step == 0 and not measure_time:
-                out_file = Path("example.png")
-                inputs = batch["inputs"]
-                labels = batch["label"]
-                preds = outputs["preds"]
-                if any(
-                    isinstance(model, t)
-                    for t in [
-                        AutoDeepONet,
-                        AutoEDeepONet,
-                        AutoFfn,
-                        AutoDeepONetCnn,
-                    ]
-                ):
-                    plot(inputs[0][0], labels[0][0], labels[0][0], out_file)
-                else:
-                    plot(inputs[0][0], labels[0][0], preds[0][0], out_file)
-
+            
             # Backward
             loss: dict = outputs["loss"]
-            # print(loss)
             loss["nmse"].backward()
             optimizer.step()
             optimizer.zero_grad()
@@ -259,7 +270,8 @@ def train(
             # Log
             ep_train_losses.append(loss["nmse"].item())
             global_step += 1
-            if global_step % log_interval == 0:
+            # Only log from rank 0
+            if dist.rank == 0 and (global_step % log_interval == 0):
                 log_info = dict(
                     ep=ep,
                     step=step,
@@ -271,17 +283,18 @@ def train(
                 print(log_info)
 
         if measure_time:
-            print("Memory usage:")
-            print(torch.cuda.memory_summary("cuda"))
-            print("Time usage:")
-            print(time.time() - ep_start_time)
+            if dist.rank == 0:
+                print("Memory usage:")
+                print(torch.cuda.memory_summary("cuda"))
+                print("Time usage:")
+                print(time.time() - ep_start_time)
             exit()
 
         scheduler.step()
         train_losses += ep_train_losses
 
-        # Plot
-        if (ep + 1) % eval_interval == 0:
+        # Plot and evaluate on rank 0 only
+        if dist.rank == 0 and (ep + 1) % eval_interval == 0:
             ckpt_dir = output_dir / f"ckpt-{ep}"
             ckpt_dir.mkdir(exist_ok=True, parents=True)
             result = evaluate(
@@ -291,14 +304,15 @@ def train(
             dump_json(dev_scores, ckpt_dir / "dev_scores.json")
             dump_json(ep_train_losses, ckpt_dir / "train_loss.json")
 
-            # Save checkpoint
+            # Save checkpoint - unwrap DDP model
+            model_to_save = model.module if hasattr(model, "module") else model
             ckpt_path = ckpt_dir / "model.pt"
             print(f"Saving checkpoint to {ckpt_path}")
             if ckpt_path.exists():
                 ckpt_backup_path = ckpt_dir / "backup_model.pt"
                 print(f"Backing up old checkpoint to {ckpt_backup_path}")
                 copyfile(ckpt_path, ckpt_backup_path)
-            torch.save(model.state_dict(), ckpt_path)
+            torch.save(model_to_save.state_dict(), ckpt_path)
 
             # Save average scores
             ep_scores = dict(
@@ -308,23 +322,38 @@ def train(
                 time=time.time() - ep_start_time,
             )
             dump_json(ep_scores, ckpt_dir / "scores.json")
-    print("====== Training done ======")
-    dump_json(train_losses, output_dir / "train_losses.json")
-    plot_loss(train_losses, output_dir / "train_losses.png")
+        
+        # All processes wait for evaluation to finish
+        if dist.world_size > 1:
+            torch.distributed.barrier()
+    
+    # Only rank 0 saves final training losses
+    if dist.rank == 0:
+        print("====== Training done ======")
+        dump_json(train_losses, output_dir / "train_losses.json")
+        plot_loss(train_losses, output_dir / "train_losses.png")
 
 
 def main():
+    # Initialize distributed environment
+    DistributedManager.initialize()
+    dist = DistributedManager()
+    print(f"Initialized process group: rank {dist.rank}, world size {dist.world_size}")
+    
     args = Args().parse_args()
-    print("#" * 80)
-    print(args)
-    print("#" * 80)
+    if dist.rank == 0:
+        print("#" * 80)
+        print(args)
+        print("#" * 80)
 
     output_dir = get_output_dir(args, is_auto=True)
-    output_dir.mkdir(exist_ok=True, parents=True)
-    args.save(str(output_dir / "args.json"))
+    if dist.rank == 0:
+        output_dir.mkdir(exist_ok=True, parents=True)
+        args.save(str(output_dir / "args.json"))
 
     # Data
-    print("Loading data...")
+    if dist.rank == 0:
+        print("Loading data...")
     data_dir = Path(args.data_dir)
     train_data, dev_data, test_data = get_auto_dataset(
         data_dir=data_dir,
@@ -332,22 +361,35 @@ def main():
         delta_time=args.delta_time,
         norm_props=bool(args.norm_props),
         norm_bc=bool(args.norm_bc),
+        rank=dist.rank,
     )
     assert train_data is not None
     assert dev_data is not None
     assert test_data is not None
-    print(f"# train examples: {len(train_data)}")
-    print(f"# dev examples: {len(dev_data)}")
-    print(f"# test examples: {len(test_data)}")
+    
+    if dist.rank == 0:
+        print(f"# train examples: {len(train_data)}")
+        print(f"# dev examples: {len(dev_data)}")
+        print(f"# test examples: {len(test_data)}")
 
     # Model
-    print("Loading model")
+    if dist.rank == 0:
+        print("Loading model")
     model = init_model(args)
     num_params = sum(p.numel() for p in model.parameters())
-    print(f"Model has {num_params} parameters")
+    if dist.rank == 0:
+        print(f"Model has {num_params} parameters")
+    
+    model = model.to(dist.device)
+    
+    # Wrap model with DDP for training
+    if "train" in args.mode and dist.world_size > 1:
+        model = DDP(model, device_ids=[dist.device])
 
+    # Training
     if "train" in args.mode:
-        args.save(str(output_dir / "train_args.json"))
+        if dist.rank == 0:
+            args.save(str(output_dir / "train_args.json"))
         train(
             model,
             train_data=train_data,
@@ -361,16 +403,19 @@ def main():
             eval_interval=args.eval_interval,
             log_interval=args.log_interval,
         )
-    if "test" in args.mode:
+
+    # Testing
+    if "test" in args.mode and dist.rank == 0:
         args.save(str(output_dir / "test_args.json"))
-        # Test
-        load_best_ckpt(model, output_dir)
+        # Unwrap model if DDP
+        model_to_test = model.module if hasattr(model, "module") else model
+        load_best_ckpt(model_to_test, output_dir)
         test_dir = output_dir / "test"
         test_dir.mkdir(exist_ok=True)
         test(
-            model,
+            model_to_test,
             test_data,
-            output_dir / "test",
+            test_dir,
             batch_size=1,
             infer_steps=20,
             plot_interval=10,

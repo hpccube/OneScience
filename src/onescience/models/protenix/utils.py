@@ -62,15 +62,16 @@ def centre_random_augmentation(
         .to(device)
         .reshape(*batch_size_shape, N_sample, 3, 3)
     ).detach()  # [..., N_sample, 3, 3]
-    trans_random = s_trans * torch.randn(size=(*batch_size_shape, N_sample, 3)).to(
-        device
-    )  # [..., N_sample, 3]
+    trans_random = s_trans * torch.randn(size=(*batch_size_shape, N_sample, 3), device=device)  # [..., N_sample, 3]
     x_augment_coords = (
         rot_vec_mul(
             r=expand_at_dim(rot_matrix_random, dim=-3, n=N_atom), t=x_input_coords
         )
         + trans_random[..., None, :]
     )  # [..., N_sample, N_atom, 3]
+
+    if mask is not None:
+        x_augment_coords = x_augment_coords * mask[..., None, :, None]
     return x_augment_coords
 
 
@@ -105,6 +106,11 @@ def rot_vec_mul(r: torch.Tensor, t: torch.Tensor) -> torch.Tensor:
     Returns:
         torch.Tensor: the rotated coordinates
     """
+    if t.dtype != torch.float32:
+        t = t.to(dtype=torch.float32)
+    if r.dtype != torch.float32:
+        r = r.to(dtype=torch.float32)
+
     x, y, z = torch.unbind(input=t, dim=-1)
     return torch.stack(
         tensors=[

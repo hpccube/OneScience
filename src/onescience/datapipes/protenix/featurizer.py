@@ -1,13 +1,13 @@
 import copy
 from collections import defaultdict
-from typing import Union
+from typing import Optional, Union
 
 import numpy as np
 import torch
 from biotite.structure import Atom, AtomArray, get_residue_starts
 from sklearn.neighbors import KDTree
 
-from onescience.datapipes.protenix.constants import STD_RESIDUES, get_all_elems
+from onescience.datapipes.protenix.constants import STD_RESIDUES, STD_RESIDUES_WITH_GAP, get_all_elems
 from onescience.datapipes.protenix.tokenizer import Token, TokenArray
 from onescience.datapipes.protenix.utils import get_ligand_polymer_bond_mask
 from onescience.utils.protenix.geometry import angle_3p, random_transform
@@ -35,24 +35,35 @@ class Featurizer(object):
         self.lig_atom_rename = lig_atom_rename
 
     @staticmethod
-    def encoder(encode_def_list: list[str], input_list: list[str]) -> torch.Tensor:
+    def encoder(
+        encode_def_dict_or_list: Optional[Union[dict, list[str]]], input_list: list[str]
+    ) -> torch.Tensor:
         """
         Encode a list of input values into a binary format using a specified encoding definition list.
 
         Args:
-            encode_def_list (list): A list of encoding definitions.
+            encode_def_dict_or_list (list or dict): A list or dict of encoding definitions.
             input_list (list): A list of input values to be encoded.
 
         Returns:
             torch.Tensor: A tensor representing the binary encoding of the input values.
         """
-        onehot_dict = {}
-        num_keys = len(encode_def_list)
-        for index, key in enumerate(encode_def_list):
-            onehot = [0] * num_keys
-            onehot[index] = 1
-            onehot_dict[key] = onehot
-
+        num_keys = len(encode_def_dict_or_list)
+        if isinstance(encode_def_dict_or_list, dict):
+            items = encode_def_dict_or_list.items()
+            assert (
+                num_keys == max(encode_def_dict_or_list.values()) + 1
+            ), "Do not use discontinuous number, which might causing potential bugs in the code"
+        elif isinstance(encode_def_dict_or_list, list):
+            items = ((key, idx) for idx, key in enumerate(encode_def_dict_or_list))
+        else:
+            raise TypeError(
+                "encode_def_dict_or_list must be a list or dict, "
+                f"but got {type(encode_def_dict_or_list)}"
+            )
+        onehot_dict = {
+            key: [int(i == idx) for i in range(num_keys)] for key, idx in items
+        }
         onehot_encoded_data = [onehot_dict[item] for item in input_list]
         onehot_tensor = torch.Tensor(onehot_encoded_data)
         return onehot_tensor
@@ -73,7 +84,7 @@ class Featurizer(object):
             torch.Tensor:  A Tensor of one-hot encoded residue types
         """
 
-        return Featurizer.encoder(list(STD_RESIDUES.keys()) + ["-"], restype_list)
+        return Featurizer.encoder(STD_RESIDUES_WITH_GAP, restype_list)
 
     @staticmethod
     def elem_onehot_encoded(elem_list: list[str]) -> torch.Tensor:
@@ -193,9 +204,21 @@ class Featurizer(object):
 
             # Colinear check
             if has_frame:
-                theta_degrees = angle_3p(*[ref_pos[idx] for idx in frame_atom_index])
-                if theta_degrees <= 25 or theta_degrees >= 155:
+                vec1 = ref_pos[frame_atom_index[1]] - ref_pos[frame_atom_index[0]]
+                vec2 = ref_pos[frame_atom_index[2]] - ref_pos[frame_atom_index[1]]
+                # ref_pos can be all zeros, in which case has_frame=0
+                is_zero_norm = np.isclose(
+                    np.linalg.norm(vec1, axis=-1), 0
+                ) or np.isclose(np.linalg.norm(vec2, axis=-1), 0)
+                if is_zero_norm:
                     has_frame = 0
+                else:
+                    theta_degrees = angle_3p(
+                        *[ref_pos[idx] for idx in frame_atom_index]
+                    )
+                    is_colinear = theta_degrees <= 25 or theta_degrees >= 155
+                    if is_colinear:
+                        has_frame = 0
         return has_frame, frame_atom_index
 
     @staticmethod
@@ -230,7 +253,7 @@ class Featurizer(object):
                         - has_frame: 1 if the token has frame, 0 otherwise.
                         - frame_atom_index: The index of the atoms used to construct the frame.
         """
-        token_array_w_frame = copy.deepcopy(token_array)
+        token_array_w_frame = token_array
 
         # Construct a KDTree for queries to avoid redundant distance calculations
         lig_res_ref_conf_kdtree = {}
@@ -411,52 +434,48 @@ class Featurizer(object):
         A 2D matrix indicating if there is a bond between any atom in token i and token j,
         restricted to just polymer-ligand and ligand-ligand bonds and bonds less than 2.4 Å during training.
         The size of bond feature is [N_token, N_token].
-
         Returns:
             Dict[str, torch.Tensor]: A dict of bond features.
         """
-        bond_features = {}
+        bond_array = self.cropped_atom_array.bonds.as_array()
+        bond_atom_i = bond_array[:, 0]
+        bond_atom_j = bond_array[:, 1]
+        ref_space_uid = self.cropped_atom_array.ref_space_uid
+        polymer_mask = np.isin(
+            self.cropped_atom_array.mol_type, ["protein", "dna", "rna"]
+        )
+        std_res_mask = (
+            np.isin(self.cropped_atom_array.res_name, list(STD_RESIDUES.keys()))
+            & polymer_mask
+        )
+        unstd_res_mask = ~std_res_mask & polymer_mask
+        # the polymer-polymer (std-std, std-unstd, and inter-unstd) bond will not be included in token_bonds.
+        std_std_bond_mask = std_res_mask[bond_atom_i] & std_res_mask[bond_atom_j]
+        std_unstd_bond_mask = (
+            std_res_mask[bond_atom_i] & unstd_res_mask[bond_atom_j]
+        ) | (std_res_mask[bond_atom_j] & unstd_res_mask[bond_atom_i])
+        inter_unstd_bond_mask = (
+            unstd_res_mask[bond_atom_i] & unstd_res_mask[bond_atom_j]
+        ) & (ref_space_uid[bond_atom_i] != ref_space_uid[bond_atom_j])
+        kept_bonds = bond_array[
+            ~(std_std_bond_mask | std_unstd_bond_mask | inter_unstd_bond_mask)
+        ]
+        # -1 means the atom is not in any token
+        atom_idx_to_token_idx = np.zeros(len(self.cropped_atom_array), dtype=int) - 1
+        for idx, token in enumerate(self.cropped_token_array.tokens):
+            for atom_idx in token.atom_indices:
+                atom_idx_to_token_idx[atom_idx] = idx
+        assert np.all(atom_idx_to_token_idx >= 0), "Some atoms are not in any token"
         num_tokens = len(self.cropped_token_array)
-        adj_matrix = self.cropped_atom_array.bonds.adjacency_matrix().astype(int)
-
         token_adj_matrix = np.zeros((num_tokens, num_tokens), dtype=int)
-        atom_bond_mask = adj_matrix > 0
-
-        for i in range(num_tokens):
-            atoms_i = self.cropped_token_array[i].atom_indices
-            token_i_mol_type = self.cropped_atom_array.mol_type[atoms_i[0]]
-            token_i_res_name = self.cropped_atom_array.res_name[atoms_i[0]]
-            token_i_ref_space_uid = self.cropped_atom_array.ref_space_uid[atoms_i[0]]
-            unstd_res_token_i = (
-                token_i_res_name not in STD_RESIDUES and token_i_mol_type != "ligand"
-            )
-            is_polymer_i = token_i_mol_type in ["protein", "dna", "rna"]
-
-            for j in range(i + 1, num_tokens):
-                atoms_j = self.cropped_token_array[j].atom_indices
-                token_j_mol_type = self.cropped_atom_array.mol_type[atoms_j[0]]
-                token_j_res_name = self.cropped_atom_array.res_name[atoms_j[0]]
-                token_j_ref_space_uid = self.cropped_atom_array.ref_space_uid[
-                    atoms_j[0]
-                ]
-                unstd_res_token_j = (
-                    token_j_res_name not in STD_RESIDUES
-                    and token_j_mol_type != "ligand"
-                )
-                is_polymer_j = token_j_mol_type in ["protein", "dna", "rna"]
-
-                # The polymer-polymer (std-std, std-unstd, and inter-unstd) bond will not be included in token_bonds.
-                if is_polymer_i and is_polymer_j:
-                    is_same_res = token_i_ref_space_uid == token_j_ref_space_uid
-                    unstd_res_bonds = unstd_res_token_i and unstd_res_token_j
-                    if not (is_same_res and unstd_res_bonds):
-                        continue
-
-                sub_matrix = atom_bond_mask[np.ix_(atoms_i, atoms_j)]
-                if np.any(sub_matrix):
-                    token_adj_matrix[i, j] = 1
-                    token_adj_matrix[j, i] = 1
-        bond_features["token_bonds"] = torch.Tensor(token_adj_matrix)
+        bond_token_i, bond_atom_j = (
+            atom_idx_to_token_idx[kept_bonds[:, 0]],
+            atom_idx_to_token_idx[kept_bonds[:, 1]],
+        )
+        for i, j in zip(bond_token_i, bond_atom_j):
+            token_adj_matrix[i, j] = 1
+            token_adj_matrix[j, i] = 1
+        bond_features = {"token_bonds": torch.Tensor(token_adj_matrix)}
         return bond_features
 
     def get_extra_features(self) -> dict[str, torch.Tensor]:

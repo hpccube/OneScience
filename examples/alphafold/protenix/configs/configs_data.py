@@ -47,6 +47,56 @@ default_weighted_pdb_configs = {
 }
 
 DATA_ROOT_DIR = "/af3-dev/release_data/"
+# Use CCD cache created by scripts/gen_ccd_cache.py priority. (without date in filename)
+# See: docs/prepare_data.md
+CCD_COMPONENTS_FILE_PATH = os.path.join(DATA_ROOT_DIR, "components.cif")
+CCD_COMPONENTS_RDKIT_MOL_FILE_PATH = os.path.join(
+    DATA_ROOT_DIR, "components.cif.rdkit_mol.pkl"
+)
+
+if (not os.path.exists(CCD_COMPONENTS_FILE_PATH)) or (
+    not os.path.exists(CCD_COMPONENTS_RDKIT_MOL_FILE_PATH)
+):
+    CCD_COMPONENTS_FILE_PATH = os.path.join(DATA_ROOT_DIR, "components.v20240608.cif")
+    CCD_COMPONENTS_RDKIT_MOL_FILE_PATH = os.path.join(
+        DATA_ROOT_DIR, "components.v20240608.cif.rdkit_mol.pkl"
+    )
+
+
+# This is a patch in inference stage for users that do not have root permission.
+# If you run
+# ```
+# bash inference_demo.sh
+# ```
+# or
+# ```
+# protenix predict --input examples/example.json --out_dir  ./output
+# ````
+# The checkpoint and the data cache will be downloaded to the current code directory.
+if (not os.path.exists(CCD_COMPONENTS_FILE_PATH)) or (
+    not os.path.exists(CCD_COMPONENTS_RDKIT_MOL_FILE_PATH)
+):
+    print("Try to find the ccd cache data in the code directory for inference.")
+    current_file_path = os.path.abspath(__file__)
+    current_directory = os.path.dirname(current_file_path)
+    code_directory = os.path.dirname(current_directory)
+
+    data_cache_dir = os.path.join(code_directory, "release_data/ccd_cache")
+    CCD_COMPONENTS_FILE_PATH = os.path.join(data_cache_dir, "components.cif")
+    CCD_COMPONENTS_RDKIT_MOL_FILE_PATH = os.path.join(
+        data_cache_dir, "components.cif.rdkit_mol.pkl"
+    )
+    if (not os.path.exists(CCD_COMPONENTS_FILE_PATH)) or (
+        not os.path.exists(CCD_COMPONENTS_RDKIT_MOL_FILE_PATH)
+    ):
+
+        CCD_COMPONENTS_FILE_PATH = os.path.join(
+            data_cache_dir, "components.v20240608.cif"
+        )
+        CCD_COMPONENTS_RDKIT_MOL_FILE_PATH = os.path.join(
+            data_cache_dir, "components.v20240608.cif.rdkit_mol.pkl"
+        )
+
 
 data_configs = {
     "num_dl_workers": 16,
@@ -133,15 +183,15 @@ data_configs = {
         "merge_method": "dense_max",
         "min_size": {
             "train": 1,
-            "test": 2048,
+            "test": 1,
         },
         "max_size": {
             "train": 16384,
             "test": 16384,
         },
         "sample_cutoff": {
-            "train": 2048,
-            "test": 2048,
+            "train": 16384,
+            "test": 16384,
         },
     },
     "template": {
@@ -149,6 +199,5 @@ data_configs = {
     },
     "ccd_components_file": os.path.join(DATA_ROOT_DIR, "components.v20240608.cif"),
     "ccd_components_rdkit_mol_file": os.path.join(
-        DATA_ROOT_DIR, "components.v20240608.cif.rdkit_mol.pkl"
-    ),
+        DATA_ROOT_DIR, "components.v20240608.cif.rdkit_mol.pkl"),
 }

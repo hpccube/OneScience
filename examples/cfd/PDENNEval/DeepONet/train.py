@@ -379,7 +379,7 @@ def main(args):
                 ### save best
                 min_val_loss=val_loss
                 torch.save({"epoch": epoch+1, "loss": min_val_loss,
-                    "model_state_dict": model.module.state_dict() if torch.cuda.device_count() > 1 else model.state_dict(),
+                    "model_state_dict": model.module.state_dict() if isinstance(model, torch.nn.parallel.DistributedDataParallel) else model.state_dict(),
                     "optimizer_state_dict": optimizer.state_dict()
                     }, saved_path + "-best.pt")
             

@@ -38,24 +38,35 @@ dataset\
 
 ## 模型训练
 
-单卡训练：
+单机单卡训练：
 
 ```bash
-python train_pangu_era5.py
+bash train_single_node_single_device.sh
 ```
 
-多卡训练：
+单机多卡训练：
 
 ```bash
-mpirun -np <num_GPUs> --allow-run-as-root python train_pangu_era5.py
+bash train_single_node_multi_device.sh
 ```
 
-torchrun启动多节点多卡训练：
+多机多卡训练：
 
 ```bash
-torchrun --standalone --nnodes=<num_nodes> --nproc_per_node=<num_GPUs> train_pangu_era5.py
+sbatch slurm.sh
 ```
 
+单机单卡推理：
+
+```bash
+python inference.py
+```
+
+误差计算：
+
+```bash
+python result.py
+```
 
 ## 参考
 

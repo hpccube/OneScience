@@ -24,7 +24,7 @@ pip install -r requirements.txt
 
 2. 数据准备
 
-实验数据由[AlfRANS](https://github.com/Extrality/AirfRANS)提供。您可以通过此[链接](https://data.isir.upmc.fr/extrality/NeurIPS_2022/Dataset.zip)直接下载（9.3GB）。
+实验数据由[AirfRANS](https://github.com/Extrality/AirfRANS)提供。您可以通过此[链接](https://data.isir.upmc.fr/extrality/NeurIPS_2022/Dataset.zip)直接下载（9.3GB），可以通过此通过此[链接](https://airfrans.readthedocs.io/en/latest/notes/introduction.html)查看数据集的一些描述。
 
 3. 训练
 

@@ -8,7 +8,6 @@ from torch.utils.data import Dataset
 
 
 def load_data(data_dir: Path):
-    print(f"Loading data from {data_dir}")
     u = np.load(data_dir / "u.npy")
     v = np.load(data_dir / "v.npy")
     mask = np.load(data_dir / "mask.npy")

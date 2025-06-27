@@ -31,12 +31,20 @@
 
 <span style="color: yellow;"> 在navier_stokes目录中，针对纳维-斯托克斯方程，我们提供了pinnsformer方法和其他三种方法的训练，测试和可视化结果做对比。</span>
 
+## 数据集
+
+下面是对流方程和纳维-斯托克斯方程所需要数据集，用于读取初始状态和作为真实值对比：
+
+[Baidu Drive (百度网盘)](https://pan.baidu.com/s/1pM4ICc6FJX5pLF7WEoozxQ?pwd=5gha) (提取码: 5gha)
+
+下载完数据放入对应的文件夹即可。
+
 ## 训练
 
 以一维反应方程为例，其目录结构如下：
 ```
 project_root/
-└── 1d_reaction/                     # 针对“一维反应方程”求解的文件夹
+└── 1d_reaction/                    
     │
     ├── notebook/                   # Jupyter笔记本，用于交互式训练测试与可视化
     │   ├── 1d_reaction_pinnsformer.ipynb  # PINNsFormer方法的训练测试演示

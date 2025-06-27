@@ -4,7 +4,7 @@ from typing import Optional
 import torch
 import torch.nn as nn
 
-from onescience.models.openfold.primitives import Linear
+from onescience.models.openfold.primitives import LayerNorm, Linear
 from onescience.utils.openfold.chunk_utils import chunk_layer
 from onescience.utils.openfold.precision_utils import is_fp16_enabled
 
@@ -31,9 +31,9 @@ class OuterProductMean(nn.Module):
         self.c_hidden = c_hidden
         self.eps = eps
 
-        self.layer_norm = nn.LayerNorm(c_m)
-        self.linear_1 = Linear(c_m, c_hidden)
-        self.linear_2 = Linear(c_m, c_hidden)
+        self.layer_norm = LayerNorm(c_m)
+        self.linear_1 = Linear(c_m, c_hidden, bias=False)
+        self.linear_2 = Linear(c_m, c_hidden, bias=False)
         self.linear_out = Linear(c_hidden**2, c_z, init="final")
 
     def _opm(self, a, b):

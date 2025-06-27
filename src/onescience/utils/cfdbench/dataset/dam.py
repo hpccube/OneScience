@@ -166,7 +166,6 @@ class DamFlowDataset(CfdDataset):
         for case_id, case_dir in enumerate(tqdm(case_dirs)):
             # (T, c, h, w), dict
             this_case_features, this_case_params = load_case_data(case_dir)
-            print(this_case_params)
             if self.norm_props:
                 normalize_physics_props(this_case_params)
             if self.norm_bc:
@@ -332,6 +331,7 @@ def get_dam_datasets(
     norm_props: bool,
     norm_bc: bool,
     seed: int = 0,
+    rank: int = 0,
 ) -> Tuple[DamFlowDataset, DamFlowDataset, DamFlowDataset]:
     """
     Returns: (train_data, dev_data, test_data)
@@ -374,8 +374,10 @@ def get_dam_auto_datasets(
     delta_time: float = 0.1,
     stable_state_diff: float = 0.001,
     seed: int = 0,
+    rank: int = 0,
 ) -> Tuple[DamFlowAutoDataset, DamFlowAutoDataset, DamFlowAutoDataset]:
-    print(data_dir, subset_name)
+    if rank == 0:
+        print(data_dir, subset_name)
     case_dirs = []
     for name in ["prop", "bc", "geo"]:
         if name in subset_name:
@@ -397,13 +399,14 @@ def get_dam_auto_datasets(
     train_case_dirs = case_dirs[:num_train]
     dev_case_dirs = case_dirs[num_train : num_train + num_dev]
     test_case_dirs = case_dirs[num_train + num_dev :]
-    print("==== Number of cases in different splits ====")
-    print(
-        f"train: {len(train_case_dirs)}, "
-        f"dev: {len(dev_case_dirs)}, "
-        f"test: {len(test_case_dirs)}"
-    )
-    print("=============================================")
+    if rank == 0:
+        print("==== Number of cases in different splits ====")
+        print(
+            f"train: {len(train_case_dirs)}, "
+            f"dev: {len(dev_case_dirs)}, "
+            f"test: {len(test_case_dirs)}"
+        )
+        print("=============================================")
     kwargs: dict[str, Any] = dict(
         delta_time=delta_time,
         norm_props=norm_props,

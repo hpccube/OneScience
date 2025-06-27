@@ -48,7 +48,7 @@ def init_weights(m):
         torch.nn.init.xavier_uniform_(m.weight)
         m.bias.data.fill_(0.01)
 
-model = PINNsformer1D(d_out=1, d_hidden=512, d_model=32, N=1, heads=2).to(device)
+model = PINNsformer1D(d_out=1, d_hidden=128, d_model=32, N=1, heads=2).to(device)
 
 model.apply(init_weights)
 optim = LBFGS(model.parameters(), line_search_fn='strong_wolfe')

@@ -1,321 +1,180 @@
 import torch
 import os
-import hydra
+import sys
 import numpy as np
-import matplotlib.pyplot as plt
+import torch.distributed as dist
+import logging
 
 from torch.nn.parallel import DistributedDataParallel
-from omegaconf import DictConfig, OmegaConf
-
 from onescience.models.pangu import Pangu
 from onescience.datapipes.climate import ERA5HDF5Datapipe
-from onescience.distributed import DistributedManager
-from onescience.utils import StaticCaptureTraining, StaticCaptureEvaluateNoGrad
-
-from onescience.launch.logging import LaunchLogger, PythonLogger
-from onescience.launch.logging.mlflow import initialize_mlflow
+from onescience.utils.fcn.YParams import YParams
 from onescience.launch.utils import load_checkpoint, save_checkpoint
-
-try:
-    from apex import optimizers
-except:
-    raise ImportError(
-        "Pangu-Weather training requires apex package for optimizer."
-        + "See https://github.com/nvidia/apex for install details."
-    )
+from apex import optimizers
 
 
 def loss_func(x, y):
     return torch.nn.functional.l1_loss(x, y)
 
 
-@torch.no_grad()
-def validation_step(
-    eval_step, pangu_model, dist, datapipe, surface_mask, channels=[0, 1], epoch=0
-):
-    loss_epoch = 0
-    num_examples = 0  # Number of validation examples
-    # Dealing with DDP wrapper
-    if hasattr(pangu_model, "module"):
-        pangu_model = pangu_model.module
-    pangu_model.eval()
-    for i, data in enumerate(datapipe):
-        invar_surface = data[0]["invar"].to(dist.device).detach()[:, :4, :, :]
-        invar_upper_air = (
-            data[0]["invar"].to(dist.device)
-            .detach()[:, 4:, :, :]
-            .reshape(
-                (
-                    data[0]["invar"].shape[0],
-                    5,
-                    -1,
-                    data[0]["invar"].shape[2],
-                    data[0]["invar"].shape[3],
-                )
-            )
-        )
-        outvar_surface = data[0]["outvar"].to(dist.device).detach()[:, :, :4, :, :]
-        outvar_upper_air = (
-            data[0]["outvar"]
-            .to(dist.device)
-            .detach()[:, :, 4:, :, :]
-            .reshape(
-                (
-                    data[0]["outvar"].shape[0],
-                    data[0]["outvar"].shape[1],
-                    5,
-                    -1,
-                    data[0]["outvar"].shape[3],
-                    data[0]["outvar"].shape[4],
-                )
-            )
-        )
-        # surface_mask = surface_mask.cpu()
-        predvar_surface = torch.zeros_like(outvar_surface)
-        predvar_upper_air = torch.zeros_like(outvar_upper_air)
+def main():
 
-        for t in range(outvar_surface.shape[1]):
-            # print(invar_surface.device,surface_mask.device,invar_upper_air.device)
-            output_surface, output_upper_air = eval_step(
-                pangu_model, invar_surface, surface_mask, invar_upper_air
-            )
-            invar_surface.copy_(output_surface)
-            invar_upper_air.copy_(output_upper_air)
-            predvar_surface[:, t] = output_surface.detach().cpu()
-            predvar_upper_air[:, t] = output_upper_air.detach().cpu()
-
-        num_elements_surface = torch.prod(torch.Tensor(list(predvar_surface.shape[1:])))
-        num_elements_upper_air = torch.prod(
-            torch.Tensor(list(predvar_upper_air.shape[1:]))
-        )
-        loss_epoch += (
-            torch.sum(torch.pow(predvar_surface - outvar_surface, 2))
-            + torch.sum(torch.pow(predvar_upper_air - outvar_upper_air, 2))
-        ) / (num_elements_surface + num_elements_upper_air)
-
-        num_examples += predvar_surface.shape[0]
-
-    pangu_model.train()
-    return loss_epoch / num_examples
-
-
-@hydra.main(version_base="1.2", config_path="conf", config_name="config_lite")
-def main(cfg: DictConfig) -> None:
-    DistributedManager.initialize()
-    dist = DistributedManager()
-
-    # Initialize loggers
-    initialize_mlflow(
-        experiment_name=cfg.experiment_name,
-        experiment_desc=cfg.experiment_desc,
-        run_name="Pangu-trainng",
-        run_desc=cfg.experiment_desc,
-        user_name="onescience User",
-        mode="offline",
-    )
-    LaunchLogger.initialize(use_mlflow=True)  # onescience launch logger
-    logger = PythonLogger("main")  # General python logger
-
-    number_channels_pangu = 4 + 5 * 13
-    dataset = ERA5HDF5Datapipe(
-        data_dir=cfg.train.data_dir,
-        stats_dir=cfg.train.stats_dir,
-        channels=[i for i in range(number_channels_pangu)],
-        num_samples_per_year=cfg.train.num_samples_per_year,
-        batch_size=cfg.train.batch_size,
-        patch_size=OmegaConf.to_object(cfg.train.patch_size),
-        num_workers=cfg.train.num_workers,
-        device=dist.device,
-        process_rank=dist.rank,
-        world_size=dist.world_size,
-    )
-    datapipe = dataset.train_dataloader()
-    logger.success(f"Loaded datapipe of size {len(datapipe)}")
-
-    mask_dir = cfg.mask_dir
-    if cfg.get("mask_dtype", "float32") == "float32":
-        mask_dtype = np.float32
-    elif cfg.get("mask_dtype", "float32") == "float16":
-        mask_dtype = np.float16
-    else:
-        mask_dtype = np.float32
-    land_mask = torch.from_numpy(
-        np.load(os.path.join(mask_dir, "land_mask.npy")).astype(mask_dtype)
-    )
-    soil_type = torch.from_numpy(
-        np.load(os.path.join(mask_dir, "soil_type.npy")).astype(mask_dtype)
-    )
-    topography = torch.from_numpy(
-        np.load(os.path.join(mask_dir, "topography.npy")).astype(mask_dtype)
-    )
-    surface_mask = torch.stack([land_mask, soil_type, topography], dim=0).to(
-        dist.device
-    )
-    logger.success(f"Loaded suface constant mask from {mask_dir}")
-
-    if dist.rank == 0:
-        logger.file_logging()
-        validation_dataset = ERA5HDF5Datapipe(
-            data_dir=cfg.val.data_dir,
-            stats_dir=cfg.val.stats_dir,
-            channels=[i for i in range(number_channels_pangu)],
-            num_steps=1,
-            num_samples_per_year=cfg.val.num_samples_per_year,
-            batch_size=cfg.val.batch_size,
-            patch_size=OmegaConf.to_object(cfg.val.patch_size),
-            device=dist.device,
-            num_workers=cfg.val.num_workers,
-            shuffle=False,
-        )
-        validation_datapipe = validation_dataset.val_dataloader()
-        logger.success(f"Loaded validaton datapipe of size {len(validation_datapipe)}")
-
-    pangu_model = Pangu(
-        img_size=OmegaConf.to_object(cfg.pangu.img_size),
-        patch_size=OmegaConf.to_object(cfg.pangu.patch_size),
-        embed_dim=cfg.pangu.embed_dim,
-        num_heads=OmegaConf.to_object(cfg.pangu.num_heads),
-        window_size=OmegaConf.to_object(cfg.pangu.window_size),
-    ).to(dist.device)
+    logging.basicConfig(level=logging.INFO, format='%(asctime)s - %(levelname)s - %(message)s')
+    logger = logging.getLogger()
     
+    config_file_path = os.path.join(current_path, 'conf/config.yaml')
+    cfg = YParams(config_file_path, 'pangu')
+    cfg.world_size = 1
+    if 'WORLD_SIZE' in os.environ:
+        cfg.world_size = int(os.environ['WORLD_SIZE'])
+    world_rank = 0
+    local_rank = 0
 
-    # Distributed learning
-    if dist.world_size > 1:
-        ddps = torch.cuda.Stream()
-        with torch.cuda.stream(ddps):
-            pangu_model = DistributedDataParallel(
-                pangu_model,
-                device_ids=[dist.local_rank],
-                output_device=dist.device,
-                broadcast_buffers=dist.broadcast_buffers,
-                find_unused_parameters=dist.find_unused_parameters,
-            )
-        torch.cuda.current_stream().wait_stream(ddps)
+    if cfg.world_size > 1:
+        dist.init_process_group(backend='nccl', init_method='env://')
+        local_rank = int(os.environ["LOCAL_RANK"])
+        world_rank = dist.get_rank()
 
-    # Initialize optimizer and scheduler
-    optimizer = optimizers.FusedAdam(
-        pangu_model.parameters(), betas=(0.9, 0.999), lr=0.0005, weight_decay=0.000003
-    )
+    land_mask = torch.from_numpy(np.load(os.path.join(cfg.mask_dir, "land_mask.npy")).astype(np.float32))
+    soil_type = torch.from_numpy(np.load(os.path.join(cfg.mask_dir, "soil_type.npy")).astype(np.float32))
+    topography = torch.from_numpy(np.load(os.path.join(cfg.mask_dir, "topography.npy")).astype(np.float32))
+    surface_mask = torch.stack([land_mask, soil_type, topography], dim=0).to(local_rank)
+    surface_mask = surface_mask.unsqueeze(0).repeat(cfg.batch_size, 1, 1, 1)
+
+    train_dataset = ERA5HDF5Datapipe(params = cfg, distributed = dist.is_initialized())
+    train_dataloader, train_sampler = train_dataset.train_dataloader()
+    world_rank == 0 and logger.info(f"Loaded train_dataloader of size {len(train_dataloader)}")
+    
+    val_dataset = ERA5HDF5Datapipe(params = cfg, distributed = dist.is_initialized())
+    val_dataloader, val_sampler = val_dataset.val_dataloader()
+    world_rank == 0 and logger.info(f"Loaded val_dataloader of size {len(val_dataloader)}")
+
+    pangu_model = Pangu(img_size=cfg.img_size,
+                        patch_size=cfg.patch_size,
+                        embed_dim=cfg.embed_dim,
+                        num_heads=cfg.num_heads,
+                        window_size=cfg.window_size).to(local_rank)
+    
+    if cfg.world_size > 1:
+        pangu_model = DistributedDataParallel(pangu_model, device_ids=[local_rank], output_device=local_rank)
+
+    optimizer = optimizers.FusedAdam(pangu_model.parameters(), betas=(0.9, 0.999), lr=5e-4, weight_decay=3e-6)
     scheduler = torch.optim.lr_scheduler.CosineAnnealingLR(optimizer, T_max=100)
 
-    # Attempt to load latest checkpoint if one exists
-    loaded_epoch = load_checkpoint(
-        "./checkpoints",
-        models=pangu_model,
-        optimizer=optimizer,
-        scheduler=scheduler,
-        device=dist.device,
-    )
+    os.makedirs(cfg.checkpoint_dir, exist_ok=True)
+    train_loss_file = f"{cfg.checkpoint_dir}/trloss.npy"
+    valid_loss_file = f"{cfg.checkpoint_dir}/valoss.npy"
+    
+    world_rank == 0 and logger.info(f"start training ...")
 
-    @StaticCaptureEvaluateNoGrad(model=pangu_model, logger=logger, use_graphs=False)
-    def eval_step_forward(my_model, invar_surface, surface_mask, invar_upper_air):
-        invar = my_model.prepare_input(invar_surface, surface_mask, invar_upper_air)
-        return my_model(invar.to(dtype=torch.float32))
 
-    @StaticCaptureTraining(
-        model=pangu_model, optim=optimizer, logger=logger, use_graphs=False
-    )
-    def train_step_forward(
-        my_model,
-        invar_surface,
-        surface_mask,
-        invar_upper_air,
-        outvar_surface,
-        outvar_upper_air,
-    ):
-        # Multi-step prediction
-        loss = 0
-        # Multi-step not supported
-        for t in range(outvar_surface.shape[1]):
-            invar = my_model.prepare_input(invar_surface, surface_mask, invar_upper_air)
-            outpred_surface, outpred_upper_air = my_model(invar)
-            invar_surface = outpred_surface
-            invar_upper_air = outpred_upper_air
-            loss += loss_func(outpred_surface, outvar_surface[:, t]) * 0.25 + loss_func(
-                outpred_upper_air, outvar_upper_air[:, t]
-            )
-        return loss
+    best_valid_loss = 1.e6
+    best_loss_epoch = 0
+    train_losses = np.empty((0,), dtype=np.float32)
+    valid_losses = np.empty((0,), dtype=np.float32)
 
-    # Main training loop
-    max_epoch = cfg.max_epoch
-    for epoch in range(max(1, loaded_epoch + 1), max_epoch + 1):
-        # Wrap epoch in launch logger for console / WandB logs
-        with LaunchLogger(
-            "train", epoch=epoch, num_mini_batch=len(datapipe), epoch_alert_freq=10
-        ) as log:
-            # === Training step ===
-            for j, data in enumerate(datapipe):
-                invar_surface = data[0]["invar"][:, :4, :, :].to(dist.device)
-                invar_upper_air = data[0]["invar"][:, 4:, :, :].reshape(
-                    (
-                        data[0]["invar"].shape[0],
-                        5,
-                        -1,
-                        data[0]["invar"].shape[2],
-                        data[0]["invar"].shape[3],
-                    )
-                ).to(dist.device)
-                outvar_surface = data[0]["outvar"][:, :, :4, :, :].to(dist.device)
-                outvar_upper_air = data[0]["outvar"][:, :, 4:, :, :].reshape(
-                    (
-                        data[0]["outvar"].shape[0],
-                        data[0]["outvar"].shape[1],
-                        5,
-                        -1,
-                        data[0]["outvar"].shape[3],
-                        data[0]["outvar"].shape[4],
-                    )
-                ).to(dist.device)
-                invar_surface, invar_upper_air = invar_surface.to(dtype=torch.float32), invar_upper_air.to(
-                    dtype=torch.float32
-                )
-                outvar_surface, outvar_upper_air = outvar_surface.to(dtype=torch.float32), outvar_upper_air.to(
-                    dtype=torch.float32
-                )
-                loss = train_step_forward(
-                    pangu_model,
-                    invar_surface,
-                    surface_mask,
-                    invar_upper_air,
-                    outvar_surface,
-                    outvar_upper_air,
-                )
+    for epoch in range(cfg.max_epoch):
 
-                log.log_minibatch({"loss": loss.detach()})
-            log.log_epoch({"Learning Rate": optimizer.param_groups[0]["lr"]})
+        if dist.is_initialized():
+            train_sampler.set_epoch(epoch)
+            val_sampler.set_epoch(epoch)
 
-        if dist.rank == 0:
-            # Wrap validation in launch logger for console / WandB logs
-            with LaunchLogger("valid", epoch=epoch) as log:
-                # === Validation step ===
-                error = validation_step(
-                    eval_step_forward,
-                    pangu_model,
-                    dist,
-                    validation_datapipe,
-                    surface_mask,
-                    epoch=epoch,
-                )
-                log.log_epoch({"Validation error": error})
+        pangu_model.train()
+        train_loss = 0
+        for j, data in enumerate(train_dataloader):
+            invar = data[0]
+            outvar = data[1]
+            invar_surface = invar[:, :4, :, :].to(local_rank, dtype=torch.float32)
+            invar_upper_air = invar[:, 4:, :, :].to(local_rank, dtype=torch.float32)
+            invar = torch.concat([invar_surface, surface_mask, invar_upper_air], dim=1)
 
-        if dist.world_size > 1:
-            torch.distributed.barrier()
+            tar_surface = outvar[:, :4, :, :].to(local_rank, dtype=torch.float32)
+            tar_upper_air = outvar[:, 4:, :, :].to(local_rank, dtype=torch.float32)
+
+            out_surface, out_upper_air = pangu_model(invar)
+            out_upper_air = out_upper_air.reshape(tar_upper_air.shape)
+
+            loss1 = loss_func(tar_surface, out_surface)
+            loss2 = loss_func(tar_upper_air, out_upper_air)
+            loss = loss1 * 0.25 + loss2
+
+            optimizer.zero_grad()
+            loss.backward()
+            optimizer.step()
+
+            train_loss += loss.item()
+            if j % (len(train_dataloader) // 6) == 0 and world_rank == 0:
+                logger.info(f"Epoch [{epoch + 1}/{cfg.max_epoch}], Train MiniBatch {j}/{len(train_dataloader)} done")
+
+        train_loss /= len(train_dataloader)
+
+        pangu_model.eval()
+        valid_loss = 0
+        with torch.no_grad():
+            for j, data in enumerate(val_dataloader):
+                invar = data[0]
+                outvar = data[1]
+                invar_surface = invar[:, :4, :, :].to(local_rank, dtype=torch.float32)
+                invar_upper_air = invar[:, 4:, :, :].to(local_rank, dtype=torch.float32)
+                invar = torch.concat([invar_surface, surface_mask, invar_upper_air], dim=1)
+
+                tar_surface = outvar[:, :4, :, :].to(local_rank, dtype=torch.float32)
+                tar_upper_air = outvar[:, 4:, :, :].to(local_rank, dtype=torch.float32)
+
+                out_surface, out_upper_air = pangu_model(invar)
+                out_upper_air = out_upper_air.reshape(tar_upper_air.shape)
+
+                loss1 = loss_func(tar_surface, out_surface).item()
+                loss2 = loss_func(tar_upper_air, out_upper_air).item()
+                loss = loss1 * 0.25 + loss2
+
+                if cfg.world_size > 1:
+                    loss_tensor = torch.tensor(loss, device=local_rank)
+                    dist.all_reduce(loss_tensor)
+                    loss = loss_tensor.item() / cfg.world_size
+                valid_loss += loss
+
+                if j % (len(val_dataloader) // 3) == 0 and world_rank == 0:
+                    logger.info(f"Epoch [{epoch + 1}/{cfg.max_epoch}], Val MiniBatch {j}/{len(val_dataloader)} done")
+        valid_loss /= len(val_dataloader)
+        is_save_ckp= False
+        if valid_loss < best_valid_loss:
+            best_valid_loss = valid_loss
+            best_loss_epoch = epoch
+            world_rank == 0 and save_checkpoint(pangu_model, optimizer, scheduler, best_valid_loss, best_loss_epoch, cfg.checkpoint_dir)
+            is_save_ckp = True
 
         scheduler.step()
 
-        if (epoch % 5 == 0 or epoch == 1) and dist.rank == 0:
-            # Use onescience Launch checkpoint
-            save_checkpoint(
-                "./checkpoints",
-                models=pangu_model,
-                optimizer=optimizer,
-                scheduler=scheduler,
-                epoch=epoch,
-            )
+        if world_rank == 0:
+            logger.info(f"Epoch [{epoch + 1}/{cfg.max_epoch}], "
+                        f"Train Loss: {train_loss:.4f}, "
+                        f"Valid Loss: {valid_loss:.4f}, "
+                        f"Best loss at Epoch: {best_loss_epoch + 1}" +
+                        (", saving checkpoint" if is_save_ckp else ""))
+            train_losses = np.append(train_losses, train_loss)
+            valid_losses = np.append(valid_losses, valid_loss)
 
-    if dist.rank == 0:
-        logger.info("Finished training!")
+            np.save(train_loss_file, train_losses)
+            np.save(valid_loss_file, valid_losses)
+        if epoch - best_loss_epoch > cfg.patience:
+            print(f'Loss has not decrease in {cfg.patience} epochs, stopping training...')
+            exit()
 
 
-if __name__ == "__main__":
+def save_checkpoint(model, optimizer, scheduler, best_valid_loss, best_loss_epoch, model_path):
+    model_to_save = model.module if hasattr(model, 'module') else model
+    state = {
+        'model_state_dict': model_to_save.state_dict(),
+        'optimizer_state_dict': optimizer.state_dict(),
+        'scheduler_state_dict': scheduler.state_dict(),
+        'best_valid_loss': best_valid_loss,
+        'best_loss_epoch': best_loss_epoch
+    }
+    torch.save(state, f'{model_path}/pangu_weather.pth')
+
+
+if __name__ == '__main__':
+    current_path = os.getcwd()
+    sys.path.append(current_path)
     main()

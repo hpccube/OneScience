@@ -2,11 +2,18 @@
 
 边界嵌入神经算子（BENO）是一个新型的算子网络，该算子将**复杂边界形状**和**非均匀边界值**合并到椭圆偏微分方程的求解中，如下所示：
 
-<img src="figs/motivation.png" alt="flow-examples" width="600" >
+<p align="center">
+<img src="../../../doc/beno_motivation.png" height = "240" alt="" align=center />
+<br><br>
+</p>
 
 BENO模型架构如下所示：
 
-<img src="figs/arch.png" alt="flow-examples" width="600" >
+
+<p align="center">
+<img src="../../../doc/beno_arch.png" height = "230" alt="" align=center />
+<br><br>
+</p>
 
 ## 数据集
 
@@ -20,13 +27,7 @@ BENO模型架构如下所示：
 ▼ data/
     ► Dirichlet/
     ► Neumann/
-    BC_N32_10.npy
-    RHS_N32_10.npy
-    SOL_N32_10.npy
-► figs/
-► log/    
 analysis.py
-onescience-0.1.0-py3-none-any.whl
 train.py
 run_beno.ipynb
 README.md
@@ -38,7 +39,7 @@ README.md
 
 ```code
 python train.py --dataset_type=32x32 --epochs 1000
-```du -sh *
+```
 
 运行`python train.py -h`可以查看各参数作用
 

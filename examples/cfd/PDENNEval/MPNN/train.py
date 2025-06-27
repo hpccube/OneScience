@@ -253,16 +253,27 @@ def main(args):
     model = get_model(args, pde)
     total_params = sum(p.numel() for p in model.parameters() if p.requires_grad)
     print("The number of model parameter to train:", total_params)
+    model.to(device)
     # if test, load model from checkpoint
     if not args["if_training"]:
         print(f"Test mode, load checkpoint from {args['model_path']}")
-        model.load_state_dict(checkpoint["model_state_dict"])
+        checkpoint = torch.load(args["model_path"])
+        
+        # === 修改点2：处理可能存在的module前缀 ===
+        state_dict = checkpoint["model_state_dict"]
+        if isinstance(state_dict, tuple):  # 处理之前保存的元组格式
+            state_dict = state_dict[0]
+        # 移除DataParallel的module前缀
+        new_state_dict = {}
+        for k, v in state_dict.items():
+            if k.startswith('module.'):
+                new_state_dict[k[7:]] = v
+            else:
+                new_state_dict[k] = v
+                
+        model.load_state_dict(new_state_dict)
         print(f"Best epoch: {checkpoint['epoch']}")
-        if torch.cuda.device_count() > 1:
-            model = nn.DataParallel(model)
-        model.to(device)
         print("start testing...")
-        # coding...
         res = test_loop(val_loader, model, device, graph_creator)
         print(res)
         print("Done")
@@ -270,10 +281,20 @@ def main(args):
     # if continue training, resume model from checkpoint
     if args["continue_training"]:
         print(f"Continue training, load checkpoint from {args['model_path']}")
-        model.load_state_dict(checkpoint["model_state_dict"])
-    if torch.cuda.device_count() > 1:
-        model = nn.DataParallel(model)
-    model.to(device)
+        checkpoint = torch.load(args["model_path"])
+        
+        # 同样处理module前缀
+        state_dict = checkpoint["model_state_dict"]
+        if isinstance(state_dict, tuple):
+            state_dict = state_dict[0]
+        new_state_dict = {}
+        for k, v in state_dict.items():
+            if k.startswith('module.'):
+                new_state_dict[k[7:]] = v
+            else:
+                new_state_dict[k] = v
+                
+        model.load_state_dict(new_state_dict)
 
     # optimizer
     optim_args = args["optimizer"]
@@ -321,7 +342,7 @@ def main(args):
         scheduler.step()
         # save checkpoint
         saved_path = os.path.join(saved_dir, saved_model_name)
-        model_state_dict = model.module.state_dict() if torch.cuda.device_count() > 1 else model.state_dict()
+        model_state_dict = model.state_dict()
         torch.save({"epoch": epoch + 1, "loss": min_val_loss,
                 "model_state_dict": model_state_dict,
                 "optimizer_state_dict": optimizer.state_dict()

@@ -334,7 +334,7 @@ def main(args):
         print(f"[Epoch {epoch}] train_l2: {train_l2}, train_l_inf: {train_l_inf}, time_spend: {time:.3f}")
         ## save latest
         saved_path = os.path.join(saved_dir, saved_model_name)
-        model_state_dict = model.module.state_dict() if torch.cuda.device_count() > 1 else model.state_dict()
+        model_state_dict = model.module.state_dict() if isinstance(model, torch.nn.parallel.DistributedDataParallel) else model.state_dict(),
         torch.save({"epoch": epoch+1, "loss": min_val_loss,
             "model_state_dict": model_state_dict,
             "optimizer_state_dict": optimizer.state_dict()
@@ -348,10 +348,11 @@ def main(args):
                 min_val_loss = val_l2_full
                 ## save best
                 torch.save({"epoch": epoch + 1, "loss": min_val_loss,
-                    "model_state_dict": model.module.state_dict() if torch.cuda.device_count() > 1 else model.state_dict(),
+                    "model_state_dict": model.module.state_dict() if isinstance(model, torch.nn.parallel.DistributedDataParallel) else model.state_dict(),
                     "optimizer_state_dict": optimizer.state_dict()
                     }, saved_path + "-best.pt")
     loss_history = np.array(loss_history)
+    os.makedirs('./log/loss', exist_ok=True)
     np.save('./log/loss/' + args['pde_name'] + '_loss_history.npy', loss_history)
     print("Done.")
 
