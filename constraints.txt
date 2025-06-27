@@ -1,0 +1,6 @@
+torch==2.4.1+das.opt2.dtk2504
+torchvision==0.19.1+das.opt2.dtk2504
+jax==0.4.34+das.opt1.dtk2504
+jax-rocm60-pjrt==0.4.34+das.opt1.dtk2504
+jax-rocm60-plugin==0.4.34+das.opt1.dtk2504
+jaxlib==0.4.34+das.opt1.dtk2504

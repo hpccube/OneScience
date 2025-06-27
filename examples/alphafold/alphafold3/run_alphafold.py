@@ -565,9 +565,12 @@ def write_outputs(
   max_ranking_score = None
   max_ranking_result = None
 
-  output_terms = (
-      pathlib.Path(onescience.flax_models.alphafold3.cpp.__file__).parent / 'OUTPUT_TERMS_OF_USE.md'
-  ).read_text()
+  try:
+    output_terms = (
+        pathlib.Path(onescience.flax_models.alphafold3.cpp.__file__).parent / 'OUTPUT_TERMS_OF_USE.md'
+    ).read_text()
+  except FileNotFoundError:
+    output_terms = None  # Skip terms of use if file not found
 
   os.makedirs(output_dir, exist_ok=True)
   for results_for_seed in all_inference_results:
@@ -586,7 +589,8 @@ def write_outputs(
         max_ranking_score = ranking_score
         max_ranking_result = result
 
-    if embeddings := results_for_seed.embeddings:
+    embeddings = results_for_seed.embeddings
+    if embeddings:
       embeddings_dir = os.path.join(output_dir, f'seed-{seed}_embeddings')
       os.makedirs(embeddings_dir, exist_ok=True)
       post_processing.write_embeddings(
