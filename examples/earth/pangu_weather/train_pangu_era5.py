@@ -9,7 +9,7 @@ from torch.nn.parallel import DistributedDataParallel
 from onescience.models.pangu import Pangu
 from onescience.datapipes.climate import ERA5HDF5Datapipe
 from onescience.utils.fcn.YParams import YParams
-from onescience.launch.utils import load_checkpoint, save_checkpoint
+from onescience.memory.checkpoint import replace_function
 from apex import optimizers
 
 
@@ -91,7 +91,11 @@ def main():
             tar_surface = outvar[:, :4, :, :].to(local_rank, dtype=torch.float32)
             tar_upper_air = outvar[:, 4:, :, :].to(local_rank, dtype=torch.float32)
 
-            out_surface, out_upper_air = pangu_model(invar)
+            # out_surface, out_upper_air = pangu_model(invar)
+
+            with replace_function(pangu_model, ['layer1', 'layer2', 'layer3', 'layer4'], cfg.world_size > 1):
+                out_surface, out_upper_air = pangu_model(invar)
+                
             out_upper_air = out_upper_air.reshape(tar_upper_air.shape)
 
             loss1 = loss_func(tar_surface, out_surface)
