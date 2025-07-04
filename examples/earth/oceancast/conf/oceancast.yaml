@@ -87,9 +87,10 @@ afno_backbone:
   noise_std: 0
 
   count_data_path: './data/Wind_Sin'
-  ocean_data_path: '/public/SothisAI/sharingCenter/data/easyscience/Ocean/' # '/public/home/dqren/raindata/Ocean' 
+  ocean_data_path: './data/'
+  wind_uv_path: './data/'
   wind_data_path: './data/'
-  current_data_path: '/public/SothisAI/sharingCenter/data/easyscience/Ocean/'
+  current_data_path: './data/'
   global_means_path: './means_stds'
   global_stds_path:  './means_stds'
   maskpath: './WaveMask.pt'
