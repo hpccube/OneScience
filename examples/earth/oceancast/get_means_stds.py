@@ -2,7 +2,14 @@ import os
 import h5py
 import numpy as np
 import glob
+import sys
 
+from onescience.utils.fcn.YParams import YParams
+
+current_path = os.getcwd()
+sys.path.append(current_path)
+config_file_path = os.path.join(current_path, 'conf/oceancast.yaml')
+params = YParams(config_file_path, 'afno_backbone')
 # If forecast wave parameters, use following types
 types = ['Wave_Height', 'Wave_Direction', 'Wave_Period', 'Wind_Strength'] 
 
@@ -11,7 +18,7 @@ types = ['Wave_Height', 'Wave_Direction', 'Wave_Period', 'Wind_Strength']
 
 output_dir = 'means_stds'
 os.makedirs(output_dir, exist_ok=True)
-data_dir = '/public/SothisAI/sharingCenter/data/easyscience/Ocean'
+data_dir = params.ocean_data_path
 
 def calculate_global_mean_std(data_sum, count, data_sum_sq):
     global_mean = data_sum / count
