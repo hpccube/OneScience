@@ -1,9 +1,8 @@
 import re
-from setuptools import setup, Extension,find_packages
+from setuptools import setup, Extension, find_packages
 
-# 默认'python setup.py install'只安装onescience
-# 依赖列表
-install_requires = [
+
+one_deps = [
     'numpy>=1.25.0,<2.0.0',
     'xarray>=2023.1.0',
     'zarr>=2.14.2',
@@ -12,7 +11,7 @@ install_requires = [
     'pytz>=2023.3',
     'treelib>=1.2.5',
     'tqdm>=4.60.0',
-    'nvtx>=0.2.8',
+    # 暂时不支持，需要去掉
     'timm>=0.9.12',
     'hydra-core>=1.2.0',
     'termcolor>=2.1.1',
@@ -38,7 +37,6 @@ install_requires = [
     'seaborn',
     'torchdata<=0.9.0',
     'openfermion==1.5.1',
-    # 'pyscf==2.1.1',
     'pybind11',
     'torchmetrics',
     'e3nn==0.4.4',
@@ -57,16 +55,105 @@ install_requires = [
     'lmdb',
     'orjson',
     'matplotlib',
-    
     'contextlib2',
     'ml-collections==0.1.1',
     'dm-tree==0.1.8',
     'dm-haiku==0.0.12',
-
     'diffrax==0.6.0',
     'biopandas==0.5.1',
     'biopython==1.84',
     'pyrsistent',
+]
+
+# {"numpy": "numpy>=1.25.0,<2.0.0",...}
+deps = {re.split(r'[=<>~!]', dep)[0]: dep for dep in one_deps}
+
+basic_requires = [
+    'numpy',
+    'tqdm',
+    'timm',
+    'wandb',
+    'hydra-core',
+    'treelib',
+    'hydra-core',
+    'termcolor',
+    'mlflow',
+    'pytest',
+    'pyyaml',
+    'h5py',
+    'ruamel.yaml',
+    'scikit-learn',
+    'scikit-image',
+    'vtk',
+    'pyvista',
+    'einops',
+    'onnx',
+    'pandas',
+    'omegaconf',
+    'mpi4py',
+    'torchdata',
+    'pybind11',
+    'torchmetrics',
+    'torch-runstats',  # 性能分析
+    'torch-ema',  #
+    'opt_einsum',
+    'prettytable',
+    'matplotlib',
+]
+
+
+earth_requires = [
+    'pytz',
+    'xarray',
+    'zarr',
+    's3fs',
+    'netcdf4',
+    'cftime',
+    'dask',
+
+]
+
+
+cfd_requires = [
+    'shapely',
+    'seaborn',
+    'deepxde',
+]
+
+quantum_requires = [
+    'openfermion',
+    'pymatgen',
+]
+
+
+chemistry_requires = [
+    'e3nn',
+    'ase',
+    'xtb',
+    'rdkit',
+    'matscipy',
+    'python-hostlist',
+    'configargparse',
+    'lmdb',
+    'orjson',
+    'pymatgen',
+]
+
+biology_requires = [
+    'rdkit',
+    'matplotlib',
+    'contextlib2',
+    'ml-collections',
+    'dm-tree',
+    'dm-haiku',
+    'diffrax',
+    'biopandas',
+    'biopython',
+    'pyrsistent',
+]
+
+dev_requires = [
+    'setuptools',
 ]
 
 
@@ -75,16 +162,28 @@ def parse_requirements_file(filename):
     with open(filename, "r") as f:
         return [line.strip() for line in f if line.strip() and not line.startswith("#")]
 
+
+def resolve(requires, deps_dict):
+    """Convert a list of dependencies to a set of requirements."""
+    return [deps_dict[require] for require in requires]
+
+
 extras = {}
 
-extras["jax"] = [
+install_requires = resolve(basic_requires, deps)
+extras["earth"] = resolve(earth_requires, deps)
+extras["bio"] = resolve(biology_requires, deps)
+extras["cfd"] = resolve(cfd_requires, deps)
+extras["chem"] = resolve(chemistry_requires, deps)
+extras["quantum"] = resolve(quantum_requires, deps)
+extras["dev"] = resolve(dev_requires, deps)
 
-]
 
+extras["all"] = one_deps
 
 setup(
     name="onescience",
-    version="0.1.0-rc1",
+    version="0.1.2rc1",
     author="sugon-ai4s",
     author_email="ai4s@sugon.com",
     description="First release",
@@ -92,7 +191,7 @@ setup(
     url="https://github.com/hpccube/OneScience",
     package_dir={"": "src"},
     packages=find_packages("src"),
-    #packages=find_packages(include=["*science*"]),
+    # packages=find_packages(include=["*science*"]),
     extras_require=extras,
     include_package_data=True,
     install_requires=list(install_requires),
