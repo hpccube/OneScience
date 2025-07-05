@@ -183,7 +183,7 @@ extras["all"] = one_deps
 
 setup(
     name="onescience",
-    version="0.1.0-rc1",
+    version="0.1.2rc1",
     author="sugon-ai4s",
     author_email="ai4s@sugon.com",
     description="First release",
