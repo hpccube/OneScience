@@ -2,7 +2,7 @@ import re
 from setuptools import setup, Extension, find_packages
 
 
-one_requires = [
+one_deps = [
     'numpy>=1.25.0,<2.0.0',
     'xarray>=2023.1.0',
     'zarr>=2.14.2',
@@ -11,7 +11,7 @@ one_requires = [
     'pytz>=2023.3',
     'treelib>=1.2.5',
     'tqdm>=4.60.0',
- # 暂时不支持，需要去掉
+    # 暂时不支持，需要去掉
     'timm>=0.9.12',
     'hydra-core>=1.2.0',
     'termcolor>=2.1.1',
@@ -66,9 +66,9 @@ one_requires = [
 ]
 
 # {"numpy": "numpy>=1.25.0,<2.0.0",...}
-deps_dict = {re.split(r'[=<>~!]', dep)[0]: dep for dep in one_requires}
+deps = {re.split(r'[=<>~!]', dep)[0]: dep for dep in one_deps}
 
-basic_deps = [
+basic_requires = [
     'numpy',
     'tqdm',
     'timm',
@@ -102,7 +102,7 @@ basic_deps = [
 ]
 
 
-earth_deps = [
+earth_requires = [
     'pytz',
     'xarray',
     'zarr',
@@ -114,19 +114,19 @@ earth_deps = [
 ]
 
 
-cfd_deps = [
+cfd_requires = [
     'shapely',
     'seaborn',
     'deepxde',
 ]
 
-quantum_deps = [
+quantum_requires = [
     'openfermion',
     'pymatgen',
 ]
 
 
-chemistry_deps = [
+chemistry_requires = [
     'e3nn',
     'ase',
     'xtb',
@@ -139,7 +139,7 @@ chemistry_deps = [
     'pymatgen',
 ]
 
-biology_deps = [
+biology_requires = [
     'rdkit',
     'matplotlib',
     'contextlib2',
@@ -152,7 +152,7 @@ biology_deps = [
     'pyrsistent',
 ]
 
-dev_deps = [
+dev_requires = [
     'setuptools',
 ]
 
@@ -163,23 +163,23 @@ def parse_requirements_file(filename):
         return [line.strip() for line in f if line.strip() and not line.startswith("#")]
 
 
-def deps_to_requires(deps):
+def resolve(requires, deps_dict):
     """Convert a list of dependencies to a set of requirements."""
-    return [deps_dict[dep] for dep in deps if dep in deps_dict]
+    return [deps_dict[require] for require in requires]
 
 
 extras = {}
 
-basic_requires = deps_to_requires(basic_deps)
-extras["earth"] = deps_to_requires(earth_deps)
-extras["bio"] = deps_to_requires(biology_deps)
-extras["cfd"] = deps_to_requires(cfd_deps)
-extras["chem"] = deps_to_requires(chemistry_deps)
-extras["quantum"] = deps_to_requires(quantum_deps)
-extras["dev"] = deps_to_requires(dev_deps)
+install_requires = resolve(basic_requires, deps)
+extras["earth"] = resolve(earth_requires, deps)
+extras["bio"] = resolve(biology_requires, deps)
+extras["cfd"] = resolve(cfd_requires, deps)
+extras["chem"] = resolve(chemistry_requires, deps)
+extras["quantum"] = resolve(quantum_requires, deps)
+extras["dev"] = resolve(dev_requires, deps)
 
 
-extras["all"] = one_requires
+extras["all"] = one_deps
 
 setup(
     name="onescience",
@@ -194,7 +194,7 @@ setup(
     # packages=find_packages(include=["*science*"]),
     extras_require=extras,
     include_package_data=True,
-    install_requires=list(basic_requires),
+    install_requires=list(install_requires),
     python_requires=">=3.10.0",
     zip_safe=False,
 )
