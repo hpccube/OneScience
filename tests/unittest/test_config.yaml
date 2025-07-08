@@ -1,0 +1,10 @@
+test_config:
+  param1: value1
+  param2: value2
+  param3: 
+    - list_item1
+    - list_item2
+  nested:
+    subparam1: subvalue1
+    subparam2: ${TEST_ENV_VAR}
+  param4: ${TEST_ENV_VAR}
