@@ -57,3 +57,4 @@ diffrax==0.6.0
 biopandas==0.5.1
 biopython==1.84
 pyrsistent
+opencv-python==3.4.18.65
