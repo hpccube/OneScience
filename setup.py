@@ -9,6 +9,42 @@ def parse_requirements(filename):
 
 one_deps = parse_requirements("requirements.txt")
 
+# {"numpy": "numpy>=1.25.0,<2.0.0",...}
+deps = {re.split(r"[=<>~!]", dep)[0]: dep for dep in one_deps}
+
+basic_requires = [
+    "numpy",
+    "tqdm",
+    "timm",
+    "wandb",
+    "hydra-core",
+    "treelib",
+    "hydra-core",
+    "termcolor",
+    "mlflow",
+    "pytest",
+    "pyyaml",
+    "h5py",
+    "ruamel.yaml",
+    "scikit-learn",
+    "scikit-image",
+    "vtk",
+    "pyvista",
+    "einops",
+    "onnx",
+    "pandas",
+    "omegaconf",
+    "mpi4py",
+    "torchdata",
+    "pybind11",
+    "torchmetrics",
+    "torch-runstats",  # 性能分析
+    "torch-ema",  #
+    "opt_einsum",
+    "prettytable",
+    "matplotlib",
+]
+
 
 earth_requires = [
     "pytz",
@@ -18,6 +54,7 @@ earth_requires = [
     "netcdf4",
     "cftime",
     "dask",
+    "opencv-python",
 ]
 
 
