@@ -55,8 +55,8 @@ def dual_inhibitor_reward_function(molecule_dict, cached_dict,
     ## get unique smiles in this iter.
     unique_smiles = cached_dict['unique_smiles']
     unique_scores = cached_dict['unique_scores']
-    todo_smiles = molecule_dict['smiles'] # (dbs * r,)
-    todo_unique_smiles = np.unique(todo_smiles)
+    todo_smiles = molecule_dict['smiles'] # (dbs * r,) todo_smiles.shape : 1024
+    todo_unique_smiles = np.unique(todo_smiles) # unique smiles shape : 617
     todo_unique_smiles = np.setdiff1d(todo_unique_smiles, unique_smiles)
     todo_unique_scores = np.empty((0, 2), dtype = np.float32)
 

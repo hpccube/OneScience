@@ -35,6 +35,9 @@ def infer(args):
     #################################################################################
 
     #### set constants
+    import ipdb
+    ipdb.set_trace()
+
     TOTAL_STEP = args.total_step
     DEVICE_BATCH_SIZE = args.device_batch_size
     N_TOKENS = args.num_latent_tokens
@@ -42,7 +45,7 @@ def infer(args):
     N_REPLICATE = args.n_replicate
     os.makedirs(args.save_path, exist_ok=True)
 
-    #### set recoder
+    ## set recoder
     recoder = logging.getLogger("inferencing dit")
     recoder.setLevel(level = logging.DEBUG)
     stream_handler = logging.StreamHandler()
@@ -64,7 +67,7 @@ def infer(args):
         net_config = default_net_config
         train_config = default_train_config
     global_config.dropout_flag = False
-    # vae config
+    # vae config vae model
     with open(args.vae_config_path, 'rb') as f:
         config_dicts = pkl.load(f)
     vae_config = ConfigDict(config_dicts['net_config'])
@@ -72,6 +75,8 @@ def infer(args):
     vae_global_config = ConfigDict(config_dicts['global_config'])
     vae_global_config.dropout_flag = False
 
+
+    ## net inputs
     #### load net
     dit_net = DiffusionTransformer(net_config, global_config)
     scheduler = GaussianDiffusion(train_config,)
@@ -111,7 +116,7 @@ def infer(args):
             infer_config = ConfigDict(pkl.load(f))
     else:
         infer_config = ConfigDict(default_infer_config)
-    inferencer = Inferencer(
+    inferencer = Inferencer( # create infer project
         encoding_net, decoding_net, encoder_params, decoder_params, infer_config)
     
     #################################################################################
@@ -123,7 +128,7 @@ def infer(args):
         alphabet: dict = pkl.load(f)
         alphabet = alphabet['symbol_to_idx']
     reverse_alphabet = {v: k for k, v in alphabet.items()}
-    encoder_f = functools.partial(encoder_function, inferencer = inferencer)
+    encoder_f = functools.partial(encoder_function, inferencer = inferencer) # vae encoder
     decoder_f = functools.partial(
         decoder_function, inferencer = inferencer, reverse_alphabet = reverse_alphabet, beam_size = beam_size)
 
@@ -142,7 +147,7 @@ def infer(args):
         template_smiles = replicate_func(cached['molecules'][0]['smiles'])
         unique_smiles = cached['unique_smiles']
 
-        sim = sim_function(molecule_dict['smiles'], template_smiles)
+        sim = sim_function(molecule_dict['smiles'], template_smiles) # [16:08:18] DEPRECATION WARNING: please use MorganGenerator
         sim_constraint = np.array(sim > config['sim_threshold'], np.int32) # (N,)
         qed = np.asarray(QED_reward(molecule_dict['smiles']), np.float32)
         qed_constraint = np.array(qed > config['qed_threshold'], np.int32)
@@ -203,7 +208,7 @@ def infer(args):
         mask_x = cached['mask'] ## (dbs * r, npt)
         rope_index_x = cached['rope_index'] ## (dbs * r, npt)
         cached_smiles = [d['smiles'] for d in cached['molecules']] ## (dbs,)
-        diffusion_time_it = config.time[step_it]
+        diffusion_time_it = config.time[step_it]  # random diffusion time
 
         ### decoding to molecules: {'graphs', 'smiles',}, (dbs * r, ...)
         decode_molecules = decoder_f(x, replicate_func(cached_smiles[-1]))
@@ -228,12 +233,12 @@ def infer(args):
         ### choicing using NSGA-II
         # breakpoint() ## check here
         choiced_idx = NSGA_II(scores, constraints, 
-                              config.constraint_weights, n_pops = DEVICE_BATCH_SIZE)
+                              config.constraint_weights, n_pops = DEVICE_BATCH_SIZE) #! list : from 1024 select 128
 
         ### sampling: (dbs,)
         choiced_molecules = jtu.tree_map(
             lambda x: x[choiced_idx], decode_molecules) ## (dbs, ...)
-        choiced_scores = scores[choiced_idx] ## (dbs,)
+        choiced_scores = scores[choiced_idx] ## (dbs,) # (128, 2)
         choiced_constraints = constraints[choiced_idx]
         choiced_sim_scores = sim_function(
             choiced_molecules['smiles'], cached_smiles[0])
@@ -248,7 +253,7 @@ def infer(args):
         cached['constraints'].append(choiced_constraints)
 
         ### encoding: (dbs, npt, d) -> (dbs * r, npt, d)
-        choiced_x = encoder_f(choiced_molecules['graphs'])
+        choiced_x = encoder_f(choiced_molecules['graphs']) # (128, 16, 32)
         choiced_x = replicate_func(choiced_x)
         choiced_x *= jnp.sqrt(choiced_x.shape[-1]) ## scale here
         # breakpoint() ## check here
@@ -279,12 +284,12 @@ def infer(args):
             np.array([1,] + [0 for _ in range(init_scores.shape[0] - 1)], np.int32), # rep
             np.ones((init_scores.shape[0],), np.int32), # sim
             np.ones((init_scores.shape[0],), np.int32), # qed
-            np.ones((init_scores.shape[0],), np.int32), # sas
+            np.ones((init_scores.shape[0],), np.int32), # sasn
         ], axis = 1)
 
         ### prepare
         init_key, rng_key = jax.random.split(rng_key)
-        x = encoder_f(init_molecules['graphs']) ## (dbs, npt, dim)
+        x = encoder_f(init_molecules['graphs']) ## (dbs, npt, dim) (128, 16, 32)
         x = x * jnp.sqrt(x.shape[-1]) ## scale here
         x = replicate_func(x) ## (dbs * r, npt, dim)
         m = jnp.ones(
@@ -305,7 +310,7 @@ def infer(args):
                 x, rng_key = jit_denoise_step(params, x, m, t, rope_index, rng_key)
                 x, rng_key = jit_noise_step(x, t, rng_key)
             ### x: (n_device, dbs, npt, d)
-            x, rng_key = jit_denoise_step(params, x, m, t, rope_index, rng_key)
+            x, rng_key = jit_denoise_step(params, x, m, t, rope_index, rng_key) # output init offsprings x
         
         ### search steps
         cached = {

@@ -74,7 +74,7 @@ def dsdp_batch_reward(
     if gen_lig_pdbqt:
         name_list = []
         print("Generating pdbqt files...")
-        for i in tqdm(range(smiles.shape[0])):
+        for i in tqdm(range(smiles.shape[0])): # smiles.shape[0]:616
             smi = smiles[i]
             smi_save_dir = os.path.join(
                 cached_file_path, f'ligands/{i}.pdbqt')
