@@ -1,10 +1,47 @@
 import re
 from setuptools import setup, Extension, find_packages
+import os
+import importlib.util
 
 
 def parse_requirements(filename):
     with open(filename, "r") as f:
         return [line.strip() for line in f if line and not line.startswith("#")]
+
+
+def discover_package_data():
+    """
+    自动发现子模块的package_data配置
+    扫描所有子模块，查找package_config.py文件
+    """
+    package_data = {}
+    # 扫描src/onescience下的所有子模块
+    src_dir = os.path.join(os.path.dirname(__file__), "src", "onescience")
+    
+    for root, dirs, files in os.walk(src_dir):
+        if "package_config.py" in files:
+            try:
+                # 构造模块路径
+                rel_path = os.path.relpath(root, src_dir)
+                module_parts = ["onescience"] + rel_path.split(os.sep) if rel_path != "." else ["onescience"]
+                module_name = ".".join(module_parts)
+                
+                # 加载package_config.py
+                config_path = os.path.join(root, "package_config.py")
+                spec = importlib.util.spec_from_file_location(f"{module_name}.package_config", config_path)
+                config_module = importlib.util.module_from_spec(spec)
+                spec.loader.exec_module(config_module)
+                
+                # 获取package_data配置
+                if hasattr(config_module, 'get_package_data'):
+                    submodule_data = config_module.get_package_data()
+                    package_data.update(submodule_data)
+                    print(f"✅ Discovered package config from: {module_name}")
+                    
+            except Exception as e:
+                print(f"⚠️  Failed to load package config from {root}: {e}")
+    
+    return package_data
 
 
 one_deps = parse_requirements("requirements.txt")
@@ -94,6 +131,8 @@ biology_requires = [
     "biopandas",
     "biopython",
     "pyrsistent",
+    "chex",
+    "flax",
 ]
 
 dev_requires = [
@@ -135,10 +174,12 @@ setup(
     url="https://github.com/hpccube/OneScience",
     package_dir={"": "src"},
     packages=find_packages("src"),
-    # packages=find_packages(include=["*science*"]),
     extras_require=extras,
     include_package_data=True,
     install_requires=list(install_requires),
     python_requires=">=3.10.0",
     zip_safe=False,
+    
+    # 自动发现所有子模块的package_data配置
+    package_data=discover_package_data(),
 )

@@ -1,0 +1,3152 @@
+=====================INPUT ARGS=====================
+INPUT ARGS:
+	config_path: /work/home/sponge_campus/softwares/onescience-main/model-zoo/molsculptor/checkpoints/diffusion-transformer/config_opt.pkl
+	params_path: /work/home/sponge_campus/softwares/onescience-main/model-zoo/molsculptor/checkpoints/diffusion-transformer/dit_params_opt.pkl
+	logger_path: /work/home/sponge_campus/softwares/onescience-main/examples/molsculptor/cases/case_ar-gr/test/Logs.txt
+	save_path: /work/home/sponge_campus/softwares/onescience-main/examples/molsculptor/cases/case_ar-gr/test
+	random_seed: 8888
+	np_random_seed: 8888
+	total_step: 30
+	device_batch_size: 128
+	num_latent_tokens: 16
+	dim_latent: 32
+	eq_steps: 10
+	callback_step: 10
+	beam_size: 4
+	sampling_method: beam
+	infer_config_path: None
+	vae_config_path: /work/home/sponge_campus/softwares/onescience-main/model-zoo/molsculptor/checkpoints/auto-encoder/config.pkl
+	vae_params_path: /work/home/sponge_campus/softwares/onescience-main/model-zoo/molsculptor/checkpoints/auto-encoder/ae_params_opt.pkl
+	alphabet_path: /work/home/sponge_campus/softwares/onescience-main/src/onescience/flax_models/MolSculptor/train/smiles_alphabet.pkl
+	n_replicate: 8
+	init_molecule_path: /work/home/sponge_campus/softwares/onescience-main/examples/molsculptor/cases/case_ar-gr/init_search_molecule.pkl
+	dsdp_script_path_1: /work/home/sponge_campus/softwares/onescience-main/examples/molsculptor/cases/case_ar-gr/dsdp_ar.sh
+	dsdp_script_path_2: /work/home/sponge_campus/softwares/onescience-main/examples/molsculptor/cases/case_ar-gr/dsdp_gr.sh
+	t_min: 75
+	t_max: 125
+	sub_smiles: NC(=O)c1cccc(S(=O)(=O)N2CCCc3ccccc32)c1
+=====================START INFERENCE=====================
+Generating init offsprings...
+Starting search, total steps = 30
+----------------------------------------------------------------
+Searching step 1, noise mutation steps 78
+=====================INPUT ARGS=====================
+INPUT ARGS:
+	config_path: /work/home/sponge_campus/softwares/onescience-main/model-zoo/molsculptor/checkpoints/diffusion-transformer/config_opt.pkl
+	params_path: /work/home/sponge_campus/softwares/onescience-main/model-zoo/molsculptor/checkpoints/diffusion-transformer/dit_params_opt.pkl
+	logger_path: /work/home/sponge_campus/softwares/onescience-main/examples/molsculptor/cases/case_ar-gr/test/Logs.txt
+	save_path: /work/home/sponge_campus/softwares/onescience-main/examples/molsculptor/cases/case_ar-gr/test
+	random_seed: 8888
+	np_random_seed: 8888
+	total_step: 30
+	device_batch_size: 128
+	num_latent_tokens: 16
+	dim_latent: 32
+	eq_steps: 10
+	callback_step: 10
+	beam_size: 4
+	sampling_method: beam
+	infer_config_path: None
+	vae_config_path: /work/home/sponge_campus/softwares/onescience-main/model-zoo/molsculptor/checkpoints/auto-encoder/config.pkl
+	vae_params_path: /work/home/sponge_campus/softwares/onescience-main/model-zoo/molsculptor/checkpoints/auto-encoder/ae_params_opt.pkl
+	alphabet_path: /work/home/sponge_campus/softwares/onescience-main/src/onescience/flax_models/MolSculptor/train/smiles_alphabet.pkl
+	n_replicate: 8
+	init_molecule_path: /work/home/sponge_campus/softwares/onescience-main/examples/molsculptor/cases/case_ar-gr/init_search_molecule.pkl
+	dsdp_script_path_1: /work/home/sponge_campus/softwares/onescience-main/examples/molsculptor/cases/case_ar-gr/dsdp_ar.sh
+	dsdp_script_path_2: /work/home/sponge_campus/softwares/onescience-main/examples/molsculptor/cases/case_ar-gr/dsdp_gr.sh
+	t_min: 75
+	t_max: 125
+	sub_smiles: NC(=O)c1cccc(S(=O)(=O)N2CCCc3ccccc32)c1
+=====================START INFERENCE=====================
+Generating init offsprings...
+Starting search, total steps = 30
+----------------------------------------------------------------
+Searching step 1, noise mutation steps 78
+=====================INPUT ARGS=====================
+INPUT ARGS:
+	config_path: /work/home/sponge_campus/softwares/onescience-main/model-zoo/molsculptor/checkpoints/diffusion-transformer/config_opt.pkl
+	params_path: /work/home/sponge_campus/softwares/onescience-main/model-zoo/molsculptor/checkpoints/diffusion-transformer/dit_params_opt.pkl
+	logger_path: /work/home/sponge_campus/softwares/onescience-main/examples/molsculptor/cases/case_ar-gr/test/Logs.txt
+	save_path: /work/home/sponge_campus/softwares/onescience-main/examples/molsculptor/cases/case_ar-gr/test
+	random_seed: 8888
+	np_random_seed: 8888
+	total_step: 30
+	device_batch_size: 128
+	num_latent_tokens: 16
+	dim_latent: 32
+	eq_steps: 10
+	callback_step: 10
+	beam_size: 4
+	sampling_method: beam
+	infer_config_path: None
+	vae_config_path: /work/home/sponge_campus/softwares/onescience-main/model-zoo/molsculptor/checkpoints/auto-encoder/config.pkl
+	vae_params_path: /work/home/sponge_campus/softwares/onescience-main/model-zoo/molsculptor/checkpoints/auto-encoder/ae_params_opt.pkl
+	alphabet_path: /work/home/sponge_campus/softwares/onescience-main/src/onescience/flax_models/MolSculptor/train/smiles_alphabet.pkl
+	n_replicate: 8
+	init_molecule_path: /work/home/sponge_campus/softwares/onescience-main/examples/molsculptor/cases/case_ar-gr/init_search_molecule.pkl
+	dsdp_script_path_1: /work/home/sponge_campus/softwares/onescience-main/examples/molsculptor/cases/case_ar-gr/dsdp_ar.sh
+	dsdp_script_path_2: /work/home/sponge_campus/softwares/onescience-main/examples/molsculptor/cases/case_ar-gr/dsdp_gr.sh
+	t_min: 75
+	t_max: 125
+	sub_smiles: NC(=O)c1cccc(S(=O)(=O)N2CCCc3ccccc32)c1
+=====================START INFERENCE=====================
+Generating init offsprings...
+Starting search, total steps = 30
+----------------------------------------------------------------
+Searching step 1, noise mutation steps 78
+=====================INPUT ARGS=====================
+INPUT ARGS:
+	config_path: /work/home/sponge_campus/softwares/onescience-main/examples/molsculptor/cases/case_ar-gr/../../../../model-zoo/molsculptor/checkpoints/diffusion-transformer/config_opt.pkl
+	params_path: /work/home/sponge_campus/softwares/onescience-main/examples/molsculptor/cases/case_ar-gr/../../../../model-zoo/molsculptor/checkpoints/diffusion-transformer/dit_params_opt.pkl
+	logger_path: /work/home/sponge_campus/softwares/onescience-main/examples/molsculptor/cases/case_ar-gr/test/Logs.txt
+	save_path: /work/home/sponge_campus/softwares/onescience-main/examples/molsculptor/cases/case_ar-gr/test
+	random_seed: 8888
+	np_random_seed: 8888
+	total_step: 30
+	device_batch_size: 128
+	num_latent_tokens: 16
+	dim_latent: 32
+	eq_steps: 10
+	callback_step: 10
+	beam_size: 4
+	sampling_method: beam
+	infer_config_path: None
+	vae_config_path: /work/home/sponge_campus/softwares/onescience-main/examples/molsculptor/cases/case_ar-gr/../../../../model-zoo/molsculptor/checkpoints/auto-encoder/config.pkl
+	vae_params_path: /work/home/sponge_campus/softwares/onescience-main/examples/molsculptor/cases/case_ar-gr/../../../../model-zoo/molsculptor/checkpoints/auto-encoder/ae_params_opt.pkl
+	alphabet_path: /work/home/sponge_campus/softwares/onescience-main/examples/molsculptor/cases/case_ar-gr/../../../../src/onescience/flax_models/MolSculptor/train/smiles_alphabet.pkl
+	n_replicate: 8
+	init_molecule_path: /work/home/sponge_campus/softwares/onescience-main/examples/molsculptor/cases/case_ar-gr/init_search_molecule.pkl
+	dsdp_script_path_1: /work/home/sponge_campus/softwares/onescience-main/examples/molsculptor/cases/case_ar-gr/dsdp_ar.sh
+	dsdp_script_path_2: /work/home/sponge_campus/softwares/onescience-main/examples/molsculptor/cases/case_ar-gr/dsdp_gr.sh
+	t_min: 75
+	t_max: 125
+	sub_smiles: NC(=O)c1cccc(S(=O)(=O)N2CCCc3ccccc32)c1
+=====================START INFERENCE=====================
+Generating init offsprings...
+Starting search, total steps = 30
+----------------------------------------------------------------
+Searching step 1, noise mutation steps 78
+=====================INPUT ARGS=====================
+INPUT ARGS:
+	config_path: /work/home/sponge_campus/softwares/onescience-main/examples/molsculptor/cases/case_ar-gr/../../../../model-zoo/molsculptor/checkpoints/diffusion-transformer/config_opt.pkl
+	params_path: /work/home/sponge_campus/softwares/onescience-main/examples/molsculptor/cases/case_ar-gr/../../../../model-zoo/molsculptor/checkpoints/diffusion-transformer/dit_params_opt.pkl
+	logger_path: /work/home/sponge_campus/softwares/onescience-main/examples/molsculptor/cases/case_ar-gr/test/Logs.txt
+	save_path: /work/home/sponge_campus/softwares/onescience-main/examples/molsculptor/cases/case_ar-gr/test
+	random_seed: 8888
+	np_random_seed: 8888
+	total_step: 30
+	device_batch_size: 128
+	num_latent_tokens: 16
+	dim_latent: 32
+	eq_steps: 10
+	callback_step: 10
+	beam_size: 4
+	sampling_method: beam
+	infer_config_path: None
+	vae_config_path: /work/home/sponge_campus/softwares/onescience-main/examples/molsculptor/cases/case_ar-gr/../../../../model-zoo/molsculptor/checkpoints/auto-encoder/config.pkl
+	vae_params_path: /work/home/sponge_campus/softwares/onescience-main/examples/molsculptor/cases/case_ar-gr/../../../../model-zoo/molsculptor/checkpoints/auto-encoder/ae_params_opt.pkl
+	alphabet_path: /work/home/sponge_campus/softwares/onescience-main/examples/molsculptor/cases/case_ar-gr/../../../../src/onescience/flax_models/MolSculptor/train/smiles_alphabet.pkl
+	n_replicate: 8
+	init_molecule_path: /work/home/sponge_campus/softwares/onescience-main/examples/molsculptor/cases/case_ar-gr/init_search_molecule.pkl
+	dsdp_script_path_1: /work/home/sponge_campus/softwares/onescience-main/examples/molsculptor/cases/case_ar-gr/dsdp_ar.sh
+	dsdp_script_path_2: /work/home/sponge_campus/softwares/onescience-main/examples/molsculptor/cases/case_ar-gr/dsdp_gr.sh
+	t_min: 75
+	t_max: 125
+	sub_smiles: NC(=O)c1cccc(S(=O)(=O)N2CCCc3ccccc32)c1
+=====================START INFERENCE=====================
+Generating init offsprings...
+Starting search, total steps = 30
+----------------------------------------------------------------
+Searching step 1, noise mutation steps 78
+=====================INPUT ARGS=====================
+INPUT ARGS:
+	config_path: /work/home/sponge_campus/softwares/onescience-main/examples/molsculptor/cases/case_ar-gr/../../../../model-zoo/molsculptor/checkpoints/diffusion-transformer/config_opt.pkl
+	params_path: /work/home/sponge_campus/softwares/onescience-main/examples/molsculptor/cases/case_ar-gr/../../../../model-zoo/molsculptor/checkpoints/diffusion-transformer/dit_params_opt.pkl
+	logger_path: /work/home/sponge_campus/softwares/onescience-main/examples/molsculptor/cases/case_ar-gr/test/Logs.txt
+	save_path: /work/home/sponge_campus/softwares/onescience-main/examples/molsculptor/cases/case_ar-gr/test
+	random_seed: 8888
+	np_random_seed: 8888
+	total_step: 30
+	device_batch_size: 128
+	num_latent_tokens: 16
+	dim_latent: 32
+	eq_steps: 10
+	callback_step: 10
+	beam_size: 4
+	sampling_method: beam
+	infer_config_path: None
+	vae_config_path: /work/home/sponge_campus/softwares/onescience-main/examples/molsculptor/cases/case_ar-gr/../../../../model-zoo/molsculptor/checkpoints/auto-encoder/config.pkl
+	vae_params_path: /work/home/sponge_campus/softwares/onescience-main/examples/molsculptor/cases/case_ar-gr/../../../../model-zoo/molsculptor/checkpoints/auto-encoder/ae_params_opt.pkl
+	alphabet_path: /work/home/sponge_campus/softwares/onescience-main/examples/molsculptor/cases/case_ar-gr/../../../../src/onescience/flax_models/MolSculptor/train/smiles_alphabet.pkl
+	n_replicate: 8
+	init_molecule_path: /work/home/sponge_campus/softwares/onescience-main/examples/molsculptor/cases/case_ar-gr/init_search_molecule.pkl
+	dsdp_script_path_1: /work/home/sponge_campus/softwares/onescience-main/examples/molsculptor/cases/case_ar-gr/dsdp_ar.sh
+	dsdp_script_path_2: /work/home/sponge_campus/softwares/onescience-main/examples/molsculptor/cases/case_ar-gr/dsdp_gr.sh
+	t_min: 75
+	t_max: 125
+	sub_smiles: NC(=O)c1cccc(S(=O)(=O)N2CCCc3ccccc32)c1
+=====================START INFERENCE=====================
+Generating init offsprings...
+Starting search, total steps = 30
+----------------------------------------------------------------
+Searching step 1, noise mutation steps 78
+=====================INPUT ARGS=====================
+INPUT ARGS:
+	config_path: /work/home/sponge_campus/softwares/onescience-main/examples/molsculptor/cases/case_ar-gr/../../../../model-zoo/molsculptor/checkpoints/diffusion-transformer/config_opt.pkl
+	params_path: /work/home/sponge_campus/softwares/onescience-main/examples/molsculptor/cases/case_ar-gr/../../../../model-zoo/molsculptor/checkpoints/diffusion-transformer/dit_params_opt.pkl
+	logger_path: /work/home/sponge_campus/softwares/onescience-main/examples/molsculptor/cases/case_ar-gr/test/Logs.txt
+	save_path: /work/home/sponge_campus/softwares/onescience-main/examples/molsculptor/cases/case_ar-gr/test
+	random_seed: 8888
+	np_random_seed: 8888
+	total_step: 30
+	device_batch_size: 128
+	num_latent_tokens: 16
+	dim_latent: 32
+	eq_steps: 10
+	callback_step: 10
+	beam_size: 4
+	sampling_method: beam
+	infer_config_path: None
+	vae_config_path: /work/home/sponge_campus/softwares/onescience-main/examples/molsculptor/cases/case_ar-gr/../../../../model-zoo/molsculptor/checkpoints/auto-encoder/config.pkl
+	vae_params_path: /work/home/sponge_campus/softwares/onescience-main/examples/molsculptor/cases/case_ar-gr/../../../../model-zoo/molsculptor/checkpoints/auto-encoder/ae_params_opt.pkl
+	alphabet_path: /work/home/sponge_campus/softwares/onescience-main/examples/molsculptor/cases/case_ar-gr/../../../../src/onescience/flax_models/MolSculptor/train/smiles_alphabet.pkl
+	n_replicate: 8
+	init_molecule_path: /work/home/sponge_campus/softwares/onescience-main/examples/molsculptor/cases/case_ar-gr/init_search_molecule.pkl
+	dsdp_script_path_1: /work/home/sponge_campus/softwares/onescience-main/examples/molsculptor/cases/case_ar-gr/dsdp_ar.sh
+	dsdp_script_path_2: /work/home/sponge_campus/softwares/onescience-main/examples/molsculptor/cases/case_ar-gr/dsdp_gr.sh
+	t_min: 75
+	t_max: 125
+	sub_smiles: NC(=O)c1cccc(S(=O)(=O)N2CCCc3ccccc32)c1
+=====================START INFERENCE=====================
+Generating init offsprings...
+Starting search, total steps = 30
+----------------------------------------------------------------
+Searching step 1, noise mutation steps 78
+=====================INPUT ARGS=====================
+INPUT ARGS:
+	config_path: /work/home/sponge_campus/softwares/onescience-main/model-zoo/molsculptor/checkpoints/diffusion-transformer/config_opt.pkl
+	params_path: /work/home/sponge_campus/softwares/onescience-main/model-zoo/molsculptor/checkpoints/diffusion-transformer/dit_params_opt.pkl
+	logger_path: /work/home/sponge_campus/softwares/onescience-main/examples/molsculptor/cases/case_ar-gr/test/Logs.txt
+	save_path: /work/home/sponge_campus/softwares/onescience-main/examples/molsculptor/cases/case_ar-gr/test
+	random_seed: 8888
+	np_random_seed: 8888
+	total_step: 30
+	device_batch_size: 128
+	num_latent_tokens: 16
+	dim_latent: 32
+	eq_steps: 10
+	callback_step: 10
+	beam_size: 4
+	sampling_method: beam
+	infer_config_path: None
+	vae_config_path: /work/home/sponge_campus/softwares/onescience-main/model-zoo/molsculptor/checkpoints/auto-encoder/config.pkl
+	vae_params_path: /work/home/sponge_campus/softwares/onescience-main/model-zoo/molsculptor/checkpoints/auto-encoder/ae_params_opt.pkl
+	alphabet_path: /work/home/sponge_campus/softwares/onescience-main/src/onescience/flax_models/MolSculptor/train/smiles_alphabet.pkl
+	n_replicate: 8
+	init_molecule_path: /work/home/sponge_campus/softwares/onescience-main/examples/molsculptor/cases/case_ar-gr/init_search_molecule.pkl
+	dsdp_script_path_1: /work/home/sponge_campus/softwares/onescience-main/examples/molsculptor/cases/case_ar-gr/dsdp_ar.sh
+	dsdp_script_path_2: /work/home/sponge_campus/softwares/onescience-main/examples/molsculptor/cases/case_ar-gr/dsdp_gr.sh
+	t_min: 75
+	t_max: 125
+	sub_smiles: NC(=O)c1cccc(S(=O)(=O)N2CCCc3ccccc32)c1
+=====================START INFERENCE=====================
+Generating init offsprings...
+Starting search, total steps = 30
+----------------------------------------------------------------
+Searching step 1, noise mutation steps 78
+Top 4 DSDP PROT-1 scores: [9.221 9.221 9.221 9.221]
+Top 4 DSDP PROT-2 scores: [8.996 8.996 8.996 8.996]
+Average sim score: 0.704
+----------------------------------------------------------------
+Searching step 2, noise mutation steps 110
+Top 4 DSDP PROT-1 scores: [9.221 9.221 9.221 9.221]
+Top 4 DSDP PROT-2 scores: [8.996 8.996 8.996 8.996]
+Average sim score: 0.665
+----------------------------------------------------------------
+Searching step 3, noise mutation steps 83
+=====================INPUT ARGS=====================
+INPUT ARGS:
+	config_path: /work/home/sponge_campus/softwares/onescience-main/model-zoo/molsculptor/checkpoints/diffusion-transformer/config_opt.pkl
+	params_path: /work/home/sponge_campus/softwares/onescience-main/model-zoo/molsculptor/checkpoints/diffusion-transformer/dit_params_opt.pkl
+	logger_path: /work/home/sponge_campus/softwares/onescience-main/examples/molsculptor/cases/case_ar-gr/test/Logs.txt
+	save_path: /work/home/sponge_campus/softwares/onescience-main/examples/molsculptor/cases/case_ar-gr/test
+	random_seed: 8888
+	np_random_seed: 8888
+	total_step: 30
+	device_batch_size: 128
+	num_latent_tokens: 16
+	dim_latent: 32
+	eq_steps: 10
+	callback_step: 10
+	beam_size: 4
+	sampling_method: beam
+	infer_config_path: None
+	vae_config_path: /work/home/sponge_campus/softwares/onescience-main/model-zoo/molsculptor/checkpoints/auto-encoder/config.pkl
+	vae_params_path: /work/home/sponge_campus/softwares/onescience-main/model-zoo/molsculptor/checkpoints/auto-encoder/ae_params_opt.pkl
+	alphabet_path: /work/home/sponge_campus/softwares/onescience-main/src/onescience/flax_models/MolSculptor/train/smiles_alphabet.pkl
+	n_replicate: 8
+	init_molecule_path: /work/home/sponge_campus/softwares/onescience-main/examples/molsculptor/cases/case_ar-gr/init_search_molecule.pkl
+	dsdp_script_path_1: /work/home/sponge_campus/softwares/onescience-main/examples/molsculptor/cases/case_ar-gr/dsdp_ar.sh
+	dsdp_script_path_2: /work/home/sponge_campus/softwares/onescience-main/examples/molsculptor/cases/case_ar-gr/dsdp_gr.sh
+	t_min: 75
+	t_max: 125
+	sub_smiles: NC(=O)c1cccc(S(=O)(=O)N2CCCc3ccccc32)c1
+=====================START INFERENCE=====================
+Generating init offsprings...
+Starting search, total steps = 30
+----------------------------------------------------------------
+Searching step 1, noise mutation steps 78
+=====================INPUT ARGS=====================
+INPUT ARGS:
+	config_path: /work/home/sponge_campus/softwares/onescience-main/model-zoo/molsculptor/checkpoints/diffusion-transformer/config_opt.pkl
+	params_path: /work/home/sponge_campus/softwares/onescience-main/model-zoo/molsculptor/checkpoints/diffusion-transformer/dit_params_opt.pkl
+	logger_path: /work/home/sponge_campus/softwares/onescience-main/examples/molsculptor/cases/case_ar-gr/test/Logs.txt
+	save_path: /work/home/sponge_campus/softwares/onescience-main/examples/molsculptor/cases/case_ar-gr/test
+	random_seed: 8888
+	np_random_seed: 8888
+	total_step: 30
+	device_batch_size: 128
+	num_latent_tokens: 16
+	dim_latent: 32
+	eq_steps: 10
+	callback_step: 10
+	beam_size: 4
+	sampling_method: beam
+	infer_config_path: None
+	vae_config_path: /work/home/sponge_campus/softwares/onescience-main/model-zoo/molsculptor/checkpoints/auto-encoder/config.pkl
+	vae_params_path: /work/home/sponge_campus/softwares/onescience-main/model-zoo/molsculptor/checkpoints/auto-encoder/ae_params_opt.pkl
+	alphabet_path: /work/home/sponge_campus/softwares/onescience-main/src/onescience/flax_models/MolSculptor/train/smiles_alphabet.pkl
+	n_replicate: 8
+	init_molecule_path: /work/home/sponge_campus/softwares/onescience-main/examples/molsculptor/cases/case_ar-gr/init_search_molecule.pkl
+	dsdp_script_path_1: /work/home/sponge_campus/softwares/onescience-main/examples/molsculptor/cases/case_ar-gr/dsdp_ar.sh
+	dsdp_script_path_2: /work/home/sponge_campus/softwares/onescience-main/examples/molsculptor/cases/case_ar-gr/dsdp_gr.sh
+	t_min: 75
+	t_max: 125
+	sub_smiles: NC(=O)c1cccc(S(=O)(=O)N2CCCc3ccccc32)c1
+=====================START INFERENCE=====================
+Generating init offsprings...
+Starting search, total steps = 30
+----------------------------------------------------------------
+Searching step 1, noise mutation steps 78
+=====================INPUT ARGS=====================
+INPUT ARGS:
+	config_path: /work/home/sponge_campus/softwares/onescience-main/model-zoo/molsculptor/checkpoints/diffusion-transformer/config_opt.pkl
+	params_path: /work/home/sponge_campus/softwares/onescience-main/model-zoo/molsculptor/checkpoints/diffusion-transformer/dit_params_opt.pkl
+	logger_path: /work/home/sponge_campus/softwares/onescience-main/examples/molsculptor/cases/case_ar-gr/test/Logs.txt
+	save_path: /work/home/sponge_campus/softwares/onescience-main/examples/molsculptor/cases/case_ar-gr/test
+	random_seed: 8888
+	np_random_seed: 8888
+	total_step: 30
+	device_batch_size: 128
+	num_latent_tokens: 16
+	dim_latent: 32
+	eq_steps: 10
+	callback_step: 10
+	beam_size: 4
+	sampling_method: beam
+	infer_config_path: None
+	vae_config_path: /work/home/sponge_campus/softwares/onescience-main/model-zoo/molsculptor/checkpoints/auto-encoder/config.pkl
+	vae_params_path: /work/home/sponge_campus/softwares/onescience-main/model-zoo/molsculptor/checkpoints/auto-encoder/ae_params_opt.pkl
+	alphabet_path: /work/home/sponge_campus/softwares/onescience-main/src/onescience/flax_models/MolSculptor/train/smiles_alphabet.pkl
+	n_replicate: 8
+	init_molecule_path: /work/home/sponge_campus/softwares/onescience-main/examples/molsculptor/cases/case_ar-gr/init_search_molecule.pkl
+	dsdp_script_path_1: /work/home/sponge_campus/softwares/onescience-main/examples/molsculptor/cases/case_ar-gr/dsdp_ar.sh
+	dsdp_script_path_2: /work/home/sponge_campus/softwares/onescience-main/examples/molsculptor/cases/case_ar-gr/dsdp_gr.sh
+	t_min: 75
+	t_max: 125
+	sub_smiles: NC(=O)c1cccc(S(=O)(=O)N2CCCc3ccccc32)c1
+=====================START INFERENCE=====================
+Generating init offsprings...
+Starting search, total steps = 30
+----------------------------------------------------------------
+Searching step 1, noise mutation steps 78
+=====================INPUT ARGS=====================
+INPUT ARGS:
+	config_path: /work/home/sponge_campus/softwares/onescience-main/model-zoo/molsculptor/checkpoints/diffusion-transformer/config_opt.pkl
+	params_path: /work/home/sponge_campus/softwares/onescience-main/model-zoo/molsculptor/checkpoints/diffusion-transformer/dit_params_opt.pkl
+	logger_path: /work/home/sponge_campus/softwares/onescience-main/examples/molsculptor/cases/case_ar-gr/test/Logs.txt
+	save_path: /work/home/sponge_campus/softwares/onescience-main/examples/molsculptor/cases/case_ar-gr/test
+	random_seed: 8888
+	np_random_seed: 8888
+	total_step: 30
+	device_batch_size: 128
+	num_latent_tokens: 16
+	dim_latent: 32
+	eq_steps: 10
+	callback_step: 10
+	beam_size: 4
+	sampling_method: beam
+	infer_config_path: None
+	vae_config_path: /work/home/sponge_campus/softwares/onescience-main/model-zoo/molsculptor/checkpoints/auto-encoder/config.pkl
+	vae_params_path: /work/home/sponge_campus/softwares/onescience-main/model-zoo/molsculptor/checkpoints/auto-encoder/ae_params_opt.pkl
+	alphabet_path: /work/home/sponge_campus/softwares/onescience-main/src/onescience/flax_models/MolSculptor/train/smiles_alphabet.pkl
+	n_replicate: 8
+	init_molecule_path: /work/home/sponge_campus/softwares/onescience-main/examples/molsculptor/cases/case_ar-gr/init_search_molecule.pkl
+	dsdp_script_path_1: /work/home/sponge_campus/softwares/onescience-main/examples/molsculptor/cases/case_ar-gr/dsdp_ar.sh
+	dsdp_script_path_2: /work/home/sponge_campus/softwares/onescience-main/examples/molsculptor/cases/case_ar-gr/dsdp_gr.sh
+	t_min: 75
+	t_max: 125
+	sub_smiles: NC(=O)c1cccc(S(=O)(=O)N2CCCc3ccccc32)c1
+=====================START INFERENCE=====================
+Generating init offsprings...
+Starting search, total steps = 30
+----------------------------------------------------------------
+Searching step 1, noise mutation steps 78
+=====================INPUT ARGS=====================
+INPUT ARGS:
+	config_path: /work/home/sponge_campus/softwares/onescience-main/model-zoo/molsculptor/checkpoints/diffusion-transformer/config_opt.pkl
+	params_path: /work/home/sponge_campus/softwares/onescience-main/model-zoo/molsculptor/checkpoints/diffusion-transformer/dit_params_opt.pkl
+	logger_path: /work/home/sponge_campus/softwares/onescience-main/examples/molsculptor/cases/case_ar-gr/test/Logs.txt
+	save_path: /work/home/sponge_campus/softwares/onescience-main/examples/molsculptor/cases/case_ar-gr/test
+	random_seed: 8888
+	np_random_seed: 8888
+	total_step: 30
+	device_batch_size: 128
+	num_latent_tokens: 16
+	dim_latent: 32
+	eq_steps: 10
+	callback_step: 10
+	beam_size: 4
+	sampling_method: beam
+	infer_config_path: None
+	vae_config_path: /work/home/sponge_campus/softwares/onescience-main/model-zoo/molsculptor/checkpoints/auto-encoder/config.pkl
+	vae_params_path: /work/home/sponge_campus/softwares/onescience-main/model-zoo/molsculptor/checkpoints/auto-encoder/ae_params_opt.pkl
+	alphabet_path: /work/home/sponge_campus/softwares/onescience-main/src/onescience/flax_models/MolSculptor/train/smiles_alphabet.pkl
+	n_replicate: 8
+	init_molecule_path: /work/home/sponge_campus/softwares/onescience-main/examples/molsculptor/cases/case_ar-gr/init_search_molecule.pkl
+	dsdp_script_path_1: /work/home/sponge_campus/softwares/onescience-main/examples/molsculptor/cases/case_ar-gr/dsdp_ar.sh
+	dsdp_script_path_2: /work/home/sponge_campus/softwares/onescience-main/examples/molsculptor/cases/case_ar-gr/dsdp_gr.sh
+	t_min: 75
+	t_max: 125
+	sub_smiles: NC(=O)c1cccc(S(=O)(=O)N2CCCc3ccccc32)c1
+=====================START INFERENCE=====================
+Generating init offsprings...
+Starting search, total steps = 30
+----------------------------------------------------------------
+Searching step 1, noise mutation steps 78
+=====================INPUT ARGS=====================
+INPUT ARGS:
+	config_path: /work/home/sponge_campus/softwares/onescience-main/model-zoo/molsculptor/checkpoints/diffusion-transformer/config_opt.pkl
+	params_path: /work/home/sponge_campus/softwares/onescience-main/model-zoo/molsculptor/checkpoints/diffusion-transformer/dit_params_opt.pkl
+	logger_path: /work/home/sponge_campus/softwares/onescience-main/examples/molsculptor/cases/case_ar-gr/test/Logs.txt
+	save_path: /work/home/sponge_campus/softwares/onescience-main/examples/molsculptor/cases/case_ar-gr/test
+	random_seed: 8888
+	np_random_seed: 8888
+	total_step: 30
+	device_batch_size: 128
+	num_latent_tokens: 16
+	dim_latent: 32
+	eq_steps: 10
+	callback_step: 10
+	beam_size: 4
+	sampling_method: beam
+	infer_config_path: None
+	vae_config_path: /work/home/sponge_campus/softwares/onescience-main/model-zoo/molsculptor/checkpoints/auto-encoder/config.pkl
+	vae_params_path: /work/home/sponge_campus/softwares/onescience-main/model-zoo/molsculptor/checkpoints/auto-encoder/ae_params_opt.pkl
+	alphabet_path: /work/home/sponge_campus/softwares/onescience-main/src/onescience/flax_models/MolSculptor/train/smiles_alphabet.pkl
+	n_replicate: 8
+	init_molecule_path: /work/home/sponge_campus/softwares/onescience-main/examples/molsculptor/cases/case_ar-gr/init_search_molecule.pkl
+	dsdp_script_path_1: /work/home/sponge_campus/softwares/onescience-main/examples/molsculptor/cases/case_ar-gr/dsdp_ar.sh
+	dsdp_script_path_2: /work/home/sponge_campus/softwares/onescience-main/examples/molsculptor/cases/case_ar-gr/dsdp_gr.sh
+	t_min: 75
+	t_max: 125
+	sub_smiles: NC(=O)c1cccc(S(=O)(=O)N2CCCc3ccccc32)c1
+=====================START INFERENCE=====================
+Generating init offsprings...
+Starting search, total steps = 30
+----------------------------------------------------------------
+Searching step 1, noise mutation steps 78
+=====================INPUT ARGS=====================
+INPUT ARGS:
+	config_path: /work/home/sponge_campus/softwares/onescience-main/model-zoo/molsculptor/checkpoints/diffusion-transformer/config_opt.pkl
+	params_path: /work/home/sponge_campus/softwares/onescience-main/model-zoo/molsculptor/checkpoints/diffusion-transformer/dit_params_opt.pkl
+	logger_path: /work/home/sponge_campus/softwares/onescience-main/examples/molsculptor/cases/case_ar-gr/test/Logs.txt
+	save_path: /work/home/sponge_campus/softwares/onescience-main/examples/molsculptor/cases/case_ar-gr/test
+	random_seed: 8888
+	np_random_seed: 8888
+	total_step: 30
+	device_batch_size: 128
+	num_latent_tokens: 16
+	dim_latent: 32
+	eq_steps: 10
+	callback_step: 10
+	beam_size: 4
+	sampling_method: beam
+	infer_config_path: None
+	vae_config_path: /work/home/sponge_campus/softwares/onescience-main/model-zoo/molsculptor/checkpoints/auto-encoder/config.pkl
+	vae_params_path: /work/home/sponge_campus/softwares/onescience-main/model-zoo/molsculptor/checkpoints/auto-encoder/ae_params_opt.pkl
+	alphabet_path: /work/home/sponge_campus/softwares/onescience-main/src/onescience/flax_models/MolSculptor/train/smiles_alphabet.pkl
+	n_replicate: 8
+	init_molecule_path: /work/home/sponge_campus/softwares/onescience-main/examples/molsculptor/cases/case_ar-gr/init_search_molecule.pkl
+	dsdp_script_path_1: /work/home/sponge_campus/softwares/onescience-main/examples/molsculptor/cases/case_ar-gr/dsdp_ar.sh
+	dsdp_script_path_2: /work/home/sponge_campus/softwares/onescience-main/examples/molsculptor/cases/case_ar-gr/dsdp_gr.sh
+	t_min: 75
+	t_max: 125
+	sub_smiles: NC(=O)c1cccc(S(=O)(=O)N2CCCc3ccccc32)c1
+=====================START INFERENCE=====================
+Generating init offsprings...
+Starting search, total steps = 30
+----------------------------------------------------------------
+Searching step 1, noise mutation steps 78
+=====================INPUT ARGS=====================
+INPUT ARGS:
+	config_path: /work/home/sponge_campus/softwares/onescience-main/model-zoo/molsculptor/checkpoints/diffusion-transformer/config_opt.pkl
+	params_path: /work/home/sponge_campus/softwares/onescience-main/model-zoo/molsculptor/checkpoints/diffusion-transformer/dit_params_opt.pkl
+	logger_path: /work/home/sponge_campus/softwares/onescience-main/examples/molsculptor/cases/case_ar-gr/test/Logs.txt
+	save_path: /work/home/sponge_campus/softwares/onescience-main/examples/molsculptor/cases/case_ar-gr/test
+	random_seed: 8888
+	np_random_seed: 8888
+	total_step: 1
+	device_batch_size: 128
+	num_latent_tokens: 16
+	dim_latent: 32
+	eq_steps: 10
+	callback_step: 10
+	beam_size: 4
+	sampling_method: beam
+	infer_config_path: None
+	vae_config_path: /work/home/sponge_campus/softwares/onescience-main/model-zoo/molsculptor/checkpoints/auto-encoder/config.pkl
+	vae_params_path: /work/home/sponge_campus/softwares/onescience-main/model-zoo/molsculptor/checkpoints/auto-encoder/ae_params_opt.pkl
+	alphabet_path: /work/home/sponge_campus/softwares/onescience-main/src/onescience/flax_models/MolSculptor/train/smiles_alphabet.pkl
+	n_replicate: 8
+	init_molecule_path: /work/home/sponge_campus/softwares/onescience-main/examples/molsculptor/cases/case_ar-gr/init_search_molecule.pkl
+	dsdp_script_path_1: /work/home/sponge_campus/softwares/onescience-main/examples/molsculptor/cases/case_ar-gr/dsdp_ar.sh
+	dsdp_script_path_2: /work/home/sponge_campus/softwares/onescience-main/examples/molsculptor/cases/case_ar-gr/dsdp_gr.sh
+	t_min: 75
+	t_max: 125
+	sub_smiles: NC(=O)c1cccc(S(=O)(=O)N2CCCc3ccccc32)c1
+=====================START INFERENCE=====================
+Generating init offsprings...
+Starting search, total steps = 1
+----------------------------------------------------------------
+Searching step 1, noise mutation steps 78
+=====================INPUT ARGS=====================
+INPUT ARGS:
+	config_path: /work/home/sponge_campus/softwares/onescience-main/model-zoo/molsculptor/checkpoints/diffusion-transformer/config_opt.pkl
+	params_path: /work/home/sponge_campus/softwares/onescience-main/model-zoo/molsculptor/checkpoints/diffusion-transformer/dit_params_opt.pkl
+	logger_path: /work/home/sponge_campus/softwares/onescience-main/examples/molsculptor/cases/case_ar-gr/test/Logs.txt
+	save_path: /work/home/sponge_campus/softwares/onescience-main/examples/molsculptor/cases/case_ar-gr/test
+	random_seed: 8888
+	np_random_seed: 8888
+	total_step: 1
+	device_batch_size: 128
+	num_latent_tokens: 16
+	dim_latent: 32
+	eq_steps: 10
+	callback_step: 10
+	beam_size: 4
+	sampling_method: beam
+	infer_config_path: None
+	vae_config_path: /work/home/sponge_campus/softwares/onescience-main/model-zoo/molsculptor/checkpoints/auto-encoder/config.pkl
+	vae_params_path: /work/home/sponge_campus/softwares/onescience-main/model-zoo/molsculptor/checkpoints/auto-encoder/ae_params_opt.pkl
+	alphabet_path: /work/home/sponge_campus/softwares/onescience-main/src/onescience/flax_models/MolSculptor/train/smiles_alphabet.pkl
+	n_replicate: 8
+	init_molecule_path: /work/home/sponge_campus/softwares/onescience-main/examples/molsculptor/cases/case_ar-gr/init_search_molecule.pkl
+	dsdp_script_path_1: /work/home/sponge_campus/softwares/onescience-main/examples/molsculptor/cases/case_ar-gr/dsdp_ar.sh
+	dsdp_script_path_2: /work/home/sponge_campus/softwares/onescience-main/examples/molsculptor/cases/case_ar-gr/dsdp_gr.sh
+	t_min: 75
+	t_max: 125
+	sub_smiles: NC(=O)c1cccc(S(=O)(=O)N2CCCc3ccccc32)c1
+=====================START INFERENCE=====================
+Generating init offsprings...
+Starting search, total steps = 1
+----------------------------------------------------------------
+Searching step 1, noise mutation steps 78
+=====================INPUT ARGS=====================
+INPUT ARGS:
+	config_path: /work/home/sponge_campus/softwares/onescience-main/model-zoo/molsculptor/checkpoints/diffusion-transformer/config_opt.pkl
+	params_path: /work/home/sponge_campus/softwares/onescience-main/model-zoo/molsculptor/checkpoints/diffusion-transformer/dit_params_opt.pkl
+	logger_path: /work/home/sponge_campus/softwares/onescience-main/examples/molsculptor/cases/case_ar-gr/test/Logs.txt
+	save_path: /work/home/sponge_campus/softwares/onescience-main/examples/molsculptor/cases/case_ar-gr/test
+	random_seed: 8888
+	np_random_seed: 8888
+	total_step: 1
+	device_batch_size: 128
+	num_latent_tokens: 16
+	dim_latent: 32
+	eq_steps: 10
+	callback_step: 10
+	beam_size: 4
+	sampling_method: beam
+	infer_config_path: None
+	vae_config_path: /work/home/sponge_campus/softwares/onescience-main/model-zoo/molsculptor/checkpoints/auto-encoder/config.pkl
+	vae_params_path: /work/home/sponge_campus/softwares/onescience-main/model-zoo/molsculptor/checkpoints/auto-encoder/ae_params_opt.pkl
+	alphabet_path: /work/home/sponge_campus/softwares/onescience-main/src/onescience/flax_models/MolSculptor/train/smiles_alphabet.pkl
+	n_replicate: 8
+	init_molecule_path: /work/home/sponge_campus/softwares/onescience-main/examples/molsculptor/cases/case_ar-gr/init_search_molecule.pkl
+	dsdp_script_path_1: /work/home/sponge_campus/softwares/onescience-main/examples/molsculptor/cases/case_ar-gr/dsdp_ar.sh
+	dsdp_script_path_2: /work/home/sponge_campus/softwares/onescience-main/examples/molsculptor/cases/case_ar-gr/dsdp_gr.sh
+	t_min: 75
+	t_max: 125
+	sub_smiles: NC(=O)c1cccc(S(=O)(=O)N2CCCc3ccccc32)c1
+=====================START INFERENCE=====================
+Generating init offsprings...
+Starting search, total steps = 1
+----------------------------------------------------------------
+Searching step 1, noise mutation steps 78
+=====================INPUT ARGS=====================
+INPUT ARGS:
+	config_path: /work/home/sponge_campus/softwares/onescience-main/model-zoo/molsculptor/checkpoints/diffusion-transformer/config_opt.pkl
+	params_path: /work/home/sponge_campus/softwares/onescience-main/model-zoo/molsculptor/checkpoints/diffusion-transformer/dit_params_opt.pkl
+	logger_path: /work/home/sponge_campus/softwares/onescience-main/examples/molsculptor/cases/case_ar-gr/test/Logs.txt
+	save_path: /work/home/sponge_campus/softwares/onescience-main/examples/molsculptor/cases/case_ar-gr/test
+	random_seed: 8888
+	np_random_seed: 8888
+	total_step: 1
+	device_batch_size: 128
+	num_latent_tokens: 16
+	dim_latent: 32
+	eq_steps: 10
+	callback_step: 10
+	beam_size: 4
+	sampling_method: beam
+	infer_config_path: None
+	vae_config_path: /work/home/sponge_campus/softwares/onescience-main/model-zoo/molsculptor/checkpoints/auto-encoder/config.pkl
+	vae_params_path: /work/home/sponge_campus/softwares/onescience-main/model-zoo/molsculptor/checkpoints/auto-encoder/ae_params_opt.pkl
+	alphabet_path: /work/home/sponge_campus/softwares/onescience-main/src/onescience/flax_models/MolSculptor/train/smiles_alphabet.pkl
+	n_replicate: 8
+	init_molecule_path: /work/home/sponge_campus/softwares/onescience-main/examples/molsculptor/cases/case_ar-gr/init_search_molecule.pkl
+	dsdp_script_path_1: /work/home/sponge_campus/softwares/onescience-main/examples/molsculptor/cases/case_ar-gr/dsdp_ar.sh
+	dsdp_script_path_2: /work/home/sponge_campus/softwares/onescience-main/examples/molsculptor/cases/case_ar-gr/dsdp_gr.sh
+	t_min: 75
+	t_max: 125
+	sub_smiles: NC(=O)c1cccc(S(=O)(=O)N2CCCc3ccccc32)c1
+=====================START INFERENCE=====================
+Generating init offsprings...
+Starting search, total steps = 1
+----------------------------------------------------------------
+Searching step 1, noise mutation steps 78
+=====================INPUT ARGS=====================
+INPUT ARGS:
+	config_path: /work/home/sponge_campus/softwares/onescience-main/model-zoo/molsculptor/checkpoints/diffusion-transformer/config_opt.pkl
+	params_path: /work/home/sponge_campus/softwares/onescience-main/model-zoo/molsculptor/checkpoints/diffusion-transformer/dit_params_opt.pkl
+	logger_path: /work/home/sponge_campus/softwares/onescience-main/examples/molsculptor/cases/case_ar-gr/test/Logs.txt
+	save_path: /work/home/sponge_campus/softwares/onescience-main/examples/molsculptor/cases/case_ar-gr/test
+	random_seed: 8888
+	np_random_seed: 8888
+	total_step: 1
+	device_batch_size: 128
+	num_latent_tokens: 16
+	dim_latent: 32
+	eq_steps: 10
+	callback_step: 10
+	beam_size: 4
+	sampling_method: beam
+	infer_config_path: None
+	vae_config_path: /work/home/sponge_campus/softwares/onescience-main/model-zoo/molsculptor/checkpoints/auto-encoder/config.pkl
+	vae_params_path: /work/home/sponge_campus/softwares/onescience-main/model-zoo/molsculptor/checkpoints/auto-encoder/ae_params_opt.pkl
+	alphabet_path: /work/home/sponge_campus/softwares/onescience-main/src/onescience/flax_models/MolSculptor/train/smiles_alphabet.pkl
+	n_replicate: 8
+	init_molecule_path: /work/home/sponge_campus/softwares/onescience-main/examples/molsculptor/cases/case_ar-gr/init_search_molecule.pkl
+	dsdp_script_path_1: /work/home/sponge_campus/softwares/onescience-main/examples/molsculptor/cases/case_ar-gr/dsdp_ar.sh
+	dsdp_script_path_2: /work/home/sponge_campus/softwares/onescience-main/examples/molsculptor/cases/case_ar-gr/dsdp_gr.sh
+	t_min: 75
+	t_max: 125
+	sub_smiles: NC(=O)c1cccc(S(=O)(=O)N2CCCc3ccccc32)c1
+=====================START INFERENCE=====================
+Generating init offsprings...
+Starting search, total steps = 1
+----------------------------------------------------------------
+Searching step 1, noise mutation steps 78
+=====================INPUT ARGS=====================
+INPUT ARGS:
+	config_path: /work/home/sponge_campus/softwares/onescience-main/model-zoo/molsculptor/checkpoints/diffusion-transformer/config_opt.pkl
+	params_path: /work/home/sponge_campus/softwares/onescience-main/model-zoo/molsculptor/checkpoints/diffusion-transformer/dit_params_opt.pkl
+	logger_path: /work/home/sponge_campus/softwares/onescience-main/examples/molsculptor/cases/case_ar-gr/test/Logs.txt
+	save_path: /work/home/sponge_campus/softwares/onescience-main/examples/molsculptor/cases/case_ar-gr/test
+	random_seed: 8888
+	np_random_seed: 8888
+	total_step: 1
+	device_batch_size: 128
+	num_latent_tokens: 16
+	dim_latent: 32
+	eq_steps: 10
+	callback_step: 10
+	beam_size: 4
+	sampling_method: beam
+	infer_config_path: None
+	vae_config_path: /work/home/sponge_campus/softwares/onescience-main/model-zoo/molsculptor/checkpoints/auto-encoder/config.pkl
+	vae_params_path: /work/home/sponge_campus/softwares/onescience-main/model-zoo/molsculptor/checkpoints/auto-encoder/ae_params_opt.pkl
+	alphabet_path: /work/home/sponge_campus/softwares/onescience-main/src/onescience/flax_models/MolSculptor/train/smiles_alphabet.pkl
+	n_replicate: 8
+	init_molecule_path: /work/home/sponge_campus/softwares/onescience-main/examples/molsculptor/cases/case_ar-gr/init_search_molecule.pkl
+	dsdp_script_path_1: /work/home/sponge_campus/softwares/onescience-main/examples/molsculptor/cases/case_ar-gr/dsdp_ar.sh
+	dsdp_script_path_2: /work/home/sponge_campus/softwares/onescience-main/examples/molsculptor/cases/case_ar-gr/dsdp_gr.sh
+	t_min: 75
+	t_max: 125
+	sub_smiles: NC(=O)c1cccc(S(=O)(=O)N2CCCc3ccccc32)c1
+=====================START INFERENCE=====================
+Generating init offsprings...
+=====================INPUT ARGS=====================
+INPUT ARGS:
+	config_path: /work/home/sponge_campus/softwares/onescience-main/model-zoo/molsculptor/checkpoints/diffusion-transformer/config_opt.pkl
+	params_path: /work/home/sponge_campus/softwares/onescience-main/model-zoo/molsculptor/checkpoints/diffusion-transformer/dit_params_opt.pkl
+	logger_path: /work/home/sponge_campus/softwares/onescience-main/examples/molsculptor/cases/case_ar-gr/test/Logs.txt
+	save_path: /work/home/sponge_campus/softwares/onescience-main/examples/molsculptor/cases/case_ar-gr/test
+	random_seed: 8888
+	np_random_seed: 8888
+	total_step: 1
+	device_batch_size: 128
+	num_latent_tokens: 16
+	dim_latent: 32
+	eq_steps: 10
+	callback_step: 10
+	beam_size: 4
+	sampling_method: beam
+	infer_config_path: None
+	vae_config_path: /work/home/sponge_campus/softwares/onescience-main/model-zoo/molsculptor/checkpoints/auto-encoder/config.pkl
+	vae_params_path: /work/home/sponge_campus/softwares/onescience-main/model-zoo/molsculptor/checkpoints/auto-encoder/ae_params_opt.pkl
+	alphabet_path: /work/home/sponge_campus/softwares/onescience-main/src/onescience/flax_models/MolSculptor/train/smiles_alphabet.pkl
+	n_replicate: 8
+	init_molecule_path: /work/home/sponge_campus/softwares/onescience-main/examples/molsculptor/cases/case_ar-gr/init_search_molecule.pkl
+	dsdp_script_path_1: /work/home/sponge_campus/softwares/onescience-main/examples/molsculptor/cases/case_ar-gr/dsdp_ar.sh
+	dsdp_script_path_2: /work/home/sponge_campus/softwares/onescience-main/examples/molsculptor/cases/case_ar-gr/dsdp_gr.sh
+	t_min: 75
+	t_max: 125
+	sub_smiles: NC(=O)c1cccc(S(=O)(=O)N2CCCc3ccccc32)c1
+=====================START INFERENCE=====================
+Generating init offsprings...
+Starting search, total steps = 1
+----------------------------------------------------------------
+Searching step 1, noise mutation steps 78
+Top 4 DSDP PROT-1 scores: [9.221 9.221 9.221 9.221]
+Top 4 DSDP PROT-2 scores: [8.996 8.996 8.996 8.996]
+Average sim score: 0.704
+----------------------------------------------------------------
+=====================INPUT ARGS=====================
+INPUT ARGS:
+	config_path: /work/home/sponge_campus/biao.liu/onescience-main/model-zoo/molsculptor/checkpoints/diffusion-transformer/config_opt.pkl
+	params_path: /work/home/sponge_campus/biao.liu/onescience-main/model-zoo/molsculptor/checkpoints/diffusion-transformer/dit_params_opt.pkl
+	logger_path: /work/home/sponge_campus/biao.liu/onescience-main/examples/molsculptor/cases/case_ar-gr/test/Logs.txt
+	save_path: /work/home/sponge_campus/biao.liu/onescience-main/examples/molsculptor/cases/case_ar-gr/test
+	random_seed: 8888
+	np_random_seed: 8888
+	total_step: 1
+	device_batch_size: 128
+	num_latent_tokens: 16
+	dim_latent: 32
+	eq_steps: 10
+	callback_step: 10
+	beam_size: 4
+	sampling_method: beam
+	infer_config_path: None
+	vae_config_path: /work/home/sponge_campus/biao.liu/onescience-main/model-zoo/molsculptor/checkpoints/auto-encoder/config.pkl
+	vae_params_path: /work/home/sponge_campus/biao.liu/onescience-main/model-zoo/molsculptor/checkpoints/auto-encoder/ae_params_opt.pkl
+	alphabet_path: /work/home/sponge_campus/biao.liu/onescience-main/src/onescience/flax_models/MolSculptor/train/smiles_alphabet.pkl
+	n_replicate: 8
+	init_molecule_path: /work/home/sponge_campus/biao.liu/onescience-main/examples/molsculptor/cases/case_ar-gr/init_search_molecule.pkl
+	dsdp_script_path_1: /work/home/sponge_campus/biao.liu/onescience-main/examples/molsculptor/cases/case_ar-gr/dsdp_ar.sh
+	dsdp_script_path_2: /work/home/sponge_campus/biao.liu/onescience-main/examples/molsculptor/cases/case_ar-gr/dsdp_gr.sh
+	t_min: 75
+	t_max: 125
+	sub_smiles: NC(=O)c1cccc(S(=O)(=O)N2CCCc3ccccc32)c1
+=====================START INFERENCE=====================
+Generating init offsprings...
+Starting search, total steps = 1
+----------------------------------------------------------------
+Searching step 1, noise mutation steps 78
+=====================INPUT ARGS=====================
+INPUT ARGS:
+	config_path: /work/home/sponge_campus/biao.liu/onescience-main/model-zoo/molsculptor/checkpoints/diffusion-transformer/config_opt.pkl
+	params_path: /work/home/sponge_campus/biao.liu/onescience-main/model-zoo/molsculptor/checkpoints/diffusion-transformer/dit_params_opt.pkl
+	logger_path: /work/home/sponge_campus/biao.liu/onescience-main/examples/molsculptor/cases/case_ar-gr/test/Logs.txt
+	save_path: /work/home/sponge_campus/biao.liu/onescience-main/examples/molsculptor/cases/case_ar-gr/test
+	random_seed: 8888
+	np_random_seed: 8888
+	total_step: 1
+	device_batch_size: 128
+	num_latent_tokens: 16
+	dim_latent: 32
+	eq_steps: 10
+	callback_step: 10
+	beam_size: 4
+	sampling_method: beam
+	infer_config_path: None
+	vae_config_path: /work/home/sponge_campus/biao.liu/onescience-main/model-zoo/molsculptor/checkpoints/auto-encoder/config.pkl
+	vae_params_path: /work/home/sponge_campus/biao.liu/onescience-main/model-zoo/molsculptor/checkpoints/auto-encoder/ae_params_opt.pkl
+	alphabet_path: /work/home/sponge_campus/biao.liu/onescience-main/src/onescience/flax_models/MolSculptor/train/smiles_alphabet.pkl
+	n_replicate: 8
+	init_molecule_path: /work/home/sponge_campus/biao.liu/onescience-main/examples/molsculptor/cases/case_ar-gr/init_search_molecule.pkl
+	dsdp_script_path_1: /work/home/sponge_campus/biao.liu/onescience-main/examples/molsculptor/cases/case_ar-gr/dsdp_ar.sh
+	dsdp_script_path_2: /work/home/sponge_campus/biao.liu/onescience-main/examples/molsculptor/cases/case_ar-gr/dsdp_gr.sh
+	t_min: 75
+	t_max: 125
+	sub_smiles: NC(=O)c1cccc(S(=O)(=O)N2CCCc3ccccc32)c1
+=====================START INFERENCE=====================
+Generating init offsprings...
+Starting search, total steps = 1
+----------------------------------------------------------------
+Searching step 1, noise mutation steps 78
+=====================INPUT ARGS=====================
+INPUT ARGS:
+	config_path: /work/home/sponge_campus/biao.liu/onescience-main/model-zoo/molsculptor/checkpoints/diffusion-transformer/config_opt.pkl
+	params_path: /work/home/sponge_campus/biao.liu/onescience-main/model-zoo/molsculptor/checkpoints/diffusion-transformer/dit_params_opt.pkl
+	logger_path: /work/home/sponge_campus/biao.liu/onescience-main/examples/molsculptor/cases/case_ar-gr/test/Logs.txt
+	save_path: /work/home/sponge_campus/biao.liu/onescience-main/examples/molsculptor/cases/case_ar-gr/test
+	random_seed: 8888
+	np_random_seed: 8888
+	total_step: 1
+	device_batch_size: 128
+	num_latent_tokens: 16
+	dim_latent: 32
+	eq_steps: 10
+	callback_step: 10
+	beam_size: 4
+	sampling_method: beam
+	infer_config_path: None
+	vae_config_path: /work/home/sponge_campus/biao.liu/onescience-main/model-zoo/molsculptor/checkpoints/auto-encoder/config.pkl
+	vae_params_path: /work/home/sponge_campus/biao.liu/onescience-main/model-zoo/molsculptor/checkpoints/auto-encoder/ae_params_opt.pkl
+	alphabet_path: /work/home/sponge_campus/biao.liu/onescience-main/src/onescience/flax_models/MolSculptor/train/smiles_alphabet.pkl
+	n_replicate: 8
+	init_molecule_path: /work/home/sponge_campus/biao.liu/onescience-main/examples/molsculptor/cases/case_ar-gr/init_search_molecule.pkl
+	dsdp_script_path_1: /work/home/sponge_campus/biao.liu/onescience-main/examples/molsculptor/cases/case_ar-gr/dsdp_ar.sh
+	dsdp_script_path_2: /work/home/sponge_campus/biao.liu/onescience-main/examples/molsculptor/cases/case_ar-gr/dsdp_gr.sh
+	t_min: 75
+	t_max: 125
+	sub_smiles: NC(=O)c1cccc(S(=O)(=O)N2CCCc3ccccc32)c1
+=====================START INFERENCE=====================
+Generating init offsprings...
+Starting search, total steps = 1
+----------------------------------------------------------------
+Searching step 1, noise mutation steps 78
+=====================INPUT ARGS=====================
+INPUT ARGS:
+	config_path: /work/home/sponge_campus/biao.liu/onescience-main/model-zoo/molsculptor/checkpoints/diffusion-transformer/config_opt.pkl
+	params_path: /work/home/sponge_campus/biao.liu/onescience-main/model-zoo/molsculptor/checkpoints/diffusion-transformer/dit_params_opt.pkl
+	logger_path: /work/home/sponge_campus/biao.liu/onescience-main/examples/molsculptor/cases/case_ar-gr/test/Logs.txt
+	save_path: /work/home/sponge_campus/biao.liu/onescience-main/examples/molsculptor/cases/case_ar-gr/test
+	random_seed: 8888
+	np_random_seed: 8888
+	total_step: 1
+	device_batch_size: 128
+	num_latent_tokens: 16
+	dim_latent: 32
+	eq_steps: 10
+	callback_step: 10
+	beam_size: 4
+	sampling_method: beam
+	infer_config_path: None
+	vae_config_path: /work/home/sponge_campus/biao.liu/onescience-main/model-zoo/molsculptor/checkpoints/auto-encoder/config.pkl
+	vae_params_path: /work/home/sponge_campus/biao.liu/onescience-main/model-zoo/molsculptor/checkpoints/auto-encoder/ae_params_opt.pkl
+	alphabet_path: /work/home/sponge_campus/biao.liu/onescience-main/src/onescience/flax_models/MolSculptor/train/smiles_alphabet.pkl
+	n_replicate: 8
+	init_molecule_path: /work/home/sponge_campus/biao.liu/onescience-main/examples/molsculptor/cases/case_ar-gr/init_search_molecule.pkl
+	dsdp_script_path_1: /work/home/sponge_campus/biao.liu/onescience-main/examples/molsculptor/cases/case_ar-gr/dsdp_ar.sh
+	dsdp_script_path_2: /work/home/sponge_campus/biao.liu/onescience-main/examples/molsculptor/cases/case_ar-gr/dsdp_gr.sh
+	t_min: 75
+	t_max: 125
+	sub_smiles: NC(=O)c1cccc(S(=O)(=O)N2CCCc3ccccc32)c1
+=====================START INFERENCE=====================
+=====================INPUT ARGS=====================
+INPUT ARGS:
+	config_path: /work/home/sponge_campus/biao.liu/onescience-main/model-zoo/molsculptor/checkpoints/diffusion-transformer/config_opt.pkl
+	params_path: /work/home/sponge_campus/biao.liu/onescience-main/model-zoo/molsculptor/checkpoints/diffusion-transformer/dit_params_opt.pkl
+	logger_path: /work/home/sponge_campus/biao.liu/onescience-main/examples/molsculptor/cases/case_ar-gr/test/Logs.txt
+	save_path: /work/home/sponge_campus/biao.liu/onescience-main/examples/molsculptor/cases/case_ar-gr/test
+	random_seed: 8888
+	np_random_seed: 8888
+	total_step: 1
+	device_batch_size: 128
+	num_latent_tokens: 16
+	dim_latent: 32
+	eq_steps: 10
+	callback_step: 10
+	beam_size: 4
+	sampling_method: beam
+	infer_config_path: None
+	vae_config_path: /work/home/sponge_campus/biao.liu/onescience-main/model-zoo/molsculptor/checkpoints/auto-encoder/config.pkl
+	vae_params_path: /work/home/sponge_campus/biao.liu/onescience-main/model-zoo/molsculptor/checkpoints/auto-encoder/ae_params_opt.pkl
+	alphabet_path: /work/home/sponge_campus/biao.liu/onescience-main/src/onescience/flax_models/MolSculptor/train/smiles_alphabet.pkl
+	n_replicate: 8
+	init_molecule_path: /work/home/sponge_campus/biao.liu/onescience-main/examples/molsculptor/cases/case_ar-gr/init_search_molecule.pkl
+	dsdp_script_path_1: /work/home/sponge_campus/biao.liu/onescience-main/examples/molsculptor/cases/case_ar-gr/dsdp_ar.sh
+	dsdp_script_path_2: /work/home/sponge_campus/biao.liu/onescience-main/examples/molsculptor/cases/case_ar-gr/dsdp_gr.sh
+	t_min: 75
+	t_max: 125
+	sub_smiles: NC(=O)c1cccc(S(=O)(=O)N2CCCc3ccccc32)c1
+=====================START INFERENCE=====================
+=====================INPUT ARGS=====================
+INPUT ARGS:
+	config_path: /work/home/sponge_campus/biao.liu/onescience-main/model-zoo/molsculptor/checkpoints/diffusion-transformer/config_opt.pkl
+	params_path: /work/home/sponge_campus/biao.liu/onescience-main/model-zoo/molsculptor/checkpoints/diffusion-transformer/dit_params_opt.pkl
+	logger_path: /work/home/sponge_campus/biao.liu/onescience-main/examples/molsculptor/cases/case_ar-gr/test/Logs.txt
+	save_path: /work/home/sponge_campus/biao.liu/onescience-main/examples/molsculptor/cases/case_ar-gr/test
+	random_seed: 8888
+	np_random_seed: 8888
+	total_step: 1
+	device_batch_size: 128
+	num_latent_tokens: 16
+	dim_latent: 32
+	eq_steps: 10
+	callback_step: 10
+	beam_size: 4
+	sampling_method: beam
+	infer_config_path: None
+	vae_config_path: /work/home/sponge_campus/biao.liu/onescience-main/model-zoo/molsculptor/checkpoints/auto-encoder/config.pkl
+	vae_params_path: /work/home/sponge_campus/biao.liu/onescience-main/model-zoo/molsculptor/checkpoints/auto-encoder/ae_params_opt.pkl
+	alphabet_path: /work/home/sponge_campus/biao.liu/onescience-main/src/onescience/flax_models/MolSculptor/train/smiles_alphabet.pkl
+	n_replicate: 8
+	init_molecule_path: /work/home/sponge_campus/biao.liu/onescience-main/examples/molsculptor/cases/case_ar-gr/init_search_molecule.pkl
+	dsdp_script_path_1: /work/home/sponge_campus/biao.liu/onescience-main/examples/molsculptor/cases/case_ar-gr/dsdp_ar.sh
+	dsdp_script_path_2: /work/home/sponge_campus/biao.liu/onescience-main/examples/molsculptor/cases/case_ar-gr/dsdp_gr.sh
+	t_min: 75
+	t_max: 125
+	sub_smiles: NC(=O)c1cccc(S(=O)(=O)N2CCCc3ccccc32)c1
+=====================START INFERENCE=====================
+Generating init offsprings...
+Starting search, total steps = 1
+----------------------------------------------------------------
+Searching step 1, noise mutation steps 78
+=====================INPUT ARGS=====================
+INPUT ARGS:
+	config_path: /work/home/sponge_campus/biao.liu/onescience-main/model-zoo/molsculptor/checkpoints/diffusion-transformer/config_opt.pkl
+	params_path: /work/home/sponge_campus/biao.liu/onescience-main/model-zoo/molsculptor/checkpoints/diffusion-transformer/dit_params_opt.pkl
+	logger_path: /work/home/sponge_campus/biao.liu/onescience-main/examples/molsculptor/cases/case_ar-gr/test/Logs.txt
+	save_path: /work/home/sponge_campus/biao.liu/onescience-main/examples/molsculptor/cases/case_ar-gr/test
+	random_seed: 8888
+	np_random_seed: 8888
+	total_step: 1
+	device_batch_size: 128
+	num_latent_tokens: 16
+	dim_latent: 32
+	eq_steps: 10
+	callback_step: 10
+	beam_size: 4
+	sampling_method: beam
+	infer_config_path: None
+	vae_config_path: /work/home/sponge_campus/biao.liu/onescience-main/model-zoo/molsculptor/checkpoints/auto-encoder/config.pkl
+	vae_params_path: /work/home/sponge_campus/biao.liu/onescience-main/model-zoo/molsculptor/checkpoints/auto-encoder/ae_params_opt.pkl
+	alphabet_path: /work/home/sponge_campus/biao.liu/onescience-main/src/onescience/flax_models/MolSculptor/train/smiles_alphabet.pkl
+	n_replicate: 8
+	init_molecule_path: /work/home/sponge_campus/biao.liu/onescience-main/examples/molsculptor/cases/case_ar-gr/init_search_molecule.pkl
+	dsdp_script_path_1: /work/home/sponge_campus/biao.liu/onescience-main/examples/molsculptor/cases/case_ar-gr/dsdp_ar.sh
+	dsdp_script_path_2: /work/home/sponge_campus/biao.liu/onescience-main/examples/molsculptor/cases/case_ar-gr/dsdp_gr.sh
+	t_min: 75
+	t_max: 125
+	sub_smiles: NC(=O)c1cccc(S(=O)(=O)N2CCCc3ccccc32)c1
+=====================START INFERENCE=====================
+=====================INPUT ARGS=====================
+INPUT ARGS:
+	config_path: /work/home/sponge_campus/biao.liu/onescience-main/model-zoo/molsculptor/checkpoints/diffusion-transformer/config_opt.pkl
+	params_path: /work/home/sponge_campus/biao.liu/onescience-main/model-zoo/molsculptor/checkpoints/diffusion-transformer/dit_params_opt.pkl
+	logger_path: /work/home/sponge_campus/biao.liu/onescience-main/examples/molsculptor/cases/case_ar-gr/test/Logs.txt
+	save_path: /work/home/sponge_campus/biao.liu/onescience-main/examples/molsculptor/cases/case_ar-gr/test
+	random_seed: 8888
+	np_random_seed: 8888
+	total_step: 1
+	device_batch_size: 128
+	num_latent_tokens: 16
+	dim_latent: 32
+	eq_steps: 10
+	callback_step: 10
+	beam_size: 4
+	sampling_method: beam
+	infer_config_path: None
+	vae_config_path: /work/home/sponge_campus/biao.liu/onescience-main/model-zoo/molsculptor/checkpoints/auto-encoder/config.pkl
+	vae_params_path: /work/home/sponge_campus/biao.liu/onescience-main/model-zoo/molsculptor/checkpoints/auto-encoder/ae_params_opt.pkl
+	alphabet_path: /work/home/sponge_campus/biao.liu/onescience-main/src/onescience/flax_models/MolSculptor/train/smiles_alphabet.pkl
+	n_replicate: 8
+	init_molecule_path: /work/home/sponge_campus/biao.liu/onescience-main/examples/molsculptor/cases/case_ar-gr/init_search_molecule.pkl
+	dsdp_script_path_1: /work/home/sponge_campus/biao.liu/onescience-main/examples/molsculptor/cases/case_ar-gr/dsdp_ar.sh
+	dsdp_script_path_2: /work/home/sponge_campus/biao.liu/onescience-main/examples/molsculptor/cases/case_ar-gr/dsdp_gr.sh
+	t_min: 75
+	t_max: 125
+	sub_smiles: NC(=O)c1cccc(S(=O)(=O)N2CCCc3ccccc32)c1
+=====================START INFERENCE=====================
+=====================INPUT ARGS=====================
+INPUT ARGS:
+	config_path: /work/home/sponge_campus/biao.liu/onescience-main/model-zoo/molsculptor/checkpoints/diffusion-transformer/config_opt.pkl
+	params_path: /work/home/sponge_campus/biao.liu/onescience-main/model-zoo/molsculptor/checkpoints/diffusion-transformer/dit_params_opt.pkl
+	logger_path: /work/home/sponge_campus/biao.liu/onescience-main/examples/molsculptor/cases/case_ar-gr/test/Logs.txt
+	save_path: /work/home/sponge_campus/biao.liu/onescience-main/examples/molsculptor/cases/case_ar-gr/test
+	random_seed: 8888
+	np_random_seed: 8888
+	total_step: 1
+	device_batch_size: 128
+	num_latent_tokens: 16
+	dim_latent: 32
+	eq_steps: 10
+	callback_step: 10
+	beam_size: 4
+	sampling_method: beam
+	infer_config_path: None
+	vae_config_path: /work/home/sponge_campus/biao.liu/onescience-main/model-zoo/molsculptor/checkpoints/auto-encoder/config.pkl
+	vae_params_path: /work/home/sponge_campus/biao.liu/onescience-main/model-zoo/molsculptor/checkpoints/auto-encoder/ae_params_opt.pkl
+	alphabet_path: /work/home/sponge_campus/biao.liu/onescience-main/src/onescience/flax_models/MolSculptor/train/smiles_alphabet.pkl
+	n_replicate: 8
+	init_molecule_path: /work/home/sponge_campus/biao.liu/onescience-main/examples/molsculptor/cases/case_ar-gr/init_search_molecule.pkl
+	dsdp_script_path_1: /work/home/sponge_campus/biao.liu/onescience-main/examples/molsculptor/cases/case_ar-gr/dsdp_ar.sh
+	dsdp_script_path_2: /work/home/sponge_campus/biao.liu/onescience-main/examples/molsculptor/cases/case_ar-gr/dsdp_gr.sh
+	t_min: 75
+	t_max: 125
+	sub_smiles: NC(=O)c1cccc(S(=O)(=O)N2CCCc3ccccc32)c1
+=====================START INFERENCE=====================
+=====================INPUT ARGS=====================
+INPUT ARGS:
+	config_path: /work/home/sponge_campus/biao.liu/onescience-main/model-zoo/molsculptor/checkpoints/diffusion-transformer/config_opt.pkl
+	params_path: /work/home/sponge_campus/biao.liu/onescience-main/model-zoo/molsculptor/checkpoints/diffusion-transformer/dit_params_opt.pkl
+	logger_path: /work/home/sponge_campus/biao.liu/onescience-main/examples/molsculptor/cases/case_ar-gr/test/Logs.txt
+	save_path: /work/home/sponge_campus/biao.liu/onescience-main/examples/molsculptor/cases/case_ar-gr/test
+	random_seed: 8888
+	np_random_seed: 8888
+	total_step: 1
+	device_batch_size: 128
+	num_latent_tokens: 16
+	dim_latent: 32
+	eq_steps: 10
+	callback_step: 10
+	beam_size: 4
+	sampling_method: beam
+	infer_config_path: None
+	vae_config_path: /work/home/sponge_campus/biao.liu/onescience-main/model-zoo/molsculptor/checkpoints/auto-encoder/config.pkl
+	vae_params_path: /work/home/sponge_campus/biao.liu/onescience-main/model-zoo/molsculptor/checkpoints/auto-encoder/ae_params_opt.pkl
+	alphabet_path: /work/home/sponge_campus/biao.liu/onescience-main/src/onescience/flax_models/MolSculptor/train/smiles_alphabet.pkl
+	n_replicate: 8
+	init_molecule_path: /work/home/sponge_campus/biao.liu/onescience-main/examples/molsculptor/cases/case_ar-gr/init_search_molecule.pkl
+	dsdp_script_path_1: /work/home/sponge_campus/biao.liu/onescience-main/examples/molsculptor/cases/case_ar-gr/dsdp_ar.sh
+	dsdp_script_path_2: /work/home/sponge_campus/biao.liu/onescience-main/examples/molsculptor/cases/case_ar-gr/dsdp_gr.sh
+	t_min: 75
+	t_max: 125
+	sub_smiles: NC(=O)c1cccc(S(=O)(=O)N2CCCc3ccccc32)c1
+=====================START INFERENCE=====================
+=====================INPUT ARGS=====================
+INPUT ARGS:
+	config_path: /work/home/sponge_campus/biao.liu/onescience-main/model-zoo/molsculptor/checkpoints/diffusion-transformer/config_opt.pkl
+	params_path: /work/home/sponge_campus/biao.liu/onescience-main/model-zoo/molsculptor/checkpoints/diffusion-transformer/dit_params_opt.pkl
+	logger_path: /work/home/sponge_campus/biao.liu/onescience-main/examples/molsculptor/cases/case_ar-gr/test/Logs.txt
+	save_path: /work/home/sponge_campus/biao.liu/onescience-main/examples/molsculptor/cases/case_ar-gr/test
+	random_seed: 8888
+	np_random_seed: 8888
+	total_step: 1
+	device_batch_size: 128
+	num_latent_tokens: 16
+	dim_latent: 32
+	eq_steps: 10
+	callback_step: 10
+	beam_size: 4
+	sampling_method: beam
+	infer_config_path: None
+	vae_config_path: /work/home/sponge_campus/biao.liu/onescience-main/model-zoo/molsculptor/checkpoints/auto-encoder/config.pkl
+	vae_params_path: /work/home/sponge_campus/biao.liu/onescience-main/model-zoo/molsculptor/checkpoints/auto-encoder/ae_params_opt.pkl
+	alphabet_path: /work/home/sponge_campus/biao.liu/onescience-main/src/onescience/flax_models/MolSculptor/train/smiles_alphabet.pkl
+	n_replicate: 8
+	init_molecule_path: /work/home/sponge_campus/biao.liu/onescience-main/examples/molsculptor/cases/case_ar-gr/init_search_molecule.pkl
+	dsdp_script_path_1: /work/home/sponge_campus/biao.liu/onescience-main/examples/molsculptor/cases/case_ar-gr/dsdp_ar.sh
+	dsdp_script_path_2: /work/home/sponge_campus/biao.liu/onescience-main/examples/molsculptor/cases/case_ar-gr/dsdp_gr.sh
+	t_min: 75
+	t_max: 125
+	sub_smiles: NC(=O)c1cccc(S(=O)(=O)N2CCCc3ccccc32)c1
+=====================START INFERENCE=====================
+=====================INPUT ARGS=====================
+INPUT ARGS:
+	config_path: /work/home/sponge_campus/biao.liu/onescience-main/model-zoo/molsculptor/checkpoints/diffusion-transformer/config_opt.pkl
+	params_path: /work/home/sponge_campus/biao.liu/onescience-main/model-zoo/molsculptor/checkpoints/diffusion-transformer/dit_params_opt.pkl
+	logger_path: /work/home/sponge_campus/biao.liu/onescience-main/examples/molsculptor/cases/case_ar-gr/test/Logs.txt
+	save_path: /work/home/sponge_campus/biao.liu/onescience-main/examples/molsculptor/cases/case_ar-gr/test
+	random_seed: 8888
+	np_random_seed: 8888
+	total_step: 1
+	device_batch_size: 128
+	num_latent_tokens: 16
+	dim_latent: 32
+	eq_steps: 10
+	callback_step: 10
+	beam_size: 4
+	sampling_method: beam
+	infer_config_path: None
+	vae_config_path: /work/home/sponge_campus/biao.liu/onescience-main/model-zoo/molsculptor/checkpoints/auto-encoder/config.pkl
+	vae_params_path: /work/home/sponge_campus/biao.liu/onescience-main/model-zoo/molsculptor/checkpoints/auto-encoder/ae_params_opt.pkl
+	alphabet_path: /work/home/sponge_campus/biao.liu/onescience-main/src/onescience/flax_models/MolSculptor/train/smiles_alphabet.pkl
+	n_replicate: 8
+	init_molecule_path: /work/home/sponge_campus/biao.liu/onescience-main/examples/molsculptor/cases/case_ar-gr/init_search_molecule.pkl
+	dsdp_script_path_1: /work/home/sponge_campus/biao.liu/onescience-main/examples/molsculptor/cases/case_ar-gr/dsdp_ar.sh
+	dsdp_script_path_2: /work/home/sponge_campus/biao.liu/onescience-main/examples/molsculptor/cases/case_ar-gr/dsdp_gr.sh
+	t_min: 75
+	t_max: 125
+	sub_smiles: NC(=O)c1cccc(S(=O)(=O)N2CCCc3ccccc32)c1
+=====================START INFERENCE=====================
+=====================INPUT ARGS=====================
+INPUT ARGS:
+	config_path: /work/home/sponge_campus/biao.liu/onescience-main/model-zoo/molsculptor/checkpoints/diffusion-transformer/config_opt.pkl
+	params_path: /work/home/sponge_campus/biao.liu/onescience-main/model-zoo/molsculptor/checkpoints/diffusion-transformer/dit_params_opt.pkl
+	logger_path: /work/home/sponge_campus/biao.liu/onescience-main/examples/molsculptor/cases/case_ar-gr/test/Logs.txt
+	save_path: /work/home/sponge_campus/biao.liu/onescience-main/examples/molsculptor/cases/case_ar-gr/test
+	random_seed: 8888
+	np_random_seed: 8888
+	total_step: 1
+	device_batch_size: 128
+	num_latent_tokens: 16
+	dim_latent: 32
+	eq_steps: 10
+	callback_step: 10
+	beam_size: 4
+	sampling_method: beam
+	infer_config_path: None
+	vae_config_path: /work/home/sponge_campus/biao.liu/onescience-main/model-zoo/molsculptor/checkpoints/auto-encoder/config.pkl
+	vae_params_path: /work/home/sponge_campus/biao.liu/onescience-main/model-zoo/molsculptor/checkpoints/auto-encoder/ae_params_opt.pkl
+	alphabet_path: /work/home/sponge_campus/biao.liu/onescience-main/src/onescience/flax_models/MolSculptor/train/smiles_alphabet.pkl
+	n_replicate: 8
+	init_molecule_path: /work/home/sponge_campus/biao.liu/onescience-main/examples/molsculptor/cases/case_ar-gr/init_search_molecule.pkl
+	dsdp_script_path_1: /work/home/sponge_campus/biao.liu/onescience-main/examples/molsculptor/cases/case_ar-gr/dsdp_ar.sh
+	dsdp_script_path_2: /work/home/sponge_campus/biao.liu/onescience-main/examples/molsculptor/cases/case_ar-gr/dsdp_gr.sh
+	t_min: 75
+	t_max: 125
+	sub_smiles: NC(=O)c1cccc(S(=O)(=O)N2CCCc3ccccc32)c1
+=====================START INFERENCE=====================
+Generating init offsprings...
+Starting search, total steps = 1
+Starting search, total steps = 1
+Starting search, total steps = 1
+Starting search, total steps = 1
+Starting search, total steps = 1
+Starting search, total steps = 1
+Starting search, total steps = 1
+Starting search, total steps = 1
+Starting search, total steps = 1
+Starting search, total steps = 1
+Starting search, total steps = 1
+Starting search, total steps = 1
+Starting search, total steps = 1
+Starting search, total steps = 1
+Starting search, total steps = 1
+Starting search, total steps = 1
+Starting search, total steps = 1
+Starting search, total steps = 1
+Starting search, total steps = 1
+Starting search, total steps = 1
+Starting search, total steps = 1
+Starting search, total steps = 1
+Starting search, total steps = 1
+Starting search, total steps = 1
+Starting search, total steps = 1
+Starting search, total steps = 1
+Starting search, total steps = 1
+Starting search, total steps = 1
+Starting search, total steps = 1
+Starting search, total steps = 1
+Starting search, total steps = 1
+Starting search, total steps = 1
+Starting search, total steps = 1
+Starting search, total steps = 1
+Starting search, total steps = 1
+Starting search, total steps = 1
+Starting search, total steps = 1
+Starting search, total steps = 1
+Starting search, total steps = 1
+Starting search, total steps = 1
+Starting search, total steps = 1
+Starting search, total steps = 1
+Starting search, total steps = 1
+Starting search, total steps = 1
+Starting search, total steps = 1
+Starting search, total steps = 1
+Starting search, total steps = 1
+Starting search, total steps = 1
+Starting search, total steps = 1
+Starting search, total steps = 1
+Starting search, total steps = 1
+Starting search, total steps = 1
+Starting search, total steps = 1
+Starting search, total steps = 1
+Starting search, total steps = 1
+Starting search, total steps = 1
+Starting search, total steps = 1
+Starting search, total steps = 1
+Starting search, total steps = 1
+Starting search, total steps = 1
+Starting search, total steps = 1
+Starting search, total steps = 1
+Starting search, total steps = 1
+Starting search, total steps = 1
+Starting search, total steps = 1
+Starting search, total steps = 1
+Starting search, total steps = 1
+Starting search, total steps = 1
+Starting search, total steps = 1
+Starting search, total steps = 1
+Starting search, total steps = 1
+Starting search, total steps = 1
+Starting search, total steps = 1
+Starting search, total steps = 1
+Starting search, total steps = 1
+Starting search, total steps = 1
+Starting search, total steps = 1
+Starting search, total steps = 1
+Starting search, total steps = 1
+Starting search, total steps = 1
+Starting search, total steps = 1
+Starting search, total steps = 1
+Starting search, total steps = 1
+Starting search, total steps = 1
+Starting search, total steps = 1
+Starting search, total steps = 1
+Starting search, total steps = 1
+Starting search, total steps = 1
+Starting search, total steps = 1
+Starting search, total steps = 1
+Starting search, total steps = 1
+Starting search, total steps = 1
+Starting search, total steps = 1
+Starting search, total steps = 1
+Starting search, total steps = 1
+Starting search, total steps = 1
+Starting search, total steps = 1
+Starting search, total steps = 1
+Starting search, total steps = 1
+Starting search, total steps = 1
+=====================INPUT ARGS=====================
+INPUT ARGS:
+	config_path: /work/home/sponge_campus/biao.liu/onescience-main/model-zoo/molsculptor/checkpoints/diffusion-transformer/config_opt.pkl
+	params_path: /work/home/sponge_campus/biao.liu/onescience-main/model-zoo/molsculptor/checkpoints/diffusion-transformer/dit_params_opt.pkl
+	logger_path: /work/home/sponge_campus/biao.liu/onescience-main/examples/molsculptor/cases/case_ar-gr/test/Logs.txt
+	save_path: /work/home/sponge_campus/biao.liu/onescience-main/examples/molsculptor/cases/case_ar-gr/test
+	random_seed: 8888
+	np_random_seed: 8888
+	total_step: 1
+	device_batch_size: 128
+	num_latent_tokens: 16
+	dim_latent: 32
+	eq_steps: 10
+	callback_step: 10
+	beam_size: 4
+	sampling_method: beam
+	infer_config_path: None
+	vae_config_path: /work/home/sponge_campus/biao.liu/onescience-main/model-zoo/molsculptor/checkpoints/auto-encoder/config.pkl
+	vae_params_path: /work/home/sponge_campus/biao.liu/onescience-main/model-zoo/molsculptor/checkpoints/auto-encoder/ae_params_opt.pkl
+	alphabet_path: /work/home/sponge_campus/biao.liu/onescience-main/src/onescience/flax_models/MolSculptor/train/smiles_alphabet.pkl
+	n_replicate: 8
+	init_molecule_path: /work/home/sponge_campus/biao.liu/onescience-main/examples/molsculptor/cases/case_ar-gr/init_search_molecule.pkl
+	dsdp_script_path_1: /work/home/sponge_campus/biao.liu/onescience-main/examples/molsculptor/cases/case_ar-gr/dsdp_ar.sh
+	dsdp_script_path_2: /work/home/sponge_campus/biao.liu/onescience-main/examples/molsculptor/cases/case_ar-gr/dsdp_gr.sh
+	t_min: 75
+	t_max: 125
+	sub_smiles: NC(=O)c1cccc(S(=O)(=O)N2CCCc3ccccc32)c1
+=====================INPUT ARGS=====================
+INPUT ARGS:
+	config_path: /work/home/sponge_campus/biao.liu/onescience-main/model-zoo/molsculptor/checkpoints/diffusion-transformer/config_opt.pkl
+	params_path: /work/home/sponge_campus/biao.liu/onescience-main/model-zoo/molsculptor/checkpoints/diffusion-transformer/dit_params_opt.pkl
+	logger_path: /work/home/sponge_campus/biao.liu/onescience-main/examples/molsculptor/cases/case_ar-gr/test/Logs.txt
+	save_path: /work/home/sponge_campus/biao.liu/onescience-main/examples/molsculptor/cases/case_ar-gr/test
+	random_seed: 8888
+	np_random_seed: 8888
+	total_step: 1
+	device_batch_size: 128
+	num_latent_tokens: 16
+	dim_latent: 32
+	eq_steps: 10
+	callback_step: 10
+	beam_size: 4
+	sampling_method: beam
+	infer_config_path: None
+	vae_config_path: /work/home/sponge_campus/biao.liu/onescience-main/model-zoo/molsculptor/checkpoints/auto-encoder/config.pkl
+	vae_params_path: /work/home/sponge_campus/biao.liu/onescience-main/model-zoo/molsculptor/checkpoints/auto-encoder/ae_params_opt.pkl
+	alphabet_path: /work/home/sponge_campus/biao.liu/onescience-main/src/onescience/flax_models/MolSculptor/train/smiles_alphabet.pkl
+	n_replicate: 8
+	init_molecule_path: /work/home/sponge_campus/biao.liu/onescience-main/examples/molsculptor/cases/case_ar-gr/init_search_molecule.pkl
+	dsdp_script_path_1: /work/home/sponge_campus/biao.liu/onescience-main/examples/molsculptor/cases/case_ar-gr/dsdp_ar.sh
+	dsdp_script_path_2: /work/home/sponge_campus/biao.liu/onescience-main/examples/molsculptor/cases/case_ar-gr/dsdp_gr.sh
+	t_min: 75
+	t_max: 125
+	sub_smiles: NC(=O)c1cccc(S(=O)(=O)N2CCCc3ccccc32)c1
+=====================START INFERENCE=====================
+Generating init offsprings...
+Starting search, total steps = 1
+=====================INPUT ARGS=====================
+INPUT ARGS:
+	config_path: /work/home/sponge_campus/biao.liu/onescience-main/model-zoo/molsculptor/checkpoints/diffusion-transformer/config_opt.pkl
+	params_path: /work/home/sponge_campus/biao.liu/onescience-main/model-zoo/molsculptor/checkpoints/diffusion-transformer/dit_params_opt.pkl
+	logger_path: /work/home/sponge_campus/biao.liu/onescience-main/examples/molsculptor/cases/case_ar-gr/test/Logs.txt
+	save_path: /work/home/sponge_campus/biao.liu/onescience-main/examples/molsculptor/cases/case_ar-gr/test
+	random_seed: 8888
+	np_random_seed: 8888
+	total_step: 1
+	device_batch_size: 128
+	num_latent_tokens: 16
+	dim_latent: 32
+	eq_steps: 10
+	callback_step: 10
+	beam_size: 4
+	sampling_method: beam
+	infer_config_path: None
+	vae_config_path: /work/home/sponge_campus/biao.liu/onescience-main/model-zoo/molsculptor/checkpoints/auto-encoder/config.pkl
+	vae_params_path: /work/home/sponge_campus/biao.liu/onescience-main/model-zoo/molsculptor/checkpoints/auto-encoder/ae_params_opt.pkl
+	alphabet_path: /work/home/sponge_campus/biao.liu/onescience-main/src/onescience/flax_models/MolSculptor/train/smiles_alphabet.pkl
+	n_replicate: 8
+	init_molecule_path: /work/home/sponge_campus/biao.liu/onescience-main/examples/molsculptor/cases/case_ar-gr/init_search_molecule.pkl
+	dsdp_script_path_1: /work/home/sponge_campus/biao.liu/onescience-main/examples/molsculptor/cases/case_ar-gr/dsdp_ar.sh
+	dsdp_script_path_2: /work/home/sponge_campus/biao.liu/onescience-main/examples/molsculptor/cases/case_ar-gr/dsdp_gr.sh
+	t_min: 75
+	t_max: 125
+	sub_smiles: NC(=O)c1cccc(S(=O)(=O)N2CCCc3ccccc32)c1
+=====================START INFERENCE=====================
+Generating init offsprings...
+Starting search, total steps = 1
+----------------------------------------------------------------
+Searching step 1, noise mutation steps 78
+=====================INPUT ARGS=====================
+INPUT ARGS:
+	config_path: /work/home/sponge_campus/biao.liu/onescience-main/model-zoo/molsculptor/checkpoints/diffusion-transformer/config_opt.pkl
+	params_path: /work/home/sponge_campus/biao.liu/onescience-main/model-zoo/molsculptor/checkpoints/diffusion-transformer/dit_params_opt.pkl
+	logger_path: /work/home/sponge_campus/biao.liu/onescience-main/examples/molsculptor/cases/case_ar-gr/test/Logs.txt
+	save_path: /work/home/sponge_campus/biao.liu/onescience-main/examples/molsculptor/cases/case_ar-gr/test
+	random_seed: 8888
+	np_random_seed: 8888
+	total_step: 1
+	device_batch_size: 128
+	num_latent_tokens: 16
+	dim_latent: 32
+	eq_steps: 10
+	callback_step: 10
+	beam_size: 4
+	sampling_method: beam
+	infer_config_path: None
+	vae_config_path: /work/home/sponge_campus/biao.liu/onescience-main/model-zoo/molsculptor/checkpoints/auto-encoder/config.pkl
+	vae_params_path: /work/home/sponge_campus/biao.liu/onescience-main/model-zoo/molsculptor/checkpoints/auto-encoder/ae_params_opt.pkl
+	alphabet_path: /work/home/sponge_campus/biao.liu/onescience-main/src/onescience/flax_models/MolSculptor/train/smiles_alphabet.pkl
+	n_replicate: 8
+	init_molecule_path: /work/home/sponge_campus/biao.liu/onescience-main/examples/molsculptor/cases/case_ar-gr/init_search_molecule.pkl
+	dsdp_script_path_1: /work/home/sponge_campus/biao.liu/onescience-main/examples/molsculptor/cases/case_ar-gr/dsdp_ar.sh
+	dsdp_script_path_2: /work/home/sponge_campus/biao.liu/onescience-main/examples/molsculptor/cases/case_ar-gr/dsdp_gr.sh
+	t_min: 75
+	t_max: 125
+	sub_smiles: NC(=O)c1cccc(S(=O)(=O)N2CCCc3ccccc32)c1
+=====================START INFERENCE=====================
+Generating init offsprings...
+Starting search, total steps = 1
+----------------------------------------------------------------
+Searching step 1, noise mutation steps 78
+=====================INPUT ARGS=====================
+INPUT ARGS:
+	config_path: /work/home/sponge_campus/biao.liu/onescience-main/model-zoo/molsculptor/checkpoints/diffusion-transformer/config_opt.pkl
+	params_path: /work/home/sponge_campus/biao.liu/onescience-main/model-zoo/molsculptor/checkpoints/diffusion-transformer/dit_params_opt.pkl
+	logger_path: /work/home/sponge_campus/biao.liu/onescience-main/examples/molsculptor/cases/case_ar-gr/test/Logs.txt
+	save_path: /work/home/sponge_campus/biao.liu/onescience-main/examples/molsculptor/cases/case_ar-gr/test
+	random_seed: 8888
+	np_random_seed: 8888
+	total_step: 1
+	device_batch_size: 128
+	num_latent_tokens: 16
+	dim_latent: 32
+	eq_steps: 10
+	callback_step: 10
+	beam_size: 4
+	sampling_method: beam
+	infer_config_path: None
+	vae_config_path: /work/home/sponge_campus/biao.liu/onescience-main/model-zoo/molsculptor/checkpoints/auto-encoder/config.pkl
+	vae_params_path: /work/home/sponge_campus/biao.liu/onescience-main/model-zoo/molsculptor/checkpoints/auto-encoder/ae_params_opt.pkl
+	alphabet_path: /work/home/sponge_campus/biao.liu/onescience-main/src/onescience/flax_models/MolSculptor/train/smiles_alphabet.pkl
+	n_replicate: 8
+	init_molecule_path: /work/home/sponge_campus/biao.liu/onescience-main/examples/molsculptor/cases/case_ar-gr/init_search_molecule.pkl
+	dsdp_script_path_1: /work/home/sponge_campus/biao.liu/onescience-main/examples/molsculptor/cases/case_ar-gr/dsdp_ar.sh
+	dsdp_script_path_2: /work/home/sponge_campus/biao.liu/onescience-main/examples/molsculptor/cases/case_ar-gr/dsdp_gr.sh
+	t_min: 75
+	t_max: 125
+	sub_smiles: NC(=O)c1cccc(S(=O)(=O)N2CCCc3ccccc32)c1
+=====================START INFERENCE=====================
+=====================INPUT ARGS=====================
+INPUT ARGS:
+	config_path: /work/home/sponge_campus/biao.liu/onescience-main/model-zoo/molsculptor/checkpoints/diffusion-transformer/config_opt.pkl
+	params_path: /work/home/sponge_campus/biao.liu/onescience-main/model-zoo/molsculptor/checkpoints/diffusion-transformer/dit_params_opt.pkl
+	logger_path: /work/home/sponge_campus/biao.liu/onescience-main/examples/molsculptor/cases/case_ar-gr/test/Logs.txt
+	save_path: /work/home/sponge_campus/biao.liu/onescience-main/examples/molsculptor/cases/case_ar-gr/test
+	random_seed: 8888
+	np_random_seed: 8888
+	total_step: 1
+	device_batch_size: 128
+	num_latent_tokens: 16
+	dim_latent: 32
+	eq_steps: 10
+	callback_step: 10
+	beam_size: 4
+	sampling_method: beam
+	infer_config_path: None
+	vae_config_path: /work/home/sponge_campus/biao.liu/onescience-main/model-zoo/molsculptor/checkpoints/auto-encoder/config.pkl
+	vae_params_path: /work/home/sponge_campus/biao.liu/onescience-main/model-zoo/molsculptor/checkpoints/auto-encoder/ae_params_opt.pkl
+	alphabet_path: /work/home/sponge_campus/biao.liu/onescience-main/src/onescience/flax_models/MolSculptor/train/smiles_alphabet.pkl
+	n_replicate: 8
+	init_molecule_path: /work/home/sponge_campus/biao.liu/onescience-main/examples/molsculptor/cases/case_ar-gr/init_search_molecule.pkl
+	dsdp_script_path_1: /work/home/sponge_campus/biao.liu/onescience-main/examples/molsculptor/cases/case_ar-gr/dsdp_ar.sh
+	dsdp_script_path_2: /work/home/sponge_campus/biao.liu/onescience-main/examples/molsculptor/cases/case_ar-gr/dsdp_gr.sh
+	t_min: 75
+	t_max: 125
+	sub_smiles: NC(=O)c1cccc(S(=O)(=O)N2CCCc3ccccc32)c1
+=====================START INFERENCE=====================
+Generating init offsprings...
+Starting search, total steps = 1
+=====================INPUT ARGS=====================
+INPUT ARGS:
+	config_path: /work/home/sponge_campus/biao.liu/onescience-main/model-zoo/molsculptor/checkpoints/diffusion-transformer/config_opt.pkl
+	params_path: /work/home/sponge_campus/biao.liu/onescience-main/model-zoo/molsculptor/checkpoints/diffusion-transformer/dit_params_opt.pkl
+	logger_path: /work/home/sponge_campus/biao.liu/onescience-main/examples/molsculptor/cases/case_ar-gr/test/Logs.txt
+	save_path: /work/home/sponge_campus/biao.liu/onescience-main/examples/molsculptor/cases/case_ar-gr/test
+	random_seed: 8888
+	np_random_seed: 8888
+	total_step: 1
+	device_batch_size: 128
+	num_latent_tokens: 16
+	dim_latent: 32
+	eq_steps: 10
+	callback_step: 10
+	beam_size: 4
+	sampling_method: beam
+	infer_config_path: None
+	vae_config_path: /work/home/sponge_campus/biao.liu/onescience-main/model-zoo/molsculptor/checkpoints/auto-encoder/config.pkl
+	vae_params_path: /work/home/sponge_campus/biao.liu/onescience-main/model-zoo/molsculptor/checkpoints/auto-encoder/ae_params_opt.pkl
+	alphabet_path: /work/home/sponge_campus/biao.liu/onescience-main/src/onescience/flax_models/MolSculptor/train/smiles_alphabet.pkl
+	n_replicate: 8
+	init_molecule_path: /work/home/sponge_campus/biao.liu/onescience-main/examples/molsculptor/cases/case_ar-gr/init_search_molecule.pkl
+	dsdp_script_path_1: /work/home/sponge_campus/biao.liu/onescience-main/examples/molsculptor/cases/case_ar-gr/dsdp_ar.sh
+	dsdp_script_path_2: /work/home/sponge_campus/biao.liu/onescience-main/examples/molsculptor/cases/case_ar-gr/dsdp_gr.sh
+	t_min: 75
+	t_max: 125
+	sub_smiles: NC(=O)c1cccc(S(=O)(=O)N2CCCc3ccccc32)c1
+=====================START INFERENCE=====================
+Generating init offsprings...
+Starting search, total steps = 1
+=====================INPUT ARGS=====================
+INPUT ARGS:
+	config_path: /work/home/sponge_campus/biao.liu/onescience-main/model-zoo/molsculptor/checkpoints/diffusion-transformer/config_opt.pkl
+	params_path: /work/home/sponge_campus/biao.liu/onescience-main/model-zoo/molsculptor/checkpoints/diffusion-transformer/dit_params_opt.pkl
+	logger_path: /work/home/sponge_campus/biao.liu/onescience-main/examples/molsculptor/cases/case_ar-gr/test/Logs.txt
+	save_path: /work/home/sponge_campus/biao.liu/onescience-main/examples/molsculptor/cases/case_ar-gr/test
+	random_seed: 8888
+	np_random_seed: 8888
+	total_step: 1
+	device_batch_size: 128
+	num_latent_tokens: 16
+	dim_latent: 32
+	eq_steps: 10
+	callback_step: 10
+	beam_size: 4
+	sampling_method: beam
+	infer_config_path: None
+	vae_config_path: /work/home/sponge_campus/biao.liu/onescience-main/model-zoo/molsculptor/checkpoints/auto-encoder/config.pkl
+	vae_params_path: /work/home/sponge_campus/biao.liu/onescience-main/model-zoo/molsculptor/checkpoints/auto-encoder/ae_params_opt.pkl
+	alphabet_path: /work/home/sponge_campus/biao.liu/onescience-main/src/onescience/flax_models/MolSculptor/train/smiles_alphabet.pkl
+	n_replicate: 8
+	init_molecule_path: /work/home/sponge_campus/biao.liu/onescience-main/examples/molsculptor/cases/case_ar-gr/init_search_molecule.pkl
+	dsdp_script_path_1: /work/home/sponge_campus/biao.liu/onescience-main/examples/molsculptor/cases/case_ar-gr/dsdp_ar.sh
+	dsdp_script_path_2: /work/home/sponge_campus/biao.liu/onescience-main/examples/molsculptor/cases/case_ar-gr/dsdp_gr.sh
+	t_min: 75
+	t_max: 125
+	sub_smiles: NC(=O)c1cccc(S(=O)(=O)N2CCCc3ccccc32)c1
+=====================START INFERENCE=====================
+Generating init offsprings...
+Starting search, total steps = 1
+=====================INPUT ARGS=====================
+INPUT ARGS:
+	config_path: /work/home/sponge_campus/biao.liu/onescience-main/model-zoo/molsculptor/checkpoints/diffusion-transformer/config_opt.pkl
+	params_path: /work/home/sponge_campus/biao.liu/onescience-main/model-zoo/molsculptor/checkpoints/diffusion-transformer/dit_params_opt.pkl
+	logger_path: /work/home/sponge_campus/biao.liu/onescience-main/examples/molsculptor/cases/case_ar-gr/test/Logs.txt
+	save_path: /work/home/sponge_campus/biao.liu/onescience-main/examples/molsculptor/cases/case_ar-gr/test
+	random_seed: 8888
+	np_random_seed: 8888
+	total_step: 1
+	device_batch_size: 128
+	num_latent_tokens: 16
+	dim_latent: 32
+	eq_steps: 10
+	callback_step: 10
+	beam_size: 4
+	sampling_method: beam
+	infer_config_path: None
+	vae_config_path: /work/home/sponge_campus/biao.liu/onescience-main/model-zoo/molsculptor/checkpoints/auto-encoder/config.pkl
+	vae_params_path: /work/home/sponge_campus/biao.liu/onescience-main/model-zoo/molsculptor/checkpoints/auto-encoder/ae_params_opt.pkl
+	alphabet_path: /work/home/sponge_campus/biao.liu/onescience-main/src/onescience/flax_models/MolSculptor/train/smiles_alphabet.pkl
+	n_replicate: 8
+	init_molecule_path: /work/home/sponge_campus/biao.liu/onescience-main/examples/molsculptor/cases/case_ar-gr/init_search_molecule.pkl
+	dsdp_script_path_1: /work/home/sponge_campus/biao.liu/onescience-main/examples/molsculptor/cases/case_ar-gr/dsdp_ar.sh
+	dsdp_script_path_2: /work/home/sponge_campus/biao.liu/onescience-main/examples/molsculptor/cases/case_ar-gr/dsdp_gr.sh
+	t_min: 75
+	t_max: 125
+	sub_smiles: NC(=O)c1cccc(S(=O)(=O)N2CCCc3ccccc32)c1
+=====================START INFERENCE=====================
+=====================INPUT ARGS=====================
+INPUT ARGS:
+	config_path: /work/home/sponge_campus/biao.liu/onescience-main/model-zoo/molsculptor/checkpoints/diffusion-transformer/config_opt.pkl
+	params_path: /work/home/sponge_campus/biao.liu/onescience-main/model-zoo/molsculptor/checkpoints/diffusion-transformer/dit_params_opt.pkl
+	logger_path: /work/home/sponge_campus/biao.liu/onescience-main/examples/molsculptor/cases/case_ar-gr/test/Logs.txt
+	save_path: /work/home/sponge_campus/biao.liu/onescience-main/examples/molsculptor/cases/case_ar-gr/test
+	random_seed: 8888
+	np_random_seed: 8888
+	total_step: 1
+	device_batch_size: 128
+	num_latent_tokens: 16
+	dim_latent: 32
+	eq_steps: 10
+	callback_step: 10
+	beam_size: 4
+	sampling_method: beam
+	infer_config_path: None
+	vae_config_path: /work/home/sponge_campus/biao.liu/onescience-main/model-zoo/molsculptor/checkpoints/auto-encoder/config.pkl
+	vae_params_path: /work/home/sponge_campus/biao.liu/onescience-main/model-zoo/molsculptor/checkpoints/auto-encoder/ae_params_opt.pkl
+	alphabet_path: /work/home/sponge_campus/biao.liu/onescience-main/src/onescience/flax_models/MolSculptor/train/smiles_alphabet.pkl
+	n_replicate: 8
+	init_molecule_path: /work/home/sponge_campus/biao.liu/onescience-main/examples/molsculptor/cases/case_ar-gr/init_search_molecule.pkl
+	dsdp_script_path_1: /work/home/sponge_campus/biao.liu/onescience-main/examples/molsculptor/cases/case_ar-gr/dsdp_ar.sh
+	dsdp_script_path_2: /work/home/sponge_campus/biao.liu/onescience-main/examples/molsculptor/cases/case_ar-gr/dsdp_gr.sh
+	t_min: 75
+	t_max: 125
+	sub_smiles: NC(=O)c1cccc(S(=O)(=O)N2CCCc3ccccc32)c1
+=====================START INFERENCE=====================
+Generating init offsprings...
+Starting search, total steps = 1
+=====================INPUT ARGS=====================
+INPUT ARGS:
+	config_path: /work/home/sponge_campus/biao.liu/onescience-main/model-zoo/molsculptor/checkpoints/diffusion-transformer/config_opt.pkl
+	params_path: /work/home/sponge_campus/biao.liu/onescience-main/model-zoo/molsculptor/checkpoints/diffusion-transformer/dit_params_opt.pkl
+	logger_path: /work/home/sponge_campus/biao.liu/onescience-main/examples/molsculptor/cases/case_ar-gr/test/Logs.txt
+	save_path: /work/home/sponge_campus/biao.liu/onescience-main/examples/molsculptor/cases/case_ar-gr/test
+	random_seed: 8888
+	np_random_seed: 8888
+	total_step: 1
+	device_batch_size: 128
+	num_latent_tokens: 16
+	dim_latent: 32
+	eq_steps: 10
+	callback_step: 10
+	beam_size: 4
+	sampling_method: beam
+	infer_config_path: None
+	vae_config_path: /work/home/sponge_campus/biao.liu/onescience-main/model-zoo/molsculptor/checkpoints/auto-encoder/config.pkl
+	vae_params_path: /work/home/sponge_campus/biao.liu/onescience-main/model-zoo/molsculptor/checkpoints/auto-encoder/ae_params_opt.pkl
+	alphabet_path: /work/home/sponge_campus/biao.liu/onescience-main/src/onescience/flax_models/MolSculptor/train/smiles_alphabet.pkl
+	n_replicate: 8
+	init_molecule_path: /work/home/sponge_campus/biao.liu/onescience-main/examples/molsculptor/cases/case_ar-gr/init_search_molecule.pkl
+	dsdp_script_path_1: /work/home/sponge_campus/biao.liu/onescience-main/examples/molsculptor/cases/case_ar-gr/dsdp_ar.sh
+	dsdp_script_path_2: /work/home/sponge_campus/biao.liu/onescience-main/examples/molsculptor/cases/case_ar-gr/dsdp_gr.sh
+	t_min: 75
+	t_max: 125
+	sub_smiles: NC(=O)c1cccc(S(=O)(=O)N2CCCc3ccccc32)c1
+=====================START INFERENCE=====================
+Generating init offsprings...
+Starting search, total steps = 1
+=====================INPUT ARGS=====================
+INPUT ARGS:
+	config_path: /work/home/sponge_campus/biao.liu/onescience-main/model-zoo/molsculptor/checkpoints/diffusion-transformer/config_opt.pkl
+	params_path: /work/home/sponge_campus/biao.liu/onescience-main/model-zoo/molsculptor/checkpoints/diffusion-transformer/dit_params_opt.pkl
+	logger_path: /work/home/sponge_campus/biao.liu/onescience-main/examples/molsculptor/cases/case_ar-gr/test/Logs.txt
+	save_path: /work/home/sponge_campus/biao.liu/onescience-main/examples/molsculptor/cases/case_ar-gr/test
+	random_seed: 8888
+	np_random_seed: 8888
+	total_step: 1
+	device_batch_size: 128
+	num_latent_tokens: 16
+	dim_latent: 32
+	eq_steps: 10
+	callback_step: 10
+	beam_size: 4
+	sampling_method: beam
+	infer_config_path: None
+	vae_config_path: /work/home/sponge_campus/biao.liu/onescience-main/model-zoo/molsculptor/checkpoints/auto-encoder/config.pkl
+	vae_params_path: /work/home/sponge_campus/biao.liu/onescience-main/model-zoo/molsculptor/checkpoints/auto-encoder/ae_params_opt.pkl
+	alphabet_path: /work/home/sponge_campus/biao.liu/onescience-main/src/onescience/flax_models/MolSculptor/train/smiles_alphabet.pkl
+	n_replicate: 8
+	init_molecule_path: /work/home/sponge_campus/biao.liu/onescience-main/examples/molsculptor/cases/case_ar-gr/init_search_molecule.pkl
+	dsdp_script_path_1: /work/home/sponge_campus/biao.liu/onescience-main/examples/molsculptor/cases/case_ar-gr/dsdp_ar.sh
+	dsdp_script_path_2: /work/home/sponge_campus/biao.liu/onescience-main/examples/molsculptor/cases/case_ar-gr/dsdp_gr.sh
+	t_min: 75
+	t_max: 125
+	sub_smiles: NC(=O)c1cccc(S(=O)(=O)N2CCCc3ccccc32)c1
+=====================START INFERENCE=====================
+Generating init offsprings...
+Starting search, total steps = 1
+=====================INPUT ARGS=====================
+INPUT ARGS:
+	config_path: /work/home/sponge_campus/biao.liu/onescience-main/model-zoo/molsculptor/checkpoints/diffusion-transformer/config_opt.pkl
+	params_path: /work/home/sponge_campus/biao.liu/onescience-main/model-zoo/molsculptor/checkpoints/diffusion-transformer/dit_params_opt.pkl
+	logger_path: /work/home/sponge_campus/biao.liu/onescience-main/examples/molsculptor/cases/case_ar-gr/test/Logs.txt
+	save_path: /work/home/sponge_campus/biao.liu/onescience-main/examples/molsculptor/cases/case_ar-gr/test
+	random_seed: 8888
+	np_random_seed: 8888
+	total_step: 1
+	device_batch_size: 128
+	num_latent_tokens: 16
+	dim_latent: 32
+	eq_steps: 10
+	callback_step: 10
+	beam_size: 4
+	sampling_method: beam
+	infer_config_path: None
+	vae_config_path: /work/home/sponge_campus/biao.liu/onescience-main/model-zoo/molsculptor/checkpoints/auto-encoder/config.pkl
+	vae_params_path: /work/home/sponge_campus/biao.liu/onescience-main/model-zoo/molsculptor/checkpoints/auto-encoder/ae_params_opt.pkl
+	alphabet_path: /work/home/sponge_campus/biao.liu/onescience-main/src/onescience/flax_models/MolSculptor/train/smiles_alphabet.pkl
+	n_replicate: 8
+	init_molecule_path: /work/home/sponge_campus/biao.liu/onescience-main/examples/molsculptor/cases/case_ar-gr/init_search_molecule.pkl
+	dsdp_script_path_1: /work/home/sponge_campus/biao.liu/onescience-main/examples/molsculptor/cases/case_ar-gr/dsdp_ar.sh
+	dsdp_script_path_2: /work/home/sponge_campus/biao.liu/onescience-main/examples/molsculptor/cases/case_ar-gr/dsdp_gr.sh
+	t_min: 75
+	t_max: 125
+	sub_smiles: NC(=O)c1cccc(S(=O)(=O)N2CCCc3ccccc32)c1
+=====================START INFERENCE=====================
+Generating init offsprings...
+Starting search, total steps = 1
+=====================INPUT ARGS=====================
+INPUT ARGS:
+	config_path: /work/home/sponge_campus/biao.liu/onescience-main/model-zoo/molsculptor/checkpoints/diffusion-transformer/config_opt.pkl
+	params_path: /work/home/sponge_campus/biao.liu/onescience-main/model-zoo/molsculptor/checkpoints/diffusion-transformer/dit_params_opt.pkl
+	logger_path: /work/home/sponge_campus/biao.liu/onescience-main/examples/molsculptor/cases/case_ar-gr/test/Logs.txt
+	save_path: /work/home/sponge_campus/biao.liu/onescience-main/examples/molsculptor/cases/case_ar-gr/test
+	random_seed: 8888
+	np_random_seed: 8888
+	total_step: 1
+	device_batch_size: 128
+	num_latent_tokens: 16
+	dim_latent: 32
+	eq_steps: 10
+	callback_step: 10
+	beam_size: 4
+	sampling_method: beam
+	infer_config_path: None
+	vae_config_path: /work/home/sponge_campus/biao.liu/onescience-main/model-zoo/molsculptor/checkpoints/auto-encoder/config.pkl
+	vae_params_path: /work/home/sponge_campus/biao.liu/onescience-main/model-zoo/molsculptor/checkpoints/auto-encoder/ae_params_opt.pkl
+	alphabet_path: /work/home/sponge_campus/biao.liu/onescience-main/src/onescience/flax_models/MolSculptor/train/smiles_alphabet.pkl
+	n_replicate: 8
+	init_molecule_path: /work/home/sponge_campus/biao.liu/onescience-main/examples/molsculptor/cases/case_ar-gr/init_search_molecule.pkl
+	dsdp_script_path_1: /work/home/sponge_campus/biao.liu/onescience-main/examples/molsculptor/cases/case_ar-gr/dsdp_ar.sh
+	dsdp_script_path_2: /work/home/sponge_campus/biao.liu/onescience-main/examples/molsculptor/cases/case_ar-gr/dsdp_gr.sh
+	t_min: 75
+	t_max: 125
+	sub_smiles: NC(=O)c1cccc(S(=O)(=O)N2CCCc3ccccc32)c1
+=====================START INFERENCE=====================
+Generating init offsprings...
+Starting search, total steps = 1
+=====================INPUT ARGS=====================
+INPUT ARGS:
+	config_path: /work/home/sponge_campus/biao.liu/onescience-main/model-zoo/molsculptor/checkpoints/diffusion-transformer/config_opt.pkl
+	params_path: /work/home/sponge_campus/biao.liu/onescience-main/model-zoo/molsculptor/checkpoints/diffusion-transformer/dit_params_opt.pkl
+	logger_path: /work/home/sponge_campus/biao.liu/onescience-main/examples/molsculptor/cases/case_ar-gr/test/Logs.txt
+	save_path: /work/home/sponge_campus/biao.liu/onescience-main/examples/molsculptor/cases/case_ar-gr/test
+	random_seed: 8888
+	np_random_seed: 8888
+	total_step: 1
+	device_batch_size: 128
+	num_latent_tokens: 16
+	dim_latent: 32
+	eq_steps: 10
+	callback_step: 10
+	beam_size: 4
+	sampling_method: beam
+	infer_config_path: None
+	vae_config_path: /work/home/sponge_campus/biao.liu/onescience-main/model-zoo/molsculptor/checkpoints/auto-encoder/config.pkl
+	vae_params_path: /work/home/sponge_campus/biao.liu/onescience-main/model-zoo/molsculptor/checkpoints/auto-encoder/ae_params_opt.pkl
+	alphabet_path: /work/home/sponge_campus/biao.liu/onescience-main/src/onescience/flax_models/MolSculptor/train/smiles_alphabet.pkl
+	n_replicate: 8
+	init_molecule_path: /work/home/sponge_campus/biao.liu/onescience-main/examples/molsculptor/cases/case_ar-gr/init_search_molecule.pkl
+	dsdp_script_path_1: /work/home/sponge_campus/biao.liu/onescience-main/examples/molsculptor/cases/case_ar-gr/dsdp_ar.sh
+	dsdp_script_path_2: /work/home/sponge_campus/biao.liu/onescience-main/examples/molsculptor/cases/case_ar-gr/dsdp_gr.sh
+	t_min: 75
+	t_max: 125
+	sub_smiles: NC(=O)c1cccc(S(=O)(=O)N2CCCc3ccccc32)c1
+=====================START INFERENCE=====================
+Generating init offsprings...
+Starting search, total steps = 1
+=====================INPUT ARGS=====================
+INPUT ARGS:
+	config_path: /work/home/sponge_campus/biao.liu/onescience-main/model-zoo/molsculptor/checkpoints/diffusion-transformer/config_opt.pkl
+	params_path: /work/home/sponge_campus/biao.liu/onescience-main/model-zoo/molsculptor/checkpoints/diffusion-transformer/dit_params_opt.pkl
+	logger_path: /work/home/sponge_campus/biao.liu/onescience-main/examples/molsculptor/cases/case_ar-gr/test/Logs.txt
+	save_path: /work/home/sponge_campus/biao.liu/onescience-main/examples/molsculptor/cases/case_ar-gr/test
+	random_seed: 8888
+	np_random_seed: 8888
+	total_step: 1
+	device_batch_size: 128
+	num_latent_tokens: 16
+	dim_latent: 32
+	eq_steps: 10
+	callback_step: 10
+	beam_size: 4
+	sampling_method: beam
+	infer_config_path: None
+	vae_config_path: /work/home/sponge_campus/biao.liu/onescience-main/model-zoo/molsculptor/checkpoints/auto-encoder/config.pkl
+	vae_params_path: /work/home/sponge_campus/biao.liu/onescience-main/model-zoo/molsculptor/checkpoints/auto-encoder/ae_params_opt.pkl
+	alphabet_path: /work/home/sponge_campus/biao.liu/onescience-main/src/onescience/flax_models/MolSculptor/train/smiles_alphabet.pkl
+	n_replicate: 8
+	init_molecule_path: /work/home/sponge_campus/biao.liu/onescience-main/examples/molsculptor/cases/case_ar-gr/init_search_molecule.pkl
+	dsdp_script_path_1: /work/home/sponge_campus/biao.liu/onescience-main/examples/molsculptor/cases/case_ar-gr/dsdp_ar.sh
+	dsdp_script_path_2: /work/home/sponge_campus/biao.liu/onescience-main/examples/molsculptor/cases/case_ar-gr/dsdp_gr.sh
+	t_min: 75
+	t_max: 125
+	sub_smiles: NC(=O)c1cccc(S(=O)(=O)N2CCCc3ccccc32)c1
+=====================START INFERENCE=====================
+Generating init offsprings...
+Starting search, total steps = 1
+=====================INPUT ARGS=====================
+INPUT ARGS:
+	config_path: /work/home/sponge_campus/biao.liu/onescience-main/model-zoo/molsculptor/checkpoints/diffusion-transformer/config_opt.pkl
+	params_path: /work/home/sponge_campus/biao.liu/onescience-main/model-zoo/molsculptor/checkpoints/diffusion-transformer/dit_params_opt.pkl
+	logger_path: /work/home/sponge_campus/biao.liu/onescience-main/examples/molsculptor/cases/case_ar-gr/test/Logs.txt
+	save_path: /work/home/sponge_campus/biao.liu/onescience-main/examples/molsculptor/cases/case_ar-gr/test
+	random_seed: 8888
+	np_random_seed: 8888
+	total_step: 1
+	device_batch_size: 128
+	num_latent_tokens: 16
+	dim_latent: 32
+	eq_steps: 10
+	callback_step: 10
+	beam_size: 4
+	sampling_method: beam
+	infer_config_path: None
+	vae_config_path: /work/home/sponge_campus/biao.liu/onescience-main/model-zoo/molsculptor/checkpoints/auto-encoder/config.pkl
+	vae_params_path: /work/home/sponge_campus/biao.liu/onescience-main/model-zoo/molsculptor/checkpoints/auto-encoder/ae_params_opt.pkl
+	alphabet_path: /work/home/sponge_campus/biao.liu/onescience-main/src/onescience/flax_models/MolSculptor/train/smiles_alphabet.pkl
+	n_replicate: 8
+	init_molecule_path: /work/home/sponge_campus/biao.liu/onescience-main/examples/molsculptor/cases/case_ar-gr/init_search_molecule.pkl
+	dsdp_script_path_1: /work/home/sponge_campus/biao.liu/onescience-main/examples/molsculptor/cases/case_ar-gr/dsdp_ar.sh
+	dsdp_script_path_2: /work/home/sponge_campus/biao.liu/onescience-main/examples/molsculptor/cases/case_ar-gr/dsdp_gr.sh
+	t_min: 75
+	t_max: 125
+	sub_smiles: NC(=O)c1cccc(S(=O)(=O)N2CCCc3ccccc32)c1
+=====================START INFERENCE=====================
+Generating init offsprings...
+Starting search, total steps = 1
+=====================INPUT ARGS=====================
+INPUT ARGS:
+	config_path: /work/home/sponge_campus/biao.liu/onescience-main/model-zoo/molsculptor/checkpoints/diffusion-transformer/config_opt.pkl
+	params_path: /work/home/sponge_campus/biao.liu/onescience-main/model-zoo/molsculptor/checkpoints/diffusion-transformer/dit_params_opt.pkl
+	logger_path: /work/home/sponge_campus/biao.liu/onescience-main/examples/molsculptor/cases/case_ar-gr/test/Logs.txt
+	save_path: /work/home/sponge_campus/biao.liu/onescience-main/examples/molsculptor/cases/case_ar-gr/test
+	random_seed: 8888
+	np_random_seed: 8888
+	total_step: 1
+	device_batch_size: 128
+	num_latent_tokens: 16
+	dim_latent: 32
+	eq_steps: 10
+	callback_step: 10
+	beam_size: 4
+	sampling_method: beam
+	infer_config_path: None
+	vae_config_path: /work/home/sponge_campus/biao.liu/onescience-main/model-zoo/molsculptor/checkpoints/auto-encoder/config.pkl
+	vae_params_path: /work/home/sponge_campus/biao.liu/onescience-main/model-zoo/molsculptor/checkpoints/auto-encoder/ae_params_opt.pkl
+	alphabet_path: /work/home/sponge_campus/biao.liu/onescience-main/src/onescience/flax_models/MolSculptor/train/smiles_alphabet.pkl
+	n_replicate: 8
+	init_molecule_path: /work/home/sponge_campus/biao.liu/onescience-main/examples/molsculptor/cases/case_ar-gr/init_search_molecule.pkl
+	dsdp_script_path_1: /work/home/sponge_campus/biao.liu/onescience-main/examples/molsculptor/cases/case_ar-gr/dsdp_ar.sh
+	dsdp_script_path_2: /work/home/sponge_campus/biao.liu/onescience-main/examples/molsculptor/cases/case_ar-gr/dsdp_gr.sh
+	t_min: 75
+	t_max: 125
+	sub_smiles: NC(=O)c1cccc(S(=O)(=O)N2CCCc3ccccc32)c1
+=====================START INFERENCE=====================
+Generating init offsprings...
+Starting search, total steps = 1
+=====================INPUT ARGS=====================
+INPUT ARGS:
+	config_path: /work/home/sponge_campus/biao.liu/onescience-main/model-zoo/molsculptor/checkpoints/diffusion-transformer/config_opt.pkl
+	params_path: /work/home/sponge_campus/biao.liu/onescience-main/model-zoo/molsculptor/checkpoints/diffusion-transformer/dit_params_opt.pkl
+	logger_path: /work/home/sponge_campus/biao.liu/onescience-main/examples/molsculptor/cases/case_ar-gr/test/Logs.txt
+	save_path: /work/home/sponge_campus/biao.liu/onescience-main/examples/molsculptor/cases/case_ar-gr/test
+	random_seed: 8888
+	np_random_seed: 8888
+	total_step: 1
+	device_batch_size: 128
+	num_latent_tokens: 16
+	dim_latent: 32
+	eq_steps: 10
+	callback_step: 10
+	beam_size: 4
+	sampling_method: beam
+	infer_config_path: None
+	vae_config_path: /work/home/sponge_campus/biao.liu/onescience-main/model-zoo/molsculptor/checkpoints/auto-encoder/config.pkl
+	vae_params_path: /work/home/sponge_campus/biao.liu/onescience-main/model-zoo/molsculptor/checkpoints/auto-encoder/ae_params_opt.pkl
+	alphabet_path: /work/home/sponge_campus/biao.liu/onescience-main/src/onescience/flax_models/MolSculptor/train/smiles_alphabet.pkl
+	n_replicate: 8
+	init_molecule_path: /work/home/sponge_campus/biao.liu/onescience-main/examples/molsculptor/cases/case_ar-gr/init_search_molecule.pkl
+	dsdp_script_path_1: /work/home/sponge_campus/biao.liu/onescience-main/examples/molsculptor/cases/case_ar-gr/dsdp_ar.sh
+	dsdp_script_path_2: /work/home/sponge_campus/biao.liu/onescience-main/examples/molsculptor/cases/case_ar-gr/dsdp_gr.sh
+	t_min: 75
+	t_max: 125
+	sub_smiles: NC(=O)c1cccc(S(=O)(=O)N2CCCc3ccccc32)c1
+=====================START INFERENCE=====================
+Generating init offsprings...
+Starting search, total steps = 1
+=====================INPUT ARGS=====================
+INPUT ARGS:
+	config_path: /work/home/sponge_campus/biao.liu/onescience-main/model-zoo/molsculptor/checkpoints/diffusion-transformer/config_opt.pkl
+	params_path: /work/home/sponge_campus/biao.liu/onescience-main/model-zoo/molsculptor/checkpoints/diffusion-transformer/dit_params_opt.pkl
+	logger_path: /work/home/sponge_campus/biao.liu/onescience-main/examples/molsculptor/cases/case_ar-gr/test/Logs.txt
+	save_path: /work/home/sponge_campus/biao.liu/onescience-main/examples/molsculptor/cases/case_ar-gr/test
+	random_seed: 8888
+	np_random_seed: 8888
+	total_step: 1
+	device_batch_size: 128
+	num_latent_tokens: 16
+	dim_latent: 32
+	eq_steps: 10
+	callback_step: 10
+	beam_size: 4
+	sampling_method: beam
+	infer_config_path: None
+	vae_config_path: /work/home/sponge_campus/biao.liu/onescience-main/model-zoo/molsculptor/checkpoints/auto-encoder/config.pkl
+	vae_params_path: /work/home/sponge_campus/biao.liu/onescience-main/model-zoo/molsculptor/checkpoints/auto-encoder/ae_params_opt.pkl
+	alphabet_path: /work/home/sponge_campus/biao.liu/onescience-main/src/onescience/flax_models/MolSculptor/train/smiles_alphabet.pkl
+	n_replicate: 8
+	init_molecule_path: /work/home/sponge_campus/biao.liu/onescience-main/examples/molsculptor/cases/case_ar-gr/init_search_molecule.pkl
+	dsdp_script_path_1: /work/home/sponge_campus/biao.liu/onescience-main/examples/molsculptor/cases/case_ar-gr/dsdp_ar.sh
+	dsdp_script_path_2: /work/home/sponge_campus/biao.liu/onescience-main/examples/molsculptor/cases/case_ar-gr/dsdp_gr.sh
+	t_min: 75
+	t_max: 125
+	sub_smiles: NC(=O)c1cccc(S(=O)(=O)N2CCCc3ccccc32)c1
+=====================START INFERENCE=====================
+Generating init offsprings...
+Starting search, total steps = 1
+=====================INPUT ARGS=====================
+INPUT ARGS:
+	config_path: /work/home/sponge_campus/biao.liu/onescience-main/model-zoo/molsculptor/checkpoints/diffusion-transformer/config_opt.pkl
+	params_path: /work/home/sponge_campus/biao.liu/onescience-main/model-zoo/molsculptor/checkpoints/diffusion-transformer/dit_params_opt.pkl
+	logger_path: /work/home/sponge_campus/biao.liu/onescience-main/examples/molsculptor/cases/case_ar-gr/test/Logs.txt
+	save_path: /work/home/sponge_campus/biao.liu/onescience-main/examples/molsculptor/cases/case_ar-gr/test
+	random_seed: 8888
+	np_random_seed: 8888
+	total_step: 1
+	device_batch_size: 128
+	num_latent_tokens: 16
+	dim_latent: 32
+	eq_steps: 10
+	callback_step: 10
+	beam_size: 4
+	sampling_method: beam
+	infer_config_path: None
+	vae_config_path: /work/home/sponge_campus/biao.liu/onescience-main/model-zoo/molsculptor/checkpoints/auto-encoder/config.pkl
+	vae_params_path: /work/home/sponge_campus/biao.liu/onescience-main/model-zoo/molsculptor/checkpoints/auto-encoder/ae_params_opt.pkl
+	alphabet_path: /work/home/sponge_campus/biao.liu/onescience-main/src/onescience/flax_models/MolSculptor/train/smiles_alphabet.pkl
+	n_replicate: 8
+	init_molecule_path: /work/home/sponge_campus/biao.liu/onescience-main/examples/molsculptor/cases/case_ar-gr/init_search_molecule.pkl
+	dsdp_script_path_1: /work/home/sponge_campus/biao.liu/onescience-main/examples/molsculptor/cases/case_ar-gr/dsdp_ar.sh
+	dsdp_script_path_2: /work/home/sponge_campus/biao.liu/onescience-main/examples/molsculptor/cases/case_ar-gr/dsdp_gr.sh
+	t_min: 75
+	t_max: 125
+	sub_smiles: NC(=O)c1cccc(S(=O)(=O)N2CCCc3ccccc32)c1
+=====================START INFERENCE=====================
+Generating init offsprings...
+Starting search, total steps = 1
+=====================INPUT ARGS=====================
+INPUT ARGS:
+	config_path: /work/home/sponge_campus/biao.liu/onescience-main/model-zoo/molsculptor/checkpoints/diffusion-transformer/config_opt.pkl
+	params_path: /work/home/sponge_campus/biao.liu/onescience-main/model-zoo/molsculptor/checkpoints/diffusion-transformer/dit_params_opt.pkl
+	logger_path: /work/home/sponge_campus/biao.liu/onescience-main/examples/molsculptor/cases/case_ar-gr/test/Logs.txt
+	save_path: /work/home/sponge_campus/biao.liu/onescience-main/examples/molsculptor/cases/case_ar-gr/test
+	random_seed: 8888
+	np_random_seed: 8888
+	total_step: 1
+	device_batch_size: 128
+	num_latent_tokens: 16
+	dim_latent: 32
+	eq_steps: 10
+	callback_step: 10
+	beam_size: 4
+	sampling_method: beam
+	infer_config_path: None
+	vae_config_path: /work/home/sponge_campus/biao.liu/onescience-main/model-zoo/molsculptor/checkpoints/auto-encoder/config.pkl
+	vae_params_path: /work/home/sponge_campus/biao.liu/onescience-main/model-zoo/molsculptor/checkpoints/auto-encoder/ae_params_opt.pkl
+	alphabet_path: /work/home/sponge_campus/biao.liu/onescience-main/src/onescience/flax_models/MolSculptor/train/smiles_alphabet.pkl
+	n_replicate: 8
+	init_molecule_path: /work/home/sponge_campus/biao.liu/onescience-main/examples/molsculptor/cases/case_ar-gr/init_search_molecule.pkl
+	dsdp_script_path_1: /work/home/sponge_campus/biao.liu/onescience-main/examples/molsculptor/cases/case_ar-gr/dsdp_ar.sh
+	dsdp_script_path_2: /work/home/sponge_campus/biao.liu/onescience-main/examples/molsculptor/cases/case_ar-gr/dsdp_gr.sh
+	t_min: 75
+	t_max: 125
+	sub_smiles: NC(=O)c1cccc(S(=O)(=O)N2CCCc3ccccc32)c1
+=====================START INFERENCE=====================
+=====================INPUT ARGS=====================
+INPUT ARGS:
+	config_path: /work/home/sponge_campus/biao.liu/onescience-main/model-zoo/molsculptor/checkpoints/diffusion-transformer/config_opt.pkl
+	params_path: /work/home/sponge_campus/biao.liu/onescience-main/model-zoo/molsculptor/checkpoints/diffusion-transformer/dit_params_opt.pkl
+	logger_path: /work/home/sponge_campus/biao.liu/onescience-main/examples/molsculptor/cases/case_ar-gr/test/Logs.txt
+	save_path: /work/home/sponge_campus/biao.liu/onescience-main/examples/molsculptor/cases/case_ar-gr/test
+	random_seed: 8888
+	np_random_seed: 8888
+	total_step: 1
+	device_batch_size: 128
+	num_latent_tokens: 16
+	dim_latent: 32
+	eq_steps: 10
+	callback_step: 10
+	beam_size: 4
+	sampling_method: beam
+	infer_config_path: None
+	vae_config_path: /work/home/sponge_campus/biao.liu/onescience-main/model-zoo/molsculptor/checkpoints/auto-encoder/config.pkl
+	vae_params_path: /work/home/sponge_campus/biao.liu/onescience-main/model-zoo/molsculptor/checkpoints/auto-encoder/ae_params_opt.pkl
+	alphabet_path: /work/home/sponge_campus/biao.liu/onescience-main/src/onescience/flax_models/MolSculptor/train/smiles_alphabet.pkl
+	n_replicate: 8
+	init_molecule_path: /work/home/sponge_campus/biao.liu/onescience-main/examples/molsculptor/cases/case_ar-gr/init_search_molecule.pkl
+	dsdp_script_path_1: /work/home/sponge_campus/biao.liu/onescience-main/examples/molsculptor/cases/case_ar-gr/dsdp_ar.sh
+	dsdp_script_path_2: /work/home/sponge_campus/biao.liu/onescience-main/examples/molsculptor/cases/case_ar-gr/dsdp_gr.sh
+	t_min: 75
+	t_max: 125
+	sub_smiles: NC(=O)c1cccc(S(=O)(=O)N2CCCc3ccccc32)c1
+=====================START INFERENCE=====================
+Generating init offsprings...
+Starting search, total steps = 1
+=====================INPUT ARGS=====================
+INPUT ARGS:
+	config_path: /work/home/sponge_campus/biao.liu/onescience-main/model-zoo/molsculptor/checkpoints/diffusion-transformer/config_opt.pkl
+	params_path: /work/home/sponge_campus/biao.liu/onescience-main/model-zoo/molsculptor/checkpoints/diffusion-transformer/dit_params_opt.pkl
+	logger_path: /work/home/sponge_campus/biao.liu/onescience-main/examples/molsculptor/cases/case_ar-gr/test/Logs.txt
+	save_path: /work/home/sponge_campus/biao.liu/onescience-main/examples/molsculptor/cases/case_ar-gr/test
+	random_seed: 8888
+	np_random_seed: 8888
+	total_step: 1
+	device_batch_size: 128
+	num_latent_tokens: 16
+	dim_latent: 32
+	eq_steps: 10
+	callback_step: 10
+	beam_size: 4
+	sampling_method: beam
+	infer_config_path: None
+	vae_config_path: /work/home/sponge_campus/biao.liu/onescience-main/model-zoo/molsculptor/checkpoints/auto-encoder/config.pkl
+	vae_params_path: /work/home/sponge_campus/biao.liu/onescience-main/model-zoo/molsculptor/checkpoints/auto-encoder/ae_params_opt.pkl
+	alphabet_path: /work/home/sponge_campus/biao.liu/onescience-main/src/onescience/flax_models/MolSculptor/train/smiles_alphabet.pkl
+	n_replicate: 8
+	init_molecule_path: /work/home/sponge_campus/biao.liu/onescience-main/examples/molsculptor/cases/case_ar-gr/init_search_molecule.pkl
+	dsdp_script_path_1: /work/home/sponge_campus/biao.liu/onescience-main/examples/molsculptor/cases/case_ar-gr/dsdp_ar.sh
+	dsdp_script_path_2: /work/home/sponge_campus/biao.liu/onescience-main/examples/molsculptor/cases/case_ar-gr/dsdp_gr.sh
+	t_min: 75
+	t_max: 125
+	sub_smiles: NC(=O)c1cccc(S(=O)(=O)N2CCCc3ccccc32)c1
+=====================START INFERENCE=====================
+Generating init offsprings...
+=====================INPUT ARGS=====================
+INPUT ARGS:
+	config_path: /work/home/sponge_campus/biao.liu/onescience-main/model-zoo/molsculptor/checkpoints/diffusion-transformer/config_opt.pkl
+	params_path: /work/home/sponge_campus/biao.liu/onescience-main/model-zoo/molsculptor/checkpoints/diffusion-transformer/dit_params_opt.pkl
+	logger_path: /work/home/sponge_campus/biao.liu/onescience-main/examples/molsculptor/cases/case_ar-gr/test/Logs.txt
+	save_path: /work/home/sponge_campus/biao.liu/onescience-main/examples/molsculptor/cases/case_ar-gr/test
+	random_seed: 8888
+	np_random_seed: 8888
+	total_step: 1
+	device_batch_size: 128
+	num_latent_tokens: 16
+	dim_latent: 32
+	eq_steps: 10
+	callback_step: 10
+	beam_size: 4
+	sampling_method: beam
+	infer_config_path: None
+	vae_config_path: /work/home/sponge_campus/biao.liu/onescience-main/model-zoo/molsculptor/checkpoints/auto-encoder/config.pkl
+	vae_params_path: /work/home/sponge_campus/biao.liu/onescience-main/model-zoo/molsculptor/checkpoints/auto-encoder/ae_params_opt.pkl
+	alphabet_path: /work/home/sponge_campus/biao.liu/onescience-main/src/onescience/flax_models/MolSculptor/train/smiles_alphabet.pkl
+	n_replicate: 8
+	init_molecule_path: /work/home/sponge_campus/biao.liu/onescience-main/examples/molsculptor/cases/case_ar-gr/init_search_molecule.pkl
+	dsdp_script_path_1: /work/home/sponge_campus/biao.liu/onescience-main/examples/molsculptor/cases/case_ar-gr/dsdp_ar.sh
+	dsdp_script_path_2: /work/home/sponge_campus/biao.liu/onescience-main/examples/molsculptor/cases/case_ar-gr/dsdp_gr.sh
+	t_min: 75
+	t_max: 125
+	sub_smiles: NC(=O)c1cccc(S(=O)(=O)N2CCCc3ccccc32)c1
+=====================START INFERENCE=====================
+Generating init offsprings...
+Starting search, total steps = 1
+----------------------------------------------------------------
+Searching step 1, noise mutation steps 78
+=====================INPUT ARGS=====================
+INPUT ARGS:
+	config_path: /work/home/sponge_campus/biao.liu/onescience-main/model-zoo/molsculptor/checkpoints/diffusion-transformer/config_opt.pkl
+	params_path: /work/home/sponge_campus/biao.liu/onescience-main/model-zoo/molsculptor/checkpoints/diffusion-transformer/dit_params_opt.pkl
+	logger_path: /work/home/sponge_campus/biao.liu/onescience-main/examples/molsculptor/cases/case_ar-gr/test/Logs.txt
+	save_path: /work/home/sponge_campus/biao.liu/onescience-main/examples/molsculptor/cases/case_ar-gr/test
+	random_seed: 8888
+	np_random_seed: 8888
+	total_step: 1
+	device_batch_size: 128
+	num_latent_tokens: 16
+	dim_latent: 32
+	eq_steps: 10
+	callback_step: 10
+	beam_size: 4
+	sampling_method: beam
+	infer_config_path: None
+	vae_config_path: /work/home/sponge_campus/biao.liu/onescience-main/model-zoo/molsculptor/checkpoints/auto-encoder/config.pkl
+	vae_params_path: /work/home/sponge_campus/biao.liu/onescience-main/model-zoo/molsculptor/checkpoints/auto-encoder/ae_params_opt.pkl
+	alphabet_path: /work/home/sponge_campus/biao.liu/onescience-main/src/onescience/flax_models/MolSculptor/train/smiles_alphabet.pkl
+	n_replicate: 8
+	init_molecule_path: /work/home/sponge_campus/biao.liu/onescience-main/examples/molsculptor/cases/case_ar-gr/init_search_molecule.pkl
+	dsdp_script_path_1: /work/home/sponge_campus/biao.liu/onescience-main/examples/molsculptor/cases/case_ar-gr/dsdp_ar.sh
+	dsdp_script_path_2: /work/home/sponge_campus/biao.liu/onescience-main/examples/molsculptor/cases/case_ar-gr/dsdp_gr.sh
+	t_min: 75
+	t_max: 125
+	sub_smiles: NC(=O)c1cccc(S(=O)(=O)N2CCCc3ccccc32)c1
+=====================START INFERENCE=====================
+Generating init offsprings...
+Starting search, total steps = 1
+=====================INPUT ARGS=====================
+INPUT ARGS:
+	config_path: /work/home/sponge_campus/biao.liu/onescience-main/model-zoo/molsculptor/checkpoints/diffusion-transformer/config_opt.pkl
+	params_path: /work/home/sponge_campus/biao.liu/onescience-main/model-zoo/molsculptor/checkpoints/diffusion-transformer/dit_params_opt.pkl
+	logger_path: /work/home/sponge_campus/biao.liu/onescience-main/examples/molsculptor/cases/case_ar-gr/test/Logs.txt
+	save_path: /work/home/sponge_campus/biao.liu/onescience-main/examples/molsculptor/cases/case_ar-gr/test
+	random_seed: 8888
+	np_random_seed: 8888
+	total_step: 1
+	device_batch_size: 128
+	num_latent_tokens: 16
+	dim_latent: 32
+	eq_steps: 10
+	callback_step: 10
+	beam_size: 4
+	sampling_method: beam
+	infer_config_path: None
+	vae_config_path: /work/home/sponge_campus/biao.liu/onescience-main/model-zoo/molsculptor/checkpoints/auto-encoder/config.pkl
+	vae_params_path: /work/home/sponge_campus/biao.liu/onescience-main/model-zoo/molsculptor/checkpoints/auto-encoder/ae_params_opt.pkl
+	alphabet_path: /work/home/sponge_campus/biao.liu/onescience-main/src/onescience/flax_models/MolSculptor/train/smiles_alphabet.pkl
+	n_replicate: 8
+	init_molecule_path: /work/home/sponge_campus/biao.liu/onescience-main/examples/molsculptor/cases/case_ar-gr/init_search_molecule.pkl
+	dsdp_script_path_1: /work/home/sponge_campus/biao.liu/onescience-main/examples/molsculptor/cases/case_ar-gr/dsdp_ar.sh
+	dsdp_script_path_2: /work/home/sponge_campus/biao.liu/onescience-main/examples/molsculptor/cases/case_ar-gr/dsdp_gr.sh
+	t_min: 75
+	t_max: 125
+	sub_smiles: NC(=O)c1cccc(S(=O)(=O)N2CCCc3ccccc32)c1
+=====================START INFERENCE=====================
+Generating init offsprings...
+Starting search, total steps = 1
+----------------------------------------------------------------
+Searching step 1, noise mutation steps 78
+=====================INPUT ARGS=====================
+INPUT ARGS:
+	config_path: /work/home/sponge_campus/biao.liu/onescience-main/model-zoo/molsculptor/checkpoints/diffusion-transformer/config_opt.pkl
+	params_path: /work/home/sponge_campus/biao.liu/onescience-main/model-zoo/molsculptor/checkpoints/diffusion-transformer/dit_params_opt.pkl
+	logger_path: /work/home/sponge_campus/biao.liu/onescience-main/examples/molsculptor/cases/case_ar-gr/test/Logs.txt
+	save_path: /work/home/sponge_campus/biao.liu/onescience-main/examples/molsculptor/cases/case_ar-gr/test
+	random_seed: 8888
+	np_random_seed: 8888
+	total_step: 1
+	device_batch_size: 128
+	num_latent_tokens: 16
+	dim_latent: 32
+	eq_steps: 10
+	callback_step: 10
+	beam_size: 4
+	sampling_method: beam
+	infer_config_path: None
+	vae_config_path: /work/home/sponge_campus/biao.liu/onescience-main/model-zoo/molsculptor/checkpoints/auto-encoder/config.pkl
+	vae_params_path: /work/home/sponge_campus/biao.liu/onescience-main/model-zoo/molsculptor/checkpoints/auto-encoder/ae_params_opt.pkl
+	alphabet_path: /work/home/sponge_campus/biao.liu/onescience-main/src/onescience/flax_models/MolSculptor/train/smiles_alphabet.pkl
+	n_replicate: 8
+	init_molecule_path: /work/home/sponge_campus/biao.liu/onescience-main/examples/molsculptor/cases/case_ar-gr/init_search_molecule.pkl
+	dsdp_script_path_1: /work/home/sponge_campus/biao.liu/onescience-main/examples/molsculptor/cases/case_ar-gr/dsdp_ar.sh
+	dsdp_script_path_2: /work/home/sponge_campus/biao.liu/onescience-main/examples/molsculptor/cases/case_ar-gr/dsdp_gr.sh
+	t_min: 75
+	t_max: 125
+	sub_smiles: NC(=O)c1cccc(S(=O)(=O)N2CCCc3ccccc32)c1
+=====================START INFERENCE=====================
+Generating init offsprings...
+Starting search, total steps = 1
+----------------------------------------------------------------
+Searching step 1, noise mutation steps 78
+=====================INPUT ARGS=====================
+INPUT ARGS:
+	config_path: /work/home/sponge_campus/biao.liu/onescience-main/model-zoo/molsculptor/checkpoints/diffusion-transformer/config_opt.pkl
+	params_path: /work/home/sponge_campus/biao.liu/onescience-main/model-zoo/molsculptor/checkpoints/diffusion-transformer/dit_params_opt.pkl
+	logger_path: /work/home/sponge_campus/biao.liu/onescience-main/examples/molsculptor/cases/case_ar-gr/test/Logs.txt
+	save_path: /work/home/sponge_campus/biao.liu/onescience-main/examples/molsculptor/cases/case_ar-gr/test
+	random_seed: 8888
+	np_random_seed: 8888
+	total_step: 1
+	device_batch_size: 128
+	num_latent_tokens: 16
+	dim_latent: 32
+	eq_steps: 10
+	callback_step: 10
+	beam_size: 4
+	sampling_method: beam
+	infer_config_path: None
+	vae_config_path: /work/home/sponge_campus/biao.liu/onescience-main/model-zoo/molsculptor/checkpoints/auto-encoder/config.pkl
+	vae_params_path: /work/home/sponge_campus/biao.liu/onescience-main/model-zoo/molsculptor/checkpoints/auto-encoder/ae_params_opt.pkl
+	alphabet_path: /work/home/sponge_campus/biao.liu/onescience-main/src/onescience/flax_models/MolSculptor/train/smiles_alphabet.pkl
+	n_replicate: 8
+	init_molecule_path: /work/home/sponge_campus/biao.liu/onescience-main/examples/molsculptor/cases/case_ar-gr/init_search_molecule.pkl
+	dsdp_script_path_1: /work/home/sponge_campus/biao.liu/onescience-main/examples/molsculptor/cases/case_ar-gr/dsdp_ar.sh
+	dsdp_script_path_2: /work/home/sponge_campus/biao.liu/onescience-main/examples/molsculptor/cases/case_ar-gr/dsdp_gr.sh
+	t_min: 75
+	t_max: 125
+	sub_smiles: NC(=O)c1cccc(S(=O)(=O)N2CCCc3ccccc32)c1
+=====================START INFERENCE=====================
+Generating init offsprings...
+Starting search, total steps = 1
+----------------------------------------------------------------
+Searching step 1, noise mutation steps 78
+=====================INPUT ARGS=====================
+INPUT ARGS:
+	config_path: /work/home/sponge_campus/biao.liu/onescience-main/model-zoo/molsculptor/checkpoints/diffusion-transformer/config_opt.pkl
+	params_path: /work/home/sponge_campus/biao.liu/onescience-main/model-zoo/molsculptor/checkpoints/diffusion-transformer/dit_params_opt.pkl
+	logger_path: /work/home/sponge_campus/biao.liu/onescience-main/examples/molsculptor/cases/case_ar-gr/test/Logs.txt
+	save_path: /work/home/sponge_campus/biao.liu/onescience-main/examples/molsculptor/cases/case_ar-gr/test
+	random_seed: 8888
+	np_random_seed: 8888
+	total_step: 1
+	device_batch_size: 128
+	num_latent_tokens: 16
+	dim_latent: 32
+	eq_steps: 10
+	callback_step: 10
+	beam_size: 4
+	sampling_method: beam
+	infer_config_path: None
+	vae_config_path: /work/home/sponge_campus/biao.liu/onescience-main/model-zoo/molsculptor/checkpoints/auto-encoder/config.pkl
+	vae_params_path: /work/home/sponge_campus/biao.liu/onescience-main/model-zoo/molsculptor/checkpoints/auto-encoder/ae_params_opt.pkl
+	alphabet_path: /work/home/sponge_campus/biao.liu/onescience-main/src/onescience/flax_models/MolSculptor/train/smiles_alphabet.pkl
+	n_replicate: 8
+	init_molecule_path: /work/home/sponge_campus/biao.liu/onescience-main/examples/molsculptor/cases/case_ar-gr/init_search_molecule.pkl
+	dsdp_script_path_1: /work/home/sponge_campus/biao.liu/onescience-main/examples/molsculptor/cases/case_ar-gr/dsdp_ar.sh
+	dsdp_script_path_2: /work/home/sponge_campus/biao.liu/onescience-main/examples/molsculptor/cases/case_ar-gr/dsdp_gr.sh
+	t_min: 75
+	t_max: 125
+	sub_smiles: NC(=O)c1cccc(S(=O)(=O)N2CCCc3ccccc32)c1
+=====================START INFERENCE=====================
+Generating init offsprings...
+Starting search, total steps = 1
+----------------------------------------------------------------
+Searching step 1, noise mutation steps 78
+Top 4 DSDP PROT-1 scores: [9.221 9.221 9.221 9.221]
+Top 4 DSDP PROT-2 scores: [8.996 8.996 8.996 8.996]
+Average sim score: 0.704
+----------------------------------------------------------------
+=====================END INFERENCE=====================
+Inference done, time 0:11:28.333184, results saved to /work/home/sponge_campus/biao.liu/onescience-main/examples/molsculptor/cases/case_ar-gr/test
+=====================INPUT ARGS=====================
+INPUT ARGS:
+	config_path: /work/home/sponge_campus/biao.liu/onescience-main/model-zoo/molsculptor/checkpoints/diffusion-transformer/config_opt.pkl
+	params_path: /work/home/sponge_campus/biao.liu/onescience-main/model-zoo/molsculptor/checkpoints/diffusion-transformer/dit_params_opt.pkl
+	logger_path: /work/home/sponge_campus/biao.liu/onescience-main/examples/molsculptor/cases/case_ar-gr/test/Logs.txt
+	save_path: /work/home/sponge_campus/biao.liu/onescience-main/examples/molsculptor/cases/case_ar-gr/test
+	random_seed: 8888
+	np_random_seed: 8888
+	total_step: 1
+	device_batch_size: 128
+	num_latent_tokens: 16
+	dim_latent: 32
+	eq_steps: 10
+	callback_step: 10
+	beam_size: 4
+	sampling_method: beam
+	infer_config_path: None
+	vae_config_path: /work/home/sponge_campus/biao.liu/onescience-main/model-zoo/molsculptor/checkpoints/auto-encoder/config.pkl
+	vae_params_path: /work/home/sponge_campus/biao.liu/onescience-main/model-zoo/molsculptor/checkpoints/auto-encoder/ae_params_opt.pkl
+	alphabet_path: /work/home/sponge_campus/biao.liu/onescience-main/src/onescience/flax_models/MolSculptor/train/smiles_alphabet.pkl
+	n_replicate: 8
+	init_molecule_path: /work/home/sponge_campus/biao.liu/onescience-main/examples/molsculptor/cases/case_ar-gr/init_search_molecule.pkl
+	dsdp_script_path_1: /work/home/sponge_campus/biao.liu/onescience-main/examples/molsculptor/cases/case_ar-gr/dsdp_ar.sh
+	dsdp_script_path_2: /work/home/sponge_campus/biao.liu/onescience-main/examples/molsculptor/cases/case_ar-gr/dsdp_gr.sh
+	t_min: 75
+	t_max: 125
+	sub_smiles: NC(=O)c1cccc(S(=O)(=O)N2CCCc3ccccc32)c1
+=====================START INFERENCE=====================
+Generating init offsprings...
+Starting search, total steps = 1
+----------------------------------------------------------------
+Searching step 1, noise mutation steps 78
+Top 4 DSDP PROT-1 scores: [9.221 9.221 9.221 9.221]
+Top 4 DSDP PROT-2 scores: [8.996 8.996 8.996 8.996]
+Average sim score: 0.704
+----------------------------------------------------------------
+Top 4 DSDP PROT-1 scores: [9.221 9.221 9.221 9.221]
+Top 4 DSDP PROT-2 scores: [8.996 8.996 8.996 8.996]
+Average sim score: 0.704
+----------------------------------------------------------------
+=====================INPUT ARGS=====================
+INPUT ARGS:
+	config_path: /work/home/sponge_campus/biao.liu/onescience-main/model-zoo/molsculptor/checkpoints/diffusion-transformer/config_opt.pkl
+	params_path: /work/home/sponge_campus/biao.liu/onescience-main/model-zoo/molsculptor/checkpoints/diffusion-transformer/dit_params_opt.pkl
+	logger_path: /work/home/sponge_campus/biao.liu/onescience-main/examples/molsculptor/cases/case_ar-gr/test/Logs.txt
+	save_path: /work/home/sponge_campus/biao.liu/onescience-main/examples/molsculptor/cases/case_ar-gr/test
+	random_seed: 8888
+	np_random_seed: 8888
+	total_step: 1
+	device_batch_size: 128
+	num_latent_tokens: 16
+	dim_latent: 32
+	eq_steps: 10
+	callback_step: 10
+	beam_size: 4
+	sampling_method: beam
+	infer_config_path: None
+	vae_config_path: /work/home/sponge_campus/biao.liu/onescience-main/model-zoo/molsculptor/checkpoints/auto-encoder/config.pkl
+	vae_params_path: /work/home/sponge_campus/biao.liu/onescience-main/model-zoo/molsculptor/checkpoints/auto-encoder/ae_params_opt.pkl
+	alphabet_path: /work/home/sponge_campus/biao.liu/onescience-main/src/onescience/flax_models/MolSculptor/train/smiles_alphabet.pkl
+	n_replicate: 8
+	init_molecule_path: /work/home/sponge_campus/biao.liu/onescience-main/examples/molsculptor/cases/case_ar-gr/init_search_molecule.pkl
+	dsdp_script_path_1: /work/home/sponge_campus/biao.liu/onescience-main/examples/molsculptor/cases/case_ar-gr/dsdp_ar.sh
+	dsdp_script_path_2: /work/home/sponge_campus/biao.liu/onescience-main/examples/molsculptor/cases/case_ar-gr/dsdp_gr.sh
+	t_min: 75
+	t_max: 125
+	sub_smiles: NC(=O)c1cccc(S(=O)(=O)N2CCCc3ccccc32)c1
+=====================START INFERENCE=====================
+Generating init offsprings...
+Starting search, total steps = 1
+Top 4 DSDP PROT-1 scores: [9.221 9.221 9.221 9.221]
+Top 4 DSDP PROT-2 scores: [8.996 8.996 8.996 8.996]
+Average sim score: 0.704
+=====================INPUT ARGS=====================
+INPUT ARGS:
+	config_path: /work/home/sponge_campus/biao.liu/onescience-main/model-zoo/molsculptor/checkpoints/diffusion-transformer/config_opt.pkl
+	params_path: /work/home/sponge_campus/biao.liu/onescience-main/model-zoo/molsculptor/checkpoints/diffusion-transformer/dit_params_opt.pkl
+	logger_path: /work/home/sponge_campus/biao.liu/onescience-main/examples/molsculptor/cases/case_ar-gr/test/Logs.txt
+	save_path: /work/home/sponge_campus/biao.liu/onescience-main/examples/molsculptor/cases/case_ar-gr/test
+	random_seed: 8888
+	np_random_seed: 8888
+	total_step: 1
+	device_batch_size: 128
+	num_latent_tokens: 16
+	dim_latent: 32
+	eq_steps: 10
+	callback_step: 10
+	beam_size: 4
+	sampling_method: beam
+	infer_config_path: None
+	vae_config_path: /work/home/sponge_campus/biao.liu/onescience-main/model-zoo/molsculptor/checkpoints/auto-encoder/config.pkl
+	vae_params_path: /work/home/sponge_campus/biao.liu/onescience-main/model-zoo/molsculptor/checkpoints/auto-encoder/ae_params_opt.pkl
+	alphabet_path: /work/home/sponge_campus/biao.liu/onescience-main/src/onescience/flax_models/MolSculptor/train/smiles_alphabet.pkl
+	n_replicate: 8
+	init_molecule_path: /work/home/sponge_campus/biao.liu/onescience-main/examples/molsculptor/cases/case_ar-gr/init_search_molecule.pkl
+	dsdp_script_path_1: /work/home/sponge_campus/biao.liu/onescience-main/examples/molsculptor/cases/case_ar-gr/dsdp_ar.sh
+	dsdp_script_path_2: /work/home/sponge_campus/biao.liu/onescience-main/examples/molsculptor/cases/case_ar-gr/dsdp_gr.sh
+	t_min: 75
+	t_max: 125
+	sub_smiles: NC(=O)c1cccc(S(=O)(=O)N2CCCc3ccccc32)c1
+=====================START INFERENCE=====================
+Generating init offsprings...
+Starting search, total steps = 1
+Top 4 DSDP PROT-1 scores: [9.221 9.221 9.221 9.221]
+Top 4 DSDP PROT-2 scores: [8.996 8.996 8.996 8.996]
+Average sim score: 0.704
+=====================INPUT ARGS=====================
+INPUT ARGS:
+	config_path: /work/home/sponge_campus/biao.liu/onescience-main/model-zoo/molsculptor/checkpoints/diffusion-transformer/config_opt.pkl
+	params_path: /work/home/sponge_campus/biao.liu/onescience-main/model-zoo/molsculptor/checkpoints/diffusion-transformer/dit_params_opt.pkl
+	logger_path: /work/home/sponge_campus/biao.liu/onescience-main/examples/molsculptor/cases/case_ar-gr/test/Logs.txt
+	save_path: /work/home/sponge_campus/biao.liu/onescience-main/examples/molsculptor/cases/case_ar-gr/test
+	random_seed: 8888
+	np_random_seed: 8888
+	total_step: 1
+	device_batch_size: 128
+	num_latent_tokens: 16
+	dim_latent: 32
+	eq_steps: 10
+	callback_step: 10
+	beam_size: 4
+	sampling_method: beam
+	infer_config_path: None
+	vae_config_path: /work/home/sponge_campus/biao.liu/onescience-main/model-zoo/molsculptor/checkpoints/auto-encoder/config.pkl
+	vae_params_path: /work/home/sponge_campus/biao.liu/onescience-main/model-zoo/molsculptor/checkpoints/auto-encoder/ae_params_opt.pkl
+	alphabet_path: /work/home/sponge_campus/biao.liu/onescience-main/src/onescience/flax_models/MolSculptor/train/smiles_alphabet.pkl
+	n_replicate: 8
+	init_molecule_path: /work/home/sponge_campus/biao.liu/onescience-main/examples/molsculptor/cases/case_ar-gr/init_search_molecule.pkl
+	dsdp_script_path_1: /work/home/sponge_campus/biao.liu/onescience-main/examples/molsculptor/cases/case_ar-gr/dsdp_ar.sh
+	dsdp_script_path_2: /work/home/sponge_campus/biao.liu/onescience-main/examples/molsculptor/cases/case_ar-gr/dsdp_gr.sh
+	t_min: 75
+	t_max: 125
+	sub_smiles: NC(=O)c1cccc(S(=O)(=O)N2CCCc3ccccc32)c1
+=====================START INFERENCE=====================
+Generating init offsprings...
+Starting search, total steps = 1
+Top 4 DSDP PROT-1 scores: [9.221 9.221 9.221 9.221]
+Top 4 DSDP PROT-2 scores: [8.996 8.996 8.996 8.996]
+Average sim score: 0.704
+=====================INPUT ARGS=====================
+INPUT ARGS:
+	config_path: /work/home/sponge_campus/biao.liu/onescience-main/model-zoo/molsculptor/checkpoints/diffusion-transformer/config_opt.pkl
+	params_path: /work/home/sponge_campus/biao.liu/onescience-main/model-zoo/molsculptor/checkpoints/diffusion-transformer/dit_params_opt.pkl
+	logger_path: /work/home/sponge_campus/biao.liu/onescience-main/examples/molsculptor/cases/case_ar-gr/test/Logs.txt
+	save_path: /work/home/sponge_campus/biao.liu/onescience-main/examples/molsculptor/cases/case_ar-gr/test
+	random_seed: 8888
+	np_random_seed: 8888
+	total_step: 1
+	device_batch_size: 128
+	num_latent_tokens: 16
+	dim_latent: 32
+	eq_steps: 10
+	callback_step: 10
+	beam_size: 4
+	sampling_method: beam
+	infer_config_path: None
+	vae_config_path: /work/home/sponge_campus/biao.liu/onescience-main/model-zoo/molsculptor/checkpoints/auto-encoder/config.pkl
+	vae_params_path: /work/home/sponge_campus/biao.liu/onescience-main/model-zoo/molsculptor/checkpoints/auto-encoder/ae_params_opt.pkl
+	alphabet_path: /work/home/sponge_campus/biao.liu/onescience-main/src/onescience/flax_models/MolSculptor/train/smiles_alphabet.pkl
+	n_replicate: 8
+	init_molecule_path: /work/home/sponge_campus/biao.liu/onescience-main/examples/molsculptor/cases/case_ar-gr/init_search_molecule.pkl
+	dsdp_script_path_1: /work/home/sponge_campus/biao.liu/onescience-main/examples/molsculptor/cases/case_ar-gr/dsdp_ar.sh
+	dsdp_script_path_2: /work/home/sponge_campus/biao.liu/onescience-main/examples/molsculptor/cases/case_ar-gr/dsdp_gr.sh
+	t_min: 75
+	t_max: 125
+	sub_smiles: NC(=O)c1cccc(S(=O)(=O)N2CCCc3ccccc32)c1
+=====================START INFERENCE=====================
+Generating init offsprings...
+Starting search, total steps = 1
+=====================INPUT ARGS=====================
+INPUT ARGS:
+	config_path: /work/home/sponge_campus/biao.liu/onescience-main/model-zoo/molsculptor/checkpoints/diffusion-transformer/config_opt.pkl
+	params_path: /work/home/sponge_campus/biao.liu/onescience-main/model-zoo/molsculptor/checkpoints/diffusion-transformer/dit_params_opt.pkl
+	logger_path: /work/home/sponge_campus/biao.liu/onescience-main/examples/molsculptor/cases/case_ar-gr/test/Logs.txt
+	save_path: /work/home/sponge_campus/biao.liu/onescience-main/examples/molsculptor/cases/case_ar-gr/test
+	random_seed: 8888
+	np_random_seed: 8888
+	total_step: 1
+	device_batch_size: 128
+	num_latent_tokens: 16
+	dim_latent: 32
+	eq_steps: 10
+	callback_step: 10
+	beam_size: 4
+	sampling_method: beam
+	infer_config_path: None
+	vae_config_path: /work/home/sponge_campus/biao.liu/onescience-main/model-zoo/molsculptor/checkpoints/auto-encoder/config.pkl
+	vae_params_path: /work/home/sponge_campus/biao.liu/onescience-main/model-zoo/molsculptor/checkpoints/auto-encoder/ae_params_opt.pkl
+	alphabet_path: /work/home/sponge_campus/biao.liu/onescience-main/src/onescience/flax_models/MolSculptor/train/smiles_alphabet.pkl
+	n_replicate: 8
+	init_molecule_path: /work/home/sponge_campus/biao.liu/onescience-main/examples/molsculptor/cases/case_ar-gr/init_search_molecule.pkl
+	dsdp_script_path_1: /work/home/sponge_campus/biao.liu/onescience-main/examples/molsculptor/cases/case_ar-gr/dsdp_ar.sh
+	dsdp_script_path_2: /work/home/sponge_campus/biao.liu/onescience-main/examples/molsculptor/cases/case_ar-gr/dsdp_gr.sh
+	t_min: 75
+	t_max: 125
+	sub_smiles: NC(=O)c1cccc(S(=O)(=O)N2CCCc3ccccc32)c1
+=====================START INFERENCE=====================
+Generating init offsprings...
+Starting search, total steps = 1
+Top 4 DSDP PROT-1 scores: [9.221 9.221 9.221 9.221]
+Top 4 DSDP PROT-2 scores: [8.996 8.996 8.996 8.996]
+Average sim score: 0.704
+=====================INPUT ARGS=====================
+INPUT ARGS:
+	config_path: /work/home/sponge_campus/biao.liu/onescience-main/model-zoo/molsculptor/checkpoints/diffusion-transformer/config_opt.pkl
+	params_path: /work/home/sponge_campus/biao.liu/onescience-main/model-zoo/molsculptor/checkpoints/diffusion-transformer/dit_params_opt.pkl
+	logger_path: /work/home/sponge_campus/biao.liu/onescience-main/examples/molsculptor/cases/case_ar-gr/test/Logs.txt
+	save_path: /work/home/sponge_campus/biao.liu/onescience-main/examples/molsculptor/cases/case_ar-gr/test
+	random_seed: 8888
+	np_random_seed: 8888
+	total_step: 1
+	device_batch_size: 128
+	num_latent_tokens: 16
+	dim_latent: 32
+	eq_steps: 10
+	callback_step: 10
+	beam_size: 4
+	sampling_method: beam
+	infer_config_path: None
+	vae_config_path: /work/home/sponge_campus/biao.liu/onescience-main/model-zoo/molsculptor/checkpoints/auto-encoder/config.pkl
+	vae_params_path: /work/home/sponge_campus/biao.liu/onescience-main/model-zoo/molsculptor/checkpoints/auto-encoder/ae_params_opt.pkl
+	alphabet_path: /work/home/sponge_campus/biao.liu/onescience-main/src/onescience/flax_models/MolSculptor/train/smiles_alphabet.pkl
+	n_replicate: 8
+	init_molecule_path: /work/home/sponge_campus/biao.liu/onescience-main/examples/molsculptor/cases/case_ar-gr/init_search_molecule.pkl
+	dsdp_script_path_1: /work/home/sponge_campus/biao.liu/onescience-main/examples/molsculptor/cases/case_ar-gr/dsdp_ar.sh
+	dsdp_script_path_2: /work/home/sponge_campus/biao.liu/onescience-main/examples/molsculptor/cases/case_ar-gr/dsdp_gr.sh
+	t_min: 75
+	t_max: 125
+	sub_smiles: NC(=O)c1cccc(S(=O)(=O)N2CCCc3ccccc32)c1
+=====================START INFERENCE=====================
+Generating init offsprings...
+Starting search, total steps = 1
+Top 4 DSDP PROT-1 scores: [9.221 9.221 9.221 9.221]
+Top 4 DSDP PROT-2 scores: [8.996 8.996 8.996 8.996]
+Average sim score: 0.704
+=====================END INFERENCE=====================
+Inference done, time 0:13:27.479537, results saved to /work/home/sponge_campus/biao.liu/onescience-main/examples/molsculptor/cases/case_ar-gr/test
+=====================INPUT ARGS=====================
+INPUT ARGS:
+	config_path: /work/home/sponge_campus/biao.liu/onescience-main/model-zoo/molsculptor/checkpoints/diffusion-transformer/config_opt.pkl
+	params_path: /work/home/sponge_campus/biao.liu/onescience-main/model-zoo/molsculptor/checkpoints/diffusion-transformer/dit_params_opt.pkl
+	logger_path: /work/home/sponge_campus/biao.liu/onescience-main/examples/molsculptor/cases/case_ar-gr/test/Logs.txt
+	save_path: /work/home/sponge_campus/biao.liu/onescience-main/examples/molsculptor/cases/case_ar-gr/test
+	random_seed: 8888
+	np_random_seed: 8888
+	total_step: 100
+	device_batch_size: 128
+	num_latent_tokens: 16
+	dim_latent: 32
+	eq_steps: 10
+	callback_step: 10
+	beam_size: 4
+	sampling_method: beam
+	infer_config_path: None
+	vae_config_path: /work/home/sponge_campus/biao.liu/onescience-main/model-zoo/molsculptor/checkpoints/auto-encoder/config.pkl
+	vae_params_path: /work/home/sponge_campus/biao.liu/onescience-main/model-zoo/molsculptor/checkpoints/auto-encoder/ae_params_opt.pkl
+	alphabet_path: /work/home/sponge_campus/biao.liu/onescience-main/src/onescience/flax_models/MolSculptor/train/smiles_alphabet.pkl
+	n_replicate: 8
+	init_molecule_path: /work/home/sponge_campus/biao.liu/onescience-main/examples/molsculptor/cases/case_ar-gr/init_search_molecule.pkl
+	dsdp_script_path_1: /work/home/sponge_campus/biao.liu/onescience-main/examples/molsculptor/cases/case_ar-gr/dsdp_ar.sh
+	dsdp_script_path_2: /work/home/sponge_campus/biao.liu/onescience-main/examples/molsculptor/cases/case_ar-gr/dsdp_gr.sh
+	t_min: 75
+	t_max: 125
+	sub_smiles: NC(=O)c1cccc(S(=O)(=O)N2CCCc3ccccc32)c1
+=====================START INFERENCE=====================
+Generating init offsprings...
+Starting search, total steps = 100
+=====================INPUT ARGS=====================
+INPUT ARGS:
+	config_path: /work/home/sponge_campus/biao.liu/onescience-main/model-zoo/molsculptor/checkpoints/diffusion-transformer/config_opt.pkl
+	params_path: /work/home/sponge_campus/biao.liu/onescience-main/model-zoo/molsculptor/checkpoints/diffusion-transformer/dit_params_opt.pkl
+	logger_path: /work/home/sponge_campus/biao.liu/onescience-main/examples/molsculptor/cases/case_ar-gr/test/Logs.txt
+	save_path: /work/home/sponge_campus/biao.liu/onescience-main/examples/molsculptor/cases/case_ar-gr/test
+	random_seed: 8888
+	np_random_seed: 8888
+	total_step: 100
+	device_batch_size: 128
+	num_latent_tokens: 16
+	dim_latent: 32
+	eq_steps: 10
+	callback_step: 10
+	beam_size: 4
+	sampling_method: beam
+	infer_config_path: None
+	vae_config_path: /work/home/sponge_campus/biao.liu/onescience-main/model-zoo/molsculptor/checkpoints/auto-encoder/config.pkl
+	vae_params_path: /work/home/sponge_campus/biao.liu/onescience-main/model-zoo/molsculptor/checkpoints/auto-encoder/ae_params_opt.pkl
+	alphabet_path: /work/home/sponge_campus/biao.liu/onescience-main/src/onescience/flax_models/MolSculptor/train/smiles_alphabet.pkl
+	n_replicate: 8
+	init_molecule_path: /work/home/sponge_campus/biao.liu/onescience-main/examples/molsculptor/cases/case_ar-gr/init_search_molecule.pkl
+	dsdp_script_path_1: /work/home/sponge_campus/biao.liu/onescience-main/examples/molsculptor/cases/case_ar-gr/dsdp_ar.sh
+	dsdp_script_path_2: /work/home/sponge_campus/biao.liu/onescience-main/examples/molsculptor/cases/case_ar-gr/dsdp_gr.sh
+	t_min: 75
+	t_max: 125
+	sub_smiles: NC(=O)c1cccc(S(=O)(=O)N2CCCc3ccccc32)c1
+=====================START INFERENCE=====================
+Generating init offsprings...
+Starting search, total steps = 100
+Top 4 DSDP PROT-1 scores: [9.221 9.221 9.221 9.221]
+Top 4 DSDP PROT-2 scores: [8.996 8.996 8.996 8.996]
+Average sim score: 0.704
+=====================INPUT ARGS=====================
+INPUT ARGS:
+	config_path: /work/home/sponge_campus/biao.liu/onescience-main/model-zoo/molsculptor/checkpoints/diffusion-transformer/config_opt.pkl
+	params_path: /work/home/sponge_campus/biao.liu/onescience-main/model-zoo/molsculptor/checkpoints/diffusion-transformer/dit_params_opt.pkl
+	logger_path: /work/home/sponge_campus/biao.liu/onescience-main/examples/molsculptor/cases/case_ar-gr/test/Logs.txt
+	save_path: /work/home/sponge_campus/biao.liu/onescience-main/examples/molsculptor/cases/case_ar-gr/test
+	random_seed: 8888
+	np_random_seed: 8888
+	total_step: 100
+	device_batch_size: 128
+	num_latent_tokens: 16
+	dim_latent: 32
+	eq_steps: 10
+	callback_step: 10
+	beam_size: 4
+	sampling_method: beam
+	infer_config_path: None
+	vae_config_path: /work/home/sponge_campus/biao.liu/onescience-main/model-zoo/molsculptor/checkpoints/auto-encoder/config.pkl
+	vae_params_path: /work/home/sponge_campus/biao.liu/onescience-main/model-zoo/molsculptor/checkpoints/auto-encoder/ae_params_opt.pkl
+	alphabet_path: /work/home/sponge_campus/biao.liu/onescience-main/src/onescience/flax_models/MolSculptor/train/smiles_alphabet.pkl
+	n_replicate: 8
+	init_molecule_path: /work/home/sponge_campus/biao.liu/onescience-main/examples/molsculptor/cases/case_ar-gr/init_search_molecule.pkl
+	dsdp_script_path_1: /work/home/sponge_campus/biao.liu/onescience-main/examples/molsculptor/cases/case_ar-gr/dsdp_ar.sh
+	dsdp_script_path_2: /work/home/sponge_campus/biao.liu/onescience-main/examples/molsculptor/cases/case_ar-gr/dsdp_gr.sh
+	t_min: 75
+	t_max: 125
+	sub_smiles: NC(=O)c1cccc(S(=O)(=O)N2CCCc3ccccc32)c1
+=====================START INFERENCE=====================
+Generating init offsprings...
+Starting search, total steps = 100
+Top 4 DSDP PROT-1 scores: [9.221 9.221 9.221 9.221]
+Top 4 DSDP PROT-2 scores: [8.996 8.996 8.996 8.996]
+Average sim score: 0.704
+Top 4 DSDP PROT-1 scores: [9.221 9.221 9.221 9.221]
+Top 4 DSDP PROT-2 scores: [8.996 8.996 8.996 8.996]
+Average sim score: 0.665
+Top 4 DSDP PROT-1 scores: [9.221 9.221 9.221 9.221]
+Top 4 DSDP PROT-2 scores: [8.996 8.996 8.996 8.996]
+Average sim score: 0.609
+Top 4 DSDP PROT-1 scores: [-0.     9.221  9.221  9.221]
+Top 4 DSDP PROT-2 scores: [-0.     8.996  8.996  8.996]
+Average sim score: 0.564
+Top 4 DSDP PROT-1 scores: [-0.     9.221  9.221  9.221]
+Top 4 DSDP PROT-2 scores: [-0.     8.996  8.996  8.996]
+Average sim score: 0.537
+Top 4 DSDP PROT-1 scores: [-0.    -0.    -0.     9.221]
+Top 4 DSDP PROT-2 scores: [-0.    -0.    -0.     8.996]
+Average sim score: 0.525
+Top 4 DSDP PROT-1 scores: [-0.    -0.    -0.     9.221]
+Top 4 DSDP PROT-2 scores: [-0.    -0.    -0.     8.996]
+Average sim score: 0.525
+Top 4 DSDP PROT-1 scores: [-0.    -0.    -0.     9.221]
+Top 4 DSDP PROT-2 scores: [-0.    -0.    -0.     8.996]
+Average sim score: 0.524
+Top 4 DSDP PROT-1 scores: [-0.    -0.    -0.     9.221]
+Top 4 DSDP PROT-2 scores: [-0.    -0.    -0.     8.996]
+Average sim score: 0.524
+Top 4 DSDP PROT-1 scores: [-0.    -0.    -0.     9.221]
+Top 4 DSDP PROT-2 scores: [-0.    -0.    -0.     8.996]
+Average sim score: 0.520
+Top 4 DSDP PROT-1 scores: [-0.    -0.    -0.     9.221]
+Top 4 DSDP PROT-2 scores: [-0.    -0.    -0.     8.996]
+Average sim score: 0.518
+Top 4 DSDP PROT-1 scores: [-0.    -0.    -0.     9.221]
+Top 4 DSDP PROT-2 scores: [-0.    -0.    -0.     8.996]
+Average sim score: 0.518
+Top 4 DSDP PROT-1 scores: [-0.    -0.    -0.     9.221]
+Top 4 DSDP PROT-2 scores: [-0.    -0.    -0.     8.996]
+Average sim score: 0.516
+Top 4 DSDP PROT-1 scores: [-0.    -0.    -0.     9.221]
+Top 4 DSDP PROT-2 scores: [-0.    -0.    -0.     8.996]
+Average sim score: 0.517
+Top 4 DSDP PROT-1 scores: [-0.    -0.    -0.     9.221]
+Top 4 DSDP PROT-2 scores: [-0.    -0.    -0.     8.996]
+Average sim score: 0.514
+Top 4 DSDP PROT-1 scores: [-0.    -0.    -0.     9.221]
+Top 4 DSDP PROT-2 scores: [-0.    -0.    -0.     8.996]
+Average sim score: 0.513
+Top 4 DSDP PROT-1 scores: [-0.    -0.    -0.     9.221]
+Top 4 DSDP PROT-2 scores: [-0.    -0.    -0.     8.996]
+Average sim score: 0.510
+Top 4 DSDP PROT-1 scores: [-0.    -0.    -0.     9.221]
+Top 4 DSDP PROT-2 scores: [-0.    -0.    -0.     8.996]
+Average sim score: 0.508
+Top 4 DSDP PROT-1 scores: [-0.    -0.    -0.     9.221]
+Top 4 DSDP PROT-2 scores: [-0.    -0.    -0.     8.996]
+Average sim score: 0.503
+Top 4 DSDP PROT-1 scores: [-0.    -0.    -0.     9.221]
+Top 4 DSDP PROT-2 scores: [-0.    -0.    -0.     8.996]
+Average sim score: 0.497
+Top 4 DSDP PROT-1 scores: [-0.    -0.    -0.     9.221]
+Top 4 DSDP PROT-2 scores: [-0.    -0.    -0.     8.996]
+Average sim score: 0.499
+Top 4 DSDP PROT-1 scores: [-0.    -0.    -0.     9.221]
+Top 4 DSDP PROT-2 scores: [-0.    -0.    -0.     8.996]
+Average sim score: 0.492
+Top 4 DSDP PROT-1 scores: [-0.    -0.    -0.     9.221]
+Top 4 DSDP PROT-2 scores: [-0.    -0.    -0.     8.996]
+Average sim score: 0.495
+Top 4 DSDP PROT-1 scores: [-0.    -0.    -0.     9.221]
+Top 4 DSDP PROT-2 scores: [-0.    -0.    -0.     8.996]
+Average sim score: 0.497
+Top 4 DSDP PROT-1 scores: [-0.    -0.    -0.     9.221]
+Top 4 DSDP PROT-2 scores: [-0.    -0.    -0.     8.996]
+Average sim score: 0.497
+Top 4 DSDP PROT-1 scores: [-0.    -0.    -0.     9.221]
+Top 4 DSDP PROT-2 scores: [-0.    -0.    -0.     8.996]
+Average sim score: 0.496
+Top 4 DSDP PROT-1 scores: [-0.    -0.    -0.     9.221]
+Top 4 DSDP PROT-2 scores: [-0.    -0.    -0.     8.996]
+Average sim score: 0.496
+Top 4 DSDP PROT-1 scores: [-0.    -0.    -0.     9.221]
+Top 4 DSDP PROT-2 scores: [-0.    -0.    -0.     8.996]
+Average sim score: 0.494
+Top 4 DSDP PROT-1 scores: [-0.    -0.    -0.     9.221]
+Top 4 DSDP PROT-2 scores: [-0.    -0.    -0.     8.996]
+Average sim score: 0.495
+Top 4 DSDP PROT-1 scores: [-0.    -0.    -0.     9.221]
+Top 4 DSDP PROT-2 scores: [-0.    -0.    -0.     8.996]
+Average sim score: 0.494
+Top 4 DSDP PROT-1 scores: [-0.    -0.    -0.     9.221]
+Top 4 DSDP PROT-2 scores: [-0.    -0.    -0.     8.996]
+Average sim score: 0.487
+Top 4 DSDP PROT-1 scores: [-0.    -0.    -0.     9.221]
+Top 4 DSDP PROT-2 scores: [-0.    -0.    -0.     8.996]
+Average sim score: 0.488
+Top 4 DSDP PROT-1 scores: [-0.    -0.    -0.     9.221]
+Top 4 DSDP PROT-2 scores: [-0.    -0.    -0.     8.996]
+Average sim score: 0.481
+Top 4 DSDP PROT-1 scores: [-0.    -0.    -0.     9.221]
+Top 4 DSDP PROT-2 scores: [-0.    -0.    -0.     8.996]
+Average sim score: 0.478
+Top 4 DSDP PROT-1 scores: [-0.    -0.    -0.     9.221]
+Top 4 DSDP PROT-2 scores: [-0.    -0.    -0.     8.996]
+Average sim score: 0.479
+Top 4 DSDP PROT-1 scores: [-0.    -0.    -0.     9.221]
+Top 4 DSDP PROT-2 scores: [-0.    -0.    -0.     8.996]
+Average sim score: 0.476
+Top 4 DSDP PROT-1 scores: [-0.    -0.    -0.     9.221]
+Top 4 DSDP PROT-2 scores: [-0.    -0.    -0.     8.996]
+Average sim score: 0.479
+Top 4 DSDP PROT-1 scores: [-0.    -0.    -0.     9.221]
+Top 4 DSDP PROT-2 scores: [-0.    -0.    -0.     8.996]
+Average sim score: 0.475
+Top 4 DSDP PROT-1 scores: [-0.    -0.    -0.     9.221]
+Top 4 DSDP PROT-2 scores: [-0.    -0.    -0.     8.996]
+Average sim score: 0.476
+Top 4 DSDP PROT-1 scores: [-0.    -0.    -0.     9.221]
+Top 4 DSDP PROT-2 scores: [-0.    -0.    -0.     8.996]
+Average sim score: 0.476
+Top 4 DSDP PROT-1 scores: [-0.    -0.    -0.     9.221]
+Top 4 DSDP PROT-2 scores: [-0.    -0.    -0.     8.996]
+Average sim score: 0.473
+Top 4 DSDP PROT-1 scores: [-0.    -0.    -0.     9.221]
+Top 4 DSDP PROT-2 scores: [-0.    -0.    -0.     8.996]
+Average sim score: 0.474
+Top 4 DSDP PROT-1 scores: [-0.    -0.    -0.     9.221]
+Top 4 DSDP PROT-2 scores: [-0.    -0.    -0.     8.996]
+Average sim score: 0.472
+Top 4 DSDP PROT-1 scores: [-0.    -0.    -0.     9.221]
+Top 4 DSDP PROT-2 scores: [-0.    -0.    -0.     8.996]
+Average sim score: 0.472
+Top 4 DSDP PROT-1 scores: [-0.    -0.    -0.     9.221]
+Top 4 DSDP PROT-2 scores: [-0.    -0.    -0.     8.996]
+Average sim score: 0.468
+Top 4 DSDP PROT-1 scores: [-0.    -0.    -0.     9.221]
+Top 4 DSDP PROT-2 scores: [-0.    -0.    -0.     8.996]
+Average sim score: 0.463
+Top 4 DSDP PROT-1 scores: [-0.    -0.    -0.     9.221]
+Top 4 DSDP PROT-2 scores: [-0.    -0.    -0.     8.996]
+Average sim score: 0.462
+Top 4 DSDP PROT-1 scores: [-0.    -0.    -0.     9.221]
+Top 4 DSDP PROT-2 scores: [-0.    -0.    -0.     8.996]
+Average sim score: 0.460
+Top 4 DSDP PROT-1 scores: [-0.    -0.    -0.     9.221]
+Top 4 DSDP PROT-2 scores: [-0.    -0.    -0.     8.996]
+Average sim score: 0.459
+Top 4 DSDP PROT-1 scores: [-0.    -0.    -0.     9.221]
+Top 4 DSDP PROT-2 scores: [-0.    -0.    -0.     8.996]
+Average sim score: 0.465
+Top 4 DSDP PROT-1 scores: [-0.    -0.    -0.     9.221]
+Top 4 DSDP PROT-2 scores: [-0.    -0.    -0.     8.996]
+Average sim score: 0.465
+Top 4 DSDP PROT-1 scores: [-0.    -0.    -0.     9.221]
+Top 4 DSDP PROT-2 scores: [-0.    -0.    -0.     8.996]
+Average sim score: 0.466
+Top 4 DSDP PROT-1 scores: [-0.    -0.    -0.     9.221]
+Top 4 DSDP PROT-2 scores: [-0.    -0.    -0.     8.996]
+Average sim score: 0.467
+Top 4 DSDP PROT-1 scores: [-0.    -0.    -0.     9.221]
+Top 4 DSDP PROT-2 scores: [-0.    -0.    -0.     8.996]
+Average sim score: 0.467
+Top 4 DSDP PROT-1 scores: [-0.    -0.    -0.     9.221]
+Top 4 DSDP PROT-2 scores: [-0.    -0.    -0.     8.996]
+Average sim score: 0.465
+Top 4 DSDP PROT-1 scores: [-0.    -0.    -0.     9.221]
+Top 4 DSDP PROT-2 scores: [-0.    -0.    -0.     8.996]
+Average sim score: 0.467
+Top 4 DSDP PROT-1 scores: [-0.    -0.    -0.     9.221]
+Top 4 DSDP PROT-2 scores: [-0.    -0.    -0.     8.996]
+Average sim score: 0.463
+Top 4 DSDP PROT-1 scores: [-0.    -0.    -0.     9.221]
+Top 4 DSDP PROT-2 scores: [-0.    -0.    -0.     8.996]
+Average sim score: 0.461
+Top 4 DSDP PROT-1 scores: [-0.    -0.    -0.     9.221]
+Top 4 DSDP PROT-2 scores: [-0.    -0.    -0.     8.996]
+Average sim score: 0.464
+Top 4 DSDP PROT-1 scores: [-0.    -0.    -0.     9.221]
+Top 4 DSDP PROT-2 scores: [-0.    -0.    -0.     8.996]
+Average sim score: 0.465
+Top 4 DSDP PROT-1 scores: [-0.    -0.    -0.     9.221]
+Top 4 DSDP PROT-2 scores: [-0.    -0.    -0.     8.996]
+Average sim score: 0.470
+Top 4 DSDP PROT-1 scores: [-0.    -0.    -0.     9.221]
+Top 4 DSDP PROT-2 scores: [-0.    -0.    -0.     8.996]
+Average sim score: 0.471
+Top 4 DSDP PROT-1 scores: [-0.    -0.    -0.     9.221]
+Top 4 DSDP PROT-2 scores: [-0.    -0.    -0.     8.996]
+Average sim score: 0.465
+Top 4 DSDP PROT-1 scores: [-0.    -0.    -0.     9.221]
+Top 4 DSDP PROT-2 scores: [-0.    -0.    -0.     8.996]
+Average sim score: 0.466
+Top 4 DSDP PROT-1 scores: [-0.    -0.    -0.     9.221]
+Top 4 DSDP PROT-2 scores: [-0.    -0.    -0.     8.996]
+Average sim score: 0.466
+Top 4 DSDP PROT-1 scores: [-0.    -0.    -0.     9.221]
+Top 4 DSDP PROT-2 scores: [-0.    -0.    -0.     8.996]
+Average sim score: 0.467
+Top 4 DSDP PROT-1 scores: [-0.    -0.    -0.     9.221]
+Top 4 DSDP PROT-2 scores: [-0.    -0.    -0.     8.996]
+Average sim score: 0.469
+Top 4 DSDP PROT-1 scores: [-0.    -0.    -0.     9.221]
+Top 4 DSDP PROT-2 scores: [-0.    -0.    -0.     8.996]
+Average sim score: 0.472
+Top 4 DSDP PROT-1 scores: [-0.    -0.    -0.     9.221]
+Top 4 DSDP PROT-2 scores: [-0.    -0.    -0.     8.996]
+Average sim score: 0.468
+Top 4 DSDP PROT-1 scores: [-0.    -0.    -0.     9.221]
+Top 4 DSDP PROT-2 scores: [-0.    -0.    -0.     8.996]
+Average sim score: 0.468
+Top 4 DSDP PROT-1 scores: [-0.    -0.    -0.     9.221]
+Top 4 DSDP PROT-2 scores: [-0.    -0.    -0.     8.996]
+Average sim score: 0.470
+Top 4 DSDP PROT-1 scores: [-0.    -0.    -0.     9.221]
+Top 4 DSDP PROT-2 scores: [-0.    -0.    -0.     8.996]
+Average sim score: 0.470
+Top 4 DSDP PROT-1 scores: [-0.    -0.    -0.     9.221]
+Top 4 DSDP PROT-2 scores: [-0.    -0.    -0.     8.996]
+Average sim score: 0.473
+Top 4 DSDP PROT-1 scores: [-0.    -0.    -0.     9.221]
+Top 4 DSDP PROT-2 scores: [-0.    -0.    -0.     8.996]
+Average sim score: 0.476
+Top 4 DSDP PROT-1 scores: [-0.    -0.    -0.     9.221]
+Top 4 DSDP PROT-2 scores: [-0.    -0.    -0.     8.996]
+Average sim score: 0.478
+Top 4 DSDP PROT-1 scores: [-0.    -0.    -0.     9.221]
+Top 4 DSDP PROT-2 scores: [-0.    -0.    -0.     8.996]
+Average sim score: 0.476
+Top 4 DSDP PROT-1 scores: [-0.    -0.    -0.     9.221]
+Top 4 DSDP PROT-2 scores: [-0.    -0.    -0.     8.996]
+Average sim score: 0.476
+Top 4 DSDP PROT-1 scores: [-0.    -0.    -0.     9.221]
+Top 4 DSDP PROT-2 scores: [-0.    -0.    -0.     8.996]
+Average sim score: 0.471
+Top 4 DSDP PROT-1 scores: [-0.    -0.    -0.     9.221]
+Top 4 DSDP PROT-2 scores: [-0.    -0.    -0.     8.996]
+Average sim score: 0.474
+Top 4 DSDP PROT-1 scores: [-0.    -0.    -0.     9.221]
+Top 4 DSDP PROT-2 scores: [-0.    -0.    -0.     8.996]
+Average sim score: 0.475
+Top 4 DSDP PROT-1 scores: [-0.    -0.    -0.     9.221]
+Top 4 DSDP PROT-2 scores: [-0.    -0.    -0.     8.996]
+Average sim score: 0.475
+Top 4 DSDP PROT-1 scores: [-0.    -0.    -0.     9.221]
+Top 4 DSDP PROT-2 scores: [-0.    -0.    -0.     8.996]
+Average sim score: 0.476
+Top 4 DSDP PROT-1 scores: [-0.    -0.    -0.     9.221]
+Top 4 DSDP PROT-2 scores: [-0.    -0.    -0.     8.996]
+Average sim score: 0.473
+Top 4 DSDP PROT-1 scores: [-0.    -0.    -0.     9.221]
+Top 4 DSDP PROT-2 scores: [-0.    -0.    -0.     8.996]
+Average sim score: 0.473
+Top 4 DSDP PROT-1 scores: [-0.    -0.    -0.     9.221]
+Top 4 DSDP PROT-2 scores: [-0.    -0.    -0.     8.996]
+Average sim score: 0.472
+Top 4 DSDP PROT-1 scores: [-0.    -0.    -0.     9.221]
+Top 4 DSDP PROT-2 scores: [-0.    -0.    -0.     8.996]
+Average sim score: 0.471
+Top 4 DSDP PROT-1 scores: [-0.    -0.    -0.     9.221]
+Top 4 DSDP PROT-2 scores: [-0.    -0.    -0.     8.996]
+Average sim score: 0.471
+Top 4 DSDP PROT-1 scores: [-0.    -0.    -0.     9.221]
+Top 4 DSDP PROT-2 scores: [-0.    -0.    -0.     8.996]
+Average sim score: 0.471
+Top 4 DSDP PROT-1 scores: [-0.    -0.    -0.     9.221]
+Top 4 DSDP PROT-2 scores: [-0.    -0.    -0.     8.996]
+Average sim score: 0.466
+Top 4 DSDP PROT-1 scores: [-0.    -0.    -0.     9.221]
+Top 4 DSDP PROT-2 scores: [-0.    -0.    -0.     8.996]
+Average sim score: 0.462
+Top 4 DSDP PROT-1 scores: [-0.    -0.    -0.     9.221]
+Top 4 DSDP PROT-2 scores: [-0.    -0.    -0.     8.996]
+Average sim score: 0.463
+Top 4 DSDP PROT-1 scores: [-0.    -0.    -0.     9.221]
+Top 4 DSDP PROT-2 scores: [-0.    -0.    -0.     8.996]
+Average sim score: 0.462
+Top 4 DSDP PROT-1 scores: [-0.    -0.    -0.     9.221]
+Top 4 DSDP PROT-2 scores: [-0.    -0.    -0.     8.996]
+Average sim score: 0.462
+Top 4 DSDP PROT-1 scores: [-0.    -0.    -0.     9.221]
+Top 4 DSDP PROT-2 scores: [-0.    -0.    -0.     8.996]
+Average sim score: 0.463
+Top 4 DSDP PROT-1 scores: [-0.    -0.    -0.     9.221]
+Top 4 DSDP PROT-2 scores: [-0.    -0.    -0.     8.996]
+Average sim score: 0.463
+Top 4 DSDP PROT-1 scores: [-0.    -0.    -0.     9.221]
+Top 4 DSDP PROT-2 scores: [-0.    -0.    -0.     8.996]
+Average sim score: 0.464
+Top 4 DSDP PROT-1 scores: [-0.    -0.    -0.     9.221]
+Top 4 DSDP PROT-2 scores: [-0.    -0.    -0.     8.996]
+Average sim score: 0.467
+Top 4 DSDP PROT-1 scores: [-0.    -0.    -0.     9.221]
+Top 4 DSDP PROT-2 scores: [-0.    -0.    -0.     8.996]
+Average sim score: 0.461
+Top 4 DSDP PROT-1 scores: [-0.    -0.    -0.     9.221]
+Top 4 DSDP PROT-2 scores: [-0.    -0.    -0.     8.996]
+Average sim score: 0.462
+Top 4 DSDP PROT-1 scores: [-0.    -0.    -0.     9.221]
+Top 4 DSDP PROT-2 scores: [-0.    -0.    -0.     8.996]
+Average sim score: 0.464
+=====================END INFERENCE=====================
+Inference done, time 8:55:11.600492, results saved to /work/home/sponge_campus/biao.liu/onescience-main/examples/molsculptor/cases/case_ar-gr/test
+=====================INPUT ARGS=====================
+INPUT ARGS:
+	config_path: /work/home/sponge_campus/biao.liu/onescience-main/model-zoo/molsculptor/checkpoints/diffusion-transformer/config_opt.pkl
+	params_path: /work/home/sponge_campus/biao.liu/onescience-main/model-zoo/molsculptor/checkpoints/diffusion-transformer/dit_params_opt.pkl
+	logger_path: /work/home/sponge_campus/biao.liu/onescience-main/examples/molsculptor/cases/case_ar-gr/test/Logs.txt
+	save_path: /work/home/sponge_campus/biao.liu/onescience-main/examples/molsculptor/cases/case_ar-gr/test
+	random_seed: 8888
+	np_random_seed: 8888
+	total_step: 100
+	device_batch_size: 128
+	num_latent_tokens: 16
+	dim_latent: 32
+	eq_steps: 10
+	callback_step: 10
+	beam_size: 4
+	sampling_method: beam
+	infer_config_path: None
+	vae_config_path: /work/home/sponge_campus/biao.liu/onescience-main/model-zoo/molsculptor/checkpoints/auto-encoder/config.pkl
+	vae_params_path: /work/home/sponge_campus/biao.liu/onescience-main/model-zoo/molsculptor/checkpoints/auto-encoder/ae_params_opt.pkl
+	alphabet_path: /work/home/sponge_campus/biao.liu/onescience-main/src/onescience/flax_models/MolSculptor/train/smiles_alphabet.pkl
+	n_replicate: 8
+	init_molecule_path: /work/home/sponge_campus/biao.liu/onescience-main/examples/molsculptor/cases/case_ar-gr/init_search_molecule.pkl
+	dsdp_script_path_1: /work/home/sponge_campus/biao.liu/onescience-main/examples/molsculptor/cases/case_ar-gr/dsdp_ar.sh
+	dsdp_script_path_2: /work/home/sponge_campus/biao.liu/onescience-main/examples/molsculptor/cases/case_ar-gr/dsdp_gr.sh
+	t_min: 75
+	t_max: 125
+	sub_smiles: NC(=O)c1cccc(S(=O)(=O)N2CCCc3ccccc32)c1
+=====================START INFERENCE=====================
+Generating init offsprings...
+Starting search, total steps = 100
+Top 4 DSDP PROT-1 scores: [9.221 9.221 9.221 9.221]
+Top 4 DSDP PROT-2 scores: [8.996 8.996 8.996 8.996]
+Average sim score: 0.704
+Top 4 DSDP PROT-1 scores: [9.221 9.221 9.221 9.221]
+Top 4 DSDP PROT-2 scores: [8.996 8.996 8.996 8.996]
+Average sim score: 0.665
+Top 4 DSDP PROT-1 scores: [9.221 9.221 9.221 9.221]
+Top 4 DSDP PROT-2 scores: [8.996 8.996 8.996 8.996]
+Average sim score: 0.609
+Top 4 DSDP PROT-1 scores: [-0.     9.221  9.221  9.221]
+Top 4 DSDP PROT-2 scores: [-0.     8.996  8.996  8.996]
+Average sim score: 0.564
+Top 4 DSDP PROT-1 scores: [-0.     9.221  9.221  9.221]
+Top 4 DSDP PROT-2 scores: [-0.     8.996  8.996  8.996]
+Average sim score: 0.537
+Top 4 DSDP PROT-1 scores: [-0.    -0.    -0.     9.221]
+Top 4 DSDP PROT-2 scores: [-0.    -0.    -0.     8.996]
+Average sim score: 0.525
+Top 4 DSDP PROT-1 scores: [-0.    -0.    -0.     9.221]
+Top 4 DSDP PROT-2 scores: [-0.    -0.    -0.     8.996]
+Average sim score: 0.525
+Top 4 DSDP PROT-1 scores: [-0.    -0.    -0.     9.221]
+Top 4 DSDP PROT-2 scores: [-0.    -0.    -0.     8.996]
+Average sim score: 0.524
+Top 4 DSDP PROT-1 scores: [-0.    -0.    -0.     9.221]
+Top 4 DSDP PROT-2 scores: [-0.    -0.    -0.     8.996]
+Average sim score: 0.524
+Top 4 DSDP PROT-1 scores: [-0.    -0.    -0.     9.221]
+Top 4 DSDP PROT-2 scores: [-0.    -0.    -0.     8.996]
+Average sim score: 0.520
+Top 4 DSDP PROT-1 scores: [-0.    -0.    -0.     9.221]
+Top 4 DSDP PROT-2 scores: [-0.    -0.    -0.     8.996]
+Average sim score: 0.518
+Top 4 DSDP PROT-1 scores: [-0.    -0.    -0.     9.221]
+Top 4 DSDP PROT-2 scores: [-0.    -0.    -0.     8.996]
+Average sim score: 0.518
+Top 4 DSDP PROT-1 scores: [-0.    -0.    -0.     9.221]
+Top 4 DSDP PROT-2 scores: [-0.    -0.    -0.     8.996]
+Average sim score: 0.516
+Top 4 DSDP PROT-1 scores: [-0.    -0.    -0.     9.221]
+Top 4 DSDP PROT-2 scores: [-0.    -0.    -0.     8.996]
+Average sim score: 0.517
+Top 4 DSDP PROT-1 scores: [-0.    -0.    -0.     9.221]
+Top 4 DSDP PROT-2 scores: [-0.    -0.    -0.     8.996]
+Average sim score: 0.514
+Top 4 DSDP PROT-1 scores: [-0.    -0.    -0.     9.221]
+Top 4 DSDP PROT-2 scores: [-0.    -0.    -0.     8.996]
+Average sim score: 0.513
+=====================INPUT ARGS=====================
+INPUT ARGS:
+	config_path: /work/home/sponge_campus/biao.liu/onescience-main/model-zoo/molsculptor/checkpoints/diffusion-transformer/config_opt.pkl
+	params_path: /work/home/sponge_campus/biao.liu/onescience-main/model-zoo/molsculptor/checkpoints/diffusion-transformer/dit_params_opt.pkl
+	logger_path: /work/home/sponge_campus/biao.liu/onescience-main/examples/molsculptor/cases/case_ar-gr/test/Logs.txt
+	save_path: /work/home/sponge_campus/biao.liu/onescience-main/examples/molsculptor/cases/case_ar-gr/test
+	random_seed: 8888
+	np_random_seed: 8888
+	total_step: 100
+	device_batch_size: 128
+	num_latent_tokens: 16
+	dim_latent: 32
+	eq_steps: 10
+	callback_step: 10
+	beam_size: 4
+	sampling_method: beam
+	infer_config_path: None
+	vae_config_path: /work/home/sponge_campus/biao.liu/onescience-main/model-zoo/molsculptor/checkpoints/auto-encoder/config.pkl
+	vae_params_path: /work/home/sponge_campus/biao.liu/onescience-main/model-zoo/molsculptor/checkpoints/auto-encoder/ae_params_opt.pkl
+	alphabet_path: /work/home/sponge_campus/biao.liu/onescience-main/src/onescience/flax_models/MolSculptor/train/smiles_alphabet.pkl
+	n_replicate: 8
+	init_molecule_path: /work/home/sponge_campus/biao.liu/onescience-main/examples/molsculptor/cases/case_ar-gr/init_search_molecule.pkl
+	dsdp_script_path_1: /work/home/sponge_campus/biao.liu/onescience-main/examples/molsculptor/cases/case_ar-gr/dsdp_ar.sh
+	dsdp_script_path_2: /work/home/sponge_campus/biao.liu/onescience-main/examples/molsculptor/cases/case_ar-gr/dsdp_gr.sh
+	t_min: 75
+	t_max: 125
+	sub_smiles: NC(=O)c1cccc(S(=O)(=O)N2CCCc3ccccc32)c1
+=====================INPUT ARGS=====================
+INPUT ARGS:
+	config_path: /work/home/sponge_campus/biao.liu/onescience-main/model-zoo/molsculptor/checkpoints/diffusion-transformer/config_opt.pkl
+	params_path: /work/home/sponge_campus/biao.liu/onescience-main/model-zoo/molsculptor/checkpoints/diffusion-transformer/dit_params_opt.pkl
+	logger_path: /work/home/sponge_campus/biao.liu/onescience-main/examples/molsculptor/cases/case_ar-gr/test/Logs.txt
+	save_path: /work/home/sponge_campus/biao.liu/onescience-main/examples/molsculptor/cases/case_ar-gr/test
+	random_seed: 8888
+	np_random_seed: 8888
+	total_step: 100
+	device_batch_size: 128
+	num_latent_tokens: 16
+	dim_latent: 32
+	eq_steps: 10
+	callback_step: 10
+	beam_size: 4
+	sampling_method: beam
+	infer_config_path: None
+	vae_config_path: /work/home/sponge_campus/biao.liu/onescience-main/model-zoo/molsculptor/checkpoints/auto-encoder/config.pkl
+	vae_params_path: /work/home/sponge_campus/biao.liu/onescience-main/model-zoo/molsculptor/checkpoints/auto-encoder/ae_params_opt.pkl
+	alphabet_path: /work/home/sponge_campus/biao.liu/onescience-main/src/onescience/flax_models/MolSculptor/train/smiles_alphabet.pkl
+	n_replicate: 8
+	init_molecule_path: /work/home/sponge_campus/biao.liu/onescience-main/examples/molsculptor/cases/case_ar-gr/init_search_molecule.pkl
+	dsdp_script_path_1: /work/home/sponge_campus/biao.liu/onescience-main/examples/molsculptor/cases/case_ar-gr/dsdp_ar.sh
+	dsdp_script_path_2: /work/home/sponge_campus/biao.liu/onescience-main/examples/molsculptor/cases/case_ar-gr/dsdp_gr.sh
+	t_min: 75
+	t_max: 125
+	sub_smiles: NC(=O)c1cccc(S(=O)(=O)N2CCCc3ccccc32)c1
+=====================INPUT ARGS=====================
+INPUT ARGS:
+	config_path: /work/home/sponge_campus/biao.liu/onescience-main/model-zoo/molsculptor/checkpoints/diffusion-transformer/config_opt.pkl
+	params_path: /work/home/sponge_campus/biao.liu/onescience-main/model-zoo/molsculptor/checkpoints/diffusion-transformer/dit_params_opt.pkl
+	logger_path: /work/home/sponge_campus/biao.liu/onescience-main/examples/molsculptor/cases/case_ar-gr/test/Logs.txt
+	save_path: /work/home/sponge_campus/biao.liu/onescience-main/examples/molsculptor/cases/case_ar-gr/test
+	random_seed: 8888
+	np_random_seed: 8888
+	total_step: 100
+	device_batch_size: 128
+	num_latent_tokens: 16
+	dim_latent: 32
+	eq_steps: 10
+	callback_step: 10
+	beam_size: 4
+	sampling_method: beam
+	infer_config_path: None
+	vae_config_path: /work/home/sponge_campus/biao.liu/onescience-main/model-zoo/molsculptor/checkpoints/auto-encoder/config.pkl
+	vae_params_path: /work/home/sponge_campus/biao.liu/onescience-main/model-zoo/molsculptor/checkpoints/auto-encoder/ae_params_opt.pkl
+	alphabet_path: /work/home/sponge_campus/biao.liu/onescience-main/src/onescience/flax_models/MolSculptor/train/smiles_alphabet.pkl
+	n_replicate: 8
+	init_molecule_path: /work/home/sponge_campus/biao.liu/onescience-main/examples/molsculptor/cases/case_ar-gr/init_search_molecule.pkl
+	dsdp_script_path_1: /work/home/sponge_campus/biao.liu/onescience-main/examples/molsculptor/cases/case_ar-gr/dsdp_ar.sh
+	dsdp_script_path_2: /work/home/sponge_campus/biao.liu/onescience-main/examples/molsculptor/cases/case_ar-gr/dsdp_gr.sh
+	t_min: 75
+	t_max: 125
+	sub_smiles: NC(=O)c1cccc(S(=O)(=O)N2CCCc3ccccc32)c1
+Generating init offsprings...
+Starting search, total steps = 100
+=====================INPUT ARGS=====================
+INPUT ARGS:
+	config_path: /work/home/sponge_campus/biao.liu/onescience-main/model-zoo/molsculptor/checkpoints/diffusion-transformer/config_opt.pkl
+	params_path: /work/home/sponge_campus/biao.liu/onescience-main/model-zoo/molsculptor/checkpoints/diffusion-transformer/dit_params_opt.pkl
+	logger_path: /work/home/sponge_campus/biao.liu/onescience-main/examples/molsculptor/cases/case_ar-gr/test/Logs.txt
+	save_path: /work/home/sponge_campus/biao.liu/onescience-main/examples/molsculptor/cases/case_ar-gr/test
+	random_seed: 8888
+	np_random_seed: 8888
+	total_step: 100
+	device_batch_size: 128
+	num_latent_tokens: 16
+	dim_latent: 32
+	eq_steps: 10
+	callback_step: 10
+	beam_size: 4
+	sampling_method: beam
+	infer_config_path: None
+	vae_config_path: /work/home/sponge_campus/biao.liu/onescience-main/model-zoo/molsculptor/checkpoints/auto-encoder/config.pkl
+	vae_params_path: /work/home/sponge_campus/biao.liu/onescience-main/model-zoo/molsculptor/checkpoints/auto-encoder/ae_params_opt.pkl
+	alphabet_path: /work/home/sponge_campus/biao.liu/onescience-main/src/onescience/flax_models/MolSculptor/train/smiles_alphabet.pkl
+	n_replicate: 8
+	init_molecule_path: /work/home/sponge_campus/biao.liu/onescience-main/examples/molsculptor/cases/case_ar-gr/init_search_molecule.pkl
+	dsdp_script_path_1: /work/home/sponge_campus/biao.liu/onescience-main/examples/molsculptor/cases/case_ar-gr/dsdp_ar.sh
+	dsdp_script_path_2: /work/home/sponge_campus/biao.liu/onescience-main/examples/molsculptor/cases/case_ar-gr/dsdp_gr.sh
+	t_min: 75
+	t_max: 125
+	sub_smiles: NC(=O)c1cccc(S(=O)(=O)N2CCCc3ccccc32)c1
+Generating init offsprings...
+Starting search, total steps = 100
+=====================INPUT ARGS=====================
+INPUT ARGS:
+	config_path: /work/home/sponge_campus/biao.liu/onescience-main/model-zoo/molsculptor/checkpoints/diffusion-transformer/config_opt.pkl
+	params_path: /work/home/sponge_campus/biao.liu/onescience-main/model-zoo/molsculptor/checkpoints/diffusion-transformer/dit_params_opt.pkl
+	logger_path: /work/home/sponge_campus/biao.liu/onescience-main/examples/molsculptor/cases/case_ar-gr/test/Logs.txt
+	save_path: /work/home/sponge_campus/biao.liu/onescience-main/examples/molsculptor/cases/case_ar-gr/test
+	random_seed: 8888
+	np_random_seed: 8888
+	total_step: 100
+	device_batch_size: 128
+	num_latent_tokens: 16
+	dim_latent: 32
+	eq_steps: 10
+	callback_step: 10
+	beam_size: 4
+	sampling_method: beam
+	infer_config_path: None
+	vae_config_path: /work/home/sponge_campus/biao.liu/onescience-main/model-zoo/molsculptor/checkpoints/auto-encoder/config.pkl
+	vae_params_path: /work/home/sponge_campus/biao.liu/onescience-main/model-zoo/molsculptor/checkpoints/auto-encoder/ae_params_opt.pkl
+	alphabet_path: /work/home/sponge_campus/biao.liu/onescience-main/src/onescience/flax_models/MolSculptor/train/smiles_alphabet.pkl
+	n_replicate: 8
+	init_molecule_path: /work/home/sponge_campus/biao.liu/onescience-main/examples/molsculptor/cases/case_ar-gr/init_search_molecule.pkl
+	dsdp_script_path_1: /work/home/sponge_campus/biao.liu/onescience-main/examples/molsculptor/cases/case_ar-gr/dsdp_ar.sh
+	dsdp_script_path_2: /work/home/sponge_campus/biao.liu/onescience-main/examples/molsculptor/cases/case_ar-gr/dsdp_gr.sh
+	t_min: 75
+	t_max: 125
+	sub_smiles: NC(=O)c1cccc(S(=O)(=O)N2CCCc3ccccc32)c1
+Generating init offsprings...
+Starting search, total steps = 100
+Top 4 DSDP PROT-1 scores: [9.221 9.221 9.221 9.221]
+Top 4 DSDP PROT-2 scores: [8.996 8.996 8.996 8.996]
+Average sim score: 0.704
+=====================INPUT ARGS=====================
+INPUT ARGS:
+	config: /work/home/sponge_campus/biao.liu/onescience-main/examples/molsculptor/cases/case_ar-gr/config.ini
+	config_path: /work/home/sponge_campus/biao.liu/onescience-main/model-zoo/molsculptor/checkpoints/diffusion-transformer/config_opt.pkl
+	params_path: /work/home/sponge_campus/biao.liu/onescience-main/model-zoo/molsculptor/checkpoints/diffusion-transformer/dit_params_opt.pkl
+	logger_path: /work/home/sponge_campus/biao.liu/onescience-main/examples/molsculptor/cases/case_ar-gr/test/Logs.txt
+	save_path: /work/home/sponge_campus/biao.liu/onescience-main/test
+	random_seed: 8888
+	np_random_seed: 8888
+	total_step: 1000
+	device_batch_size: 128
+	num_latent_tokens: 16
+	dim_latent: 32
+	eq_steps: 10
+	callback_step: 10
+	beam_size: 4
+	sampling_method: beam
+	infer_config_path: None
+	vae_config_path: /work/home/sponge_campus/biao.liu/onescience-main/model-zoo/molsculptor/checkpoints/auto-encoder/config.pkl
+	vae_params_path: /work/home/sponge_campus/biao.liu/onescience-main/model-zoo/molsculptor/checkpoints/auto-encoder/ae_params_opt.pkl
+	alphabet_path: /work/home/sponge_campus/biao.liu/onescience-main/src/onescience/flax_models/MolSculptor/train/smiles_alphabet.pkl
+	n_replicate: 8
+	init_molecule_path: /work/home/sponge_campus/biao.liu/onescience-main/examples/molsculptor/cases/case_ar-gr/init_search_molecule.pkl
+	dsdp_script_path_1: /work/home/sponge_campus/biao.liu/onescience-main/examples/molsculptor/cases/case_ar-gr/dsdp_ar.sh
+	dsdp_script_path_2: /work/home/sponge_campus/biao.liu/onescience-main/examples/molsculptor/cases/case_ar-gr/dsdp_gr.sh
+	t_min: 75
+	t_max: 100
+	sub_smiles: 'NC(=O)c1cccc(S(=O)(=O)N2CCCc3ccccc32)c1'
+Generating init offsprings...
+Starting search, total steps = 1000
+=====================INPUT ARGS=====================
+INPUT ARGS:
+	config: /work/home/sponge_campus/biao.liu/onescience-main/examples/molsculptor/cases/case_ar-gr/config.ini
+	config_path: /work/home/sponge_campus/biao.liu/onescience-main/model-zoo/molsculptor/checkpoints/diffusion-transformer/config_opt.pkl
+	params_path: /work/home/sponge_campus/biao.liu/onescience-main/model-zoo/molsculptor/checkpoints/diffusion-transformer/dit_params_opt.pkl
+	logger_path: /work/home/sponge_campus/biao.liu/onescience-main/examples/molsculptor/cases/case_ar-gr/test/Logs.txt
+	save_path: /work/home/sponge_campus/biao.liu/onescience-main/examples/molsculptor/cases/case_ar-gr/test
+	random_seed: 8888
+	np_random_seed: 8888
+	total_step: 1000
+	device_batch_size: 128
+	num_latent_tokens: 16
+	dim_latent: 32
+	eq_steps: 10
+	callback_step: 10
+	beam_size: 4
+	sampling_method: beam
+	infer_config_path: None
+	vae_config_path: /work/home/sponge_campus/biao.liu/onescience-main/model-zoo/molsculptor/checkpoints/auto-encoder/config.pkl
+	vae_params_path: /work/home/sponge_campus/biao.liu/onescience-main/model-zoo/molsculptor/checkpoints/auto-encoder/ae_params_opt.pkl
+	alphabet_path: /work/home/sponge_campus/biao.liu/onescience-main/src/onescience/flax_models/MolSculptor/train/smiles_alphabet.pkl
+	n_replicate: 8
+	init_molecule_path: /work/home/sponge_campus/biao.liu/onescience-main/examples/molsculptor/cases/case_ar-gr/init_search_molecule.pkl
+	dsdp_script_path_1: /work/home/sponge_campus/biao.liu/onescience-main/examples/molsculptor/cases/case_ar-gr/dsdp_ar.sh
+	dsdp_script_path_2: /work/home/sponge_campus/biao.liu/onescience-main/examples/molsculptor/cases/case_ar-gr/dsdp_gr.sh
+	t_min: 75
+	t_max: 100
+	sub_smiles: 'NC(=O)c1cccc(S(=O)(=O)N2CCCc3ccccc32)c1'
+Generating init offsprings...
+Starting search, total steps = 1000
+=====================INPUT ARGS=====================
+INPUT ARGS:
+	config: /work/home/sponge_campus/biao.liu/onescience-main/examples/molsculptor/cases/case_ar-gr/config.ini
+	config_path: /work/home/sponge_campus/biao.liu/onescience-main/model-zoo/molsculptor/checkpoints/diffusion-transformer/config_opt.pkl
+	params_path: /work/home/sponge_campus/biao.liu/onescience-main/model-zoo/molsculptor/checkpoints/diffusion-transformer/dit_params_opt.pkl
+	logger_path: /work/home/sponge_campus/biao.liu/onescience-main/examples/molsculptor/cases/case_ar-gr/test/Logs.txt
+	save_path: /work/home/sponge_campus/biao.liu/onescience-main/examples/molsculptor/cases/case_ar-gr/test
+	random_seed: 8888
+	np_random_seed: 8888
+	total_step: 1000
+	device_batch_size: 128
+	num_latent_tokens: 16
+	dim_latent: 32
+	eq_steps: 10
+	callback_step: 10
+	beam_size: 4
+	sampling_method: beam
+	infer_config_path: None
+	vae_config_path: /work/home/sponge_campus/biao.liu/onescience-main/model-zoo/molsculptor/checkpoints/auto-encoder/config.pkl
+	vae_params_path: /work/home/sponge_campus/biao.liu/onescience-main/model-zoo/molsculptor/checkpoints/auto-encoder/ae_params_opt.pkl
+	alphabet_path: /work/home/sponge_campus/biao.liu/onescience-main/src/onescience/flax_models/MolSculptor/train/smiles_alphabet.pkl
+	n_replicate: 8
+	init_molecule_path: /work/home/sponge_campus/biao.liu/onescience-main/examples/molsculptor/cases/case_ar-gr/init_search_molecule.pkl
+	dsdp_script_path_1: /work/home/sponge_campus/biao.liu/onescience-main/examples/molsculptor/cases/case_ar-gr/dsdp_ar.sh
+	dsdp_script_path_2: /work/home/sponge_campus/biao.liu/onescience-main/examples/molsculptor/cases/case_ar-gr/dsdp_gr.sh
+	t_min: 75
+	t_max: 100
+	sub_smiles: NC(=O)c1cccc(S(=O)(=O)N2CCCc3ccccc32)c1
+Generating init offsprings...
+Starting search, total steps = 1000
+Top 4 DSDP PROT-1 scores: [9.221 9.221 9.221 9.221]
+Top 4 DSDP PROT-2 scores: [8.996 8.996 8.996 8.996]
+Average sim score: 0.687
+Top 4 DSDP PROT-1 scores: [9.221 9.221 9.221 9.221]
+Top 4 DSDP PROT-2 scores: [8.996 8.996 8.996 8.996]
+Average sim score: 0.632
+Top 4 DSDP PROT-1 scores: [9.221 9.221 9.221 9.221]
+Top 4 DSDP PROT-2 scores: [8.996 8.996 8.996 8.996]
+Average sim score: 0.588
+Top 4 DSDP PROT-1 scores: [-0.     9.221  9.221  9.221]
+Top 4 DSDP PROT-2 scores: [-0.     8.996  8.996  8.996]
+Average sim score: 0.569
+Top 4 DSDP PROT-1 scores: [-0.     9.221  9.221  9.221]
+Top 4 DSDP PROT-2 scores: [-0.     8.996  8.996  8.996]
+Average sim score: 0.557
+Top 4 DSDP PROT-1 scores: [-0.    -0.    -0.     9.221]
+Top 4 DSDP PROT-2 scores: [-0.    -0.    -0.     8.996]
+Average sim score: 0.542
+Top 4 DSDP PROT-1 scores: [-0.    -0.    -0.     9.221]
+Top 4 DSDP PROT-2 scores: [-0.    -0.    -0.     8.996]
+Average sim score: 0.535
+Top 4 DSDP PROT-1 scores: [-0.    -0.    -0.     9.221]
+Top 4 DSDP PROT-2 scores: [-0.    -0.    -0.     8.996]
+Average sim score: 0.532
+Top 4 DSDP PROT-1 scores: [-0.    -0.    -0.     9.221]
+Top 4 DSDP PROT-2 scores: [-0.    -0.    -0.     8.996]
+Average sim score: 0.526
+Top 4 DSDP PROT-1 scores: [-0.    -0.    -0.     9.221]
+Top 4 DSDP PROT-2 scores: [-0.    -0.    -0.     8.996]
+Average sim score: 0.528
+Top 4 DSDP PROT-1 scores: [-0.    -0.    -0.     9.221]
+Top 4 DSDP PROT-2 scores: [-0.    -0.    -0.     8.996]
+Average sim score: 0.520
+Top 4 DSDP PROT-1 scores: [-0.    -0.    -0.     9.221]
+Top 4 DSDP PROT-2 scores: [-0.    -0.    -0.     8.996]
+Average sim score: 0.517
+Top 4 DSDP PROT-1 scores: [-0.    -0.    -0.     9.221]
+Top 4 DSDP PROT-2 scores: [-0.    -0.    -0.     8.996]
+Average sim score: 0.516
+Top 4 DSDP PROT-1 scores: [-0.    -0.    -0.     9.221]
+Top 4 DSDP PROT-2 scores: [-0.    -0.    -0.     8.996]
+Average sim score: 0.512
+Top 4 DSDP PROT-1 scores: [-0.    -0.    -0.     9.221]
+Top 4 DSDP PROT-2 scores: [-0.    -0.    -0.     8.996]
+Average sim score: 0.512
+Top 4 DSDP PROT-1 scores: [-0.    -0.    -0.     9.221]
+Top 4 DSDP PROT-2 scores: [-0.    -0.    -0.     8.996]
+Average sim score: 0.508
+Top 4 DSDP PROT-1 scores: [-0.    -0.    -0.     9.221]
+Top 4 DSDP PROT-2 scores: [-0.    -0.    -0.     8.996]
+Average sim score: 0.505
+Top 4 DSDP PROT-1 scores: [-0.    -0.    -0.     9.221]
+Top 4 DSDP PROT-2 scores: [-0.    -0.    -0.     8.996]
+Average sim score: 0.504
+Top 4 DSDP PROT-1 scores: [-0.    -0.    -0.     9.221]
+Top 4 DSDP PROT-2 scores: [-0.    -0.    -0.     8.996]
+Average sim score: 0.504
+Top 4 DSDP PROT-1 scores: [-0.    -0.    -0.     9.221]
+Top 4 DSDP PROT-2 scores: [-0.    -0.    -0.     8.996]
+Average sim score: 0.500
+Top 4 DSDP PROT-1 scores: [-0.    -0.    -0.     9.221]
+Top 4 DSDP PROT-2 scores: [-0.    -0.    -0.     8.996]
+Average sim score: 0.496
+Top 4 DSDP PROT-1 scores: [-0.    -0.    -0.     9.221]
+Top 4 DSDP PROT-2 scores: [-0.    -0.    -0.     8.996]
+Average sim score: 0.498
+Top 4 DSDP PROT-1 scores: [-0.    -0.    -0.     9.221]
+Top 4 DSDP PROT-2 scores: [-0.    -0.    -0.     8.996]
+Average sim score: 0.496
+Top 4 DSDP PROT-1 scores: [-0.    -0.    -0.     9.221]
+Top 4 DSDP PROT-2 scores: [-0.    -0.    -0.     8.996]
+Average sim score: 0.494
+=====================INPUT ARGS=====================
+INPUT ARGS:
+	config: /work/home/sponge_campus/biao.liu/onescience-main/examples/molsculptor/cases/case_ar-gr/config.ini
+	config_path: /work/home/sponge_campus/biao.liu/onescience-main/model-zoo/molsculptor/checkpoints/diffusion-transformer/config_opt.pkl
+	params_path: /work/home/sponge_campus/biao.liu/onescience-main/model-zoo/molsculptor/checkpoints/diffusion-transformer/dit_params_opt.pkl
+	logger_path: /work/home/sponge_campus/biao.liu/onescience-main/examples/molsculptor/cases/case_ar-gr/test/Logs.txt
+	save_path: /work/home/sponge_campus/biao.liu/onescience-main/examples/molsculptor/cases/case_ar-gr/test
+	random_seed: 8888
+	np_random_seed: 8888
+	total_step: 1000
+	device_batch_size: 128
+	num_latent_tokens: 16
+	dim_latent: 32
+	eq_steps: 10
+	callback_step: 10
+	beam_size: 4
+	sampling_method: beam
+	infer_config_path: None
+	vae_config_path: /work/home/sponge_campus/biao.liu/onescience-main/model-zoo/molsculptor/checkpoints/auto-encoder/config.pkl
+	vae_params_path: /work/home/sponge_campus/biao.liu/onescience-main/model-zoo/molsculptor/checkpoints/auto-encoder/ae_params_opt.pkl
+	alphabet_path: /work/home/sponge_campus/biao.liu/onescience-main/src/onescience/flax_models/MolSculptor/train/smiles_alphabet.pkl
+	n_replicate: 8
+	init_molecule_path: /work/home/sponge_campus/biao.liu/onescience-main/examples/molsculptor/cases/case_ar-gr/init_search_molecule.pkl
+	dsdp_script_path_1: /work/home/sponge_campus/biao.liu/onescience-main/examples/molsculptor/cases/case_ar-gr/dsdp_ar.sh
+	dsdp_script_path_2: /work/home/sponge_campus/biao.liu/onescience-main/examples/molsculptor/cases/case_ar-gr/dsdp_gr.sh
+	t_min: 75
+	t_max: 100
+	sub_smiles: NC(=O)c1cccc(S(=O)(=O)N2CCCc3ccccc32)c1
+Generating init offsprings...
+Starting search, total steps = 1000
