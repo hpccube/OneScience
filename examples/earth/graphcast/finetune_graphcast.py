@@ -208,8 +208,6 @@ def main():
                 with torch.no_grad():
                     val_batch_time = time.perf_counter()
                     for j, data in enumerate(val_dataloader):
-                        if j == 1:
-                            break
                         invar = data[0].to(device=local_rank)
                         outvar = data[1].to(device=local_rank)
                         cos_zenith = data[2].to(device=local_rank)
@@ -268,7 +266,6 @@ def main():
                                                             best_loss_epoch,
                                                             cfg.checkpoint_dir)
                         is_save_ckp = True
-                        exit()
                         if world_rank == 0:
                             logger.info(f"Best loss at Minibatch: {i + 1}" + (", saving checkpoint" if is_save_ckp else ""))
 
