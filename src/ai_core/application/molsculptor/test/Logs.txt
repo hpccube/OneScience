@@ -1,0 +1,3006 @@
+=====================INPUT ARGS=====================
+INPUT ARGS:
+	config_path: /work/home/sponge_campus/softwares/onescience-main/model-zoo/molsculptor/checkpoints/diffusion-transformer/config_opt.pkl
+	params_path: /work/home/sponge_campus/softwares/onescience-main/model-zoo/molsculptor/checkpoints/diffusion-transformer/dit_params_opt.pkl
+	logger_path: /work/home/sponge_campus/softwares/onescience-main/examples/molsculptor/cases/case_ar-gr/test/Logs.txt
+	save_path: /work/home/sponge_campus/softwares/onescience-main/examples/molsculptor/cases/case_ar-gr/test
+	random_seed: 8888
+	np_random_seed: 8888
+	total_step: 30
+	device_batch_size: 128
+	num_latent_tokens: 16
+	dim_latent: 32
+	eq_steps: 10
+	callback_step: 10
+	beam_size: 4
+	sampling_method: beam
+	infer_config_path: None
+	vae_config_path: /work/home/sponge_campus/softwares/onescience-main/model-zoo/molsculptor/checkpoints/auto-encoder/config.pkl
+	vae_params_path: /work/home/sponge_campus/softwares/onescience-main/model-zoo/molsculptor/checkpoints/auto-encoder/ae_params_opt.pkl
+	alphabet_path: /work/home/sponge_campus/softwares/onescience-main/src/onescience/flax_models/MolSculptor/train/smiles_alphabet.pkl
+	n_replicate: 8
+	init_molecule_path: /work/home/sponge_campus/softwares/onescience-main/examples/molsculptor/cases/case_ar-gr/init_search_molecule.pkl
+	dsdp_script_path_1: /work/home/sponge_campus/softwares/onescience-main/examples/molsculptor/cases/case_ar-gr/dsdp_ar.sh
+	dsdp_script_path_2: /work/home/sponge_campus/softwares/onescience-main/examples/molsculptor/cases/case_ar-gr/dsdp_gr.sh
+	t_min: 75
+	t_max: 125
+	sub_smiles: NC(=O)c1cccc(S(=O)(=O)N2CCCc3ccccc32)c1
+=====================START INFERENCE=====================
+Generating init offsprings...
+Starting search, total steps = 30
+----------------------------------------------------------------
+Searching step 1, noise mutation steps 78
+=====================INPUT ARGS=====================
+INPUT ARGS:
+	config_path: /work/home/sponge_campus/softwares/onescience-main/model-zoo/molsculptor/checkpoints/diffusion-transformer/config_opt.pkl
+	params_path: /work/home/sponge_campus/softwares/onescience-main/model-zoo/molsculptor/checkpoints/diffusion-transformer/dit_params_opt.pkl
+	logger_path: /work/home/sponge_campus/softwares/onescience-main/examples/molsculptor/cases/case_ar-gr/test/Logs.txt
+	save_path: /work/home/sponge_campus/softwares/onescience-main/examples/molsculptor/cases/case_ar-gr/test
+	random_seed: 8888
+	np_random_seed: 8888
+	total_step: 30
+	device_batch_size: 128
+	num_latent_tokens: 16
+	dim_latent: 32
+	eq_steps: 10
+	callback_step: 10
+	beam_size: 4
+	sampling_method: beam
+	infer_config_path: None
+	vae_config_path: /work/home/sponge_campus/softwares/onescience-main/model-zoo/molsculptor/checkpoints/auto-encoder/config.pkl
+	vae_params_path: /work/home/sponge_campus/softwares/onescience-main/model-zoo/molsculptor/checkpoints/auto-encoder/ae_params_opt.pkl
+	alphabet_path: /work/home/sponge_campus/softwares/onescience-main/src/onescience/flax_models/MolSculptor/train/smiles_alphabet.pkl
+	n_replicate: 8
+	init_molecule_path: /work/home/sponge_campus/softwares/onescience-main/examples/molsculptor/cases/case_ar-gr/init_search_molecule.pkl
+	dsdp_script_path_1: /work/home/sponge_campus/softwares/onescience-main/examples/molsculptor/cases/case_ar-gr/dsdp_ar.sh
+	dsdp_script_path_2: /work/home/sponge_campus/softwares/onescience-main/examples/molsculptor/cases/case_ar-gr/dsdp_gr.sh
+	t_min: 75
+	t_max: 125
+	sub_smiles: NC(=O)c1cccc(S(=O)(=O)N2CCCc3ccccc32)c1
+=====================START INFERENCE=====================
+Generating init offsprings...
+Starting search, total steps = 30
+----------------------------------------------------------------
+Searching step 1, noise mutation steps 78
+=====================INPUT ARGS=====================
+INPUT ARGS:
+	config_path: /work/home/sponge_campus/softwares/onescience-main/model-zoo/molsculptor/checkpoints/diffusion-transformer/config_opt.pkl
+	params_path: /work/home/sponge_campus/softwares/onescience-main/model-zoo/molsculptor/checkpoints/diffusion-transformer/dit_params_opt.pkl
+	logger_path: /work/home/sponge_campus/softwares/onescience-main/examples/molsculptor/cases/case_ar-gr/test/Logs.txt
+	save_path: /work/home/sponge_campus/softwares/onescience-main/examples/molsculptor/cases/case_ar-gr/test
+	random_seed: 8888
+	np_random_seed: 8888
+	total_step: 30
+	device_batch_size: 128
+	num_latent_tokens: 16
+	dim_latent: 32
+	eq_steps: 10
+	callback_step: 10
+	beam_size: 4
+	sampling_method: beam
+	infer_config_path: None
+	vae_config_path: /work/home/sponge_campus/softwares/onescience-main/model-zoo/molsculptor/checkpoints/auto-encoder/config.pkl
+	vae_params_path: /work/home/sponge_campus/softwares/onescience-main/model-zoo/molsculptor/checkpoints/auto-encoder/ae_params_opt.pkl
+	alphabet_path: /work/home/sponge_campus/softwares/onescience-main/src/onescience/flax_models/MolSculptor/train/smiles_alphabet.pkl
+	n_replicate: 8
+	init_molecule_path: /work/home/sponge_campus/softwares/onescience-main/examples/molsculptor/cases/case_ar-gr/init_search_molecule.pkl
+	dsdp_script_path_1: /work/home/sponge_campus/softwares/onescience-main/examples/molsculptor/cases/case_ar-gr/dsdp_ar.sh
+	dsdp_script_path_2: /work/home/sponge_campus/softwares/onescience-main/examples/molsculptor/cases/case_ar-gr/dsdp_gr.sh
+	t_min: 75
+	t_max: 125
+	sub_smiles: NC(=O)c1cccc(S(=O)(=O)N2CCCc3ccccc32)c1
+=====================START INFERENCE=====================
+Generating init offsprings...
+Starting search, total steps = 30
+----------------------------------------------------------------
+Searching step 1, noise mutation steps 78
+=====================INPUT ARGS=====================
+INPUT ARGS:
+	config_path: /work/home/sponge_campus/softwares/onescience-main/examples/molsculptor/cases/case_ar-gr/../../../../model-zoo/molsculptor/checkpoints/diffusion-transformer/config_opt.pkl
+	params_path: /work/home/sponge_campus/softwares/onescience-main/examples/molsculptor/cases/case_ar-gr/../../../../model-zoo/molsculptor/checkpoints/diffusion-transformer/dit_params_opt.pkl
+	logger_path: /work/home/sponge_campus/softwares/onescience-main/examples/molsculptor/cases/case_ar-gr/test/Logs.txt
+	save_path: /work/home/sponge_campus/softwares/onescience-main/examples/molsculptor/cases/case_ar-gr/test
+	random_seed: 8888
+	np_random_seed: 8888
+	total_step: 30
+	device_batch_size: 128
+	num_latent_tokens: 16
+	dim_latent: 32
+	eq_steps: 10
+	callback_step: 10
+	beam_size: 4
+	sampling_method: beam
+	infer_config_path: None
+	vae_config_path: /work/home/sponge_campus/softwares/onescience-main/examples/molsculptor/cases/case_ar-gr/../../../../model-zoo/molsculptor/checkpoints/auto-encoder/config.pkl
+	vae_params_path: /work/home/sponge_campus/softwares/onescience-main/examples/molsculptor/cases/case_ar-gr/../../../../model-zoo/molsculptor/checkpoints/auto-encoder/ae_params_opt.pkl
+	alphabet_path: /work/home/sponge_campus/softwares/onescience-main/examples/molsculptor/cases/case_ar-gr/../../../../src/onescience/flax_models/MolSculptor/train/smiles_alphabet.pkl
+	n_replicate: 8
+	init_molecule_path: /work/home/sponge_campus/softwares/onescience-main/examples/molsculptor/cases/case_ar-gr/init_search_molecule.pkl
+	dsdp_script_path_1: /work/home/sponge_campus/softwares/onescience-main/examples/molsculptor/cases/case_ar-gr/dsdp_ar.sh
+	dsdp_script_path_2: /work/home/sponge_campus/softwares/onescience-main/examples/molsculptor/cases/case_ar-gr/dsdp_gr.sh
+	t_min: 75
+	t_max: 125
+	sub_smiles: NC(=O)c1cccc(S(=O)(=O)N2CCCc3ccccc32)c1
+=====================START INFERENCE=====================
+Generating init offsprings...
+Starting search, total steps = 30
+----------------------------------------------------------------
+Searching step 1, noise mutation steps 78
+=====================INPUT ARGS=====================
+INPUT ARGS:
+	config_path: /work/home/sponge_campus/softwares/onescience-main/examples/molsculptor/cases/case_ar-gr/../../../../model-zoo/molsculptor/checkpoints/diffusion-transformer/config_opt.pkl
+	params_path: /work/home/sponge_campus/softwares/onescience-main/examples/molsculptor/cases/case_ar-gr/../../../../model-zoo/molsculptor/checkpoints/diffusion-transformer/dit_params_opt.pkl
+	logger_path: /work/home/sponge_campus/softwares/onescience-main/examples/molsculptor/cases/case_ar-gr/test/Logs.txt
+	save_path: /work/home/sponge_campus/softwares/onescience-main/examples/molsculptor/cases/case_ar-gr/test
+	random_seed: 8888
+	np_random_seed: 8888
+	total_step: 30
+	device_batch_size: 128
+	num_latent_tokens: 16
+	dim_latent: 32
+	eq_steps: 10
+	callback_step: 10
+	beam_size: 4
+	sampling_method: beam
+	infer_config_path: None
+	vae_config_path: /work/home/sponge_campus/softwares/onescience-main/examples/molsculptor/cases/case_ar-gr/../../../../model-zoo/molsculptor/checkpoints/auto-encoder/config.pkl
+	vae_params_path: /work/home/sponge_campus/softwares/onescience-main/examples/molsculptor/cases/case_ar-gr/../../../../model-zoo/molsculptor/checkpoints/auto-encoder/ae_params_opt.pkl
+	alphabet_path: /work/home/sponge_campus/softwares/onescience-main/examples/molsculptor/cases/case_ar-gr/../../../../src/onescience/flax_models/MolSculptor/train/smiles_alphabet.pkl
+	n_replicate: 8
+	init_molecule_path: /work/home/sponge_campus/softwares/onescience-main/examples/molsculptor/cases/case_ar-gr/init_search_molecule.pkl
+	dsdp_script_path_1: /work/home/sponge_campus/softwares/onescience-main/examples/molsculptor/cases/case_ar-gr/dsdp_ar.sh
+	dsdp_script_path_2: /work/home/sponge_campus/softwares/onescience-main/examples/molsculptor/cases/case_ar-gr/dsdp_gr.sh
+	t_min: 75
+	t_max: 125
+	sub_smiles: NC(=O)c1cccc(S(=O)(=O)N2CCCc3ccccc32)c1
+=====================START INFERENCE=====================
+Generating init offsprings...
+Starting search, total steps = 30
+----------------------------------------------------------------
+Searching step 1, noise mutation steps 78
+=====================INPUT ARGS=====================
+INPUT ARGS:
+	config_path: /work/home/sponge_campus/softwares/onescience-main/examples/molsculptor/cases/case_ar-gr/../../../../model-zoo/molsculptor/checkpoints/diffusion-transformer/config_opt.pkl
+	params_path: /work/home/sponge_campus/softwares/onescience-main/examples/molsculptor/cases/case_ar-gr/../../../../model-zoo/molsculptor/checkpoints/diffusion-transformer/dit_params_opt.pkl
+	logger_path: /work/home/sponge_campus/softwares/onescience-main/examples/molsculptor/cases/case_ar-gr/test/Logs.txt
+	save_path: /work/home/sponge_campus/softwares/onescience-main/examples/molsculptor/cases/case_ar-gr/test
+	random_seed: 8888
+	np_random_seed: 8888
+	total_step: 30
+	device_batch_size: 128
+	num_latent_tokens: 16
+	dim_latent: 32
+	eq_steps: 10
+	callback_step: 10
+	beam_size: 4
+	sampling_method: beam
+	infer_config_path: None
+	vae_config_path: /work/home/sponge_campus/softwares/onescience-main/examples/molsculptor/cases/case_ar-gr/../../../../model-zoo/molsculptor/checkpoints/auto-encoder/config.pkl
+	vae_params_path: /work/home/sponge_campus/softwares/onescience-main/examples/molsculptor/cases/case_ar-gr/../../../../model-zoo/molsculptor/checkpoints/auto-encoder/ae_params_opt.pkl
+	alphabet_path: /work/home/sponge_campus/softwares/onescience-main/examples/molsculptor/cases/case_ar-gr/../../../../src/onescience/flax_models/MolSculptor/train/smiles_alphabet.pkl
+	n_replicate: 8
+	init_molecule_path: /work/home/sponge_campus/softwares/onescience-main/examples/molsculptor/cases/case_ar-gr/init_search_molecule.pkl
+	dsdp_script_path_1: /work/home/sponge_campus/softwares/onescience-main/examples/molsculptor/cases/case_ar-gr/dsdp_ar.sh
+	dsdp_script_path_2: /work/home/sponge_campus/softwares/onescience-main/examples/molsculptor/cases/case_ar-gr/dsdp_gr.sh
+	t_min: 75
+	t_max: 125
+	sub_smiles: NC(=O)c1cccc(S(=O)(=O)N2CCCc3ccccc32)c1
+=====================START INFERENCE=====================
+Generating init offsprings...
+Starting search, total steps = 30
+----------------------------------------------------------------
+Searching step 1, noise mutation steps 78
+=====================INPUT ARGS=====================
+INPUT ARGS:
+	config_path: /work/home/sponge_campus/softwares/onescience-main/examples/molsculptor/cases/case_ar-gr/../../../../model-zoo/molsculptor/checkpoints/diffusion-transformer/config_opt.pkl
+	params_path: /work/home/sponge_campus/softwares/onescience-main/examples/molsculptor/cases/case_ar-gr/../../../../model-zoo/molsculptor/checkpoints/diffusion-transformer/dit_params_opt.pkl
+	logger_path: /work/home/sponge_campus/softwares/onescience-main/examples/molsculptor/cases/case_ar-gr/test/Logs.txt
+	save_path: /work/home/sponge_campus/softwares/onescience-main/examples/molsculptor/cases/case_ar-gr/test
+	random_seed: 8888
+	np_random_seed: 8888
+	total_step: 30
+	device_batch_size: 128
+	num_latent_tokens: 16
+	dim_latent: 32
+	eq_steps: 10
+	callback_step: 10
+	beam_size: 4
+	sampling_method: beam
+	infer_config_path: None
+	vae_config_path: /work/home/sponge_campus/softwares/onescience-main/examples/molsculptor/cases/case_ar-gr/../../../../model-zoo/molsculptor/checkpoints/auto-encoder/config.pkl
+	vae_params_path: /work/home/sponge_campus/softwares/onescience-main/examples/molsculptor/cases/case_ar-gr/../../../../model-zoo/molsculptor/checkpoints/auto-encoder/ae_params_opt.pkl
+	alphabet_path: /work/home/sponge_campus/softwares/onescience-main/examples/molsculptor/cases/case_ar-gr/../../../../src/onescience/flax_models/MolSculptor/train/smiles_alphabet.pkl
+	n_replicate: 8
+	init_molecule_path: /work/home/sponge_campus/softwares/onescience-main/examples/molsculptor/cases/case_ar-gr/init_search_molecule.pkl
+	dsdp_script_path_1: /work/home/sponge_campus/softwares/onescience-main/examples/molsculptor/cases/case_ar-gr/dsdp_ar.sh
+	dsdp_script_path_2: /work/home/sponge_campus/softwares/onescience-main/examples/molsculptor/cases/case_ar-gr/dsdp_gr.sh
+	t_min: 75
+	t_max: 125
+	sub_smiles: NC(=O)c1cccc(S(=O)(=O)N2CCCc3ccccc32)c1
+=====================START INFERENCE=====================
+Generating init offsprings...
+Starting search, total steps = 30
+----------------------------------------------------------------
+Searching step 1, noise mutation steps 78
+=====================INPUT ARGS=====================
+INPUT ARGS:
+	config_path: /work/home/sponge_campus/softwares/onescience-main/model-zoo/molsculptor/checkpoints/diffusion-transformer/config_opt.pkl
+	params_path: /work/home/sponge_campus/softwares/onescience-main/model-zoo/molsculptor/checkpoints/diffusion-transformer/dit_params_opt.pkl
+	logger_path: /work/home/sponge_campus/softwares/onescience-main/examples/molsculptor/cases/case_ar-gr/test/Logs.txt
+	save_path: /work/home/sponge_campus/softwares/onescience-main/examples/molsculptor/cases/case_ar-gr/test
+	random_seed: 8888
+	np_random_seed: 8888
+	total_step: 30
+	device_batch_size: 128
+	num_latent_tokens: 16
+	dim_latent: 32
+	eq_steps: 10
+	callback_step: 10
+	beam_size: 4
+	sampling_method: beam
+	infer_config_path: None
+	vae_config_path: /work/home/sponge_campus/softwares/onescience-main/model-zoo/molsculptor/checkpoints/auto-encoder/config.pkl
+	vae_params_path: /work/home/sponge_campus/softwares/onescience-main/model-zoo/molsculptor/checkpoints/auto-encoder/ae_params_opt.pkl
+	alphabet_path: /work/home/sponge_campus/softwares/onescience-main/src/onescience/flax_models/MolSculptor/train/smiles_alphabet.pkl
+	n_replicate: 8
+	init_molecule_path: /work/home/sponge_campus/softwares/onescience-main/examples/molsculptor/cases/case_ar-gr/init_search_molecule.pkl
+	dsdp_script_path_1: /work/home/sponge_campus/softwares/onescience-main/examples/molsculptor/cases/case_ar-gr/dsdp_ar.sh
+	dsdp_script_path_2: /work/home/sponge_campus/softwares/onescience-main/examples/molsculptor/cases/case_ar-gr/dsdp_gr.sh
+	t_min: 75
+	t_max: 125
+	sub_smiles: NC(=O)c1cccc(S(=O)(=O)N2CCCc3ccccc32)c1
+=====================START INFERENCE=====================
+Generating init offsprings...
+Starting search, total steps = 30
+----------------------------------------------------------------
+Searching step 1, noise mutation steps 78
+Top 4 DSDP PROT-1 scores: [9.221 9.221 9.221 9.221]
+Top 4 DSDP PROT-2 scores: [8.996 8.996 8.996 8.996]
+Average sim score: 0.704
+----------------------------------------------------------------
+Searching step 2, noise mutation steps 110
+Top 4 DSDP PROT-1 scores: [9.221 9.221 9.221 9.221]
+Top 4 DSDP PROT-2 scores: [8.996 8.996 8.996 8.996]
+Average sim score: 0.665
+----------------------------------------------------------------
+Searching step 3, noise mutation steps 83
+=====================INPUT ARGS=====================
+INPUT ARGS:
+	config_path: /work/home/sponge_campus/softwares/onescience-main/model-zoo/molsculptor/checkpoints/diffusion-transformer/config_opt.pkl
+	params_path: /work/home/sponge_campus/softwares/onescience-main/model-zoo/molsculptor/checkpoints/diffusion-transformer/dit_params_opt.pkl
+	logger_path: /work/home/sponge_campus/softwares/onescience-main/examples/molsculptor/cases/case_ar-gr/test/Logs.txt
+	save_path: /work/home/sponge_campus/softwares/onescience-main/examples/molsculptor/cases/case_ar-gr/test
+	random_seed: 8888
+	np_random_seed: 8888
+	total_step: 30
+	device_batch_size: 128
+	num_latent_tokens: 16
+	dim_latent: 32
+	eq_steps: 10
+	callback_step: 10
+	beam_size: 4
+	sampling_method: beam
+	infer_config_path: None
+	vae_config_path: /work/home/sponge_campus/softwares/onescience-main/model-zoo/molsculptor/checkpoints/auto-encoder/config.pkl
+	vae_params_path: /work/home/sponge_campus/softwares/onescience-main/model-zoo/molsculptor/checkpoints/auto-encoder/ae_params_opt.pkl
+	alphabet_path: /work/home/sponge_campus/softwares/onescience-main/src/onescience/flax_models/MolSculptor/train/smiles_alphabet.pkl
+	n_replicate: 8
+	init_molecule_path: /work/home/sponge_campus/softwares/onescience-main/examples/molsculptor/cases/case_ar-gr/init_search_molecule.pkl
+	dsdp_script_path_1: /work/home/sponge_campus/softwares/onescience-main/examples/molsculptor/cases/case_ar-gr/dsdp_ar.sh
+	dsdp_script_path_2: /work/home/sponge_campus/softwares/onescience-main/examples/molsculptor/cases/case_ar-gr/dsdp_gr.sh
+	t_min: 75
+	t_max: 125
+	sub_smiles: NC(=O)c1cccc(S(=O)(=O)N2CCCc3ccccc32)c1
+=====================START INFERENCE=====================
+Generating init offsprings...
+Starting search, total steps = 30
+----------------------------------------------------------------
+Searching step 1, noise mutation steps 78
+=====================INPUT ARGS=====================
+INPUT ARGS:
+	config_path: /work/home/sponge_campus/softwares/onescience-main/model-zoo/molsculptor/checkpoints/diffusion-transformer/config_opt.pkl
+	params_path: /work/home/sponge_campus/softwares/onescience-main/model-zoo/molsculptor/checkpoints/diffusion-transformer/dit_params_opt.pkl
+	logger_path: /work/home/sponge_campus/softwares/onescience-main/examples/molsculptor/cases/case_ar-gr/test/Logs.txt
+	save_path: /work/home/sponge_campus/softwares/onescience-main/examples/molsculptor/cases/case_ar-gr/test
+	random_seed: 8888
+	np_random_seed: 8888
+	total_step: 30
+	device_batch_size: 128
+	num_latent_tokens: 16
+	dim_latent: 32
+	eq_steps: 10
+	callback_step: 10
+	beam_size: 4
+	sampling_method: beam
+	infer_config_path: None
+	vae_config_path: /work/home/sponge_campus/softwares/onescience-main/model-zoo/molsculptor/checkpoints/auto-encoder/config.pkl
+	vae_params_path: /work/home/sponge_campus/softwares/onescience-main/model-zoo/molsculptor/checkpoints/auto-encoder/ae_params_opt.pkl
+	alphabet_path: /work/home/sponge_campus/softwares/onescience-main/src/onescience/flax_models/MolSculptor/train/smiles_alphabet.pkl
+	n_replicate: 8
+	init_molecule_path: /work/home/sponge_campus/softwares/onescience-main/examples/molsculptor/cases/case_ar-gr/init_search_molecule.pkl
+	dsdp_script_path_1: /work/home/sponge_campus/softwares/onescience-main/examples/molsculptor/cases/case_ar-gr/dsdp_ar.sh
+	dsdp_script_path_2: /work/home/sponge_campus/softwares/onescience-main/examples/molsculptor/cases/case_ar-gr/dsdp_gr.sh
+	t_min: 75
+	t_max: 125
+	sub_smiles: NC(=O)c1cccc(S(=O)(=O)N2CCCc3ccccc32)c1
+=====================START INFERENCE=====================
+Generating init offsprings...
+Starting search, total steps = 30
+----------------------------------------------------------------
+Searching step 1, noise mutation steps 78
+=====================INPUT ARGS=====================
+INPUT ARGS:
+	config_path: /work/home/sponge_campus/softwares/onescience-main/model-zoo/molsculptor/checkpoints/diffusion-transformer/config_opt.pkl
+	params_path: /work/home/sponge_campus/softwares/onescience-main/model-zoo/molsculptor/checkpoints/diffusion-transformer/dit_params_opt.pkl
+	logger_path: /work/home/sponge_campus/softwares/onescience-main/examples/molsculptor/cases/case_ar-gr/test/Logs.txt
+	save_path: /work/home/sponge_campus/softwares/onescience-main/examples/molsculptor/cases/case_ar-gr/test
+	random_seed: 8888
+	np_random_seed: 8888
+	total_step: 30
+	device_batch_size: 128
+	num_latent_tokens: 16
+	dim_latent: 32
+	eq_steps: 10
+	callback_step: 10
+	beam_size: 4
+	sampling_method: beam
+	infer_config_path: None
+	vae_config_path: /work/home/sponge_campus/softwares/onescience-main/model-zoo/molsculptor/checkpoints/auto-encoder/config.pkl
+	vae_params_path: /work/home/sponge_campus/softwares/onescience-main/model-zoo/molsculptor/checkpoints/auto-encoder/ae_params_opt.pkl
+	alphabet_path: /work/home/sponge_campus/softwares/onescience-main/src/onescience/flax_models/MolSculptor/train/smiles_alphabet.pkl
+	n_replicate: 8
+	init_molecule_path: /work/home/sponge_campus/softwares/onescience-main/examples/molsculptor/cases/case_ar-gr/init_search_molecule.pkl
+	dsdp_script_path_1: /work/home/sponge_campus/softwares/onescience-main/examples/molsculptor/cases/case_ar-gr/dsdp_ar.sh
+	dsdp_script_path_2: /work/home/sponge_campus/softwares/onescience-main/examples/molsculptor/cases/case_ar-gr/dsdp_gr.sh
+	t_min: 75
+	t_max: 125
+	sub_smiles: NC(=O)c1cccc(S(=O)(=O)N2CCCc3ccccc32)c1
+=====================START INFERENCE=====================
+Generating init offsprings...
+Starting search, total steps = 30
+----------------------------------------------------------------
+Searching step 1, noise mutation steps 78
+=====================INPUT ARGS=====================
+INPUT ARGS:
+	config_path: /work/home/sponge_campus/softwares/onescience-main/model-zoo/molsculptor/checkpoints/diffusion-transformer/config_opt.pkl
+	params_path: /work/home/sponge_campus/softwares/onescience-main/model-zoo/molsculptor/checkpoints/diffusion-transformer/dit_params_opt.pkl
+	logger_path: /work/home/sponge_campus/softwares/onescience-main/examples/molsculptor/cases/case_ar-gr/test/Logs.txt
+	save_path: /work/home/sponge_campus/softwares/onescience-main/examples/molsculptor/cases/case_ar-gr/test
+	random_seed: 8888
+	np_random_seed: 8888
+	total_step: 30
+	device_batch_size: 128
+	num_latent_tokens: 16
+	dim_latent: 32
+	eq_steps: 10
+	callback_step: 10
+	beam_size: 4
+	sampling_method: beam
+	infer_config_path: None
+	vae_config_path: /work/home/sponge_campus/softwares/onescience-main/model-zoo/molsculptor/checkpoints/auto-encoder/config.pkl
+	vae_params_path: /work/home/sponge_campus/softwares/onescience-main/model-zoo/molsculptor/checkpoints/auto-encoder/ae_params_opt.pkl
+	alphabet_path: /work/home/sponge_campus/softwares/onescience-main/src/onescience/flax_models/MolSculptor/train/smiles_alphabet.pkl
+	n_replicate: 8
+	init_molecule_path: /work/home/sponge_campus/softwares/onescience-main/examples/molsculptor/cases/case_ar-gr/init_search_molecule.pkl
+	dsdp_script_path_1: /work/home/sponge_campus/softwares/onescience-main/examples/molsculptor/cases/case_ar-gr/dsdp_ar.sh
+	dsdp_script_path_2: /work/home/sponge_campus/softwares/onescience-main/examples/molsculptor/cases/case_ar-gr/dsdp_gr.sh
+	t_min: 75
+	t_max: 125
+	sub_smiles: NC(=O)c1cccc(S(=O)(=O)N2CCCc3ccccc32)c1
+=====================START INFERENCE=====================
+Generating init offsprings...
+Starting search, total steps = 30
+----------------------------------------------------------------
+Searching step 1, noise mutation steps 78
+=====================INPUT ARGS=====================
+INPUT ARGS:
+	config_path: /work/home/sponge_campus/softwares/onescience-main/model-zoo/molsculptor/checkpoints/diffusion-transformer/config_opt.pkl
+	params_path: /work/home/sponge_campus/softwares/onescience-main/model-zoo/molsculptor/checkpoints/diffusion-transformer/dit_params_opt.pkl
+	logger_path: /work/home/sponge_campus/softwares/onescience-main/examples/molsculptor/cases/case_ar-gr/test/Logs.txt
+	save_path: /work/home/sponge_campus/softwares/onescience-main/examples/molsculptor/cases/case_ar-gr/test
+	random_seed: 8888
+	np_random_seed: 8888
+	total_step: 30
+	device_batch_size: 128
+	num_latent_tokens: 16
+	dim_latent: 32
+	eq_steps: 10
+	callback_step: 10
+	beam_size: 4
+	sampling_method: beam
+	infer_config_path: None
+	vae_config_path: /work/home/sponge_campus/softwares/onescience-main/model-zoo/molsculptor/checkpoints/auto-encoder/config.pkl
+	vae_params_path: /work/home/sponge_campus/softwares/onescience-main/model-zoo/molsculptor/checkpoints/auto-encoder/ae_params_opt.pkl
+	alphabet_path: /work/home/sponge_campus/softwares/onescience-main/src/onescience/flax_models/MolSculptor/train/smiles_alphabet.pkl
+	n_replicate: 8
+	init_molecule_path: /work/home/sponge_campus/softwares/onescience-main/examples/molsculptor/cases/case_ar-gr/init_search_molecule.pkl
+	dsdp_script_path_1: /work/home/sponge_campus/softwares/onescience-main/examples/molsculptor/cases/case_ar-gr/dsdp_ar.sh
+	dsdp_script_path_2: /work/home/sponge_campus/softwares/onescience-main/examples/molsculptor/cases/case_ar-gr/dsdp_gr.sh
+	t_min: 75
+	t_max: 125
+	sub_smiles: NC(=O)c1cccc(S(=O)(=O)N2CCCc3ccccc32)c1
+=====================START INFERENCE=====================
+Generating init offsprings...
+Starting search, total steps = 30
+----------------------------------------------------------------
+Searching step 1, noise mutation steps 78
+=====================INPUT ARGS=====================
+INPUT ARGS:
+	config_path: /work/home/sponge_campus/softwares/onescience-main/model-zoo/molsculptor/checkpoints/diffusion-transformer/config_opt.pkl
+	params_path: /work/home/sponge_campus/softwares/onescience-main/model-zoo/molsculptor/checkpoints/diffusion-transformer/dit_params_opt.pkl
+	logger_path: /work/home/sponge_campus/softwares/onescience-main/examples/molsculptor/cases/case_ar-gr/test/Logs.txt
+	save_path: /work/home/sponge_campus/softwares/onescience-main/examples/molsculptor/cases/case_ar-gr/test
+	random_seed: 8888
+	np_random_seed: 8888
+	total_step: 30
+	device_batch_size: 128
+	num_latent_tokens: 16
+	dim_latent: 32
+	eq_steps: 10
+	callback_step: 10
+	beam_size: 4
+	sampling_method: beam
+	infer_config_path: None
+	vae_config_path: /work/home/sponge_campus/softwares/onescience-main/model-zoo/molsculptor/checkpoints/auto-encoder/config.pkl
+	vae_params_path: /work/home/sponge_campus/softwares/onescience-main/model-zoo/molsculptor/checkpoints/auto-encoder/ae_params_opt.pkl
+	alphabet_path: /work/home/sponge_campus/softwares/onescience-main/src/onescience/flax_models/MolSculptor/train/smiles_alphabet.pkl
+	n_replicate: 8
+	init_molecule_path: /work/home/sponge_campus/softwares/onescience-main/examples/molsculptor/cases/case_ar-gr/init_search_molecule.pkl
+	dsdp_script_path_1: /work/home/sponge_campus/softwares/onescience-main/examples/molsculptor/cases/case_ar-gr/dsdp_ar.sh
+	dsdp_script_path_2: /work/home/sponge_campus/softwares/onescience-main/examples/molsculptor/cases/case_ar-gr/dsdp_gr.sh
+	t_min: 75
+	t_max: 125
+	sub_smiles: NC(=O)c1cccc(S(=O)(=O)N2CCCc3ccccc32)c1
+=====================START INFERENCE=====================
+Generating init offsprings...
+Starting search, total steps = 30
+----------------------------------------------------------------
+Searching step 1, noise mutation steps 78
+=====================INPUT ARGS=====================
+INPUT ARGS:
+	config_path: /work/home/sponge_campus/softwares/onescience-main/model-zoo/molsculptor/checkpoints/diffusion-transformer/config_opt.pkl
+	params_path: /work/home/sponge_campus/softwares/onescience-main/model-zoo/molsculptor/checkpoints/diffusion-transformer/dit_params_opt.pkl
+	logger_path: /work/home/sponge_campus/softwares/onescience-main/examples/molsculptor/cases/case_ar-gr/test/Logs.txt
+	save_path: /work/home/sponge_campus/softwares/onescience-main/examples/molsculptor/cases/case_ar-gr/test
+	random_seed: 8888
+	np_random_seed: 8888
+	total_step: 30
+	device_batch_size: 128
+	num_latent_tokens: 16
+	dim_latent: 32
+	eq_steps: 10
+	callback_step: 10
+	beam_size: 4
+	sampling_method: beam
+	infer_config_path: None
+	vae_config_path: /work/home/sponge_campus/softwares/onescience-main/model-zoo/molsculptor/checkpoints/auto-encoder/config.pkl
+	vae_params_path: /work/home/sponge_campus/softwares/onescience-main/model-zoo/molsculptor/checkpoints/auto-encoder/ae_params_opt.pkl
+	alphabet_path: /work/home/sponge_campus/softwares/onescience-main/src/onescience/flax_models/MolSculptor/train/smiles_alphabet.pkl
+	n_replicate: 8
+	init_molecule_path: /work/home/sponge_campus/softwares/onescience-main/examples/molsculptor/cases/case_ar-gr/init_search_molecule.pkl
+	dsdp_script_path_1: /work/home/sponge_campus/softwares/onescience-main/examples/molsculptor/cases/case_ar-gr/dsdp_ar.sh
+	dsdp_script_path_2: /work/home/sponge_campus/softwares/onescience-main/examples/molsculptor/cases/case_ar-gr/dsdp_gr.sh
+	t_min: 75
+	t_max: 125
+	sub_smiles: NC(=O)c1cccc(S(=O)(=O)N2CCCc3ccccc32)c1
+=====================START INFERENCE=====================
+Generating init offsprings...
+Starting search, total steps = 30
+----------------------------------------------------------------
+Searching step 1, noise mutation steps 78
+=====================INPUT ARGS=====================
+INPUT ARGS:
+	config_path: /work/home/sponge_campus/softwares/onescience-main/model-zoo/molsculptor/checkpoints/diffusion-transformer/config_opt.pkl
+	params_path: /work/home/sponge_campus/softwares/onescience-main/model-zoo/molsculptor/checkpoints/diffusion-transformer/dit_params_opt.pkl
+	logger_path: /work/home/sponge_campus/softwares/onescience-main/examples/molsculptor/cases/case_ar-gr/test/Logs.txt
+	save_path: /work/home/sponge_campus/softwares/onescience-main/examples/molsculptor/cases/case_ar-gr/test
+	random_seed: 8888
+	np_random_seed: 8888
+	total_step: 1
+	device_batch_size: 128
+	num_latent_tokens: 16
+	dim_latent: 32
+	eq_steps: 10
+	callback_step: 10
+	beam_size: 4
+	sampling_method: beam
+	infer_config_path: None
+	vae_config_path: /work/home/sponge_campus/softwares/onescience-main/model-zoo/molsculptor/checkpoints/auto-encoder/config.pkl
+	vae_params_path: /work/home/sponge_campus/softwares/onescience-main/model-zoo/molsculptor/checkpoints/auto-encoder/ae_params_opt.pkl
+	alphabet_path: /work/home/sponge_campus/softwares/onescience-main/src/onescience/flax_models/MolSculptor/train/smiles_alphabet.pkl
+	n_replicate: 8
+	init_molecule_path: /work/home/sponge_campus/softwares/onescience-main/examples/molsculptor/cases/case_ar-gr/init_search_molecule.pkl
+	dsdp_script_path_1: /work/home/sponge_campus/softwares/onescience-main/examples/molsculptor/cases/case_ar-gr/dsdp_ar.sh
+	dsdp_script_path_2: /work/home/sponge_campus/softwares/onescience-main/examples/molsculptor/cases/case_ar-gr/dsdp_gr.sh
+	t_min: 75
+	t_max: 125
+	sub_smiles: NC(=O)c1cccc(S(=O)(=O)N2CCCc3ccccc32)c1
+=====================START INFERENCE=====================
+Generating init offsprings...
+Starting search, total steps = 1
+----------------------------------------------------------------
+Searching step 1, noise mutation steps 78
+=====================INPUT ARGS=====================
+INPUT ARGS:
+	config_path: /work/home/sponge_campus/softwares/onescience-main/model-zoo/molsculptor/checkpoints/diffusion-transformer/config_opt.pkl
+	params_path: /work/home/sponge_campus/softwares/onescience-main/model-zoo/molsculptor/checkpoints/diffusion-transformer/dit_params_opt.pkl
+	logger_path: /work/home/sponge_campus/softwares/onescience-main/examples/molsculptor/cases/case_ar-gr/test/Logs.txt
+	save_path: /work/home/sponge_campus/softwares/onescience-main/examples/molsculptor/cases/case_ar-gr/test
+	random_seed: 8888
+	np_random_seed: 8888
+	total_step: 1
+	device_batch_size: 128
+	num_latent_tokens: 16
+	dim_latent: 32
+	eq_steps: 10
+	callback_step: 10
+	beam_size: 4
+	sampling_method: beam
+	infer_config_path: None
+	vae_config_path: /work/home/sponge_campus/softwares/onescience-main/model-zoo/molsculptor/checkpoints/auto-encoder/config.pkl
+	vae_params_path: /work/home/sponge_campus/softwares/onescience-main/model-zoo/molsculptor/checkpoints/auto-encoder/ae_params_opt.pkl
+	alphabet_path: /work/home/sponge_campus/softwares/onescience-main/src/onescience/flax_models/MolSculptor/train/smiles_alphabet.pkl
+	n_replicate: 8
+	init_molecule_path: /work/home/sponge_campus/softwares/onescience-main/examples/molsculptor/cases/case_ar-gr/init_search_molecule.pkl
+	dsdp_script_path_1: /work/home/sponge_campus/softwares/onescience-main/examples/molsculptor/cases/case_ar-gr/dsdp_ar.sh
+	dsdp_script_path_2: /work/home/sponge_campus/softwares/onescience-main/examples/molsculptor/cases/case_ar-gr/dsdp_gr.sh
+	t_min: 75
+	t_max: 125
+	sub_smiles: NC(=O)c1cccc(S(=O)(=O)N2CCCc3ccccc32)c1
+=====================START INFERENCE=====================
+Generating init offsprings...
+Starting search, total steps = 1
+----------------------------------------------------------------
+Searching step 1, noise mutation steps 78
+=====================INPUT ARGS=====================
+INPUT ARGS:
+	config_path: /work/home/sponge_campus/softwares/onescience-main/model-zoo/molsculptor/checkpoints/diffusion-transformer/config_opt.pkl
+	params_path: /work/home/sponge_campus/softwares/onescience-main/model-zoo/molsculptor/checkpoints/diffusion-transformer/dit_params_opt.pkl
+	logger_path: /work/home/sponge_campus/softwares/onescience-main/examples/molsculptor/cases/case_ar-gr/test/Logs.txt
+	save_path: /work/home/sponge_campus/softwares/onescience-main/examples/molsculptor/cases/case_ar-gr/test
+	random_seed: 8888
+	np_random_seed: 8888
+	total_step: 1
+	device_batch_size: 128
+	num_latent_tokens: 16
+	dim_latent: 32
+	eq_steps: 10
+	callback_step: 10
+	beam_size: 4
+	sampling_method: beam
+	infer_config_path: None
+	vae_config_path: /work/home/sponge_campus/softwares/onescience-main/model-zoo/molsculptor/checkpoints/auto-encoder/config.pkl
+	vae_params_path: /work/home/sponge_campus/softwares/onescience-main/model-zoo/molsculptor/checkpoints/auto-encoder/ae_params_opt.pkl
+	alphabet_path: /work/home/sponge_campus/softwares/onescience-main/src/onescience/flax_models/MolSculptor/train/smiles_alphabet.pkl
+	n_replicate: 8
+	init_molecule_path: /work/home/sponge_campus/softwares/onescience-main/examples/molsculptor/cases/case_ar-gr/init_search_molecule.pkl
+	dsdp_script_path_1: /work/home/sponge_campus/softwares/onescience-main/examples/molsculptor/cases/case_ar-gr/dsdp_ar.sh
+	dsdp_script_path_2: /work/home/sponge_campus/softwares/onescience-main/examples/molsculptor/cases/case_ar-gr/dsdp_gr.sh
+	t_min: 75
+	t_max: 125
+	sub_smiles: NC(=O)c1cccc(S(=O)(=O)N2CCCc3ccccc32)c1
+=====================START INFERENCE=====================
+Generating init offsprings...
+Starting search, total steps = 1
+----------------------------------------------------------------
+Searching step 1, noise mutation steps 78
+=====================INPUT ARGS=====================
+INPUT ARGS:
+	config_path: /work/home/sponge_campus/softwares/onescience-main/model-zoo/molsculptor/checkpoints/diffusion-transformer/config_opt.pkl
+	params_path: /work/home/sponge_campus/softwares/onescience-main/model-zoo/molsculptor/checkpoints/diffusion-transformer/dit_params_opt.pkl
+	logger_path: /work/home/sponge_campus/softwares/onescience-main/examples/molsculptor/cases/case_ar-gr/test/Logs.txt
+	save_path: /work/home/sponge_campus/softwares/onescience-main/examples/molsculptor/cases/case_ar-gr/test
+	random_seed: 8888
+	np_random_seed: 8888
+	total_step: 1
+	device_batch_size: 128
+	num_latent_tokens: 16
+	dim_latent: 32
+	eq_steps: 10
+	callback_step: 10
+	beam_size: 4
+	sampling_method: beam
+	infer_config_path: None
+	vae_config_path: /work/home/sponge_campus/softwares/onescience-main/model-zoo/molsculptor/checkpoints/auto-encoder/config.pkl
+	vae_params_path: /work/home/sponge_campus/softwares/onescience-main/model-zoo/molsculptor/checkpoints/auto-encoder/ae_params_opt.pkl
+	alphabet_path: /work/home/sponge_campus/softwares/onescience-main/src/onescience/flax_models/MolSculptor/train/smiles_alphabet.pkl
+	n_replicate: 8
+	init_molecule_path: /work/home/sponge_campus/softwares/onescience-main/examples/molsculptor/cases/case_ar-gr/init_search_molecule.pkl
+	dsdp_script_path_1: /work/home/sponge_campus/softwares/onescience-main/examples/molsculptor/cases/case_ar-gr/dsdp_ar.sh
+	dsdp_script_path_2: /work/home/sponge_campus/softwares/onescience-main/examples/molsculptor/cases/case_ar-gr/dsdp_gr.sh
+	t_min: 75
+	t_max: 125
+	sub_smiles: NC(=O)c1cccc(S(=O)(=O)N2CCCc3ccccc32)c1
+=====================START INFERENCE=====================
+Generating init offsprings...
+Starting search, total steps = 1
+----------------------------------------------------------------
+Searching step 1, noise mutation steps 78
+=====================INPUT ARGS=====================
+INPUT ARGS:
+	config_path: /work/home/sponge_campus/softwares/onescience-main/model-zoo/molsculptor/checkpoints/diffusion-transformer/config_opt.pkl
+	params_path: /work/home/sponge_campus/softwares/onescience-main/model-zoo/molsculptor/checkpoints/diffusion-transformer/dit_params_opt.pkl
+	logger_path: /work/home/sponge_campus/softwares/onescience-main/examples/molsculptor/cases/case_ar-gr/test/Logs.txt
+	save_path: /work/home/sponge_campus/softwares/onescience-main/examples/molsculptor/cases/case_ar-gr/test
+	random_seed: 8888
+	np_random_seed: 8888
+	total_step: 1
+	device_batch_size: 128
+	num_latent_tokens: 16
+	dim_latent: 32
+	eq_steps: 10
+	callback_step: 10
+	beam_size: 4
+	sampling_method: beam
+	infer_config_path: None
+	vae_config_path: /work/home/sponge_campus/softwares/onescience-main/model-zoo/molsculptor/checkpoints/auto-encoder/config.pkl
+	vae_params_path: /work/home/sponge_campus/softwares/onescience-main/model-zoo/molsculptor/checkpoints/auto-encoder/ae_params_opt.pkl
+	alphabet_path: /work/home/sponge_campus/softwares/onescience-main/src/onescience/flax_models/MolSculptor/train/smiles_alphabet.pkl
+	n_replicate: 8
+	init_molecule_path: /work/home/sponge_campus/softwares/onescience-main/examples/molsculptor/cases/case_ar-gr/init_search_molecule.pkl
+	dsdp_script_path_1: /work/home/sponge_campus/softwares/onescience-main/examples/molsculptor/cases/case_ar-gr/dsdp_ar.sh
+	dsdp_script_path_2: /work/home/sponge_campus/softwares/onescience-main/examples/molsculptor/cases/case_ar-gr/dsdp_gr.sh
+	t_min: 75
+	t_max: 125
+	sub_smiles: NC(=O)c1cccc(S(=O)(=O)N2CCCc3ccccc32)c1
+=====================START INFERENCE=====================
+Generating init offsprings...
+Starting search, total steps = 1
+----------------------------------------------------------------
+Searching step 1, noise mutation steps 78
+=====================INPUT ARGS=====================
+INPUT ARGS:
+	config_path: /work/home/sponge_campus/softwares/onescience-main/model-zoo/molsculptor/checkpoints/diffusion-transformer/config_opt.pkl
+	params_path: /work/home/sponge_campus/softwares/onescience-main/model-zoo/molsculptor/checkpoints/diffusion-transformer/dit_params_opt.pkl
+	logger_path: /work/home/sponge_campus/softwares/onescience-main/examples/molsculptor/cases/case_ar-gr/test/Logs.txt
+	save_path: /work/home/sponge_campus/softwares/onescience-main/examples/molsculptor/cases/case_ar-gr/test
+	random_seed: 8888
+	np_random_seed: 8888
+	total_step: 1
+	device_batch_size: 128
+	num_latent_tokens: 16
+	dim_latent: 32
+	eq_steps: 10
+	callback_step: 10
+	beam_size: 4
+	sampling_method: beam
+	infer_config_path: None
+	vae_config_path: /work/home/sponge_campus/softwares/onescience-main/model-zoo/molsculptor/checkpoints/auto-encoder/config.pkl
+	vae_params_path: /work/home/sponge_campus/softwares/onescience-main/model-zoo/molsculptor/checkpoints/auto-encoder/ae_params_opt.pkl
+	alphabet_path: /work/home/sponge_campus/softwares/onescience-main/src/onescience/flax_models/MolSculptor/train/smiles_alphabet.pkl
+	n_replicate: 8
+	init_molecule_path: /work/home/sponge_campus/softwares/onescience-main/examples/molsculptor/cases/case_ar-gr/init_search_molecule.pkl
+	dsdp_script_path_1: /work/home/sponge_campus/softwares/onescience-main/examples/molsculptor/cases/case_ar-gr/dsdp_ar.sh
+	dsdp_script_path_2: /work/home/sponge_campus/softwares/onescience-main/examples/molsculptor/cases/case_ar-gr/dsdp_gr.sh
+	t_min: 75
+	t_max: 125
+	sub_smiles: NC(=O)c1cccc(S(=O)(=O)N2CCCc3ccccc32)c1
+=====================START INFERENCE=====================
+Generating init offsprings...
+=====================INPUT ARGS=====================
+INPUT ARGS:
+	config_path: /work/home/sponge_campus/softwares/onescience-main/model-zoo/molsculptor/checkpoints/diffusion-transformer/config_opt.pkl
+	params_path: /work/home/sponge_campus/softwares/onescience-main/model-zoo/molsculptor/checkpoints/diffusion-transformer/dit_params_opt.pkl
+	logger_path: /work/home/sponge_campus/softwares/onescience-main/examples/molsculptor/cases/case_ar-gr/test/Logs.txt
+	save_path: /work/home/sponge_campus/softwares/onescience-main/examples/molsculptor/cases/case_ar-gr/test
+	random_seed: 8888
+	np_random_seed: 8888
+	total_step: 1
+	device_batch_size: 128
+	num_latent_tokens: 16
+	dim_latent: 32
+	eq_steps: 10
+	callback_step: 10
+	beam_size: 4
+	sampling_method: beam
+	infer_config_path: None
+	vae_config_path: /work/home/sponge_campus/softwares/onescience-main/model-zoo/molsculptor/checkpoints/auto-encoder/config.pkl
+	vae_params_path: /work/home/sponge_campus/softwares/onescience-main/model-zoo/molsculptor/checkpoints/auto-encoder/ae_params_opt.pkl
+	alphabet_path: /work/home/sponge_campus/softwares/onescience-main/src/onescience/flax_models/MolSculptor/train/smiles_alphabet.pkl
+	n_replicate: 8
+	init_molecule_path: /work/home/sponge_campus/softwares/onescience-main/examples/molsculptor/cases/case_ar-gr/init_search_molecule.pkl
+	dsdp_script_path_1: /work/home/sponge_campus/softwares/onescience-main/examples/molsculptor/cases/case_ar-gr/dsdp_ar.sh
+	dsdp_script_path_2: /work/home/sponge_campus/softwares/onescience-main/examples/molsculptor/cases/case_ar-gr/dsdp_gr.sh
+	t_min: 75
+	t_max: 125
+	sub_smiles: NC(=O)c1cccc(S(=O)(=O)N2CCCc3ccccc32)c1
+=====================START INFERENCE=====================
+Generating init offsprings...
+Starting search, total steps = 1
+----------------------------------------------------------------
+Searching step 1, noise mutation steps 78
+Top 4 DSDP PROT-1 scores: [9.221 9.221 9.221 9.221]
+Top 4 DSDP PROT-2 scores: [8.996 8.996 8.996 8.996]
+Average sim score: 0.704
+----------------------------------------------------------------
+=====================INPUT ARGS=====================
+INPUT ARGS:
+	config: None
+	config_path: /work/share/ac8hkycjba/osmodels/molsculptor/checkpoints/diffusion-transformer/config_opt.pkl
+	params_path: /work/share/ac8hkycjba/osmodels/molsculptor/checkpoints/diffusion-transformer/dit_params_opt.pkl
+	logger_path: /work/home/onescience2025/kangdf/agent/molsculptor_agent/molsculptor/test/Logs.txt
+	save_path: /work/home/onescience2025/kangdf/agent/molsculptor_agent/molsculptor/test
+	random_seed: 8888
+	np_random_seed: 8888
+	total_step: 3
+	device_batch_size: 128
+	num_latent_tokens: 16
+	dim_latent: 32
+	eq_steps: 10
+	callback_step: 10
+	beam_size: 4
+	sampling_method: beam
+	infer_config_path: None
+	vae_config_path: /work/share/ac8hkycjba/osmodels/molsculptor/checkpoints/auto-encoder/config.pkl
+	vae_params_path: /work/share/ac8hkycjba/osmodels/molsculptor/checkpoints/auto-encoder/ae_params_opt.pkl
+	alphabet_path: /work/home/onescience2025/kangdf/agent/molsculptor_agent/molsculptor/smiles_alphabet.pkl
+	n_replicate: 8
+	init_molecule_path: /work/home/onescience2025/kangdf/agent/molsculptor_agent/molsculptor/init_search_molecule.pkl
+	dsdp_script_path_1: /work/home/onescience2025/kangdf/agent/molsculptor_agent/molsculptor/dsdp_ar.sh
+	dsdp_script_path_2: /work/home/onescience2025/kangdf/agent/molsculptor_agent/molsculptor/dsdp_gr.sh
+	t_min: 75
+	t_max: 100
+	sub_smiles: NC(=O)c1cccc(S(=O)(=O)N2CCCc3ccccc32)c1
+	pre_output_path: /work/home/onescience2025/kangdf/agent/molsculptor_agent/molsculptor/test/pre.pkl
+Generating init offsprings...
+Starting search, total steps = 3
+=====================INPUT ARGS=====================
+INPUT ARGS:
+	config: None
+	config_path: /work/share/ac8hkycjba/osmodels/molsculptor/checkpoints/diffusion-transformer/config_opt.pkl
+	params_path: /work/share/ac8hkycjba/osmodels/molsculptor/checkpoints/diffusion-transformer/dit_params_opt.pkl
+	logger_path: /work/home/onescience2025/kangdf/agent/molsculptor_agent/molsculptor/test/Logs.txt
+	save_path: /work/home/onescience2025/kangdf/agent/molsculptor_agent/molsculptor/test
+	random_seed: 8888
+	np_random_seed: 8888
+	total_step: 3
+	device_batch_size: 128
+	num_latent_tokens: 16
+	dim_latent: 32
+	eq_steps: 10
+	callback_step: 10
+	beam_size: 4
+	sampling_method: beam
+	infer_config_path: None
+	vae_config_path: /work/share/ac8hkycjba/osmodels/molsculptor/checkpoints/auto-encoder/config.pkl
+	vae_params_path: /work/share/ac8hkycjba/osmodels/molsculptor/checkpoints/auto-encoder/ae_params_opt.pkl
+	alphabet_path: /work/home/onescience2025/kangdf/agent/molsculptor_agent/molsculptor/smiles_alphabet.pkl
+	n_replicate: 8
+	init_molecule_path: /work/home/onescience2025/kangdf/agent/molsculptor_agent/molsculptor/init_search_molecule.pkl
+	dsdp_script_path_1: /work/home/onescience2025/kangdf/agent/molsculptor_agent/molsculptor/dsdp_ar.sh
+	dsdp_script_path_2: /work/home/onescience2025/kangdf/agent/molsculptor_agent/molsculptor/dsdp_gr.sh
+	t_min: 75
+	t_max: 100
+	sub_smiles: NC(=O)c1cccc(S(=O)(=O)N2CCCc3ccccc32)c1
+	pre_output_path: /work/home/onescience2025/kangdf/agent/molsculptor_agent/molsculptor/test/pre.pkl
+Generating init offsprings...
+Starting search, total steps = 3
+=====================INPUT ARGS=====================
+INPUT ARGS:
+	config: None
+	config_path: /work/share/ac8hkycjba/osmodels/molsculptor/checkpoints/diffusion-transformer/config_opt.pkl
+	params_path: /work/share/ac8hkycjba/osmodels/molsculptor/checkpoints/diffusion-transformer/dit_params_opt.pkl
+	logger_path: /work/home/onescience2025/kangdf/agent/molsculptor_agent/molsculptor/test/Logs.txt
+	save_path: /work/home/onescience2025/kangdf/agent/molsculptor_agent/molsculptor/test
+	random_seed: 8888
+	np_random_seed: 8888
+	total_step: 3
+	device_batch_size: 128
+	num_latent_tokens: 16
+	dim_latent: 32
+	eq_steps: 10
+	callback_step: 10
+	beam_size: 4
+	sampling_method: beam
+	infer_config_path: None
+	vae_config_path: /work/share/ac8hkycjba/osmodels/molsculptor/checkpoints/auto-encoder/config.pkl
+	vae_params_path: /work/share/ac8hkycjba/osmodels/molsculptor/checkpoints/auto-encoder/ae_params_opt.pkl
+	alphabet_path: /work/home/onescience2025/kangdf/agent/molsculptor_agent/molsculptor/smiles_alphabet.pkl
+	n_replicate: 8
+	init_molecule_path: /work/home/onescience2025/kangdf/agent/molsculptor_agent/molsculptor/init_search_molecule.pkl
+	dsdp_script_path_1: /work/home/onescience2025/kangdf/agent/molsculptor_agent/molsculptor/dsdp_ar.sh
+	dsdp_script_path_2: /work/home/onescience2025/kangdf/agent/molsculptor_agent/molsculptor/dsdp_gr.sh
+	t_min: 75
+	t_max: 100
+	sub_smiles: NC(=O)c1cccc(S(=O)(=O)N2CCCc3ccccc32)c1
+	pre_output_path: /work/home/onescience2025/kangdf/agent/molsculptor_agent/molsculptor/test/pre.pkl
+Generating init offsprings...
+Starting search, total steps = 3
+=====================INPUT ARGS=====================
+INPUT ARGS:
+	config: None
+	config_path: /work/share/ac8hkycjba/osmodels/molsculptor/checkpoints/diffusion-transformer/config_opt.pkl
+	params_path: /work/share/ac8hkycjba/osmodels/molsculptor/checkpoints/diffusion-transformer/dit_params_opt.pkl
+	logger_path: /work/home/onescience2025/kangdf/agent/molsculptor_agent/molsculptor/test/Logs.txt
+	save_path: /work/home/onescience2025/kangdf/agent/molsculptor_agent/molsculptor/test
+	random_seed: 8888
+	np_random_seed: 8888
+	total_step: 3
+	device_batch_size: 128
+	num_latent_tokens: 16
+	dim_latent: 32
+	eq_steps: 10
+	callback_step: 10
+	beam_size: 4
+	sampling_method: beam
+	infer_config_path: None
+	vae_config_path: /work/share/ac8hkycjba/osmodels/molsculptor/checkpoints/auto-encoder/config.pkl
+	vae_params_path: /work/share/ac8hkycjba/osmodels/molsculptor/checkpoints/auto-encoder/ae_params_opt.pkl
+	alphabet_path: /work/home/onescience2025/kangdf/agent/molsculptor_agent/molsculptor/smiles_alphabet.pkl
+	n_replicate: 8
+	init_molecule_path: /work/home/onescience2025/kangdf/agent/molsculptor_agent/molsculptor/init_search_molecule.pkl
+	dsdp_script_path_1: /work/home/onescience2025/kangdf/agent/molsculptor_agent/molsculptor/dsdp_ar.sh
+	dsdp_script_path_2: /work/home/onescience2025/kangdf/agent/molsculptor_agent/molsculptor/dsdp_gr.sh
+	t_min: 75
+	t_max: 100
+	sub_smiles: NC(=O)c1cccc(S(=O)(=O)N2CCCc3ccccc32)c1
+	pre_output_path: /work/home/onescience2025/kangdf/agent/molsculptor_agent/molsculptor/test/pre.pkl
+Generating init offsprings...
+Starting search, total steps = 3
+Top 4 DSDP PROT-1 scores: [9.221 9.221 9.221 9.221]
+Top 4 DSDP PROT-2 scores: [8.996 8.996 8.996 8.996]
+Average sim score: 0.687
+=====================INPUT ARGS=====================
+INPUT ARGS:
+	config: None
+	config_path: /work/share/ac8hkycjba/osmodels/molsculptor/checkpoints/diffusion-transformer/config_opt.pkl
+	params_path: /work/share/ac8hkycjba/osmodels/molsculptor/checkpoints/diffusion-transformer/dit_params_opt.pkl
+	logger_path: /work/home/onescience2025/kangdf/agent/molsculptor_agent/molsculptor/test/Logs.txt
+	save_path: /work/home/onescience2025/kangdf/agent/molsculptor_agent/molsculptor/test
+	random_seed: 8888
+	np_random_seed: 8888
+	total_step: 3
+	device_batch_size: 128
+	num_latent_tokens: 16
+	dim_latent: 32
+	eq_steps: 10
+	callback_step: 10
+	beam_size: 4
+	sampling_method: beam
+	infer_config_path: None
+	vae_config_path: /work/share/ac8hkycjba/osmodels/molsculptor/checkpoints/auto-encoder/config.pkl
+	vae_params_path: /work/share/ac8hkycjba/osmodels/molsculptor/checkpoints/auto-encoder/ae_params_opt.pkl
+	alphabet_path: /work/home/onescience2025/kangdf/agent/molsculptor_agent/molsculptor/smiles_alphabet.pkl
+	n_replicate: 8
+	init_molecule_path: /work/home/onescience2025/kangdf/agent/molsculptor_agent/molsculptor/init_search_molecule.pkl
+	dsdp_script_path_1: /work/home/onescience2025/kangdf/agent/molsculptor_agent/molsculptor/dsdp_ar.sh
+	dsdp_script_path_2: /work/home/onescience2025/kangdf/agent/molsculptor_agent/molsculptor/dsdp_gr.sh
+	t_min: 75
+	t_max: 100
+	sub_smiles: NC(=O)c1cccc(S(=O)(=O)N2CCCc3ccccc32)c1
+	temp_var_save_path: /work/home/onescience2025/kangdf/agent/molsculptor_agent/molsculptor/test/pre.pkl
+Generating init offsprings...
+=====================INPUT ARGS=====================
+INPUT ARGS:
+	config: None
+	config_path: /work/share/ac8hkycjba/osmodels/molsculptor/checkpoints/diffusion-transformer/config_opt.pkl
+	params_path: /work/share/ac8hkycjba/osmodels/molsculptor/checkpoints/diffusion-transformer/dit_params_opt.pkl
+	logger_path: /work/home/onescience2025/kangdf/agent/molsculptor_agent/molsculptor/test/Logs.txt
+	save_path: /work/home/onescience2025/kangdf/agent/molsculptor_agent/molsculptor/test
+	random_seed: 8888
+	np_random_seed: 8888
+	total_step: 3
+	device_batch_size: 128
+	num_latent_tokens: 16
+	dim_latent: 32
+	eq_steps: 10
+	callback_step: 10
+	beam_size: 4
+	sampling_method: beam
+	infer_config_path: None
+	vae_config_path: /work/share/ac8hkycjba/osmodels/molsculptor/checkpoints/auto-encoder/config.pkl
+	vae_params_path: /work/share/ac8hkycjba/osmodels/molsculptor/checkpoints/auto-encoder/ae_params_opt.pkl
+	alphabet_path: /work/home/onescience2025/kangdf/agent/molsculptor_agent/molsculptor/smiles_alphabet.pkl
+	n_replicate: 8
+	init_molecule_path: /work/home/onescience2025/kangdf/agent/molsculptor_agent/molsculptor/init_search_molecule.pkl
+	dsdp_script_path_1: /work/home/onescience2025/kangdf/agent/molsculptor_agent/molsculptor/dsdp_ar.sh
+	dsdp_script_path_2: /work/home/onescience2025/kangdf/agent/molsculptor_agent/molsculptor/dsdp_gr.sh
+	t_min: 75
+	t_max: 100
+	sub_smiles: NC(=O)c1cccc(S(=O)(=O)N2CCCc3ccccc32)c1
+	temp_var_save_path: /work/home/onescience2025/kangdf/agent/molsculptor_agent/molsculptor/test/pre.pkl
+Generating init offsprings...
+Starting search, total steps = 3
+Top 4 DSDP PROT-1 scores: [9.221 9.221 9.221 9.221]
+Top 4 DSDP PROT-2 scores: [8.996 8.996 8.996 8.996]
+Average sim score: 0.687
+=====================INPUT ARGS=====================
+INPUT ARGS:
+	config: None
+	config_path: /work/share/ac8hkycjba/osmodels/molsculptor/checkpoints/diffusion-transformer/config_opt.pkl
+	params_path: /work/share/ac8hkycjba/osmodels/molsculptor/checkpoints/diffusion-transformer/dit_params_opt.pkl
+	logger_path: /work/home/onescience2025/kangdf/agent/molsculptor_agent/molsculptor/test/Logs.txt
+	save_path: /work/home/onescience2025/kangdf/agent/molsculptor_agent/molsculptor/test
+	random_seed: 8888
+	np_random_seed: 8888
+	total_step: 3
+	device_batch_size: 128
+	num_latent_tokens: 16
+	dim_latent: 32
+	eq_steps: 10
+	callback_step: 10
+	beam_size: 4
+	sampling_method: beam
+	infer_config_path: None
+	vae_config_path: /work/share/ac8hkycjba/osmodels/molsculptor/checkpoints/auto-encoder/config.pkl
+	vae_params_path: /work/share/ac8hkycjba/osmodels/molsculptor/checkpoints/auto-encoder/ae_params_opt.pkl
+	alphabet_path: /work/home/onescience2025/kangdf/agent/molsculptor_agent/molsculptor/smiles_alphabet.pkl
+	n_replicate: 8
+	init_molecule_path: /work/home/onescience2025/kangdf/agent/molsculptor_agent/molsculptor/init_search_molecule.pkl
+	dsdp_script_path_1: /work/home/onescience2025/kangdf/agent/molsculptor_agent/molsculptor/dsdp_ar.sh
+	dsdp_script_path_2: /work/home/onescience2025/kangdf/agent/molsculptor_agent/molsculptor/dsdp_gr.sh
+	t_min: 75
+	t_max: 100
+	sub_smiles: NC(=O)c1cccc(S(=O)(=O)N2CCCc3ccccc32)c1
+	temp_var_save_path: /work/home/onescience2025/kangdf/agent/molsculptor_agent/molsculptor/test/pre.pkl
+Generating init offsprings...
+Starting search, total steps = 3
+Top 4 DSDP PROT-1 scores: [9.221 9.221 9.221 9.221]
+Top 4 DSDP PROT-2 scores: [8.996 8.996 8.996 8.996]
+Average sim score: 0.687
+=====================INPUT ARGS=====================
+INPUT ARGS:
+	config: None
+	config_path: /work/share/ac8hkycjba/osmodels/molsculptor/checkpoints/diffusion-transformer/config_opt.pkl
+	params_path: /work/share/ac8hkycjba/osmodels/molsculptor/checkpoints/diffusion-transformer/dit_params_opt.pkl
+	logger_path: /work/home/onescience2025/kangdf/agent/molsculptor_agent/molsculptor/test/Logs.txt
+	save_path: /work/home/onescience2025/kangdf/agent/molsculptor_agent/molsculptor/test
+	random_seed: 8888
+	np_random_seed: 8888
+	total_step: 3
+	device_batch_size: 128
+	num_latent_tokens: 16
+	dim_latent: 32
+	eq_steps: 10
+	callback_step: 10
+	beam_size: 4
+	sampling_method: beam
+	infer_config_path: None
+	vae_config_path: /work/share/ac8hkycjba/osmodels/molsculptor/checkpoints/auto-encoder/config.pkl
+	vae_params_path: /work/share/ac8hkycjba/osmodels/molsculptor/checkpoints/auto-encoder/ae_params_opt.pkl
+	alphabet_path: /work/home/onescience2025/kangdf/agent/molsculptor_agent/molsculptor/smiles_alphabet.pkl
+	n_replicate: 8
+	init_molecule_path: /work/home/onescience2025/kangdf/agent/molsculptor_agent/molsculptor/init_search_molecule.pkl
+	dsdp_script_path_1: /work/home/onescience2025/kangdf/agent/molsculptor_agent/molsculptor/dsdp_ar.sh
+	dsdp_script_path_2: /work/home/onescience2025/kangdf/agent/molsculptor_agent/molsculptor/dsdp_gr.sh
+	t_min: 75
+	t_max: 100
+	sub_smiles: NC(=O)c1cccc(S(=O)(=O)N2CCCc3ccccc32)c1
+	temp_var_save_path: /work/home/onescience2025/kangdf/agent/molsculptor_agent/molsculptor/test/pre.pkl
+Generating init offsprings...
+Starting search, total steps = 3
+Top 4 DSDP PROT-1 scores: [9.221 9.221 9.221 9.221]
+Top 4 DSDP PROT-2 scores: [8.996 8.996 8.996 8.996]
+Average sim score: 0.687
+=====================INPUT ARGS=====================
+INPUT ARGS:
+	config: None
+	config_path: /work/share/ac8hkycjba/osmodels/molsculptor/checkpoints/diffusion-transformer/config_opt.pkl
+	params_path: /work/share/ac8hkycjba/osmodels/molsculptor/checkpoints/diffusion-transformer/dit_params_opt.pkl
+	logger_path: /work/home/onescience2025/kangdf/agent/molsculptor_agent/molsculptor/test/Logs.txt
+	save_path: /work/home/onescience2025/kangdf/agent/molsculptor_agent/molsculptor/test
+	random_seed: 8888
+	np_random_seed: 8888
+	total_step: 3
+	device_batch_size: 128
+	num_latent_tokens: 16
+	dim_latent: 32
+	eq_steps: 10
+	callback_step: 10
+	beam_size: 4
+	sampling_method: beam
+	infer_config_path: None
+	vae_config_path: /work/share/ac8hkycjba/osmodels/molsculptor/checkpoints/auto-encoder/config.pkl
+	vae_params_path: /work/share/ac8hkycjba/osmodels/molsculptor/checkpoints/auto-encoder/ae_params_opt.pkl
+	alphabet_path: /work/home/onescience2025/kangdf/agent/molsculptor_agent/molsculptor/smiles_alphabet.pkl
+	n_replicate: 8
+	init_molecule_path: /work/home/onescience2025/kangdf/agent/molsculptor_agent/molsculptor/init_search_molecule.pkl
+	dsdp_script_path_1: /work/home/onescience2025/kangdf/agent/molsculptor_agent/molsculptor/dsdp_ar.sh
+	dsdp_script_path_2: /work/home/onescience2025/kangdf/agent/molsculptor_agent/molsculptor/dsdp_gr.sh
+	t_min: 75
+	t_max: 100
+	sub_smiles: NC(=O)c1cccc(S(=O)(=O)N2CCCc3ccccc32)c1
+	temp_var_save_path: /work/home/onescience2025/kangdf/agent/molsculptor_agent/molsculptor/test/pre.pkl
+Generating init offsprings...
+Starting search, total steps = 3
+Top 4 DSDP PROT-1 scores: [9.221 9.221 9.221 9.221]
+Top 4 DSDP PROT-2 scores: [8.996 8.996 8.996 8.996]
+Average sim score: 0.687
+=====================END INFERENCE=====================
+Inference done, time 0:09:46.761853, results saved to /work/home/onescience2025/kangdf/agent/molsculptor_agent/molsculptor/test
+=====================INPUT ARGS=====================
+INPUT ARGS:
+	config: None
+	config_path: /work/share/ac8hkycjba/osmodels/molsculptor/checkpoints/diffusion-transformer/config_opt.pkl
+	params_path: /work/share/ac8hkycjba/osmodels/molsculptor/checkpoints/diffusion-transformer/dit_params_opt.pkl
+	logger_path: /work/home/onescience2025/kangdf/agent/molsculptor_agent/molsculptor/test/Logs.txt
+	save_path: /work/home/onescience2025/kangdf/agent/molsculptor_agent/molsculptor/test
+	random_seed: 8888
+	np_random_seed: 8888
+	total_step: 3
+	device_batch_size: 128
+	num_latent_tokens: 16
+	dim_latent: 32
+	eq_steps: 10
+	callback_step: 10
+	beam_size: 4
+	sampling_method: beam
+	infer_config_path: None
+	vae_config_path: /work/share/ac8hkycjba/osmodels/molsculptor/checkpoints/auto-encoder/config.pkl
+	vae_params_path: /work/share/ac8hkycjba/osmodels/molsculptor/checkpoints/auto-encoder/ae_params_opt.pkl
+	alphabet_path: /work/home/onescience2025/kangdf/agent/molsculptor_agent/molsculptor/smiles_alphabet.pkl
+	n_replicate: 8
+	init_molecule_path: /work/home/onescience2025/kangdf/agent/molsculptor_agent/molsculptor/init_search_molecule.pkl
+	dsdp_script_path_1: /work/home/onescience2025/kangdf/agent/molsculptor_agent/molsculptor/dsdp_ar.sh
+	dsdp_script_path_2: /work/home/onescience2025/kangdf/agent/molsculptor_agent/molsculptor/dsdp_gr.sh
+	t_min: 75
+	t_max: 100
+	sub_smiles: NC(=O)c1cccc(S(=O)(=O)N2CCCc3ccccc32)c1
+	temp_var_save_path: /work/home/onescience2025/kangdf/agent/molsculptor_agent/molsculptor/test/temp_var.pkl
+Generating init offsprings...
+Starting search, total steps = 3
+Top 4 DSDP PROT-1 scores: [9.221 9.221 9.221 9.221]
+Top 4 DSDP PROT-2 scores: [8.996 8.996 8.996 8.996]
+Average sim score: 0.687
+=====================INPUT ARGS=====================
+INPUT ARGS:
+	config: None
+	config_path: /work/share/ac8hkycjba/osmodels/molsculptor/checkpoints/diffusion-transformer/config_opt.pkl
+	params_path: /work/share/ac8hkycjba/osmodels/molsculptor/checkpoints/diffusion-transformer/dit_params_opt.pkl
+	logger_path: /work/home/onescience2025/kangdf/agent/molsculptor_agent/molsculptor/test/Logs.txt
+	save_path: /work/home/onescience2025/kangdf/agent/molsculptor_agent/molsculptor/test
+	random_seed: 8888
+	np_random_seed: 8888
+	total_step: 2
+	device_batch_size: 128
+	num_latent_tokens: 16
+	dim_latent: 32
+	eq_steps: 10
+	callback_step: 10
+	beam_size: 4
+	sampling_method: beam
+	infer_config_path: None
+	vae_config_path: /work/share/ac8hkycjba/osmodels/molsculptor/checkpoints/auto-encoder/config.pkl
+	vae_params_path: /work/share/ac8hkycjba/osmodels/molsculptor/checkpoints/auto-encoder/ae_params_opt.pkl
+	alphabet_path: /work/home/onescience2025/kangdf/agent/molsculptor_agent/molsculptor/smiles_alphabet.pkl
+	n_replicate: 8
+	init_molecule_path: /work/home/onescience2025/kangdf/agent/molsculptor_agent/molsculptor/init_search_molecule.pkl
+	dsdp_script_path_1: /work/home/onescience2025/kangdf/agent/molsculptor_agent/molsculptor/dsdp_ar.sh
+	dsdp_script_path_2: /work/home/onescience2025/kangdf/agent/molsculptor_agent/molsculptor/dsdp_gr.sh
+	t_min: 75
+	t_max: 100
+	sub_smiles: NC(=O)c1cccc(S(=O)(=O)N2CCCc3ccccc32)c1
+	temp_var_save_path: /work/home/onescience2025/kangdf/agent/molsculptor_agent/molsculptor/test/temp_var.pkl
+=====================INPUT ARGS=====================
+INPUT ARGS:
+	config: None
+	config_path: /work/share/ac8hkycjba/osmodels/molsculptor/checkpoints/diffusion-transformer/config_opt.pkl
+	params_path: /work/share/ac8hkycjba/osmodels/molsculptor/checkpoints/diffusion-transformer/dit_params_opt.pkl
+	logger_path: /work/home/onescience2025/kangdf/agent/molsculptor_agent/molsculptor/test/Logs.txt
+	save_path: /work/home/onescience2025/kangdf/agent/molsculptor_agent/molsculptor/test
+	random_seed: 8888
+	np_random_seed: 8888
+	total_step: 2
+	device_batch_size: 128
+	num_latent_tokens: 16
+	dim_latent: 32
+	eq_steps: 10
+	callback_step: 10
+	beam_size: 4
+	sampling_method: beam
+	infer_config_path: None
+	vae_config_path: /work/share/ac8hkycjba/osmodels/molsculptor/checkpoints/auto-encoder/config.pkl
+	vae_params_path: /work/share/ac8hkycjba/osmodels/molsculptor/checkpoints/auto-encoder/ae_params_opt.pkl
+	alphabet_path: /work/home/onescience2025/kangdf/agent/molsculptor_agent/molsculptor/smiles_alphabet.pkl
+	n_replicate: 8
+	init_molecule_path: /work/home/onescience2025/kangdf/agent/molsculptor_agent/molsculptor/init_search_molecule.pkl
+	dsdp_script_path_1: /work/home/onescience2025/kangdf/agent/molsculptor_agent/molsculptor/dsdp_ar.sh
+	dsdp_script_path_2: /work/home/onescience2025/kangdf/agent/molsculptor_agent/molsculptor/dsdp_gr.sh
+	t_min: 75
+	t_max: 100
+	sub_smiles: NC(=O)c1cccc(S(=O)(=O)N2CCCc3ccccc32)c1
+	temp_var_save_path: /work/home/onescience2025/kangdf/agent/molsculptor_agent/molsculptor/test/temp_var.pkl
+Generating init offsprings...
+Starting search, total steps = 2
+=====================INPUT ARGS=====================
+INPUT ARGS:
+	config: None
+	config_path: /work/share/ac8hkycjba/osmodels/molsculptor/checkpoints/diffusion-transformer/config_opt.pkl
+	params_path: /work/share/ac8hkycjba/osmodels/molsculptor/checkpoints/diffusion-transformer/dit_params_opt.pkl
+	logger_path: /work/home/onescience2025/kangdf/agent/molsculptor_agent/molsculptor/test/Logs.txt
+	save_path: /work/home/onescience2025/kangdf/agent/molsculptor_agent/molsculptor/test
+	random_seed: 8888
+	np_random_seed: 8888
+	total_step: 2
+	device_batch_size: 128
+	num_latent_tokens: 16
+	dim_latent: 32
+	eq_steps: 10
+	callback_step: 10
+	beam_size: 4
+	sampling_method: beam
+	infer_config_path: None
+	vae_config_path: /work/share/ac8hkycjba/osmodels/molsculptor/checkpoints/auto-encoder/config.pkl
+	vae_params_path: /work/share/ac8hkycjba/osmodels/molsculptor/checkpoints/auto-encoder/ae_params_opt.pkl
+	alphabet_path: /work/home/onescience2025/kangdf/agent/molsculptor_agent/molsculptor/smiles_alphabet.pkl
+	n_replicate: 8
+	init_molecule_path: /work/home/onescience2025/kangdf/agent/molsculptor_agent/molsculptor/init_search_molecule.pkl
+	dsdp_script_path_1: /work/home/onescience2025/kangdf/agent/molsculptor_agent/molsculptor/dsdp_ar.sh
+	dsdp_script_path_2: /work/home/onescience2025/kangdf/agent/molsculptor_agent/molsculptor/dsdp_gr.sh
+	t_min: 75
+	t_max: 100
+	sub_smiles: NC(=O)c1cccc(S(=O)(=O)N2CCCc3ccccc32)c1
+	temp_var_save_path: /work/home/onescience2025/kangdf/agent/molsculptor_agent/molsculptor/test/temp_var.pkl
+=====================INPUT ARGS=====================
+INPUT ARGS:
+	config: None
+	config_path: /work/share/ac8hkycjba/osmodels/molsculptor/checkpoints/diffusion-transformer/config_opt.pkl
+	params_path: /work/share/ac8hkycjba/osmodels/molsculptor/checkpoints/diffusion-transformer/dit_params_opt.pkl
+	logger_path: /work/home/onescience2025/kangdf/agent/molsculptor_agent/molsculptor/test/Logs.txt
+	save_path: /work/home/onescience2025/kangdf/agent/molsculptor_agent/molsculptor/test
+	random_seed: 8888
+	np_random_seed: 8888
+	total_step: 2
+	device_batch_size: 128
+	num_latent_tokens: 16
+	dim_latent: 32
+	eq_steps: 10
+	callback_step: 10
+	beam_size: 4
+	sampling_method: beam
+	infer_config_path: None
+	vae_config_path: /work/share/ac8hkycjba/osmodels/molsculptor/checkpoints/auto-encoder/config.pkl
+	vae_params_path: /work/share/ac8hkycjba/osmodels/molsculptor/checkpoints/auto-encoder/ae_params_opt.pkl
+	alphabet_path: /work/home/onescience2025/kangdf/agent/molsculptor_agent/molsculptor/smiles_alphabet.pkl
+	n_replicate: 8
+	init_molecule_path: /work/home/onescience2025/kangdf/agent/molsculptor_agent/molsculptor/init_search_molecule.pkl
+	dsdp_script_path_1: /work/home/onescience2025/kangdf/agent/molsculptor_agent/molsculptor/dsdp_ar.sh
+	dsdp_script_path_2: /work/home/onescience2025/kangdf/agent/molsculptor_agent/molsculptor/dsdp_gr.sh
+	t_min: 75
+	t_max: 100
+	sub_smiles: NC(=O)c1cccc(S(=O)(=O)N2CCCc3ccccc32)c1
+	temp_var_save_path: /work/home/onescience2025/kangdf/agent/molsculptor_agent/molsculptor/test/temp_var.pkl
+=====================INPUT ARGS=====================
+INPUT ARGS:
+	config: None
+	config_path: /work/share/ac8hkycjba/osmodels/molsculptor/checkpoints/diffusion-transformer/config_opt.pkl
+	params_path: /work/share/ac8hkycjba/osmodels/molsculptor/checkpoints/diffusion-transformer/dit_params_opt.pkl
+	logger_path: /work/home/onescience2025/kangdf/agent/molsculptor_agent/molsculptor/test/Logs.txt
+	save_path: /work/home/onescience2025/kangdf/agent/molsculptor_agent/molsculptor/test
+	random_seed: 8888
+	np_random_seed: 8888
+	total_step: 2
+	device_batch_size: 128
+	num_latent_tokens: 16
+	dim_latent: 32
+	eq_steps: 10
+	callback_step: 10
+	beam_size: 4
+	sampling_method: beam
+	infer_config_path: None
+	vae_config_path: /work/share/ac8hkycjba/osmodels/molsculptor/checkpoints/auto-encoder/config.pkl
+	vae_params_path: /work/share/ac8hkycjba/osmodels/molsculptor/checkpoints/auto-encoder/ae_params_opt.pkl
+	alphabet_path: /work/home/onescience2025/kangdf/agent/molsculptor_agent/molsculptor/smiles_alphabet.pkl
+	n_replicate: 8
+	init_molecule_path: /work/home/onescience2025/kangdf/agent/molsculptor_agent/molsculptor/init_search_molecule.pkl
+	dsdp_script_path_1: /work/home/onescience2025/kangdf/agent/molsculptor_agent/molsculptor/dsdp_ar.sh
+	dsdp_script_path_2: /work/home/onescience2025/kangdf/agent/molsculptor_agent/molsculptor/dsdp_gr.sh
+	t_min: 75
+	t_max: 100
+	sub_smiles: NC(=O)c1cccc(S(=O)(=O)N2CCCc3ccccc32)c1
+	temp_var_save_path: /work/home/onescience2025/kangdf/agent/molsculptor_agent/molsculptor/test/temp_var.pkl
+=====================INPUT ARGS=====================
+INPUT ARGS:
+	config: None
+	config_path: /work/share/ac8hkycjba/osmodels/molsculptor/checkpoints/diffusion-transformer/config_opt.pkl
+	params_path: /work/share/ac8hkycjba/osmodels/molsculptor/checkpoints/diffusion-transformer/dit_params_opt.pkl
+	logger_path: /work/home/onescience2025/kangdf/onescience/src/ai_core/application/molsculptor/test/Logs.txt
+	save_path: /work/home/onescience2025/kangdf/onescience/src/ai_core/application/molsculptor/test
+	random_seed: 8888
+	np_random_seed: 8888
+	total_step: 2
+	device_batch_size: 128
+	num_latent_tokens: 16
+	dim_latent: 32
+	eq_steps: 10
+	callback_step: 10
+	beam_size: 4
+	sampling_method: beam
+	infer_config_path: None
+	vae_config_path: /work/share/ac8hkycjba/osmodels/molsculptor/checkpoints/auto-encoder/config.pkl
+	vae_params_path: /work/share/ac8hkycjba/osmodels/molsculptor/checkpoints/auto-encoder/ae_params_opt.pkl
+	alphabet_path: /work/home/onescience2025/kangdf/onescience/src/ai_core/application/molsculptor/smiles_alphabet.pkl
+	n_replicate: 8
+	init_molecule_path: /work/home/onescience2025/kangdf/onescience/src/ai_core/application/molsculptor/init_search_molecule.pkl
+	dsdp_script_path_1: /work/home/onescience2025/kangdf/onescience/src/ai_core/application/molsculptor/dsdp_ar.sh
+	dsdp_script_path_2: /work/home/onescience2025/kangdf/onescience/src/ai_core/application/molsculptor/dsdp_gr.sh
+	t_min: 75
+	t_max: 100
+	sub_smiles: NC(=O)c1cccc(S(=O)(=O)N2CCCc3ccccc32)c1
+	temp_var_save_path: /work/home/onescience2025/kangdf/onescience/src/ai_core/application/molsculptor/test/temp_var.pkl
+=====================INPUT ARGS=====================
+INPUT ARGS:
+	config: None
+	config_path: /work/share/ac8hkycjba/osmodels/molsculptor/checkpoints/diffusion-transformer/config_opt.pkl
+	params_path: /work/share/ac8hkycjba/osmodels/molsculptor/checkpoints/diffusion-transformer/dit_params_opt.pkl
+	logger_path: /work/home/onescience2025/kangdf/onescience/src/ai_core/application/molsculptor/test/Logs.txt
+	save_path: /work/home/onescience2025/kangdf/onescience/src/ai_core/application/molsculptor/test
+	random_seed: 8888
+	np_random_seed: 8888
+	total_step: 2
+	device_batch_size: 128
+	num_latent_tokens: 16
+	dim_latent: 32
+	eq_steps: 10
+	callback_step: 10
+	beam_size: 4
+	sampling_method: beam
+	infer_config_path: None
+	vae_config_path: /work/share/ac8hkycjba/osmodels/molsculptor/checkpoints/auto-encoder/config.pkl
+	vae_params_path: /work/share/ac8hkycjba/osmodels/molsculptor/checkpoints/auto-encoder/ae_params_opt.pkl
+	alphabet_path: /work/home/onescience2025/kangdf/onescience/src/ai_core/application/molsculptor/smiles_alphabet.pkl
+	n_replicate: 8
+	init_molecule_path: /work/home/onescience2025/kangdf/onescience/src/ai_core/application/molsculptor/init_search_molecule.pkl
+	dsdp_script_path_1: /work/home/onescience2025/kangdf/onescience/src/ai_core/application/molsculptor/dsdp_ar.sh
+	dsdp_script_path_2: /work/home/onescience2025/kangdf/onescience/src/ai_core/application/molsculptor/dsdp_gr.sh
+	t_min: 75
+	t_max: 100
+	sub_smiles: NC(=O)c1cccc(S(=O)(=O)N2CCCc3ccccc32)c1
+	temp_var_save_path: /work/home/onescience2025/kangdf/onescience/src/ai_core/application/molsculptor/test/temp_var.pkl
+=====================INPUT ARGS=====================
+INPUT ARGS:
+	config: None
+	config_path: /work/share/ac8hkycjba/osmodels/molsculptor/checkpoints/diffusion-transformer/config_opt.pkl
+	params_path: /work/share/ac8hkycjba/osmodels/molsculptor/checkpoints/diffusion-transformer/dit_params_opt.pkl
+	logger_path: /work/home/onescience2025/kangdf/onescience/src/ai_core/application/molsculptor/test/Logs.txt
+	save_path: /work/home/onescience2025/kangdf/onescience/src/ai_core/application/molsculptor/test
+	random_seed: 8888
+	np_random_seed: 8888
+	total_step: 2
+	device_batch_size: 128
+	num_latent_tokens: 16
+	dim_latent: 32
+	eq_steps: 10
+	callback_step: 10
+	beam_size: 4
+	sampling_method: beam
+	infer_config_path: None
+	vae_config_path: /work/share/ac8hkycjba/osmodels/molsculptor/checkpoints/auto-encoder/config.pkl
+	vae_params_path: /work/share/ac8hkycjba/osmodels/molsculptor/checkpoints/auto-encoder/ae_params_opt.pkl
+	alphabet_path: /work/home/onescience2025/kangdf/onescience/src/ai_core/application/molsculptor/smiles_alphabet.pkl
+	n_replicate: 8
+	init_molecule_path: /work/home/onescience2025/kangdf/onescience/src/ai_core/application/molsculptor/init_search_molecule.pkl
+	dsdp_script_path_1: /work/home/onescience2025/kangdf/onescience/src/ai_core/application/molsculptor/dsdp_ar.sh
+	dsdp_script_path_2: /work/home/onescience2025/kangdf/onescience/src/ai_core/application/molsculptor/dsdp_gr.sh
+	t_min: 75
+	t_max: 100
+	sub_smiles: NC(=O)c1cccc(S(=O)(=O)N2CCCc3ccccc32)c1
+	temp_var_save_path: /work/home/onescience2025/kangdf/onescience/src/ai_core/application/molsculptor/test/temp_var.pkl
+=====================INPUT ARGS=====================
+INPUT ARGS:
+	config: None
+	config_path: /work/share/ac8hkycjba/osmodels/molsculptor/checkpoints/diffusion-transformer/config_opt.pkl
+	params_path: /work/share/ac8hkycjba/osmodels/molsculptor/checkpoints/diffusion-transformer/dit_params_opt.pkl
+	logger_path: /work/home/onescience2025/kangdf/onescience/src/ai_core/application/molsculptor/test/Logs.txt
+	save_path: /work/home/onescience2025/kangdf/onescience/src/ai_core/application/molsculptor/test
+	random_seed: 8888
+	np_random_seed: 8888
+	total_step: 2
+	device_batch_size: 128
+	num_latent_tokens: 16
+	dim_latent: 32
+	eq_steps: 10
+	callback_step: 10
+	beam_size: 4
+	sampling_method: beam
+	infer_config_path: None
+	vae_config_path: /work/share/ac8hkycjba/osmodels/molsculptor/checkpoints/auto-encoder/config.pkl
+	vae_params_path: /work/share/ac8hkycjba/osmodels/molsculptor/checkpoints/auto-encoder/ae_params_opt.pkl
+	alphabet_path: /work/home/onescience2025/kangdf/onescience/src/ai_core/application/molsculptor/smiles_alphabet.pkl
+	n_replicate: 8
+	init_molecule_path: /work/home/onescience2025/kangdf/onescience/src/ai_core/application/molsculptor/init_search_molecule.pkl
+	dsdp_script_path_1: /work/home/onescience2025/kangdf/onescience/src/ai_core/application/molsculptor/dsdp_ar.sh
+	dsdp_script_path_2: /work/home/onescience2025/kangdf/onescience/src/ai_core/application/molsculptor/dsdp_gr.sh
+	t_min: 75
+	t_max: 100
+	sub_smiles: NC(=O)c1cccc(S(=O)(=O)N2CCCc3ccccc32)c1
+	temp_var_save_path: /work/home/onescience2025/kangdf/onescience/src/ai_core/application/molsculptor/test/temp_var.pkl
+=====================INPUT ARGS=====================
+INPUT ARGS:
+	config: None
+	config_path: /work/share/ac8hkycjba/osmodels/molsculptor/checkpoints/diffusion-transformer/config_opt.pkl
+	params_path: /work/share/ac8hkycjba/osmodels/molsculptor/checkpoints/diffusion-transformer/dit_params_opt.pkl
+	logger_path: /work/home/onescience2025/kangdf/onescience/src/ai_core/application/molsculptor/test/Logs.txt
+	save_path: /work/home/onescience2025/kangdf/onescience/src/ai_core/application/molsculptor/test
+	random_seed: 8888
+	np_random_seed: 8888
+	total_step: 2
+	device_batch_size: 128
+	num_latent_tokens: 16
+	dim_latent: 32
+	eq_steps: 10
+	callback_step: 10
+	beam_size: 4
+	sampling_method: beam
+	infer_config_path: None
+	vae_config_path: /work/share/ac8hkycjba/osmodels/molsculptor/checkpoints/auto-encoder/config.pkl
+	vae_params_path: /work/share/ac8hkycjba/osmodels/molsculptor/checkpoints/auto-encoder/ae_params_opt.pkl
+	alphabet_path: /work/home/onescience2025/kangdf/onescience/src/ai_core/application/molsculptor/smiles_alphabet.pkl
+	n_replicate: 8
+	init_molecule_path: /work/home/onescience2025/kangdf/onescience/src/ai_core/application/molsculptor/init_search_molecule.pkl
+	dsdp_script_path_1: /work/home/onescience2025/kangdf/onescience/src/ai_core/application/molsculptor/dsdp_ar.sh
+	dsdp_script_path_2: /work/home/onescience2025/kangdf/onescience/src/ai_core/application/molsculptor/dsdp_gr.sh
+	t_min: 75
+	t_max: 100
+	sub_smiles: NC(=O)c1cccc(S(=O)(=O)N2CCCc3ccccc32)c1
+	temp_var_save_path: /work/home/onescience2025/kangdf/onescience/src/ai_core/application/molsculptor/test/temp_var.pkl
+=====================INPUT ARGS=====================
+INPUT ARGS:
+	config: None
+	config_path: /work/share/ac8hkycjba/osmodels/molsculptor/checkpoints/diffusion-transformer/config_opt.pkl
+	params_path: /work/share/ac8hkycjba/osmodels/molsculptor/checkpoints/diffusion-transformer/dit_params_opt.pkl
+	logger_path: /work/home/onescience2025/kangdf/onescience/src/ai_core/application/molsculptor/test/Logs.txt
+	save_path: /work/home/onescience2025/kangdf/onescience/src/ai_core/application/molsculptor/test
+	random_seed: 8888
+	np_random_seed: 8888
+	total_step: 2
+	device_batch_size: 128
+	num_latent_tokens: 16
+	dim_latent: 32
+	eq_steps: 10
+	callback_step: 10
+	beam_size: 4
+	sampling_method: beam
+	infer_config_path: None
+	vae_config_path: /work/share/ac8hkycjba/osmodels/molsculptor/checkpoints/auto-encoder/config.pkl
+	vae_params_path: /work/share/ac8hkycjba/osmodels/molsculptor/checkpoints/auto-encoder/ae_params_opt.pkl
+	alphabet_path: /work/home/onescience2025/kangdf/onescience/src/ai_core/application/molsculptor/smiles_alphabet.pkl
+	n_replicate: 8
+	init_molecule_path: /work/home/onescience2025/kangdf/onescience/src/ai_core/application/molsculptor/init_search_molecule.pkl
+	dsdp_script_path_1: /work/home/onescience2025/kangdf/onescience/src/ai_core/application/molsculptor/dsdp_ar.sh
+	dsdp_script_path_2: /work/home/onescience2025/kangdf/onescience/src/ai_core/application/molsculptor/dsdp_gr.sh
+	t_min: 75
+	t_max: 100
+	sub_smiles: NC(=O)c1cccc(S(=O)(=O)N2CCCc3ccccc32)c1
+	temp_var_save_path: /work/home/onescience2025/kangdf/onescience/src/ai_core/application/molsculptor/test/temp_var.pkl
+Generating init offsprings...
+Error saving results: 'NoneType' object is not subscriptable
+=====================INPUT ARGS=====================
+=====================INPUT ARGS=====================
+INPUT ARGS:
+INPUT ARGS:
+	config: None
+	config: None
+	config_path: /work/share/ac8hkycjba/osmodels/molsculptor/checkpoints/diffusion-transformer/config_opt.pkl
+	config_path: /work/share/ac8hkycjba/osmodels/molsculptor/checkpoints/diffusion-transformer/config_opt.pkl
+	params_path: /work/share/ac8hkycjba/osmodels/molsculptor/checkpoints/diffusion-transformer/dit_params_opt.pkl
+	params_path: /work/share/ac8hkycjba/osmodels/molsculptor/checkpoints/diffusion-transformer/dit_params_opt.pkl
+	logger_path: /work/home/onescience2025/kangdf/onescience/src/ai_core/application/molsculptor/test/Logs.txt
+	logger_path: /work/home/onescience2025/kangdf/onescience/src/ai_core/application/molsculptor/test/Logs.txt
+	save_path: /work/home/onescience2025/kangdf/onescience/src/ai_core/application/molsculptor/test
+	save_path: /work/home/onescience2025/kangdf/onescience/src/ai_core/application/molsculptor/test
+	random_seed: 8888
+	random_seed: 8888
+	np_random_seed: 8888
+	np_random_seed: 8888
+	total_step: 2
+	total_step: 2
+	device_batch_size: 128
+	device_batch_size: 128
+	num_latent_tokens: 16
+	num_latent_tokens: 16
+	dim_latent: 32
+	dim_latent: 32
+	eq_steps: 10
+	eq_steps: 10
+	callback_step: 10
+	callback_step: 10
+	beam_size: 4
+	beam_size: 4
+	sampling_method: beam
+	sampling_method: beam
+	infer_config_path: None
+	infer_config_path: None
+	vae_config_path: /work/share/ac8hkycjba/osmodels/molsculptor/checkpoints/auto-encoder/config.pkl
+	vae_config_path: /work/share/ac8hkycjba/osmodels/molsculptor/checkpoints/auto-encoder/config.pkl
+	vae_params_path: /work/share/ac8hkycjba/osmodels/molsculptor/checkpoints/auto-encoder/ae_params_opt.pkl
+	vae_params_path: /work/share/ac8hkycjba/osmodels/molsculptor/checkpoints/auto-encoder/ae_params_opt.pkl
+	alphabet_path: /work/home/onescience2025/kangdf/onescience/src/ai_core/application/molsculptor/smiles_alphabet.pkl
+	alphabet_path: /work/home/onescience2025/kangdf/onescience/src/ai_core/application/molsculptor/smiles_alphabet.pkl
+	n_replicate: 8
+	n_replicate: 8
+	init_molecule_path: /work/home/onescience2025/kangdf/onescience/src/ai_core/application/molsculptor/init_search_molecule.pkl
+	init_molecule_path: /work/home/onescience2025/kangdf/onescience/src/ai_core/application/molsculptor/init_search_molecule.pkl
+	dsdp_script_path_1: /work/home/onescience2025/kangdf/onescience/src/ai_core/application/molsculptor/dsdp_ar.sh
+	dsdp_script_path_1: /work/home/onescience2025/kangdf/onescience/src/ai_core/application/molsculptor/dsdp_ar.sh
+	dsdp_script_path_2: /work/home/onescience2025/kangdf/onescience/src/ai_core/application/molsculptor/dsdp_gr.sh
+	dsdp_script_path_2: /work/home/onescience2025/kangdf/onescience/src/ai_core/application/molsculptor/dsdp_gr.sh
+	t_min: 75
+	t_min: 75
+	t_max: 100
+	t_max: 100
+	sub_smiles: NC(=O)c1cccc(S(=O)(=O)N2CCCc3ccccc32)c1
+	sub_smiles: NC(=O)c1cccc(S(=O)(=O)N2CCCc3ccccc32)c1
+	temp_var_save_path: /work/home/onescience2025/kangdf/onescience/src/ai_core/application/molsculptor/test/temp_var.pkl
+	temp_var_save_path: /work/home/onescience2025/kangdf/onescience/src/ai_core/application/molsculptor/test/temp_var.pkl
+Generating init offsprings...
+Generating init offsprings...
+Error saving results: 'NoneType' object is not subscriptable
+Error saving results: 'NoneType' object is not subscriptable
+=====================INPUT ARGS=====================
+=====================INPUT ARGS=====================
+=====================INPUT ARGS=====================
+INPUT ARGS:
+INPUT ARGS:
+INPUT ARGS:
+	config: None
+	config: None
+	config: None
+	config_path: /work/share/ac8hkycjba/osmodels/molsculptor/checkpoints/diffusion-transformer/config_opt.pkl
+	config_path: /work/share/ac8hkycjba/osmodels/molsculptor/checkpoints/diffusion-transformer/config_opt.pkl
+	config_path: /work/share/ac8hkycjba/osmodels/molsculptor/checkpoints/diffusion-transformer/config_opt.pkl
+	params_path: /work/share/ac8hkycjba/osmodels/molsculptor/checkpoints/diffusion-transformer/dit_params_opt.pkl
+	params_path: /work/share/ac8hkycjba/osmodels/molsculptor/checkpoints/diffusion-transformer/dit_params_opt.pkl
+	params_path: /work/share/ac8hkycjba/osmodels/molsculptor/checkpoints/diffusion-transformer/dit_params_opt.pkl
+	logger_path: /work/home/onescience2025/kangdf/onescience/src/ai_core/application/molsculptor/test/Logs.txt
+	logger_path: /work/home/onescience2025/kangdf/onescience/src/ai_core/application/molsculptor/test/Logs.txt
+	logger_path: /work/home/onescience2025/kangdf/onescience/src/ai_core/application/molsculptor/test/Logs.txt
+	save_path: /work/home/onescience2025/kangdf/onescience/src/ai_core/application/molsculptor/test
+	save_path: /work/home/onescience2025/kangdf/onescience/src/ai_core/application/molsculptor/test
+	save_path: /work/home/onescience2025/kangdf/onescience/src/ai_core/application/molsculptor/test
+	random_seed: 8888
+	random_seed: 8888
+	random_seed: 8888
+	np_random_seed: 8888
+	np_random_seed: 8888
+	np_random_seed: 8888
+	total_step: 2
+	total_step: 2
+	total_step: 2
+	device_batch_size: 128
+	device_batch_size: 128
+	device_batch_size: 128
+	num_latent_tokens: 16
+	num_latent_tokens: 16
+	num_latent_tokens: 16
+	dim_latent: 32
+	dim_latent: 32
+	dim_latent: 32
+	eq_steps: 10
+	eq_steps: 10
+	eq_steps: 10
+	callback_step: 10
+	callback_step: 10
+	callback_step: 10
+	beam_size: 4
+	beam_size: 4
+	beam_size: 4
+	sampling_method: beam
+	sampling_method: beam
+	sampling_method: beam
+	infer_config_path: None
+	infer_config_path: None
+	infer_config_path: None
+	vae_config_path: /work/share/ac8hkycjba/osmodels/molsculptor/checkpoints/auto-encoder/config.pkl
+	vae_config_path: /work/share/ac8hkycjba/osmodels/molsculptor/checkpoints/auto-encoder/config.pkl
+	vae_config_path: /work/share/ac8hkycjba/osmodels/molsculptor/checkpoints/auto-encoder/config.pkl
+	vae_params_path: /work/share/ac8hkycjba/osmodels/molsculptor/checkpoints/auto-encoder/ae_params_opt.pkl
+	vae_params_path: /work/share/ac8hkycjba/osmodels/molsculptor/checkpoints/auto-encoder/ae_params_opt.pkl
+	vae_params_path: /work/share/ac8hkycjba/osmodels/molsculptor/checkpoints/auto-encoder/ae_params_opt.pkl
+	alphabet_path: /work/home/onescience2025/kangdf/onescience/src/ai_core/application/molsculptor/smiles_alphabet.pkl
+	alphabet_path: /work/home/onescience2025/kangdf/onescience/src/ai_core/application/molsculptor/smiles_alphabet.pkl
+	alphabet_path: /work/home/onescience2025/kangdf/onescience/src/ai_core/application/molsculptor/smiles_alphabet.pkl
+	n_replicate: 8
+	n_replicate: 8
+	n_replicate: 8
+	init_molecule_path: /work/home/onescience2025/kangdf/onescience/src/ai_core/application/molsculptor/init_search_molecule.pkl
+	init_molecule_path: /work/home/onescience2025/kangdf/onescience/src/ai_core/application/molsculptor/init_search_molecule.pkl
+	init_molecule_path: /work/home/onescience2025/kangdf/onescience/src/ai_core/application/molsculptor/init_search_molecule.pkl
+	dsdp_script_path_1: /work/home/onescience2025/kangdf/onescience/src/ai_core/application/molsculptor/dsdp_ar.sh
+	dsdp_script_path_1: /work/home/onescience2025/kangdf/onescience/src/ai_core/application/molsculptor/dsdp_ar.sh
+	dsdp_script_path_1: /work/home/onescience2025/kangdf/onescience/src/ai_core/application/molsculptor/dsdp_ar.sh
+	dsdp_script_path_2: /work/home/onescience2025/kangdf/onescience/src/ai_core/application/molsculptor/dsdp_gr.sh
+	dsdp_script_path_2: /work/home/onescience2025/kangdf/onescience/src/ai_core/application/molsculptor/dsdp_gr.sh
+	dsdp_script_path_2: /work/home/onescience2025/kangdf/onescience/src/ai_core/application/molsculptor/dsdp_gr.sh
+	t_min: 75
+	t_min: 75
+	t_min: 75
+	t_max: 100
+	t_max: 100
+	t_max: 100
+	sub_smiles: NC(=O)c1cccc(S(=O)(=O)N2CCCc3ccccc32)c1
+	sub_smiles: NC(=O)c1cccc(S(=O)(=O)N2CCCc3ccccc32)c1
+	sub_smiles: NC(=O)c1cccc(S(=O)(=O)N2CCCc3ccccc32)c1
+	temp_var_save_path: /work/home/onescience2025/kangdf/onescience/src/ai_core/application/molsculptor/test/temp_var.pkl
+	temp_var_save_path: /work/home/onescience2025/kangdf/onescience/src/ai_core/application/molsculptor/test/temp_var.pkl
+	temp_var_save_path: /work/home/onescience2025/kangdf/onescience/src/ai_core/application/molsculptor/test/temp_var.pkl
+=====================INPUT ARGS=====================
+=====================INPUT ARGS=====================
+=====================INPUT ARGS=====================
+=====================INPUT ARGS=====================
+INPUT ARGS:
+INPUT ARGS:
+INPUT ARGS:
+INPUT ARGS:
+	config: None
+	config: None
+	config: None
+	config: None
+	config_path: /work/share/ac8hkycjba/osmodels/molsculptor/checkpoints/diffusion-transformer/config_opt.pkl
+	config_path: /work/share/ac8hkycjba/osmodels/molsculptor/checkpoints/diffusion-transformer/config_opt.pkl
+	config_path: /work/share/ac8hkycjba/osmodels/molsculptor/checkpoints/diffusion-transformer/config_opt.pkl
+	config_path: /work/share/ac8hkycjba/osmodels/molsculptor/checkpoints/diffusion-transformer/config_opt.pkl
+	params_path: /work/share/ac8hkycjba/osmodels/molsculptor/checkpoints/diffusion-transformer/dit_params_opt.pkl
+	params_path: /work/share/ac8hkycjba/osmodels/molsculptor/checkpoints/diffusion-transformer/dit_params_opt.pkl
+	params_path: /work/share/ac8hkycjba/osmodels/molsculptor/checkpoints/diffusion-transformer/dit_params_opt.pkl
+	params_path: /work/share/ac8hkycjba/osmodels/molsculptor/checkpoints/diffusion-transformer/dit_params_opt.pkl
+	logger_path: /work/home/onescience2025/kangdf/onescience/src/ai_core/application/molsculptor/test/Logs.txt
+	logger_path: /work/home/onescience2025/kangdf/onescience/src/ai_core/application/molsculptor/test/Logs.txt
+	logger_path: /work/home/onescience2025/kangdf/onescience/src/ai_core/application/molsculptor/test/Logs.txt
+	logger_path: /work/home/onescience2025/kangdf/onescience/src/ai_core/application/molsculptor/test/Logs.txt
+	save_path: /work/home/onescience2025/kangdf/onescience/src/ai_core/application/molsculptor/test
+	save_path: /work/home/onescience2025/kangdf/onescience/src/ai_core/application/molsculptor/test
+	save_path: /work/home/onescience2025/kangdf/onescience/src/ai_core/application/molsculptor/test
+	save_path: /work/home/onescience2025/kangdf/onescience/src/ai_core/application/molsculptor/test
+	random_seed: 8888
+	random_seed: 8888
+	random_seed: 8888
+	random_seed: 8888
+	np_random_seed: 8888
+	np_random_seed: 8888
+	np_random_seed: 8888
+	np_random_seed: 8888
+	total_step: 2
+	total_step: 2
+	total_step: 2
+	total_step: 2
+	device_batch_size: 128
+	device_batch_size: 128
+	device_batch_size: 128
+	device_batch_size: 128
+	num_latent_tokens: 16
+	num_latent_tokens: 16
+	num_latent_tokens: 16
+	num_latent_tokens: 16
+	dim_latent: 32
+	dim_latent: 32
+	dim_latent: 32
+	dim_latent: 32
+	eq_steps: 10
+	eq_steps: 10
+	eq_steps: 10
+	eq_steps: 10
+	callback_step: 10
+	callback_step: 10
+	callback_step: 10
+	callback_step: 10
+	beam_size: 4
+	beam_size: 4
+	beam_size: 4
+	beam_size: 4
+	sampling_method: beam
+	sampling_method: beam
+	sampling_method: beam
+	sampling_method: beam
+	infer_config_path: None
+	infer_config_path: None
+	infer_config_path: None
+	infer_config_path: None
+	vae_config_path: /work/share/ac8hkycjba/osmodels/molsculptor/checkpoints/auto-encoder/config.pkl
+	vae_config_path: /work/share/ac8hkycjba/osmodels/molsculptor/checkpoints/auto-encoder/config.pkl
+	vae_config_path: /work/share/ac8hkycjba/osmodels/molsculptor/checkpoints/auto-encoder/config.pkl
+	vae_config_path: /work/share/ac8hkycjba/osmodels/molsculptor/checkpoints/auto-encoder/config.pkl
+	vae_params_path: /work/share/ac8hkycjba/osmodels/molsculptor/checkpoints/auto-encoder/ae_params_opt.pkl
+	vae_params_path: /work/share/ac8hkycjba/osmodels/molsculptor/checkpoints/auto-encoder/ae_params_opt.pkl
+	vae_params_path: /work/share/ac8hkycjba/osmodels/molsculptor/checkpoints/auto-encoder/ae_params_opt.pkl
+	vae_params_path: /work/share/ac8hkycjba/osmodels/molsculptor/checkpoints/auto-encoder/ae_params_opt.pkl
+	alphabet_path: /work/home/onescience2025/kangdf/onescience/src/ai_core/application/molsculptor/smiles_alphabet.pkl
+	alphabet_path: /work/home/onescience2025/kangdf/onescience/src/ai_core/application/molsculptor/smiles_alphabet.pkl
+	alphabet_path: /work/home/onescience2025/kangdf/onescience/src/ai_core/application/molsculptor/smiles_alphabet.pkl
+	alphabet_path: /work/home/onescience2025/kangdf/onescience/src/ai_core/application/molsculptor/smiles_alphabet.pkl
+	n_replicate: 8
+	n_replicate: 8
+	n_replicate: 8
+	n_replicate: 8
+	init_molecule_path: /work/home/onescience2025/kangdf/onescience/src/ai_core/application/molsculptor/init_search_molecule.pkl
+	init_molecule_path: /work/home/onescience2025/kangdf/onescience/src/ai_core/application/molsculptor/init_search_molecule.pkl
+	init_molecule_path: /work/home/onescience2025/kangdf/onescience/src/ai_core/application/molsculptor/init_search_molecule.pkl
+	init_molecule_path: /work/home/onescience2025/kangdf/onescience/src/ai_core/application/molsculptor/init_search_molecule.pkl
+	dsdp_script_path_1: /work/home/onescience2025/kangdf/onescience/src/ai_core/application/molsculptor/dsdp_ar.sh
+	dsdp_script_path_1: /work/home/onescience2025/kangdf/onescience/src/ai_core/application/molsculptor/dsdp_ar.sh
+	dsdp_script_path_1: /work/home/onescience2025/kangdf/onescience/src/ai_core/application/molsculptor/dsdp_ar.sh
+	dsdp_script_path_1: /work/home/onescience2025/kangdf/onescience/src/ai_core/application/molsculptor/dsdp_ar.sh
+	dsdp_script_path_2: /work/home/onescience2025/kangdf/onescience/src/ai_core/application/molsculptor/dsdp_gr.sh
+	dsdp_script_path_2: /work/home/onescience2025/kangdf/onescience/src/ai_core/application/molsculptor/dsdp_gr.sh
+	dsdp_script_path_2: /work/home/onescience2025/kangdf/onescience/src/ai_core/application/molsculptor/dsdp_gr.sh
+	dsdp_script_path_2: /work/home/onescience2025/kangdf/onescience/src/ai_core/application/molsculptor/dsdp_gr.sh
+	t_min: 75
+	t_min: 75
+	t_min: 75
+	t_min: 75
+	t_max: 100
+	t_max: 100
+	t_max: 100
+	t_max: 100
+	sub_smiles: NC(=O)c1cccc(S(=O)(=O)N2CCCc3ccccc32)c1
+	sub_smiles: NC(=O)c1cccc(S(=O)(=O)N2CCCc3ccccc32)c1
+	sub_smiles: NC(=O)c1cccc(S(=O)(=O)N2CCCc3ccccc32)c1
+	sub_smiles: NC(=O)c1cccc(S(=O)(=O)N2CCCc3ccccc32)c1
+	temp_var_save_path: /work/home/onescience2025/kangdf/onescience/src/ai_core/application/molsculptor/test/temp_var.pkl
+	temp_var_save_path: /work/home/onescience2025/kangdf/onescience/src/ai_core/application/molsculptor/test/temp_var.pkl
+	temp_var_save_path: /work/home/onescience2025/kangdf/onescience/src/ai_core/application/molsculptor/test/temp_var.pkl
+	temp_var_save_path: /work/home/onescience2025/kangdf/onescience/src/ai_core/application/molsculptor/test/temp_var.pkl
+=====================INPUT ARGS=====================
+=====================INPUT ARGS=====================
+=====================INPUT ARGS=====================
+=====================INPUT ARGS=====================
+=====================INPUT ARGS=====================
+INPUT ARGS:
+INPUT ARGS:
+INPUT ARGS:
+INPUT ARGS:
+INPUT ARGS:
+	config: None
+	config: None
+	config: None
+	config: None
+	config: None
+	config_path: /work/share/ac8hkycjba/osmodels/molsculptor/checkpoints/diffusion-transformer/config_opt.pkl
+	config_path: /work/share/ac8hkycjba/osmodels/molsculptor/checkpoints/diffusion-transformer/config_opt.pkl
+	config_path: /work/share/ac8hkycjba/osmodels/molsculptor/checkpoints/diffusion-transformer/config_opt.pkl
+	config_path: /work/share/ac8hkycjba/osmodels/molsculptor/checkpoints/diffusion-transformer/config_opt.pkl
+	config_path: /work/share/ac8hkycjba/osmodels/molsculptor/checkpoints/diffusion-transformer/config_opt.pkl
+	params_path: /work/share/ac8hkycjba/osmodels/molsculptor/checkpoints/diffusion-transformer/dit_params_opt.pkl
+	params_path: /work/share/ac8hkycjba/osmodels/molsculptor/checkpoints/diffusion-transformer/dit_params_opt.pkl
+	params_path: /work/share/ac8hkycjba/osmodels/molsculptor/checkpoints/diffusion-transformer/dit_params_opt.pkl
+	params_path: /work/share/ac8hkycjba/osmodels/molsculptor/checkpoints/diffusion-transformer/dit_params_opt.pkl
+	params_path: /work/share/ac8hkycjba/osmodels/molsculptor/checkpoints/diffusion-transformer/dit_params_opt.pkl
+	logger_path: /work/home/onescience2025/kangdf/onescience/src/ai_core/application/molsculptor/test/Logs.txt
+	logger_path: /work/home/onescience2025/kangdf/onescience/src/ai_core/application/molsculptor/test/Logs.txt
+	logger_path: /work/home/onescience2025/kangdf/onescience/src/ai_core/application/molsculptor/test/Logs.txt
+	logger_path: /work/home/onescience2025/kangdf/onescience/src/ai_core/application/molsculptor/test/Logs.txt
+	logger_path: /work/home/onescience2025/kangdf/onescience/src/ai_core/application/molsculptor/test/Logs.txt
+	save_path: /work/home/onescience2025/kangdf/onescience/src/ai_core/application/molsculptor/test
+	save_path: /work/home/onescience2025/kangdf/onescience/src/ai_core/application/molsculptor/test
+	save_path: /work/home/onescience2025/kangdf/onescience/src/ai_core/application/molsculptor/test
+	save_path: /work/home/onescience2025/kangdf/onescience/src/ai_core/application/molsculptor/test
+	save_path: /work/home/onescience2025/kangdf/onescience/src/ai_core/application/molsculptor/test
+	random_seed: 8888
+	random_seed: 8888
+	random_seed: 8888
+	random_seed: 8888
+	random_seed: 8888
+	np_random_seed: 8888
+	np_random_seed: 8888
+	np_random_seed: 8888
+	np_random_seed: 8888
+	np_random_seed: 8888
+	total_step: 2
+	total_step: 2
+	total_step: 2
+	total_step: 2
+	total_step: 2
+	device_batch_size: 128
+	device_batch_size: 128
+	device_batch_size: 128
+	device_batch_size: 128
+	device_batch_size: 128
+	num_latent_tokens: 16
+	num_latent_tokens: 16
+	num_latent_tokens: 16
+	num_latent_tokens: 16
+	num_latent_tokens: 16
+	dim_latent: 32
+	dim_latent: 32
+	dim_latent: 32
+	dim_latent: 32
+	dim_latent: 32
+	eq_steps: 10
+	eq_steps: 10
+	eq_steps: 10
+	eq_steps: 10
+	eq_steps: 10
+	callback_step: 10
+	callback_step: 10
+	callback_step: 10
+	callback_step: 10
+	callback_step: 10
+	beam_size: 4
+	beam_size: 4
+	beam_size: 4
+	beam_size: 4
+	beam_size: 4
+	sampling_method: beam
+	sampling_method: beam
+	sampling_method: beam
+	sampling_method: beam
+	sampling_method: beam
+	infer_config_path: None
+	infer_config_path: None
+	infer_config_path: None
+	infer_config_path: None
+	infer_config_path: None
+	vae_config_path: /work/share/ac8hkycjba/osmodels/molsculptor/checkpoints/auto-encoder/config.pkl
+	vae_config_path: /work/share/ac8hkycjba/osmodels/molsculptor/checkpoints/auto-encoder/config.pkl
+	vae_config_path: /work/share/ac8hkycjba/osmodels/molsculptor/checkpoints/auto-encoder/config.pkl
+	vae_config_path: /work/share/ac8hkycjba/osmodels/molsculptor/checkpoints/auto-encoder/config.pkl
+	vae_config_path: /work/share/ac8hkycjba/osmodels/molsculptor/checkpoints/auto-encoder/config.pkl
+	vae_params_path: /work/share/ac8hkycjba/osmodels/molsculptor/checkpoints/auto-encoder/ae_params_opt.pkl
+	vae_params_path: /work/share/ac8hkycjba/osmodels/molsculptor/checkpoints/auto-encoder/ae_params_opt.pkl
+	vae_params_path: /work/share/ac8hkycjba/osmodels/molsculptor/checkpoints/auto-encoder/ae_params_opt.pkl
+	vae_params_path: /work/share/ac8hkycjba/osmodels/molsculptor/checkpoints/auto-encoder/ae_params_opt.pkl
+	vae_params_path: /work/share/ac8hkycjba/osmodels/molsculptor/checkpoints/auto-encoder/ae_params_opt.pkl
+	alphabet_path: /work/home/onescience2025/kangdf/onescience/src/ai_core/application/molsculptor/smiles_alphabet.pkl
+	alphabet_path: /work/home/onescience2025/kangdf/onescience/src/ai_core/application/molsculptor/smiles_alphabet.pkl
+	alphabet_path: /work/home/onescience2025/kangdf/onescience/src/ai_core/application/molsculptor/smiles_alphabet.pkl
+	alphabet_path: /work/home/onescience2025/kangdf/onescience/src/ai_core/application/molsculptor/smiles_alphabet.pkl
+	alphabet_path: /work/home/onescience2025/kangdf/onescience/src/ai_core/application/molsculptor/smiles_alphabet.pkl
+	n_replicate: 8
+	n_replicate: 8
+	n_replicate: 8
+	n_replicate: 8
+	n_replicate: 8
+	init_molecule_path: /work/home/onescience2025/kangdf/onescience/src/ai_core/application/molsculptor/init_search_molecule.pkl
+	init_molecule_path: /work/home/onescience2025/kangdf/onescience/src/ai_core/application/molsculptor/init_search_molecule.pkl
+	init_molecule_path: /work/home/onescience2025/kangdf/onescience/src/ai_core/application/molsculptor/init_search_molecule.pkl
+	init_molecule_path: /work/home/onescience2025/kangdf/onescience/src/ai_core/application/molsculptor/init_search_molecule.pkl
+	init_molecule_path: /work/home/onescience2025/kangdf/onescience/src/ai_core/application/molsculptor/init_search_molecule.pkl
+	dsdp_script_path_1: /work/home/onescience2025/kangdf/onescience/src/ai_core/application/molsculptor/dsdp_ar.sh
+	dsdp_script_path_1: /work/home/onescience2025/kangdf/onescience/src/ai_core/application/molsculptor/dsdp_ar.sh
+	dsdp_script_path_1: /work/home/onescience2025/kangdf/onescience/src/ai_core/application/molsculptor/dsdp_ar.sh
+	dsdp_script_path_1: /work/home/onescience2025/kangdf/onescience/src/ai_core/application/molsculptor/dsdp_ar.sh
+	dsdp_script_path_1: /work/home/onescience2025/kangdf/onescience/src/ai_core/application/molsculptor/dsdp_ar.sh
+	dsdp_script_path_2: /work/home/onescience2025/kangdf/onescience/src/ai_core/application/molsculptor/dsdp_gr.sh
+	dsdp_script_path_2: /work/home/onescience2025/kangdf/onescience/src/ai_core/application/molsculptor/dsdp_gr.sh
+	dsdp_script_path_2: /work/home/onescience2025/kangdf/onescience/src/ai_core/application/molsculptor/dsdp_gr.sh
+	dsdp_script_path_2: /work/home/onescience2025/kangdf/onescience/src/ai_core/application/molsculptor/dsdp_gr.sh
+	dsdp_script_path_2: /work/home/onescience2025/kangdf/onescience/src/ai_core/application/molsculptor/dsdp_gr.sh
+	t_min: 75
+	t_min: 75
+	t_min: 75
+	t_min: 75
+	t_min: 75
+	t_max: 100
+	t_max: 100
+	t_max: 100
+	t_max: 100
+	t_max: 100
+	sub_smiles: NC(=O)c1cccc(S(=O)(=O)N2CCCc3ccccc32)c1
+	sub_smiles: NC(=O)c1cccc(S(=O)(=O)N2CCCc3ccccc32)c1
+	sub_smiles: NC(=O)c1cccc(S(=O)(=O)N2CCCc3ccccc32)c1
+	sub_smiles: NC(=O)c1cccc(S(=O)(=O)N2CCCc3ccccc32)c1
+	sub_smiles: NC(=O)c1cccc(S(=O)(=O)N2CCCc3ccccc32)c1
+	temp_var_save_path: /work/home/onescience2025/kangdf/onescience/src/ai_core/application/molsculptor/test/temp_var.pkl
+	temp_var_save_path: /work/home/onescience2025/kangdf/onescience/src/ai_core/application/molsculptor/test/temp_var.pkl
+	temp_var_save_path: /work/home/onescience2025/kangdf/onescience/src/ai_core/application/molsculptor/test/temp_var.pkl
+	temp_var_save_path: /work/home/onescience2025/kangdf/onescience/src/ai_core/application/molsculptor/test/temp_var.pkl
+	temp_var_save_path: /work/home/onescience2025/kangdf/onescience/src/ai_core/application/molsculptor/test/temp_var.pkl
+=====================INPUT ARGS=====================
+=====================INPUT ARGS=====================
+=====================INPUT ARGS=====================
+=====================INPUT ARGS=====================
+=====================INPUT ARGS=====================
+=====================INPUT ARGS=====================
+INPUT ARGS:
+INPUT ARGS:
+INPUT ARGS:
+INPUT ARGS:
+INPUT ARGS:
+INPUT ARGS:
+	config: None
+	config: None
+	config: None
+	config: None
+	config: None
+	config: None
+	config_path: /work/share/ac8hkycjba/osmodels/molsculptor/checkpoints/diffusion-transformer/config_opt.pkl
+	config_path: /work/share/ac8hkycjba/osmodels/molsculptor/checkpoints/diffusion-transformer/config_opt.pkl
+	config_path: /work/share/ac8hkycjba/osmodels/molsculptor/checkpoints/diffusion-transformer/config_opt.pkl
+	config_path: /work/share/ac8hkycjba/osmodels/molsculptor/checkpoints/diffusion-transformer/config_opt.pkl
+	config_path: /work/share/ac8hkycjba/osmodels/molsculptor/checkpoints/diffusion-transformer/config_opt.pkl
+	config_path: /work/share/ac8hkycjba/osmodels/molsculptor/checkpoints/diffusion-transformer/config_opt.pkl
+	params_path: /work/share/ac8hkycjba/osmodels/molsculptor/checkpoints/diffusion-transformer/dit_params_opt.pkl
+	params_path: /work/share/ac8hkycjba/osmodels/molsculptor/checkpoints/diffusion-transformer/dit_params_opt.pkl
+	params_path: /work/share/ac8hkycjba/osmodels/molsculptor/checkpoints/diffusion-transformer/dit_params_opt.pkl
+	params_path: /work/share/ac8hkycjba/osmodels/molsculptor/checkpoints/diffusion-transformer/dit_params_opt.pkl
+	params_path: /work/share/ac8hkycjba/osmodels/molsculptor/checkpoints/diffusion-transformer/dit_params_opt.pkl
+	params_path: /work/share/ac8hkycjba/osmodels/molsculptor/checkpoints/diffusion-transformer/dit_params_opt.pkl
+	logger_path: /work/home/onescience2025/kangdf/onescience/src/ai_core/application/molsculptor/test/Logs.txt
+	logger_path: /work/home/onescience2025/kangdf/onescience/src/ai_core/application/molsculptor/test/Logs.txt
+	logger_path: /work/home/onescience2025/kangdf/onescience/src/ai_core/application/molsculptor/test/Logs.txt
+	logger_path: /work/home/onescience2025/kangdf/onescience/src/ai_core/application/molsculptor/test/Logs.txt
+	logger_path: /work/home/onescience2025/kangdf/onescience/src/ai_core/application/molsculptor/test/Logs.txt
+	logger_path: /work/home/onescience2025/kangdf/onescience/src/ai_core/application/molsculptor/test/Logs.txt
+	save_path: /work/home/onescience2025/kangdf/onescience/src/ai_core/application/molsculptor/test
+	save_path: /work/home/onescience2025/kangdf/onescience/src/ai_core/application/molsculptor/test
+	save_path: /work/home/onescience2025/kangdf/onescience/src/ai_core/application/molsculptor/test
+	save_path: /work/home/onescience2025/kangdf/onescience/src/ai_core/application/molsculptor/test
+	save_path: /work/home/onescience2025/kangdf/onescience/src/ai_core/application/molsculptor/test
+	save_path: /work/home/onescience2025/kangdf/onescience/src/ai_core/application/molsculptor/test
+	random_seed: 8888
+	random_seed: 8888
+	random_seed: 8888
+	random_seed: 8888
+	random_seed: 8888
+	random_seed: 8888
+	np_random_seed: 8888
+	np_random_seed: 8888
+	np_random_seed: 8888
+	np_random_seed: 8888
+	np_random_seed: 8888
+	np_random_seed: 8888
+	total_step: 2
+	total_step: 2
+	total_step: 2
+	total_step: 2
+	total_step: 2
+	total_step: 2
+	device_batch_size: 128
+	device_batch_size: 128
+	device_batch_size: 128
+	device_batch_size: 128
+	device_batch_size: 128
+	device_batch_size: 128
+	num_latent_tokens: 16
+	num_latent_tokens: 16
+	num_latent_tokens: 16
+	num_latent_tokens: 16
+	num_latent_tokens: 16
+	num_latent_tokens: 16
+	dim_latent: 32
+	dim_latent: 32
+	dim_latent: 32
+	dim_latent: 32
+	dim_latent: 32
+	dim_latent: 32
+	eq_steps: 10
+	eq_steps: 10
+	eq_steps: 10
+	eq_steps: 10
+	eq_steps: 10
+	eq_steps: 10
+	callback_step: 10
+	callback_step: 10
+	callback_step: 10
+	callback_step: 10
+	callback_step: 10
+	callback_step: 10
+	beam_size: 4
+	beam_size: 4
+	beam_size: 4
+	beam_size: 4
+	beam_size: 4
+	beam_size: 4
+	sampling_method: beam
+	sampling_method: beam
+	sampling_method: beam
+	sampling_method: beam
+	sampling_method: beam
+	sampling_method: beam
+	infer_config_path: None
+	infer_config_path: None
+	infer_config_path: None
+	infer_config_path: None
+	infer_config_path: None
+	infer_config_path: None
+	vae_config_path: /work/share/ac8hkycjba/osmodels/molsculptor/checkpoints/auto-encoder/config.pkl
+	vae_config_path: /work/share/ac8hkycjba/osmodels/molsculptor/checkpoints/auto-encoder/config.pkl
+	vae_config_path: /work/share/ac8hkycjba/osmodels/molsculptor/checkpoints/auto-encoder/config.pkl
+	vae_config_path: /work/share/ac8hkycjba/osmodels/molsculptor/checkpoints/auto-encoder/config.pkl
+	vae_config_path: /work/share/ac8hkycjba/osmodels/molsculptor/checkpoints/auto-encoder/config.pkl
+	vae_config_path: /work/share/ac8hkycjba/osmodels/molsculptor/checkpoints/auto-encoder/config.pkl
+	vae_params_path: /work/share/ac8hkycjba/osmodels/molsculptor/checkpoints/auto-encoder/ae_params_opt.pkl
+	vae_params_path: /work/share/ac8hkycjba/osmodels/molsculptor/checkpoints/auto-encoder/ae_params_opt.pkl
+	vae_params_path: /work/share/ac8hkycjba/osmodels/molsculptor/checkpoints/auto-encoder/ae_params_opt.pkl
+	vae_params_path: /work/share/ac8hkycjba/osmodels/molsculptor/checkpoints/auto-encoder/ae_params_opt.pkl
+	vae_params_path: /work/share/ac8hkycjba/osmodels/molsculptor/checkpoints/auto-encoder/ae_params_opt.pkl
+	vae_params_path: /work/share/ac8hkycjba/osmodels/molsculptor/checkpoints/auto-encoder/ae_params_opt.pkl
+	alphabet_path: /work/home/onescience2025/kangdf/onescience/src/ai_core/application/molsculptor/smiles_alphabet.pkl
+	alphabet_path: /work/home/onescience2025/kangdf/onescience/src/ai_core/application/molsculptor/smiles_alphabet.pkl
+	alphabet_path: /work/home/onescience2025/kangdf/onescience/src/ai_core/application/molsculptor/smiles_alphabet.pkl
+	alphabet_path: /work/home/onescience2025/kangdf/onescience/src/ai_core/application/molsculptor/smiles_alphabet.pkl
+	alphabet_path: /work/home/onescience2025/kangdf/onescience/src/ai_core/application/molsculptor/smiles_alphabet.pkl
+	alphabet_path: /work/home/onescience2025/kangdf/onescience/src/ai_core/application/molsculptor/smiles_alphabet.pkl
+	n_replicate: 8
+	n_replicate: 8
+	n_replicate: 8
+	n_replicate: 8
+	n_replicate: 8
+	n_replicate: 8
+	init_molecule_path: /work/home/onescience2025/kangdf/onescience/src/ai_core/application/molsculptor/init_search_molecule.pkl
+	init_molecule_path: /work/home/onescience2025/kangdf/onescience/src/ai_core/application/molsculptor/init_search_molecule.pkl
+	init_molecule_path: /work/home/onescience2025/kangdf/onescience/src/ai_core/application/molsculptor/init_search_molecule.pkl
+	init_molecule_path: /work/home/onescience2025/kangdf/onescience/src/ai_core/application/molsculptor/init_search_molecule.pkl
+	init_molecule_path: /work/home/onescience2025/kangdf/onescience/src/ai_core/application/molsculptor/init_search_molecule.pkl
+	init_molecule_path: /work/home/onescience2025/kangdf/onescience/src/ai_core/application/molsculptor/init_search_molecule.pkl
+	dsdp_script_path_1: /work/home/onescience2025/kangdf/onescience/src/ai_core/application/molsculptor/dsdp_ar.sh
+	dsdp_script_path_1: /work/home/onescience2025/kangdf/onescience/src/ai_core/application/molsculptor/dsdp_ar.sh
+	dsdp_script_path_1: /work/home/onescience2025/kangdf/onescience/src/ai_core/application/molsculptor/dsdp_ar.sh
+	dsdp_script_path_1: /work/home/onescience2025/kangdf/onescience/src/ai_core/application/molsculptor/dsdp_ar.sh
+	dsdp_script_path_1: /work/home/onescience2025/kangdf/onescience/src/ai_core/application/molsculptor/dsdp_ar.sh
+	dsdp_script_path_1: /work/home/onescience2025/kangdf/onescience/src/ai_core/application/molsculptor/dsdp_ar.sh
+	dsdp_script_path_2: /work/home/onescience2025/kangdf/onescience/src/ai_core/application/molsculptor/dsdp_gr.sh
+	dsdp_script_path_2: /work/home/onescience2025/kangdf/onescience/src/ai_core/application/molsculptor/dsdp_gr.sh
+	dsdp_script_path_2: /work/home/onescience2025/kangdf/onescience/src/ai_core/application/molsculptor/dsdp_gr.sh
+	dsdp_script_path_2: /work/home/onescience2025/kangdf/onescience/src/ai_core/application/molsculptor/dsdp_gr.sh
+	dsdp_script_path_2: /work/home/onescience2025/kangdf/onescience/src/ai_core/application/molsculptor/dsdp_gr.sh
+	dsdp_script_path_2: /work/home/onescience2025/kangdf/onescience/src/ai_core/application/molsculptor/dsdp_gr.sh
+	t_min: 75
+	t_min: 75
+	t_min: 75
+	t_min: 75
+	t_min: 75
+	t_min: 75
+	t_max: 100
+	t_max: 100
+	t_max: 100
+	t_max: 100
+	t_max: 100
+	t_max: 100
+	sub_smiles: NC(=O)c1cccc(S(=O)(=O)N2CCCc3ccccc32)c1
+	sub_smiles: NC(=O)c1cccc(S(=O)(=O)N2CCCc3ccccc32)c1
+	sub_smiles: NC(=O)c1cccc(S(=O)(=O)N2CCCc3ccccc32)c1
+	sub_smiles: NC(=O)c1cccc(S(=O)(=O)N2CCCc3ccccc32)c1
+	sub_smiles: NC(=O)c1cccc(S(=O)(=O)N2CCCc3ccccc32)c1
+	sub_smiles: NC(=O)c1cccc(S(=O)(=O)N2CCCc3ccccc32)c1
+	temp_var_save_path: /work/home/onescience2025/kangdf/onescience/src/ai_core/application/molsculptor/test/temp_var.pkl
+	temp_var_save_path: /work/home/onescience2025/kangdf/onescience/src/ai_core/application/molsculptor/test/temp_var.pkl
+	temp_var_save_path: /work/home/onescience2025/kangdf/onescience/src/ai_core/application/molsculptor/test/temp_var.pkl
+	temp_var_save_path: /work/home/onescience2025/kangdf/onescience/src/ai_core/application/molsculptor/test/temp_var.pkl
+	temp_var_save_path: /work/home/onescience2025/kangdf/onescience/src/ai_core/application/molsculptor/test/temp_var.pkl
+	temp_var_save_path: /work/home/onescience2025/kangdf/onescience/src/ai_core/application/molsculptor/test/temp_var.pkl
+=====================INPUT ARGS=====================
+=====================INPUT ARGS=====================
+=====================INPUT ARGS=====================
+=====================INPUT ARGS=====================
+=====================INPUT ARGS=====================
+=====================INPUT ARGS=====================
+=====================INPUT ARGS=====================
+INPUT ARGS:
+INPUT ARGS:
+INPUT ARGS:
+INPUT ARGS:
+INPUT ARGS:
+INPUT ARGS:
+INPUT ARGS:
+	config: None
+	config: None
+	config: None
+	config: None
+	config: None
+	config: None
+	config: None
+	config_path: /work/share/ac8hkycjba/osmodels/molsculptor/checkpoints/diffusion-transformer/config_opt.pkl
+	config_path: /work/share/ac8hkycjba/osmodels/molsculptor/checkpoints/diffusion-transformer/config_opt.pkl
+	config_path: /work/share/ac8hkycjba/osmodels/molsculptor/checkpoints/diffusion-transformer/config_opt.pkl
+	config_path: /work/share/ac8hkycjba/osmodels/molsculptor/checkpoints/diffusion-transformer/config_opt.pkl
+	config_path: /work/share/ac8hkycjba/osmodels/molsculptor/checkpoints/diffusion-transformer/config_opt.pkl
+	config_path: /work/share/ac8hkycjba/osmodels/molsculptor/checkpoints/diffusion-transformer/config_opt.pkl
+	config_path: /work/share/ac8hkycjba/osmodels/molsculptor/checkpoints/diffusion-transformer/config_opt.pkl
+	params_path: /work/share/ac8hkycjba/osmodels/molsculptor/checkpoints/diffusion-transformer/dit_params_opt.pkl
+	params_path: /work/share/ac8hkycjba/osmodels/molsculptor/checkpoints/diffusion-transformer/dit_params_opt.pkl
+	params_path: /work/share/ac8hkycjba/osmodels/molsculptor/checkpoints/diffusion-transformer/dit_params_opt.pkl
+	params_path: /work/share/ac8hkycjba/osmodels/molsculptor/checkpoints/diffusion-transformer/dit_params_opt.pkl
+	params_path: /work/share/ac8hkycjba/osmodels/molsculptor/checkpoints/diffusion-transformer/dit_params_opt.pkl
+	params_path: /work/share/ac8hkycjba/osmodels/molsculptor/checkpoints/diffusion-transformer/dit_params_opt.pkl
+	params_path: /work/share/ac8hkycjba/osmodels/molsculptor/checkpoints/diffusion-transformer/dit_params_opt.pkl
+	logger_path: /work/home/onescience2025/kangdf/onescience/src/ai_core/application/molsculptor/test/Logs.txt
+	logger_path: /work/home/onescience2025/kangdf/onescience/src/ai_core/application/molsculptor/test/Logs.txt
+	logger_path: /work/home/onescience2025/kangdf/onescience/src/ai_core/application/molsculptor/test/Logs.txt
+	logger_path: /work/home/onescience2025/kangdf/onescience/src/ai_core/application/molsculptor/test/Logs.txt
+	logger_path: /work/home/onescience2025/kangdf/onescience/src/ai_core/application/molsculptor/test/Logs.txt
+	logger_path: /work/home/onescience2025/kangdf/onescience/src/ai_core/application/molsculptor/test/Logs.txt
+	logger_path: /work/home/onescience2025/kangdf/onescience/src/ai_core/application/molsculptor/test/Logs.txt
+	save_path: /work/home/onescience2025/kangdf/onescience/src/ai_core/application/molsculptor/test
+	save_path: /work/home/onescience2025/kangdf/onescience/src/ai_core/application/molsculptor/test
+	save_path: /work/home/onescience2025/kangdf/onescience/src/ai_core/application/molsculptor/test
+	save_path: /work/home/onescience2025/kangdf/onescience/src/ai_core/application/molsculptor/test
+	save_path: /work/home/onescience2025/kangdf/onescience/src/ai_core/application/molsculptor/test
+	save_path: /work/home/onescience2025/kangdf/onescience/src/ai_core/application/molsculptor/test
+	save_path: /work/home/onescience2025/kangdf/onescience/src/ai_core/application/molsculptor/test
+	random_seed: 8888
+	random_seed: 8888
+	random_seed: 8888
+	random_seed: 8888
+	random_seed: 8888
+	random_seed: 8888
+	random_seed: 8888
+	np_random_seed: 8888
+	np_random_seed: 8888
+	np_random_seed: 8888
+	np_random_seed: 8888
+	np_random_seed: 8888
+	np_random_seed: 8888
+	np_random_seed: 8888
+	total_step: 2
+	total_step: 2
+	total_step: 2
+	total_step: 2
+	total_step: 2
+	total_step: 2
+	total_step: 2
+	device_batch_size: 128
+	device_batch_size: 128
+	device_batch_size: 128
+	device_batch_size: 128
+	device_batch_size: 128
+	device_batch_size: 128
+	device_batch_size: 128
+	num_latent_tokens: 16
+	num_latent_tokens: 16
+	num_latent_tokens: 16
+	num_latent_tokens: 16
+	num_latent_tokens: 16
+	num_latent_tokens: 16
+	num_latent_tokens: 16
+	dim_latent: 32
+	dim_latent: 32
+	dim_latent: 32
+	dim_latent: 32
+	dim_latent: 32
+	dim_latent: 32
+	dim_latent: 32
+	eq_steps: 10
+	eq_steps: 10
+	eq_steps: 10
+	eq_steps: 10
+	eq_steps: 10
+	eq_steps: 10
+	eq_steps: 10
+	callback_step: 10
+	callback_step: 10
+	callback_step: 10
+	callback_step: 10
+	callback_step: 10
+	callback_step: 10
+	callback_step: 10
+	beam_size: 4
+	beam_size: 4
+	beam_size: 4
+	beam_size: 4
+	beam_size: 4
+	beam_size: 4
+	beam_size: 4
+	sampling_method: beam
+	sampling_method: beam
+	sampling_method: beam
+	sampling_method: beam
+	sampling_method: beam
+	sampling_method: beam
+	sampling_method: beam
+	infer_config_path: None
+	infer_config_path: None
+	infer_config_path: None
+	infer_config_path: None
+	infer_config_path: None
+	infer_config_path: None
+	infer_config_path: None
+	vae_config_path: /work/share/ac8hkycjba/osmodels/molsculptor/checkpoints/auto-encoder/config.pkl
+	vae_config_path: /work/share/ac8hkycjba/osmodels/molsculptor/checkpoints/auto-encoder/config.pkl
+	vae_config_path: /work/share/ac8hkycjba/osmodels/molsculptor/checkpoints/auto-encoder/config.pkl
+	vae_config_path: /work/share/ac8hkycjba/osmodels/molsculptor/checkpoints/auto-encoder/config.pkl
+	vae_config_path: /work/share/ac8hkycjba/osmodels/molsculptor/checkpoints/auto-encoder/config.pkl
+	vae_config_path: /work/share/ac8hkycjba/osmodels/molsculptor/checkpoints/auto-encoder/config.pkl
+	vae_config_path: /work/share/ac8hkycjba/osmodels/molsculptor/checkpoints/auto-encoder/config.pkl
+	vae_params_path: /work/share/ac8hkycjba/osmodels/molsculptor/checkpoints/auto-encoder/ae_params_opt.pkl
+	vae_params_path: /work/share/ac8hkycjba/osmodels/molsculptor/checkpoints/auto-encoder/ae_params_opt.pkl
+	vae_params_path: /work/share/ac8hkycjba/osmodels/molsculptor/checkpoints/auto-encoder/ae_params_opt.pkl
+	vae_params_path: /work/share/ac8hkycjba/osmodels/molsculptor/checkpoints/auto-encoder/ae_params_opt.pkl
+	vae_params_path: /work/share/ac8hkycjba/osmodels/molsculptor/checkpoints/auto-encoder/ae_params_opt.pkl
+	vae_params_path: /work/share/ac8hkycjba/osmodels/molsculptor/checkpoints/auto-encoder/ae_params_opt.pkl
+	vae_params_path: /work/share/ac8hkycjba/osmodels/molsculptor/checkpoints/auto-encoder/ae_params_opt.pkl
+	alphabet_path: /work/home/onescience2025/kangdf/onescience/src/ai_core/application/molsculptor/smiles_alphabet.pkl
+	alphabet_path: /work/home/onescience2025/kangdf/onescience/src/ai_core/application/molsculptor/smiles_alphabet.pkl
+	alphabet_path: /work/home/onescience2025/kangdf/onescience/src/ai_core/application/molsculptor/smiles_alphabet.pkl
+	alphabet_path: /work/home/onescience2025/kangdf/onescience/src/ai_core/application/molsculptor/smiles_alphabet.pkl
+	alphabet_path: /work/home/onescience2025/kangdf/onescience/src/ai_core/application/molsculptor/smiles_alphabet.pkl
+	alphabet_path: /work/home/onescience2025/kangdf/onescience/src/ai_core/application/molsculptor/smiles_alphabet.pkl
+	alphabet_path: /work/home/onescience2025/kangdf/onescience/src/ai_core/application/molsculptor/smiles_alphabet.pkl
+	n_replicate: 8
+	n_replicate: 8
+	n_replicate: 8
+	n_replicate: 8
+	n_replicate: 8
+	n_replicate: 8
+	n_replicate: 8
+	init_molecule_path: /work/home/onescience2025/kangdf/onescience/src/ai_core/application/molsculptor/init_search_molecule.pkl
+	init_molecule_path: /work/home/onescience2025/kangdf/onescience/src/ai_core/application/molsculptor/init_search_molecule.pkl
+	init_molecule_path: /work/home/onescience2025/kangdf/onescience/src/ai_core/application/molsculptor/init_search_molecule.pkl
+	init_molecule_path: /work/home/onescience2025/kangdf/onescience/src/ai_core/application/molsculptor/init_search_molecule.pkl
+	init_molecule_path: /work/home/onescience2025/kangdf/onescience/src/ai_core/application/molsculptor/init_search_molecule.pkl
+	init_molecule_path: /work/home/onescience2025/kangdf/onescience/src/ai_core/application/molsculptor/init_search_molecule.pkl
+	init_molecule_path: /work/home/onescience2025/kangdf/onescience/src/ai_core/application/molsculptor/init_search_molecule.pkl
+	dsdp_script_path_1: /work/home/onescience2025/kangdf/onescience/src/ai_core/application/molsculptor/dsdp_ar.sh
+	dsdp_script_path_1: /work/home/onescience2025/kangdf/onescience/src/ai_core/application/molsculptor/dsdp_ar.sh
+	dsdp_script_path_1: /work/home/onescience2025/kangdf/onescience/src/ai_core/application/molsculptor/dsdp_ar.sh
+	dsdp_script_path_1: /work/home/onescience2025/kangdf/onescience/src/ai_core/application/molsculptor/dsdp_ar.sh
+	dsdp_script_path_1: /work/home/onescience2025/kangdf/onescience/src/ai_core/application/molsculptor/dsdp_ar.sh
+	dsdp_script_path_1: /work/home/onescience2025/kangdf/onescience/src/ai_core/application/molsculptor/dsdp_ar.sh
+	dsdp_script_path_1: /work/home/onescience2025/kangdf/onescience/src/ai_core/application/molsculptor/dsdp_ar.sh
+	dsdp_script_path_2: /work/home/onescience2025/kangdf/onescience/src/ai_core/application/molsculptor/dsdp_gr.sh
+	dsdp_script_path_2: /work/home/onescience2025/kangdf/onescience/src/ai_core/application/molsculptor/dsdp_gr.sh
+	dsdp_script_path_2: /work/home/onescience2025/kangdf/onescience/src/ai_core/application/molsculptor/dsdp_gr.sh
+	dsdp_script_path_2: /work/home/onescience2025/kangdf/onescience/src/ai_core/application/molsculptor/dsdp_gr.sh
+	dsdp_script_path_2: /work/home/onescience2025/kangdf/onescience/src/ai_core/application/molsculptor/dsdp_gr.sh
+	dsdp_script_path_2: /work/home/onescience2025/kangdf/onescience/src/ai_core/application/molsculptor/dsdp_gr.sh
+	dsdp_script_path_2: /work/home/onescience2025/kangdf/onescience/src/ai_core/application/molsculptor/dsdp_gr.sh
+	t_min: 75
+	t_min: 75
+	t_min: 75
+	t_min: 75
+	t_min: 75
+	t_min: 75
+	t_min: 75
+	t_max: 100
+	t_max: 100
+	t_max: 100
+	t_max: 100
+	t_max: 100
+	t_max: 100
+	t_max: 100
+	sub_smiles: NC(=O)c1cccc(S(=O)(=O)N2CCCc3ccccc32)c1
+	sub_smiles: NC(=O)c1cccc(S(=O)(=O)N2CCCc3ccccc32)c1
+	sub_smiles: NC(=O)c1cccc(S(=O)(=O)N2CCCc3ccccc32)c1
+	sub_smiles: NC(=O)c1cccc(S(=O)(=O)N2CCCc3ccccc32)c1
+	sub_smiles: NC(=O)c1cccc(S(=O)(=O)N2CCCc3ccccc32)c1
+	sub_smiles: NC(=O)c1cccc(S(=O)(=O)N2CCCc3ccccc32)c1
+	sub_smiles: NC(=O)c1cccc(S(=O)(=O)N2CCCc3ccccc32)c1
+	temp_var_save_path: /work/home/onescience2025/kangdf/onescience/src/ai_core/application/molsculptor/test/temp_var.pkl
+	temp_var_save_path: /work/home/onescience2025/kangdf/onescience/src/ai_core/application/molsculptor/test/temp_var.pkl
+	temp_var_save_path: /work/home/onescience2025/kangdf/onescience/src/ai_core/application/molsculptor/test/temp_var.pkl
+	temp_var_save_path: /work/home/onescience2025/kangdf/onescience/src/ai_core/application/molsculptor/test/temp_var.pkl
+	temp_var_save_path: /work/home/onescience2025/kangdf/onescience/src/ai_core/application/molsculptor/test/temp_var.pkl
+	temp_var_save_path: /work/home/onescience2025/kangdf/onescience/src/ai_core/application/molsculptor/test/temp_var.pkl
+	temp_var_save_path: /work/home/onescience2025/kangdf/onescience/src/ai_core/application/molsculptor/test/temp_var.pkl
+Generating init offsprings...
+Generating init offsprings...
+Generating init offsprings...
+Generating init offsprings...
+Generating init offsprings...
+Generating init offsprings...
+Generating init offsprings...
+Error saving results: 'NoneType' object is not subscriptable
+Error saving results: 'NoneType' object is not subscriptable
+Error saving results: 'NoneType' object is not subscriptable
+Error saving results: 'NoneType' object is not subscriptable
+Error saving results: 'NoneType' object is not subscriptable
+Error saving results: 'NoneType' object is not subscriptable
+Error saving results: 'NoneType' object is not subscriptable
+=====================INPUT ARGS=====================
+=====================INPUT ARGS=====================
+=====================INPUT ARGS=====================
+=====================INPUT ARGS=====================
+=====================INPUT ARGS=====================
+=====================INPUT ARGS=====================
+=====================INPUT ARGS=====================
+=====================INPUT ARGS=====================
+INPUT ARGS:
+INPUT ARGS:
+INPUT ARGS:
+INPUT ARGS:
+INPUT ARGS:
+INPUT ARGS:
+INPUT ARGS:
+INPUT ARGS:
+	config: None
+	config: None
+	config: None
+	config: None
+	config: None
+	config: None
+	config: None
+	config: None
+	config_path: /work/share/ac8hkycjba/osmodels/molsculptor/checkpoints/diffusion-transformer/config_opt.pkl
+	config_path: /work/share/ac8hkycjba/osmodels/molsculptor/checkpoints/diffusion-transformer/config_opt.pkl
+	config_path: /work/share/ac8hkycjba/osmodels/molsculptor/checkpoints/diffusion-transformer/config_opt.pkl
+	config_path: /work/share/ac8hkycjba/osmodels/molsculptor/checkpoints/diffusion-transformer/config_opt.pkl
+	config_path: /work/share/ac8hkycjba/osmodels/molsculptor/checkpoints/diffusion-transformer/config_opt.pkl
+	config_path: /work/share/ac8hkycjba/osmodels/molsculptor/checkpoints/diffusion-transformer/config_opt.pkl
+	config_path: /work/share/ac8hkycjba/osmodels/molsculptor/checkpoints/diffusion-transformer/config_opt.pkl
+	config_path: /work/share/ac8hkycjba/osmodels/molsculptor/checkpoints/diffusion-transformer/config_opt.pkl
+	params_path: /work/share/ac8hkycjba/osmodels/molsculptor/checkpoints/diffusion-transformer/dit_params_opt.pkl
+	params_path: /work/share/ac8hkycjba/osmodels/molsculptor/checkpoints/diffusion-transformer/dit_params_opt.pkl
+	params_path: /work/share/ac8hkycjba/osmodels/molsculptor/checkpoints/diffusion-transformer/dit_params_opt.pkl
+	params_path: /work/share/ac8hkycjba/osmodels/molsculptor/checkpoints/diffusion-transformer/dit_params_opt.pkl
+	params_path: /work/share/ac8hkycjba/osmodels/molsculptor/checkpoints/diffusion-transformer/dit_params_opt.pkl
+	params_path: /work/share/ac8hkycjba/osmodels/molsculptor/checkpoints/diffusion-transformer/dit_params_opt.pkl
+	params_path: /work/share/ac8hkycjba/osmodels/molsculptor/checkpoints/diffusion-transformer/dit_params_opt.pkl
+	params_path: /work/share/ac8hkycjba/osmodels/molsculptor/checkpoints/diffusion-transformer/dit_params_opt.pkl
+	logger_path: /work/home/onescience2025/kangdf/onescience/src/ai_core/application/molsculptor/test/Logs.txt
+	logger_path: /work/home/onescience2025/kangdf/onescience/src/ai_core/application/molsculptor/test/Logs.txt
+	logger_path: /work/home/onescience2025/kangdf/onescience/src/ai_core/application/molsculptor/test/Logs.txt
+	logger_path: /work/home/onescience2025/kangdf/onescience/src/ai_core/application/molsculptor/test/Logs.txt
+	logger_path: /work/home/onescience2025/kangdf/onescience/src/ai_core/application/molsculptor/test/Logs.txt
+	logger_path: /work/home/onescience2025/kangdf/onescience/src/ai_core/application/molsculptor/test/Logs.txt
+	logger_path: /work/home/onescience2025/kangdf/onescience/src/ai_core/application/molsculptor/test/Logs.txt
+	logger_path: /work/home/onescience2025/kangdf/onescience/src/ai_core/application/molsculptor/test/Logs.txt
+	save_path: /work/home/onescience2025/kangdf/onescience/src/ai_core/application/molsculptor/test
+	save_path: /work/home/onescience2025/kangdf/onescience/src/ai_core/application/molsculptor/test
+	save_path: /work/home/onescience2025/kangdf/onescience/src/ai_core/application/molsculptor/test
+	save_path: /work/home/onescience2025/kangdf/onescience/src/ai_core/application/molsculptor/test
+	save_path: /work/home/onescience2025/kangdf/onescience/src/ai_core/application/molsculptor/test
+	save_path: /work/home/onescience2025/kangdf/onescience/src/ai_core/application/molsculptor/test
+	save_path: /work/home/onescience2025/kangdf/onescience/src/ai_core/application/molsculptor/test
+	save_path: /work/home/onescience2025/kangdf/onescience/src/ai_core/application/molsculptor/test
+	random_seed: 8888
+	random_seed: 8888
+	random_seed: 8888
+	random_seed: 8888
+	random_seed: 8888
+	random_seed: 8888
+	random_seed: 8888
+	random_seed: 8888
+	np_random_seed: 8888
+	np_random_seed: 8888
+	np_random_seed: 8888
+	np_random_seed: 8888
+	np_random_seed: 8888
+	np_random_seed: 8888
+	np_random_seed: 8888
+	np_random_seed: 8888
+	total_step: 2
+	total_step: 2
+	total_step: 2
+	total_step: 2
+	total_step: 2
+	total_step: 2
+	total_step: 2
+	total_step: 2
+	device_batch_size: 128
+	device_batch_size: 128
+	device_batch_size: 128
+	device_batch_size: 128
+	device_batch_size: 128
+	device_batch_size: 128
+	device_batch_size: 128
+	device_batch_size: 128
+	num_latent_tokens: 16
+	num_latent_tokens: 16
+	num_latent_tokens: 16
+	num_latent_tokens: 16
+	num_latent_tokens: 16
+	num_latent_tokens: 16
+	num_latent_tokens: 16
+	num_latent_tokens: 16
+	dim_latent: 32
+	dim_latent: 32
+	dim_latent: 32
+	dim_latent: 32
+	dim_latent: 32
+	dim_latent: 32
+	dim_latent: 32
+	dim_latent: 32
+	eq_steps: 10
+	eq_steps: 10
+	eq_steps: 10
+	eq_steps: 10
+	eq_steps: 10
+	eq_steps: 10
+	eq_steps: 10
+	eq_steps: 10
+	callback_step: 10
+	callback_step: 10
+	callback_step: 10
+	callback_step: 10
+	callback_step: 10
+	callback_step: 10
+	callback_step: 10
+	callback_step: 10
+	beam_size: 4
+	beam_size: 4
+	beam_size: 4
+	beam_size: 4
+	beam_size: 4
+	beam_size: 4
+	beam_size: 4
+	beam_size: 4
+	sampling_method: beam
+	sampling_method: beam
+	sampling_method: beam
+	sampling_method: beam
+	sampling_method: beam
+	sampling_method: beam
+	sampling_method: beam
+	sampling_method: beam
+	infer_config_path: None
+	infer_config_path: None
+	infer_config_path: None
+	infer_config_path: None
+	infer_config_path: None
+	infer_config_path: None
+	infer_config_path: None
+	infer_config_path: None
+	vae_config_path: /work/share/ac8hkycjba/osmodels/molsculptor/checkpoints/auto-encoder/config.pkl
+	vae_config_path: /work/share/ac8hkycjba/osmodels/molsculptor/checkpoints/auto-encoder/config.pkl
+	vae_config_path: /work/share/ac8hkycjba/osmodels/molsculptor/checkpoints/auto-encoder/config.pkl
+	vae_config_path: /work/share/ac8hkycjba/osmodels/molsculptor/checkpoints/auto-encoder/config.pkl
+	vae_config_path: /work/share/ac8hkycjba/osmodels/molsculptor/checkpoints/auto-encoder/config.pkl
+	vae_config_path: /work/share/ac8hkycjba/osmodels/molsculptor/checkpoints/auto-encoder/config.pkl
+	vae_config_path: /work/share/ac8hkycjba/osmodels/molsculptor/checkpoints/auto-encoder/config.pkl
+	vae_config_path: /work/share/ac8hkycjba/osmodels/molsculptor/checkpoints/auto-encoder/config.pkl
+	vae_params_path: /work/share/ac8hkycjba/osmodels/molsculptor/checkpoints/auto-encoder/ae_params_opt.pkl
+	vae_params_path: /work/share/ac8hkycjba/osmodels/molsculptor/checkpoints/auto-encoder/ae_params_opt.pkl
+	vae_params_path: /work/share/ac8hkycjba/osmodels/molsculptor/checkpoints/auto-encoder/ae_params_opt.pkl
+	vae_params_path: /work/share/ac8hkycjba/osmodels/molsculptor/checkpoints/auto-encoder/ae_params_opt.pkl
+	vae_params_path: /work/share/ac8hkycjba/osmodels/molsculptor/checkpoints/auto-encoder/ae_params_opt.pkl
+	vae_params_path: /work/share/ac8hkycjba/osmodels/molsculptor/checkpoints/auto-encoder/ae_params_opt.pkl
+	vae_params_path: /work/share/ac8hkycjba/osmodels/molsculptor/checkpoints/auto-encoder/ae_params_opt.pkl
+	vae_params_path: /work/share/ac8hkycjba/osmodels/molsculptor/checkpoints/auto-encoder/ae_params_opt.pkl
+	alphabet_path: /work/home/onescience2025/kangdf/onescience/src/ai_core/application/molsculptor/smiles_alphabet.pkl
+	alphabet_path: /work/home/onescience2025/kangdf/onescience/src/ai_core/application/molsculptor/smiles_alphabet.pkl
+	alphabet_path: /work/home/onescience2025/kangdf/onescience/src/ai_core/application/molsculptor/smiles_alphabet.pkl
+	alphabet_path: /work/home/onescience2025/kangdf/onescience/src/ai_core/application/molsculptor/smiles_alphabet.pkl
+	alphabet_path: /work/home/onescience2025/kangdf/onescience/src/ai_core/application/molsculptor/smiles_alphabet.pkl
+	alphabet_path: /work/home/onescience2025/kangdf/onescience/src/ai_core/application/molsculptor/smiles_alphabet.pkl
+	alphabet_path: /work/home/onescience2025/kangdf/onescience/src/ai_core/application/molsculptor/smiles_alphabet.pkl
+	alphabet_path: /work/home/onescience2025/kangdf/onescience/src/ai_core/application/molsculptor/smiles_alphabet.pkl
+	n_replicate: 8
+	n_replicate: 8
+	n_replicate: 8
+	n_replicate: 8
+	n_replicate: 8
+	n_replicate: 8
+	n_replicate: 8
+	n_replicate: 8
+	init_molecule_path: /work/home/onescience2025/kangdf/onescience/src/ai_core/application/molsculptor/init_search_molecule.pkl
+	init_molecule_path: /work/home/onescience2025/kangdf/onescience/src/ai_core/application/molsculptor/init_search_molecule.pkl
+	init_molecule_path: /work/home/onescience2025/kangdf/onescience/src/ai_core/application/molsculptor/init_search_molecule.pkl
+	init_molecule_path: /work/home/onescience2025/kangdf/onescience/src/ai_core/application/molsculptor/init_search_molecule.pkl
+	init_molecule_path: /work/home/onescience2025/kangdf/onescience/src/ai_core/application/molsculptor/init_search_molecule.pkl
+	init_molecule_path: /work/home/onescience2025/kangdf/onescience/src/ai_core/application/molsculptor/init_search_molecule.pkl
+	init_molecule_path: /work/home/onescience2025/kangdf/onescience/src/ai_core/application/molsculptor/init_search_molecule.pkl
+	init_molecule_path: /work/home/onescience2025/kangdf/onescience/src/ai_core/application/molsculptor/init_search_molecule.pkl
+	dsdp_script_path_1: /work/home/onescience2025/kangdf/onescience/src/ai_core/application/molsculptor/dsdp_ar.sh
+	dsdp_script_path_1: /work/home/onescience2025/kangdf/onescience/src/ai_core/application/molsculptor/dsdp_ar.sh
+	dsdp_script_path_1: /work/home/onescience2025/kangdf/onescience/src/ai_core/application/molsculptor/dsdp_ar.sh
+	dsdp_script_path_1: /work/home/onescience2025/kangdf/onescience/src/ai_core/application/molsculptor/dsdp_ar.sh
+	dsdp_script_path_1: /work/home/onescience2025/kangdf/onescience/src/ai_core/application/molsculptor/dsdp_ar.sh
+	dsdp_script_path_1: /work/home/onescience2025/kangdf/onescience/src/ai_core/application/molsculptor/dsdp_ar.sh
+	dsdp_script_path_1: /work/home/onescience2025/kangdf/onescience/src/ai_core/application/molsculptor/dsdp_ar.sh
+	dsdp_script_path_1: /work/home/onescience2025/kangdf/onescience/src/ai_core/application/molsculptor/dsdp_ar.sh
+	dsdp_script_path_2: /work/home/onescience2025/kangdf/onescience/src/ai_core/application/molsculptor/dsdp_gr.sh
+	dsdp_script_path_2: /work/home/onescience2025/kangdf/onescience/src/ai_core/application/molsculptor/dsdp_gr.sh
+	dsdp_script_path_2: /work/home/onescience2025/kangdf/onescience/src/ai_core/application/molsculptor/dsdp_gr.sh
+	dsdp_script_path_2: /work/home/onescience2025/kangdf/onescience/src/ai_core/application/molsculptor/dsdp_gr.sh
+	dsdp_script_path_2: /work/home/onescience2025/kangdf/onescience/src/ai_core/application/molsculptor/dsdp_gr.sh
+	dsdp_script_path_2: /work/home/onescience2025/kangdf/onescience/src/ai_core/application/molsculptor/dsdp_gr.sh
+	dsdp_script_path_2: /work/home/onescience2025/kangdf/onescience/src/ai_core/application/molsculptor/dsdp_gr.sh
+	dsdp_script_path_2: /work/home/onescience2025/kangdf/onescience/src/ai_core/application/molsculptor/dsdp_gr.sh
+	t_min: 75
+	t_min: 75
+	t_min: 75
+	t_min: 75
+	t_min: 75
+	t_min: 75
+	t_min: 75
+	t_min: 75
+	t_max: 100
+	t_max: 100
+	t_max: 100
+	t_max: 100
+	t_max: 100
+	t_max: 100
+	t_max: 100
+	t_max: 100
+	sub_smiles: NC(=O)c1cccc(S(=O)(=O)N2CCCc3ccccc32)c1
+	sub_smiles: NC(=O)c1cccc(S(=O)(=O)N2CCCc3ccccc32)c1
+	sub_smiles: NC(=O)c1cccc(S(=O)(=O)N2CCCc3ccccc32)c1
+	sub_smiles: NC(=O)c1cccc(S(=O)(=O)N2CCCc3ccccc32)c1
+	sub_smiles: NC(=O)c1cccc(S(=O)(=O)N2CCCc3ccccc32)c1
+	sub_smiles: NC(=O)c1cccc(S(=O)(=O)N2CCCc3ccccc32)c1
+	sub_smiles: NC(=O)c1cccc(S(=O)(=O)N2CCCc3ccccc32)c1
+	sub_smiles: NC(=O)c1cccc(S(=O)(=O)N2CCCc3ccccc32)c1
+	temp_var_save_path: /work/home/onescience2025/kangdf/onescience/src/ai_core/application/molsculptor/test/temp_var.pkl
+	temp_var_save_path: /work/home/onescience2025/kangdf/onescience/src/ai_core/application/molsculptor/test/temp_var.pkl
+	temp_var_save_path: /work/home/onescience2025/kangdf/onescience/src/ai_core/application/molsculptor/test/temp_var.pkl
+	temp_var_save_path: /work/home/onescience2025/kangdf/onescience/src/ai_core/application/molsculptor/test/temp_var.pkl
+	temp_var_save_path: /work/home/onescience2025/kangdf/onescience/src/ai_core/application/molsculptor/test/temp_var.pkl
+	temp_var_save_path: /work/home/onescience2025/kangdf/onescience/src/ai_core/application/molsculptor/test/temp_var.pkl
+	temp_var_save_path: /work/home/onescience2025/kangdf/onescience/src/ai_core/application/molsculptor/test/temp_var.pkl
+	temp_var_save_path: /work/home/onescience2025/kangdf/onescience/src/ai_core/application/molsculptor/test/temp_var.pkl
+Generating init offsprings...
+Generating init offsprings...
+Generating init offsprings...
+Generating init offsprings...
+Generating init offsprings...
+Generating init offsprings...
+Generating init offsprings...
+Generating init offsprings...
+Error saving results: 'NoneType' object is not subscriptable
+Error saving results: 'NoneType' object is not subscriptable
+Error saving results: 'NoneType' object is not subscriptable
+Error saving results: 'NoneType' object is not subscriptable
+Error saving results: 'NoneType' object is not subscriptable
+Error saving results: 'NoneType' object is not subscriptable
+Error saving results: 'NoneType' object is not subscriptable
+Error saving results: 'NoneType' object is not subscriptable
+=====================INPUT ARGS=====================
+=====================INPUT ARGS=====================
+=====================INPUT ARGS=====================
+=====================INPUT ARGS=====================
+=====================INPUT ARGS=====================
+=====================INPUT ARGS=====================
+=====================INPUT ARGS=====================
+=====================INPUT ARGS=====================
+=====================INPUT ARGS=====================
+INPUT ARGS:
+INPUT ARGS:
+INPUT ARGS:
+INPUT ARGS:
+INPUT ARGS:
+INPUT ARGS:
+INPUT ARGS:
+INPUT ARGS:
+INPUT ARGS:
+	config: None
+	config: None
+	config: None
+	config: None
+	config: None
+	config: None
+	config: None
+	config: None
+	config: None
+	config_path: /work/share/ac8hkycjba/osmodels/molsculptor/checkpoints/diffusion-transformer/config_opt.pkl
+	config_path: /work/share/ac8hkycjba/osmodels/molsculptor/checkpoints/diffusion-transformer/config_opt.pkl
+	config_path: /work/share/ac8hkycjba/osmodels/molsculptor/checkpoints/diffusion-transformer/config_opt.pkl
+	config_path: /work/share/ac8hkycjba/osmodels/molsculptor/checkpoints/diffusion-transformer/config_opt.pkl
+	config_path: /work/share/ac8hkycjba/osmodels/molsculptor/checkpoints/diffusion-transformer/config_opt.pkl
+	config_path: /work/share/ac8hkycjba/osmodels/molsculptor/checkpoints/diffusion-transformer/config_opt.pkl
+	config_path: /work/share/ac8hkycjba/osmodels/molsculptor/checkpoints/diffusion-transformer/config_opt.pkl
+	config_path: /work/share/ac8hkycjba/osmodels/molsculptor/checkpoints/diffusion-transformer/config_opt.pkl
+	config_path: /work/share/ac8hkycjba/osmodels/molsculptor/checkpoints/diffusion-transformer/config_opt.pkl
+	params_path: /work/share/ac8hkycjba/osmodels/molsculptor/checkpoints/diffusion-transformer/dit_params_opt.pkl
+	params_path: /work/share/ac8hkycjba/osmodels/molsculptor/checkpoints/diffusion-transformer/dit_params_opt.pkl
+	params_path: /work/share/ac8hkycjba/osmodels/molsculptor/checkpoints/diffusion-transformer/dit_params_opt.pkl
+	params_path: /work/share/ac8hkycjba/osmodels/molsculptor/checkpoints/diffusion-transformer/dit_params_opt.pkl
+	params_path: /work/share/ac8hkycjba/osmodels/molsculptor/checkpoints/diffusion-transformer/dit_params_opt.pkl
+	params_path: /work/share/ac8hkycjba/osmodels/molsculptor/checkpoints/diffusion-transformer/dit_params_opt.pkl
+	params_path: /work/share/ac8hkycjba/osmodels/molsculptor/checkpoints/diffusion-transformer/dit_params_opt.pkl
+	params_path: /work/share/ac8hkycjba/osmodels/molsculptor/checkpoints/diffusion-transformer/dit_params_opt.pkl
+	params_path: /work/share/ac8hkycjba/osmodels/molsculptor/checkpoints/diffusion-transformer/dit_params_opt.pkl
+	logger_path: /work/home/onescience2025/kangdf/onescience/src/ai_core/application/molsculptor/test/Logs.txt
+	logger_path: /work/home/onescience2025/kangdf/onescience/src/ai_core/application/molsculptor/test/Logs.txt
+	logger_path: /work/home/onescience2025/kangdf/onescience/src/ai_core/application/molsculptor/test/Logs.txt
+	logger_path: /work/home/onescience2025/kangdf/onescience/src/ai_core/application/molsculptor/test/Logs.txt
+	logger_path: /work/home/onescience2025/kangdf/onescience/src/ai_core/application/molsculptor/test/Logs.txt
+	logger_path: /work/home/onescience2025/kangdf/onescience/src/ai_core/application/molsculptor/test/Logs.txt
+	logger_path: /work/home/onescience2025/kangdf/onescience/src/ai_core/application/molsculptor/test/Logs.txt
+	logger_path: /work/home/onescience2025/kangdf/onescience/src/ai_core/application/molsculptor/test/Logs.txt
+	logger_path: /work/home/onescience2025/kangdf/onescience/src/ai_core/application/molsculptor/test/Logs.txt
+	save_path: /work/home/onescience2025/kangdf/onescience/src/ai_core/application/molsculptor/test
+	save_path: /work/home/onescience2025/kangdf/onescience/src/ai_core/application/molsculptor/test
+	save_path: /work/home/onescience2025/kangdf/onescience/src/ai_core/application/molsculptor/test
+	save_path: /work/home/onescience2025/kangdf/onescience/src/ai_core/application/molsculptor/test
+	save_path: /work/home/onescience2025/kangdf/onescience/src/ai_core/application/molsculptor/test
+	save_path: /work/home/onescience2025/kangdf/onescience/src/ai_core/application/molsculptor/test
+	save_path: /work/home/onescience2025/kangdf/onescience/src/ai_core/application/molsculptor/test
+	save_path: /work/home/onescience2025/kangdf/onescience/src/ai_core/application/molsculptor/test
+	save_path: /work/home/onescience2025/kangdf/onescience/src/ai_core/application/molsculptor/test
+	random_seed: 8888
+	random_seed: 8888
+	random_seed: 8888
+	random_seed: 8888
+	random_seed: 8888
+	random_seed: 8888
+	random_seed: 8888
+	random_seed: 8888
+	random_seed: 8888
+	np_random_seed: 8888
+	np_random_seed: 8888
+	np_random_seed: 8888
+	np_random_seed: 8888
+	np_random_seed: 8888
+	np_random_seed: 8888
+	np_random_seed: 8888
+	np_random_seed: 8888
+	np_random_seed: 8888
+	total_step: 2
+	total_step: 2
+	total_step: 2
+	total_step: 2
+	total_step: 2
+	total_step: 2
+	total_step: 2
+	total_step: 2
+	total_step: 2
+	device_batch_size: 128
+	device_batch_size: 128
+	device_batch_size: 128
+	device_batch_size: 128
+	device_batch_size: 128
+	device_batch_size: 128
+	device_batch_size: 128
+	device_batch_size: 128
+	device_batch_size: 128
+	num_latent_tokens: 16
+	num_latent_tokens: 16
+	num_latent_tokens: 16
+	num_latent_tokens: 16
+	num_latent_tokens: 16
+	num_latent_tokens: 16
+	num_latent_tokens: 16
+	num_latent_tokens: 16
+	num_latent_tokens: 16
+	dim_latent: 32
+	dim_latent: 32
+	dim_latent: 32
+	dim_latent: 32
+	dim_latent: 32
+	dim_latent: 32
+	dim_latent: 32
+	dim_latent: 32
+	dim_latent: 32
+	eq_steps: 10
+	eq_steps: 10
+	eq_steps: 10
+	eq_steps: 10
+	eq_steps: 10
+	eq_steps: 10
+	eq_steps: 10
+	eq_steps: 10
+	eq_steps: 10
+	callback_step: 10
+	callback_step: 10
+	callback_step: 10
+	callback_step: 10
+	callback_step: 10
+	callback_step: 10
+	callback_step: 10
+	callback_step: 10
+	callback_step: 10
+	beam_size: 4
+	beam_size: 4
+	beam_size: 4
+	beam_size: 4
+	beam_size: 4
+	beam_size: 4
+	beam_size: 4
+	beam_size: 4
+	beam_size: 4
+	sampling_method: beam
+	sampling_method: beam
+	sampling_method: beam
+	sampling_method: beam
+	sampling_method: beam
+	sampling_method: beam
+	sampling_method: beam
+	sampling_method: beam
+	sampling_method: beam
+	infer_config_path: None
+	infer_config_path: None
+	infer_config_path: None
+	infer_config_path: None
+	infer_config_path: None
+	infer_config_path: None
+	infer_config_path: None
+	infer_config_path: None
+	infer_config_path: None
+	vae_config_path: /work/share/ac8hkycjba/osmodels/molsculptor/checkpoints/auto-encoder/config.pkl
+	vae_config_path: /work/share/ac8hkycjba/osmodels/molsculptor/checkpoints/auto-encoder/config.pkl
+	vae_config_path: /work/share/ac8hkycjba/osmodels/molsculptor/checkpoints/auto-encoder/config.pkl
+	vae_config_path: /work/share/ac8hkycjba/osmodels/molsculptor/checkpoints/auto-encoder/config.pkl
+	vae_config_path: /work/share/ac8hkycjba/osmodels/molsculptor/checkpoints/auto-encoder/config.pkl
+	vae_config_path: /work/share/ac8hkycjba/osmodels/molsculptor/checkpoints/auto-encoder/config.pkl
+	vae_config_path: /work/share/ac8hkycjba/osmodels/molsculptor/checkpoints/auto-encoder/config.pkl
+	vae_config_path: /work/share/ac8hkycjba/osmodels/molsculptor/checkpoints/auto-encoder/config.pkl
+	vae_config_path: /work/share/ac8hkycjba/osmodels/molsculptor/checkpoints/auto-encoder/config.pkl
+	vae_params_path: /work/share/ac8hkycjba/osmodels/molsculptor/checkpoints/auto-encoder/ae_params_opt.pkl
+	vae_params_path: /work/share/ac8hkycjba/osmodels/molsculptor/checkpoints/auto-encoder/ae_params_opt.pkl
+	vae_params_path: /work/share/ac8hkycjba/osmodels/molsculptor/checkpoints/auto-encoder/ae_params_opt.pkl
+	vae_params_path: /work/share/ac8hkycjba/osmodels/molsculptor/checkpoints/auto-encoder/ae_params_opt.pkl
+	vae_params_path: /work/share/ac8hkycjba/osmodels/molsculptor/checkpoints/auto-encoder/ae_params_opt.pkl
+	vae_params_path: /work/share/ac8hkycjba/osmodels/molsculptor/checkpoints/auto-encoder/ae_params_opt.pkl
+	vae_params_path: /work/share/ac8hkycjba/osmodels/molsculptor/checkpoints/auto-encoder/ae_params_opt.pkl
+	vae_params_path: /work/share/ac8hkycjba/osmodels/molsculptor/checkpoints/auto-encoder/ae_params_opt.pkl
+	vae_params_path: /work/share/ac8hkycjba/osmodels/molsculptor/checkpoints/auto-encoder/ae_params_opt.pkl
+	alphabet_path: /work/home/onescience2025/kangdf/onescience/src/ai_core/application/molsculptor/smiles_alphabet.pkl
+	alphabet_path: /work/home/onescience2025/kangdf/onescience/src/ai_core/application/molsculptor/smiles_alphabet.pkl
+	alphabet_path: /work/home/onescience2025/kangdf/onescience/src/ai_core/application/molsculptor/smiles_alphabet.pkl
+	alphabet_path: /work/home/onescience2025/kangdf/onescience/src/ai_core/application/molsculptor/smiles_alphabet.pkl
+	alphabet_path: /work/home/onescience2025/kangdf/onescience/src/ai_core/application/molsculptor/smiles_alphabet.pkl
+	alphabet_path: /work/home/onescience2025/kangdf/onescience/src/ai_core/application/molsculptor/smiles_alphabet.pkl
+	alphabet_path: /work/home/onescience2025/kangdf/onescience/src/ai_core/application/molsculptor/smiles_alphabet.pkl
+	alphabet_path: /work/home/onescience2025/kangdf/onescience/src/ai_core/application/molsculptor/smiles_alphabet.pkl
+	alphabet_path: /work/home/onescience2025/kangdf/onescience/src/ai_core/application/molsculptor/smiles_alphabet.pkl
+	n_replicate: 8
+	n_replicate: 8
+	n_replicate: 8
+	n_replicate: 8
+	n_replicate: 8
+	n_replicate: 8
+	n_replicate: 8
+	n_replicate: 8
+	n_replicate: 8
+	init_molecule_path: /work/home/onescience2025/kangdf/onescience/src/ai_core/application/molsculptor/init_search_molecule.pkl
+	init_molecule_path: /work/home/onescience2025/kangdf/onescience/src/ai_core/application/molsculptor/init_search_molecule.pkl
+	init_molecule_path: /work/home/onescience2025/kangdf/onescience/src/ai_core/application/molsculptor/init_search_molecule.pkl
+	init_molecule_path: /work/home/onescience2025/kangdf/onescience/src/ai_core/application/molsculptor/init_search_molecule.pkl
+	init_molecule_path: /work/home/onescience2025/kangdf/onescience/src/ai_core/application/molsculptor/init_search_molecule.pkl
+	init_molecule_path: /work/home/onescience2025/kangdf/onescience/src/ai_core/application/molsculptor/init_search_molecule.pkl
+	init_molecule_path: /work/home/onescience2025/kangdf/onescience/src/ai_core/application/molsculptor/init_search_molecule.pkl
+	init_molecule_path: /work/home/onescience2025/kangdf/onescience/src/ai_core/application/molsculptor/init_search_molecule.pkl
+	init_molecule_path: /work/home/onescience2025/kangdf/onescience/src/ai_core/application/molsculptor/init_search_molecule.pkl
+	dsdp_script_path_1: /work/home/onescience2025/kangdf/onescience/src/ai_core/application/molsculptor/dsdp_ar.sh
+	dsdp_script_path_1: /work/home/onescience2025/kangdf/onescience/src/ai_core/application/molsculptor/dsdp_ar.sh
+	dsdp_script_path_1: /work/home/onescience2025/kangdf/onescience/src/ai_core/application/molsculptor/dsdp_ar.sh
+	dsdp_script_path_1: /work/home/onescience2025/kangdf/onescience/src/ai_core/application/molsculptor/dsdp_ar.sh
+	dsdp_script_path_1: /work/home/onescience2025/kangdf/onescience/src/ai_core/application/molsculptor/dsdp_ar.sh
+	dsdp_script_path_1: /work/home/onescience2025/kangdf/onescience/src/ai_core/application/molsculptor/dsdp_ar.sh
+	dsdp_script_path_1: /work/home/onescience2025/kangdf/onescience/src/ai_core/application/molsculptor/dsdp_ar.sh
+	dsdp_script_path_1: /work/home/onescience2025/kangdf/onescience/src/ai_core/application/molsculptor/dsdp_ar.sh
+	dsdp_script_path_1: /work/home/onescience2025/kangdf/onescience/src/ai_core/application/molsculptor/dsdp_ar.sh
+	dsdp_script_path_2: /work/home/onescience2025/kangdf/onescience/src/ai_core/application/molsculptor/dsdp_gr.sh
+	dsdp_script_path_2: /work/home/onescience2025/kangdf/onescience/src/ai_core/application/molsculptor/dsdp_gr.sh
+	dsdp_script_path_2: /work/home/onescience2025/kangdf/onescience/src/ai_core/application/molsculptor/dsdp_gr.sh
+	dsdp_script_path_2: /work/home/onescience2025/kangdf/onescience/src/ai_core/application/molsculptor/dsdp_gr.sh
+	dsdp_script_path_2: /work/home/onescience2025/kangdf/onescience/src/ai_core/application/molsculptor/dsdp_gr.sh
+	dsdp_script_path_2: /work/home/onescience2025/kangdf/onescience/src/ai_core/application/molsculptor/dsdp_gr.sh
+	dsdp_script_path_2: /work/home/onescience2025/kangdf/onescience/src/ai_core/application/molsculptor/dsdp_gr.sh
+	dsdp_script_path_2: /work/home/onescience2025/kangdf/onescience/src/ai_core/application/molsculptor/dsdp_gr.sh
+	dsdp_script_path_2: /work/home/onescience2025/kangdf/onescience/src/ai_core/application/molsculptor/dsdp_gr.sh
+	t_min: 75
+	t_min: 75
+	t_min: 75
+	t_min: 75
+	t_min: 75
+	t_min: 75
+	t_min: 75
+	t_min: 75
+	t_min: 75
+	t_max: 100
+	t_max: 100
+	t_max: 100
+	t_max: 100
+	t_max: 100
+	t_max: 100
+	t_max: 100
+	t_max: 100
+	t_max: 100
+	sub_smiles: NC(=O)c1cccc(S(=O)(=O)N2CCCc3ccccc32)c1
+	sub_smiles: NC(=O)c1cccc(S(=O)(=O)N2CCCc3ccccc32)c1
+	sub_smiles: NC(=O)c1cccc(S(=O)(=O)N2CCCc3ccccc32)c1
+	sub_smiles: NC(=O)c1cccc(S(=O)(=O)N2CCCc3ccccc32)c1
+	sub_smiles: NC(=O)c1cccc(S(=O)(=O)N2CCCc3ccccc32)c1
+	sub_smiles: NC(=O)c1cccc(S(=O)(=O)N2CCCc3ccccc32)c1
+	sub_smiles: NC(=O)c1cccc(S(=O)(=O)N2CCCc3ccccc32)c1
+	sub_smiles: NC(=O)c1cccc(S(=O)(=O)N2CCCc3ccccc32)c1
+	sub_smiles: NC(=O)c1cccc(S(=O)(=O)N2CCCc3ccccc32)c1
+	temp_var_save_path: /work/home/onescience2025/kangdf/onescience/src/ai_core/application/molsculptor/test/temp_var.pkl
+	temp_var_save_path: /work/home/onescience2025/kangdf/onescience/src/ai_core/application/molsculptor/test/temp_var.pkl
+	temp_var_save_path: /work/home/onescience2025/kangdf/onescience/src/ai_core/application/molsculptor/test/temp_var.pkl
+	temp_var_save_path: /work/home/onescience2025/kangdf/onescience/src/ai_core/application/molsculptor/test/temp_var.pkl
+	temp_var_save_path: /work/home/onescience2025/kangdf/onescience/src/ai_core/application/molsculptor/test/temp_var.pkl
+	temp_var_save_path: /work/home/onescience2025/kangdf/onescience/src/ai_core/application/molsculptor/test/temp_var.pkl
+	temp_var_save_path: /work/home/onescience2025/kangdf/onescience/src/ai_core/application/molsculptor/test/temp_var.pkl
+	temp_var_save_path: /work/home/onescience2025/kangdf/onescience/src/ai_core/application/molsculptor/test/temp_var.pkl
+	temp_var_save_path: /work/home/onescience2025/kangdf/onescience/src/ai_core/application/molsculptor/test/temp_var.pkl
+=====================INPUT ARGS=====================
+INPUT ARGS:
+	config: None
+	config_path: /work/share/ac8hkycjba/osmodels/molsculptor/checkpoints/diffusion-transformer/config_opt.pkl
+	params_path: /work/share/ac8hkycjba/osmodels/molsculptor/checkpoints/diffusion-transformer/dit_params_opt.pkl
+	logger_path: /work/home/onescience2025/kangdf/onescience/src/ai_core/application/molsculptor/test/Logs.txt
+	save_path: /work/home/onescience2025/kangdf/onescience/src/ai_core/application/molsculptor/test
+	random_seed: 8888
+	np_random_seed: 8888
+	total_step: 2
+	device_batch_size: 128
+	num_latent_tokens: 16
+	dim_latent: 32
+	eq_steps: 10
+	callback_step: 10
+	beam_size: 4
+	sampling_method: beam
+	infer_config_path: None
+	vae_config_path: /work/share/ac8hkycjba/osmodels/molsculptor/checkpoints/auto-encoder/config.pkl
+	vae_params_path: /work/share/ac8hkycjba/osmodels/molsculptor/checkpoints/auto-encoder/ae_params_opt.pkl
+	alphabet_path: /work/home/onescience2025/kangdf/onescience/src/ai_core/application/molsculptor/smiles_alphabet.pkl
+	n_replicate: 8
+	init_molecule_path: /work/home/onescience2025/kangdf/onescience/src/ai_core/application/molsculptor/init_search_molecule.pkl
+	dsdp_script_path_1: /work/home/onescience2025/kangdf/onescience/src/ai_core/application/molsculptor/dsdp_ar.sh
+	dsdp_script_path_2: /work/home/onescience2025/kangdf/onescience/src/ai_core/application/molsculptor/dsdp_gr.sh
+	t_min: 75
+	t_max: 100
+	sub_smiles: NC(=O)c1cccc(S(=O)(=O)N2CCCc3ccccc32)c1
+	temp_var_save_path: /work/home/onescience2025/kangdf/onescience/src/ai_core/application/molsculptor/test/temp_var.pkl
+Generating init offsprings...
+Starting search, total steps = 2
+Error saving results: BaseTool.__call__() got an unexpected keyword argument 'inferencer'
+Error saving results: BaseTool.__call__() got an unexpected keyword argument 'inferencer'
+=====================INPUT ARGS=====================
+INPUT ARGS:
+	config: None
+	config_path: /work/share/ac8hkycjba/osmodels/molsculptor/checkpoints/diffusion-transformer/config_opt.pkl
+	params_path: /work/share/ac8hkycjba/osmodels/molsculptor/checkpoints/diffusion-transformer/dit_params_opt.pkl
+	logger_path: /work/home/onescience2025/kangdf/onescience/src/ai_core/application/molsculptor/test/Logs.txt
+	save_path: /work/home/onescience2025/kangdf/onescience/src/ai_core/application/molsculptor/test
+	random_seed: 8888
+	np_random_seed: 8888
+	total_step: 2
+	device_batch_size: 128
+	num_latent_tokens: 16
+	dim_latent: 32
+	eq_steps: 10
+	callback_step: 10
+	beam_size: 4
+	sampling_method: beam
+	infer_config_path: None
+	vae_config_path: /work/share/ac8hkycjba/osmodels/molsculptor/checkpoints/auto-encoder/config.pkl
+	vae_params_path: /work/share/ac8hkycjba/osmodels/molsculptor/checkpoints/auto-encoder/ae_params_opt.pkl
+	alphabet_path: /work/home/onescience2025/kangdf/onescience/src/ai_core/application/molsculptor/smiles_alphabet.pkl
+	n_replicate: 8
+	init_molecule_path: /work/home/onescience2025/kangdf/onescience/src/ai_core/application/molsculptor/init_search_molecule.pkl
+	dsdp_script_path_1: /work/home/onescience2025/kangdf/onescience/src/ai_core/application/molsculptor/dsdp_ar.sh
+	dsdp_script_path_2: /work/home/onescience2025/kangdf/onescience/src/ai_core/application/molsculptor/dsdp_gr.sh
+	t_min: 75
+	t_max: 100
+	sub_smiles: NC(=O)c1cccc(S(=O)(=O)N2CCCc3ccccc32)c1
+	temp_var_save_path: /work/home/onescience2025/kangdf/onescience/src/ai_core/application/molsculptor/test/temp_var.pkl
+Generating init offsprings...
+Starting search, total steps = 2
+Error saving results: BaseTool.__call__() got an unexpected keyword argument 'inferencer'
+Error saving results: BaseTool.__call__() got an unexpected keyword argument 'inferencer'
+=====================INPUT ARGS=====================
+INPUT ARGS:
+	config: None
+	config_path: /work/share/ac8hkycjba/osmodels/molsculptor/checkpoints/diffusion-transformer/config_opt.pkl
+	params_path: /work/share/ac8hkycjba/osmodels/molsculptor/checkpoints/diffusion-transformer/dit_params_opt.pkl
+	logger_path: /work/home/onescience2025/kangdf/onescience/src/ai_core/application/molsculptor/test/Logs.txt
+	save_path: /work/home/onescience2025/kangdf/onescience/src/ai_core/application/molsculptor/test
+	random_seed: 8888
+	np_random_seed: 8888
+	total_step: 2
+	device_batch_size: 128
+	num_latent_tokens: 16
+	dim_latent: 32
+	eq_steps: 10
+	callback_step: 10
+	beam_size: 4
+	sampling_method: beam
+	infer_config_path: None
+	vae_config_path: /work/share/ac8hkycjba/osmodels/molsculptor/checkpoints/auto-encoder/config.pkl
+	vae_params_path: /work/share/ac8hkycjba/osmodels/molsculptor/checkpoints/auto-encoder/ae_params_opt.pkl
+	alphabet_path: /work/home/onescience2025/kangdf/onescience/src/ai_core/application/molsculptor/smiles_alphabet.pkl
+	n_replicate: 8
+	init_molecule_path: /work/home/onescience2025/kangdf/onescience/src/ai_core/application/molsculptor/init_search_molecule.pkl
+	dsdp_script_path_1: /work/home/onescience2025/kangdf/onescience/src/ai_core/application/molsculptor/dsdp_ar.sh
+	dsdp_script_path_2: /work/home/onescience2025/kangdf/onescience/src/ai_core/application/molsculptor/dsdp_gr.sh
+	t_min: 75
+	t_max: 100
+	sub_smiles: NC(=O)c1cccc(S(=O)(=O)N2CCCc3ccccc32)c1
+	temp_var_save_path: /work/home/onescience2025/kangdf/onescience/src/ai_core/application/molsculptor/test/temp_var.pkl
+Generating init offsprings...
+Starting search, total steps = 2
+Error saving results: BaseTool.__call__() got an unexpected keyword argument 'inferencer'
+Error saving results: BaseTool.__call__() got an unexpected keyword argument 'inferencer'
+=====================INPUT ARGS=====================
+INPUT ARGS:
+	config: None
+	config_path: /work/share/ac8hkycjba/osmodels/molsculptor/checkpoints/diffusion-transformer/config_opt.pkl
+	params_path: /work/share/ac8hkycjba/osmodels/molsculptor/checkpoints/diffusion-transformer/dit_params_opt.pkl
+	logger_path: /work/home/onescience2025/kangdf/onescience/src/ai_core/application/molsculptor/test/Logs.txt
+	save_path: /work/home/onescience2025/kangdf/onescience/src/ai_core/application/molsculptor/test
+	random_seed: 8888
+	np_random_seed: 8888
+	total_step: 2
+	device_batch_size: 128
+	num_latent_tokens: 16
+	dim_latent: 32
+	eq_steps: 10
+	callback_step: 10
+	beam_size: 4
+	sampling_method: beam
+	infer_config_path: None
+	vae_config_path: /work/share/ac8hkycjba/osmodels/molsculptor/checkpoints/auto-encoder/config.pkl
+	vae_params_path: /work/share/ac8hkycjba/osmodels/molsculptor/checkpoints/auto-encoder/ae_params_opt.pkl
+	alphabet_path: /work/home/onescience2025/kangdf/onescience/src/ai_core/application/molsculptor/smiles_alphabet.pkl
+	n_replicate: 8
+	init_molecule_path: /work/home/onescience2025/kangdf/onescience/src/ai_core/application/molsculptor/init_search_molecule.pkl
+	dsdp_script_path_1: /work/home/onescience2025/kangdf/onescience/src/ai_core/application/molsculptor/dsdp_ar.sh
+	dsdp_script_path_2: /work/home/onescience2025/kangdf/onescience/src/ai_core/application/molsculptor/dsdp_gr.sh
+	t_min: 75
+	t_max: 100
+	sub_smiles: NC(=O)c1cccc(S(=O)(=O)N2CCCc3ccccc32)c1
+	temp_var_save_path: /work/home/onescience2025/kangdf/onescience/src/ai_core/application/molsculptor/test/temp_var.pkl
+Generating init offsprings...
+Starting search, total steps = 2
+Top 4 DSDP PROT-1 scores: [9.221 9.221 9.221 9.221]
+Top 4 DSDP PROT-2 scores: [8.996 8.996 8.996 8.996]
+Average sim score: 0.687
+Top 4 DSDP PROT-1 scores: [9.221 9.221 9.221 9.221]
+Top 4 DSDP PROT-2 scores: [8.996 8.996 8.996 8.996]
+Average sim score: 0.734
+=====================END INFERENCE=====================
+Inference done, time 0:18:59.999501, results saved to /work/home/onescience2025/kangdf/onescience/src/ai_core/application/molsculptor/test
+=====================INPUT ARGS=====================
+INPUT ARGS:
+	config: None
+	config_path: /work/share/ac8hkycjba/osmodels/molsculptor/checkpoints/diffusion-transformer/config_opt.pkl
+	params_path: /work/share/ac8hkycjba/osmodels/molsculptor/checkpoints/diffusion-transformer/dit_params_opt.pkl
+	logger_path: /work/home/onescience2025/kangdf/onescience/src/ai_core/application/molsculptor/test/Logs.txt
+	save_path: /work/home/onescience2025/kangdf/onescience/src/ai_core/application/molsculptor/test
+	random_seed: 8888
+	np_random_seed: 8888
+	total_step: 2
+	device_batch_size: 128
+	num_latent_tokens: 16
+	dim_latent: 32
+	eq_steps: 10
+	callback_step: 10
+	beam_size: 4
+	sampling_method: beam
+	infer_config_path: None
+	vae_config_path: /work/share/ac8hkycjba/osmodels/molsculptor/checkpoints/auto-encoder/config.pkl
+	vae_params_path: /work/share/ac8hkycjba/osmodels/molsculptor/checkpoints/auto-encoder/ae_params_opt.pkl
+	alphabet_path: /work/home/onescience2025/kangdf/onescience/src/ai_core/application/molsculptor/smiles_alphabet.pkl
+	n_replicate: 8
+	init_molecule_path: /work/home/onescience2025/kangdf/onescience/src/ai_core/application/molsculptor/init_search_molecule.pkl
+	dsdp_script_path_1: /work/home/onescience2025/kangdf/onescience/src/ai_core/application/molsculptor/dsdp_ar.sh
+	dsdp_script_path_2: /work/home/onescience2025/kangdf/onescience/src/ai_core/application/molsculptor/dsdp_gr.sh
+	t_min: 75
+	t_max: 100
+	sub_smiles: NC(=O)c1cccc(S(=O)(=O)N2CCCc3ccccc32)c1
+	temp_var_save_path: /work/home/onescience2025/kangdf/onescience/src/ai_core/application/molsculptor/test/temp_var.pkl
+Generating init offsprings...
+Starting search, total steps = 2
+Top 4 DSDP PROT-1 scores: [9.221 9.221 9.221 9.221]
+Top 4 DSDP PROT-2 scores: [8.996 8.996 8.996 8.996]
+Average sim score: 0.687
+Top 4 DSDP PROT-1 scores: [9.221 9.221 9.221 9.221]
+Top 4 DSDP PROT-2 scores: [8.996 8.996 8.996 8.996]
+Average sim score: 0.734
+=====================END INFERENCE=====================
+Inference done, time 0:18:22.736452, results saved to /work/home/onescience2025/kangdf/onescience/src/ai_core/application/molsculptor/test
+=====================INPUT ARGS=====================
+INPUT ARGS:
+	config: None
+	config_path: /work/share/ac8hkycjba/osmodels/molsculptor/checkpoints/diffusion-transformer/config_opt.pkl
+	params_path: /work/share/ac8hkycjba/osmodels/molsculptor/checkpoints/diffusion-transformer/dit_params_opt.pkl
+	logger_path: /work/home/onescience2025/kangdf/onescience/src/ai_core/application/molsculptor/test/Logs.txt
+	save_path: /work/home/onescience2025/kangdf/onescience/src/ai_core/application/molsculptor/test
+	random_seed: 8888
+	np_random_seed: 8888
+	total_step: 2
+	device_batch_size: 128
+	num_latent_tokens: 16
+	dim_latent: 32
+	eq_steps: 10
+	callback_step: 10
+	beam_size: 4
+	sampling_method: beam
+	infer_config_path: None
+	vae_config_path: /work/share/ac8hkycjba/osmodels/molsculptor/checkpoints/auto-encoder/config.pkl
+	vae_params_path: /work/share/ac8hkycjba/osmodels/molsculptor/checkpoints/auto-encoder/ae_params_opt.pkl
+	alphabet_path: /work/home/onescience2025/kangdf/onescience/src/ai_core/application/molsculptor/smiles_alphabet.pkl
+	n_replicate: 8
+	init_molecule_path: /work/home/onescience2025/kangdf/onescience/src/ai_core/application/molsculptor/init_search_molecule.pkl
+	dsdp_script_path_1: /work/home/onescience2025/kangdf/onescience/src/ai_core/application/molsculptor/dsdp_ar.sh
+	dsdp_script_path_2: /work/home/onescience2025/kangdf/onescience/src/ai_core/application/molsculptor/dsdp_gr.sh
+	t_min: 75
+	t_max: 100
+	sub_smiles: NC(=O)c1cccc(S(=O)(=O)N2CCCc3ccccc32)c1
+	temp_var_save_path: /work/home/onescience2025/kangdf/onescience/src/ai_core/application/molsculptor/test/temp_var.pkl
+Generating init offsprings...
+Starting search, total steps = 2
+Top 4 DSDP PROT-1 scores: [9.221 9.221 9.221 9.221]
+Top 4 DSDP PROT-2 scores: [8.996 8.996 8.996 8.996]
+Average sim score: 0.687
+Top 4 DSDP PROT-1 scores: [9.221 9.221 9.221 9.221]
+Top 4 DSDP PROT-2 scores: [8.996 8.996 8.996 8.996]
+Average sim score: 0.734
+=====================END INFERENCE=====================
+Inference done, time 0:22:03.671118, results saved to /work/home/onescience2025/kangdf/onescience/src/ai_core/application/molsculptor/test
+=====================INPUT ARGS=====================
+INPUT ARGS:
+	config: None
+	config_path: /work/share/ac8hkycjba/osmodels/molsculptor/checkpoints/diffusion-transformer/config_opt.pkl
+	params_path: /work/share/ac8hkycjba/osmodels/molsculptor/checkpoints/diffusion-transformer/dit_params_opt.pkl
+	logger_path: /work/home/onescience2025/kangdf/onescience/src/ai_core/application/molsculptor/test/Logs.txt
+	save_path: /work/home/onescience2025/kangdf/onescience/src/ai_core/application/molsculptor/test
+	random_seed: 8888
+	np_random_seed: 8888
+	total_step: 2
+	device_batch_size: 128
+	num_latent_tokens: 16
+	dim_latent: 32
+	eq_steps: 10
+	callback_step: 10
+	beam_size: 4
+	sampling_method: beam
+	infer_config_path: None
+	vae_config_path: /work/share/ac8hkycjba/osmodels/molsculptor/checkpoints/auto-encoder/config.pkl
+	vae_params_path: /work/share/ac8hkycjba/osmodels/molsculptor/checkpoints/auto-encoder/ae_params_opt.pkl
+	alphabet_path: /work/home/onescience2025/kangdf/onescience/src/ai_core/application/molsculptor/smiles_alphabet.pkl
+	n_replicate: 8
+	init_molecule_path: /work/home/onescience2025/kangdf/onescience/src/ai_core/application/molsculptor/init_search_molecule.pkl
+	dsdp_script_path_1: /work/home/onescience2025/kangdf/onescience/src/ai_core/application/molsculptor/dsdp_ar.sh
+	dsdp_script_path_2: /work/home/onescience2025/kangdf/onescience/src/ai_core/application/molsculptor/dsdp_gr.sh
+	t_min: 75
+	t_max: 100
+	sub_smiles: NC(=O)c1cccc(S(=O)(=O)N2CCCc3ccccc32)c1
+	temp_var_save_path: /work/home/onescience2025/kangdf/onescience/src/ai_core/application/molsculptor/test/temp_var.pkl
+Generating init offsprings...
+Starting search, total steps = 2
+Error encoding input molecular graphs using a VAE-based encoder: 'choiced_molecules'
+Top 4 DSDP PROT-1 scores: [9.221 9.221 9.221 9.221]
+Top 4 DSDP PROT-2 scores: [8.996 8.996 8.996 8.996]
+Average sim score: 0.687
+=====================END INFERENCE=====================
+Inference done, time 0:12:31.890009, results saved to /work/home/onescience2025/kangdf/onescience/src/ai_core/application/molsculptor/test
+=====================INPUT ARGS=====================
+INPUT ARGS:
+	config: None
+	config_path: /work/share/ac8hkycjba/osmodels/molsculptor/checkpoints/diffusion-transformer/config_opt.pkl
+	params_path: /work/share/ac8hkycjba/osmodels/molsculptor/checkpoints/diffusion-transformer/dit_params_opt.pkl
+	logger_path: /work/home/onescience2025/kangdf/onescience/src/ai_core/application/molsculptor/test/Logs.txt
+	save_path: /work/home/onescience2025/kangdf/onescience/src/ai_core/application/molsculptor/test
+	random_seed: 8888
+	np_random_seed: 8888
+	total_step: 2
+	device_batch_size: 128
+	num_latent_tokens: 16
+	dim_latent: 32
+	eq_steps: 10
+	callback_step: 10
+	beam_size: 4
+	sampling_method: beam
+	infer_config_path: None
+	vae_config_path: /work/share/ac8hkycjba/osmodels/molsculptor/checkpoints/auto-encoder/config.pkl
+	vae_params_path: /work/share/ac8hkycjba/osmodels/molsculptor/checkpoints/auto-encoder/ae_params_opt.pkl
+	alphabet_path: /work/home/onescience2025/kangdf/onescience/src/ai_core/application/molsculptor/smiles_alphabet.pkl
+	n_replicate: 8
+	init_molecule_path: /work/home/onescience2025/kangdf/onescience/src/ai_core/application/molsculptor/init_search_molecule.pkl
+	dsdp_script_path_1: /work/home/onescience2025/kangdf/onescience/src/ai_core/application/molsculptor/dsdp_ar.sh
+	dsdp_script_path_2: /work/home/onescience2025/kangdf/onescience/src/ai_core/application/molsculptor/dsdp_gr.sh
+	t_min: 75
+	t_max: 100
+	sub_smiles: NC(=O)c1cccc(S(=O)(=O)N2CCCc3ccccc32)c1
+	temp_var_save_path: /work/home/onescience2025/kangdf/onescience/src/ai_core/application/molsculptor/test/temp_var.pkl
+Generating init offsprings...
+Starting search, total steps = 2
+Error encoding input molecular graphs using a VAE-based encoder: 'choiced_molecules'
+Top 4 DSDP PROT-1 scores: [9.221 9.221 9.221 9.221]
+Top 4 DSDP PROT-2 scores: [8.996 8.996 8.996 8.996]
+Average sim score: 0.687
+=====================END INFERENCE=====================
+Inference done, time 0:14:38.423308, results saved to /work/home/onescience2025/kangdf/onescience/src/ai_core/application/molsculptor/test
+=====================INPUT ARGS=====================
+INPUT ARGS:
+	config: None
+	config_path: /work/share/ac8hkycjba/osmodels/molsculptor/checkpoints/diffusion-transformer/config_opt.pkl
+	params_path: /work/share/ac8hkycjba/osmodels/molsculptor/checkpoints/diffusion-transformer/dit_params_opt.pkl
+	logger_path: /work/home/onescience2025/kangdf/onescience/src/ai_core/application/molsculptor/test/Logs.txt
+	save_path: /work/home/onescience2025/kangdf/onescience/src/ai_core/application/molsculptor/test
+	random_seed: 8888
+	np_random_seed: 8888
+	total_step: 2
+	device_batch_size: 128
+	num_latent_tokens: 16
+	dim_latent: 32
+	eq_steps: 10
+	callback_step: 10
+	beam_size: 4
+	sampling_method: beam
+	infer_config_path: None
+	vae_config_path: /work/share/ac8hkycjba/osmodels/molsculptor/checkpoints/auto-encoder/config.pkl
+	vae_params_path: /work/share/ac8hkycjba/osmodels/molsculptor/checkpoints/auto-encoder/ae_params_opt.pkl
+	alphabet_path: /work/home/onescience2025/kangdf/onescience/src/ai_core/application/molsculptor/smiles_alphabet.pkl
+	n_replicate: 8
+	init_molecule_path: /work/home/onescience2025/kangdf/onescience/src/ai_core/application/molsculptor/init_search_molecule.pkl
+	dsdp_script_path_1: /work/home/onescience2025/kangdf/onescience/src/ai_core/application/molsculptor/dsdp_ar.sh
+	dsdp_script_path_2: /work/home/onescience2025/kangdf/onescience/src/ai_core/application/molsculptor/dsdp_gr.sh
+	t_min: 75
+	t_max: 100
+	sub_smiles: NC(=O)c1cccc(S(=O)(=O)N2CCCc3ccccc32)c1
+	temp_var_save_path: /work/home/onescience2025/kangdf/onescience/src/ai_core/application/molsculptor/test/temp_var.pkl
+Generating init offsprings...
+Starting search, total steps = 2
+Error encoding input molecular graphs using a VAE-based encoder: 'choiced_molecules'
+Error selecting high-quality molecules: 'scores'
+Error evaluating reward scores and constraints : 'decode_molecules'
+Top 4 DSDP PROT-1 scores: [9.221 9.221 9.221 9.221]
+Top 4 DSDP PROT-2 scores: [8.996 8.996 8.996 8.996]
+Average sim score: 0.687
+=====================END INFERENCE=====================
+Inference done, time 0:22:33.866194, results saved to /work/home/onescience2025/kangdf/onescience/src/ai_core/application/molsculptor/test
