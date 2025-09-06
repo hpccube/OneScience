@@ -1,0 +1,8 @@
+option(
+  'mpiabi', type: 'boolean', value: false,
+  description: 'Use MPI ABI (standard or legacy)'
+)
+option(
+  'pysabi',  type: 'string', value: '',
+  description: 'Use Python Stable ABI'
+)
