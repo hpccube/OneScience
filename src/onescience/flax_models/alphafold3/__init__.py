@@ -1,2 +1,3 @@
-# Copyright 2024 OneScience
-"""AlphaFold3 module with self-contained installation."""
+
+
+"""An implementation of the inference pipeline of AlphaFold 3."""
