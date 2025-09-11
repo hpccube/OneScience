@@ -3,7 +3,7 @@ import json
 import torch
 import pickle
 import random
-from onescience.utils.deepcfd.train_functions import *
+from train_functions import *
 from onescience.utils.deepcfd.functions import *
 from torch.utils.data import TensorDataset
 
