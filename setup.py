@@ -52,7 +52,7 @@ deps = {re.split(r"[=<>~!]", dep)[0]: dep for dep in one_deps}  # {'numpy': 'num
 basic_requires = [
     "numpy",
     "tqdm",
-    # "timm",
+    "timm",
     "wandb",
     "hydra-core",
     "treelib",
