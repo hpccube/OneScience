@@ -1,4 +1,0 @@
-examples
-nemo
-scripts
-tests
