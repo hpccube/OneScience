@@ -1,0 +1,1700 @@
+Metadata-Version: 2.4
+Name: nemo-toolkit
+Version: 2.5.0rc0
+Summary: NeMo - a toolkit for Conversational AI
+Home-page: https://github.com/nvidia/nemo
+Download-URL: https://github.com/NVIDIA/NeMo/releases
+Author: NVIDIA
+Author-email: NVIDIA <nemo-toolkit@nvidia.com>
+Maintainer: NVIDIA
+Maintainer-email: NVIDIA <nemo-toolkit@nvidia.com>
+License:                                  Apache License
+                                   Version 2.0, January 2004
+                                http://www.apache.org/licenses/
+        
+           TERMS AND CONDITIONS FOR USE, REPRODUCTION, AND DISTRIBUTION
+        
+           1. Definitions.
+        
+              "License" shall mean the terms and conditions for use, reproduction,
+              and distribution as defined by Sections 1 through 9 of this document.
+        
+              "Licensor" shall mean the copyright owner or entity authorized by
+              the copyright owner that is granting the License.
+        
+              "Legal Entity" shall mean the union of the acting entity and all
+              other entities that control, are controlled by, or are under common
+              control with that entity. For the purposes of this definition,
+              "control" means (i) the power, direct or indirect, to cause the
+              direction or management of such entity, whether by contract or
+              otherwise, or (ii) ownership of fifty percent (50%) or more of the
+              outstanding shares, or (iii) beneficial ownership of such entity.
+        
+              "You" (or "Your") shall mean an individual or Legal Entity
+              exercising permissions granted by this License.
+        
+              "Source" form shall mean the preferred form for making modifications,
+              including but not limited to software source code, documentation
+              source, and configuration files.
+        
+              "Object" form shall mean any form resulting from mechanical
+              transformation or translation of a Source form, including but
+              not limited to compiled object code, generated documentation,
+              and conversions to other media types.
+        
+              "Work" shall mean the work of authorship, whether in Source or
+              Object form, made available under the License, as indicated by a
+              copyright notice that is included in or attached to the work
+              (an example is provided in the Appendix below).
+        
+              "Derivative Works" shall mean any work, whether in Source or Object
+              form, that is based on (or derived from) the Work and for which the
+              editorial revisions, annotations, elaborations, or other modifications
+              represent, as a whole, an original work of authorship. For the purposes
+              of this License, Derivative Works shall not include works that remain
+              separable from, or merely link (or bind by name) to the interfaces of,
+              the Work and Derivative Works thereof.
+        
+              "Contribution" shall mean any work of authorship, including
+              the original version of the Work and any modifications or additions
+              to that Work or Derivative Works thereof, that is intentionally
+              submitted to Licensor for inclusion in the Work by the copyright owner
+              or by an individual or Legal Entity authorized to submit on behalf of
+              the copyright owner. For the purposes of this definition, "submitted"
+              means any form of electronic, verbal, or written communication sent
+              to the Licensor or its representatives, including but not limited to
+              communication on electronic mailing lists, source code control systems,
+              and issue tracking systems that are managed by, or on behalf of, the
+              Licensor for the purpose of discussing and improving the Work, but
+              excluding communication that is conspicuously marked or otherwise
+              designated in writing by the copyright owner as "Not a Contribution."
+        
+              "Contributor" shall mean Licensor and any individual or Legal Entity
+              on behalf of whom a Contribution has been received by Licensor and
+              subsequently incorporated within the Work.
+        
+           2. Grant of Copyright License. Subject to the terms and conditions of
+              this License, each Contributor hereby grants to You a perpetual,
+              worldwide, non-exclusive, no-charge, royalty-free, irrevocable
+              copyright license to reproduce, prepare Derivative Works of,
+              publicly display, publicly perform, sublicense, and distribute the
+              Work and such Derivative Works in Source or Object form.
+        
+           3. Grant of Patent License. Subject to the terms and conditions of
+              this License, each Contributor hereby grants to You a perpetual,
+              worldwide, non-exclusive, no-charge, royalty-free, irrevocable
+              (except as stated in this section) patent license to make, have made,
+              use, offer to sell, sell, import, and otherwise transfer the Work,
+              where such license applies only to those patent claims licensable
+              by such Contributor that are necessarily infringed by their
+              Contribution(s) alone or by combination of their Contribution(s)
+              with the Work to which such Contribution(s) was submitted. If You
+              institute patent litigation against any entity (including a
+              cross-claim or counterclaim in a lawsuit) alleging that the Work
+              or a Contribution incorporated within the Work constitutes direct
+              or contributory patent infringement, then any patent licenses
+              granted to You under this License for that Work shall terminate
+              as of the date such litigation is filed.
+        
+           4. Redistribution. You may reproduce and distribute copies of the
+              Work or Derivative Works thereof in any medium, with or without
+              modifications, and in Source or Object form, provided that You
+              meet the following conditions:
+        
+              (a) You must give any other recipients of the Work or
+                  Derivative Works a copy of this License; and
+        
+              (b) You must cause any modified files to carry prominent notices
+                  stating that You changed the files; and
+        
+              (c) You must retain, in the Source form of any Derivative Works
+                  that You distribute, all copyright, patent, trademark, and
+                  attribution notices from the Source form of the Work,
+                  excluding those notices that do not pertain to any part of
+                  the Derivative Works; and
+        
+              (d) If the Work includes a "NOTICE" text file as part of its
+                  distribution, then any Derivative Works that You distribute must
+                  include a readable copy of the attribution notices contained
+                  within such NOTICE file, excluding those notices that do not
+                  pertain to any part of the Derivative Works, in at least one
+                  of the following places: within a NOTICE text file distributed
+                  as part of the Derivative Works; within the Source form or
+                  documentation, if provided along with the Derivative Works; or,
+                  within a display generated by the Derivative Works, if and
+                  wherever such third-party notices normally appear. The contents
+                  of the NOTICE file are for informational purposes only and
+                  do not modify the License. You may add Your own attribution
+                  notices within Derivative Works that You distribute, alongside
+                  or as an addendum to the NOTICE text from the Work, provided
+                  that such additional attribution notices cannot be construed
+                  as modifying the License.
+        
+              You may add Your own copyright statement to Your modifications and
+              may provide additional or different license terms and conditions
+              for use, reproduction, or distribution of Your modifications, or
+              for any such Derivative Works as a whole, provided Your use,
+              reproduction, and distribution of the Work otherwise complies with
+              the conditions stated in this License.
+        
+           5. Submission of Contributions. Unless You explicitly state otherwise,
+              any Contribution intentionally submitted for inclusion in the Work
+              by You to the Licensor shall be under the terms and conditions of
+              this License, without any additional terms or conditions.
+              Notwithstanding the above, nothing herein shall supersede or modify
+              the terms of any separate license agreement you may have executed
+              with Licensor regarding such Contributions.
+        
+           6. Trademarks. This License does not grant permission to use the trade
+              names, trademarks, service marks, or product names of the Licensor,
+              except as required for reasonable and customary use in describing the
+              origin of the Work and reproducing the content of the NOTICE file.
+        
+           7. Disclaimer of Warranty. Unless required by applicable law or
+              agreed to in writing, Licensor provides the Work (and each
+              Contributor provides its Contributions) on an "AS IS" BASIS,
+              WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or
+              implied, including, without limitation, any warranties or conditions
+              of TITLE, NON-INFRINGEMENT, MERCHANTABILITY, or FITNESS FOR A
+              PARTICULAR PURPOSE. You are solely responsible for determining the
+              appropriateness of using or redistributing the Work and assume any
+              risks associated with Your exercise of permissions under this License.
+        
+           8. Limitation of Liability. In no event and under no legal theory,
+              whether in tort (including negligence), contract, or otherwise,
+              unless required by applicable law (such as deliberate and grossly
+              negligent acts) or agreed to in writing, shall any Contributor be
+              liable to You for damages, including any direct, indirect, special,
+              incidental, or consequential damages of any character arising as a
+              result of this License or out of the use or inability to use the
+              Work (including but not limited to damages for loss of goodwill,
+              work stoppage, computer failure or malfunction, or any and all
+              other commercial damages or losses), even if such Contributor
+              has been advised of the possibility of such damages.
+        
+           9. Accepting Warranty or Additional Liability. While redistributing
+              the Work or Derivative Works thereof, You may choose to offer,
+              and charge a fee for, acceptance of support, warranty, indemnity,
+              or other liability obligations and/or rights consistent with this
+              License. However, in accepting such obligations, You may act only
+              on Your own behalf and on Your sole responsibility, not on behalf
+              of any other Contributor, and only if You agree to indemnify,
+              defend, and hold each Contributor harmless for any liability
+              incurred by, or claims asserted against, such Contributor by reason
+              of your accepting any such warranty or additional liability.
+        
+           END OF TERMS AND CONDITIONS
+        
+           APPENDIX: How to apply the Apache License to your work.
+        
+              To apply the Apache License to your work, attach the following
+              boilerplate notice, with the fields enclosed by brackets "[]"
+              replaced with your own identifying information. (Don't include
+              the brackets!)  The text should be enclosed in the appropriate
+              comment syntax for the file format. We also recommend that a
+              file or class name and description of purpose be included on the
+              same "printed page" as the copyright notice for easier
+              identification within third-party archives.
+        
+           Copyright [yyyy] [name of copyright owner]
+        
+           Licensed under the Apache License, Version 2.0 (the "License");
+           you may not use this file except in compliance with the License.
+           You may obtain a copy of the License at
+        
+               http://www.apache.org/licenses/LICENSE-2.0
+        
+           Unless required by applicable law or agreed to in writing, software
+           distributed under the License is distributed on an "AS IS" BASIS,
+           WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
+           See the License for the specific language governing permissions and
+           limitations under the License.
+Project-URL: Download, https://github.com/NVIDIA/NeMo/releases
+Project-URL: Homepage, https://github.com/nvidia/nemo
+Keywords: NLP,NeMo,deep,gpu,language,learning,learning,machine,nvidia,pytorch,speech,torch,tts
+Classifier: Development Status :: 5 - Production/Stable
+Classifier: Environment :: Console
+Classifier: Intended Audience :: Developers
+Classifier: Intended Audience :: Information Technology
+Classifier: Intended Audience :: Science/Research
+Classifier: License :: OSI Approved :: Apache Software License
+Classifier: Natural Language :: English
+Classifier: Operating System :: OS Independent
+Classifier: Programming Language :: Python :: 3
+Classifier: Programming Language :: Python :: 3.10
+Classifier: Topic :: Scientific/Engineering :: Artificial Intelligence
+Classifier: Topic :: Scientific/Engineering :: Image Recognition
+Classifier: Topic :: Scientific/Engineering :: Mathematics
+Classifier: Topic :: Scientific/Engineering
+Classifier: Topic :: Software Development :: Libraries :: Python Modules
+Classifier: Topic :: Software Development :: Libraries
+Classifier: Topic :: Utilities
+Requires-Python: >=3.10
+Description-Content-Type: text/markdown
+License-File: LICENSE
+Requires-Dist: fsspec==2024.12.0
+Requires-Dist: huggingface_hub>=0.24
+Requires-Dist: numba
+Requires-Dist: numpy>=1.22
+Requires-Dist: onnx>=1.7.0
+Requires-Dist: protobuf~=5.29.5
+Requires-Dist: python-dateutil
+Requires-Dist: ruamel.yaml
+Requires-Dist: scikit-learn
+Requires-Dist: setuptools>=70.0.0
+Requires-Dist: tensorboard
+Requires-Dist: text-unidecode
+Requires-Dist: torch
+Requires-Dist: tqdm>=4.41.0
+Requires-Dist: wget
+Requires-Dist: wrapt
+Provides-Extra: test
+Requires-Dist: black~=24.3; extra == "test"
+Requires-Dist: click>=8.1; extra == "test"
+Requires-Dist: coverage; extra == "test"
+Requires-Dist: isort<6.0.0,>5.1.0; extra == "test"
+Requires-Dist: parameterized; extra == "test"
+Requires-Dist: pytest; extra == "test"
+Requires-Dist: pytest-httpserver; extra == "test"
+Requires-Dist: pytest-mock; extra == "test"
+Requires-Dist: pytest-runner; extra == "test"
+Requires-Dist: ruamel.yaml; extra == "test"
+Requires-Dist: sphinx; extra == "test"
+Requires-Dist: sphinxcontrib-bibtex; extra == "test"
+Requires-Dist: wandb; extra == "test"
+Requires-Dist: wget; extra == "test"
+Requires-Dist: wrapt; extra == "test"
+Requires-Dist: attrdict; extra == "test"
+Requires-Dist: cdifflib==1.2.6; extra == "test"
+Requires-Dist: einops; extra == "test"
+Requires-Dist: janome; extra == "test"
+Requires-Dist: jieba; extra == "test"
+Requires-Dist: kornia; extra == "test"
+Requires-Dist: librosa; extra == "test"
+Requires-Dist: matplotlib; extra == "test"
+Requires-Dist: nemo_text_processing; ("arm" not in platform_machine and "aarch" not in platform_machine and sys_platform != "darwin") and extra == "test"
+Requires-Dist: nltk; extra == "test"
+Requires-Dist: pandas; extra == "test"
+Requires-Dist: pypinyin; extra == "test"
+Requires-Dist: pypinyin-dict; extra == "test"
+Requires-Dist: seaborn; extra == "test"
+Requires-Dist: datasets; extra == "test"
+Requires-Dist: einops; extra == "test"
+Requires-Dist: inflect; extra == "test"
+Requires-Dist: mediapy==1.1.6; extra == "test"
+Requires-Dist: pandas; extra == "test"
+Requires-Dist: sacremoses>=0.0.43; extra == "test"
+Requires-Dist: sentencepiece<1.0.0; extra == "test"
+Requires-Dist: cloudpickle; extra == "test"
+Requires-Dist: fiddle; extra == "test"
+Requires-Dist: hydra-core<=1.3.2,>1.3; extra == "test"
+Requires-Dist: lightning<=2.4.0,>2.2.1; extra == "test"
+Requires-Dist: omegaconf<=2.3; extra == "test"
+Requires-Dist: peft; extra == "test"
+Requires-Dist: torchmetrics>=0.11.0; extra == "test"
+Requires-Dist: transformers<=4.52.0,>=4.51.0; extra == "test"
+Requires-Dist: wandb; extra == "test"
+Requires-Dist: webdataset>=0.2.86; extra == "test"
+Requires-Dist: bitsandbytes==0.46.0; (platform_machine == "x86_64" and platform_system != "Darwin") and extra == "test"
+Provides-Extra: run
+Requires-Dist: nemo_run; extra == "run"
+Provides-Extra: core
+Requires-Dist: cloudpickle; extra == "core"
+Requires-Dist: fiddle; extra == "core"
+Requires-Dist: hydra-core<=1.3.2,>1.3; extra == "core"
+Requires-Dist: lightning<=2.4.0,>2.2.1; extra == "core"
+Requires-Dist: omegaconf<=2.3; extra == "core"
+Requires-Dist: peft; extra == "core"
+Requires-Dist: torchmetrics>=0.11.0; extra == "core"
+Requires-Dist: transformers<=4.52.0,>=4.51.0; extra == "core"
+Requires-Dist: wandb; extra == "core"
+Requires-Dist: webdataset>=0.2.86; extra == "core"
+Requires-Dist: bitsandbytes==0.46.0; (platform_machine == "x86_64" and platform_system != "Darwin") and extra == "core"
+Provides-Extra: lightning
+Requires-Dist: cloudpickle; extra == "lightning"
+Requires-Dist: fiddle; extra == "lightning"
+Requires-Dist: hydra-core<=1.3.2,>1.3; extra == "lightning"
+Requires-Dist: lightning<=2.4.0,>2.2.1; extra == "lightning"
+Requires-Dist: omegaconf<=2.3; extra == "lightning"
+Requires-Dist: peft; extra == "lightning"
+Requires-Dist: torchmetrics>=0.11.0; extra == "lightning"
+Requires-Dist: transformers<=4.52.0,>=4.51.0; extra == "lightning"
+Requires-Dist: wandb; extra == "lightning"
+Requires-Dist: webdataset>=0.2.86; extra == "lightning"
+Provides-Extra: automodel
+Requires-Dist: bitsandbytes==0.46.0; (platform_machine == "x86_64" and platform_system != "Darwin") and extra == "automodel"
+Provides-Extra: common-only
+Requires-Dist: datasets; extra == "common-only"
+Requires-Dist: einops; extra == "common-only"
+Requires-Dist: inflect; extra == "common-only"
+Requires-Dist: mediapy==1.1.6; extra == "common-only"
+Requires-Dist: pandas; extra == "common-only"
+Requires-Dist: sacremoses>=0.0.43; extra == "common-only"
+Requires-Dist: sentencepiece<1.0.0; extra == "common-only"
+Provides-Extra: asr-only
+Requires-Dist: braceexpand; extra == "asr-only"
+Requires-Dist: editdistance; extra == "asr-only"
+Requires-Dist: einops; extra == "asr-only"
+Requires-Dist: jiwer<4.0.0,>=3.1.0; extra == "asr-only"
+Requires-Dist: kaldi-python-io; extra == "asr-only"
+Requires-Dist: lhotse!=1.31.0; extra == "asr-only"
+Requires-Dist: librosa>=0.10.1; extra == "asr-only"
+Requires-Dist: marshmallow; extra == "asr-only"
+Requires-Dist: optuna; extra == "asr-only"
+Requires-Dist: packaging; extra == "asr-only"
+Requires-Dist: pyannote.core; extra == "asr-only"
+Requires-Dist: pyannote.metrics; extra == "asr-only"
+Requires-Dist: pydub; extra == "asr-only"
+Requires-Dist: pyloudnorm; extra == "asr-only"
+Requires-Dist: resampy; extra == "asr-only"
+Requires-Dist: ruamel.yaml; extra == "asr-only"
+Requires-Dist: scipy>=0.14; extra == "asr-only"
+Requires-Dist: soundfile; extra == "asr-only"
+Requires-Dist: sox<=1.5.0; extra == "asr-only"
+Requires-Dist: texterrors<1.0.0; extra == "asr-only"
+Requires-Dist: whisper_normalizer; extra == "asr-only"
+Provides-Extra: ctc-segmentation
+Requires-Dist: num2words; extra == "ctc-segmentation"
+Requires-Dist: numpy<2.0.0; extra == "ctc-segmentation"
+Provides-Extra: nlp-only
+Requires-Dist: accelerated-scan; extra == "nlp-only"
+Requires-Dist: boto3; extra == "nlp-only"
+Requires-Dist: faiss-cpu; extra == "nlp-only"
+Requires-Dist: flask_restful; extra == "nlp-only"
+Requires-Dist: ftfy; extra == "nlp-only"
+Requires-Dist: gdown; extra == "nlp-only"
+Requires-Dist: h5py; extra == "nlp-only"
+Requires-Dist: ijson; extra == "nlp-only"
+Requires-Dist: jieba; extra == "nlp-only"
+Requires-Dist: markdown2; extra == "nlp-only"
+Requires-Dist: matplotlib>=3.3.2; extra == "nlp-only"
+Requires-Dist: megatron_core; extra == "nlp-only"
+Requires-Dist: multi-storage-client>=0.21.0; extra == "nlp-only"
+Requires-Dist: nltk>=3.6.5; extra == "nlp-only"
+Requires-Dist: numpy<2; extra == "nlp-only"
+Requires-Dist: nvidia-modelopt[torch]<=0.31.0,>=0.27.0; platform_system != "Darwin" and extra == "nlp-only"
+Requires-Dist: nvidia-resiliency-ext<1.0.0,>=0.3.0; platform_system != "Darwin" and extra == "nlp-only"
+Requires-Dist: nvtx; extra == "nlp-only"
+Requires-Dist: opencc; extra == "nlp-only"
+Requires-Dist: pangu; extra == "nlp-only"
+Requires-Dist: prettytable; extra == "nlp-only"
+Requires-Dist: rapidfuzz; extra == "nlp-only"
+Requires-Dist: rouge_score; extra == "nlp-only"
+Requires-Dist: sacrebleu; extra == "nlp-only"
+Requires-Dist: sentence_transformers; extra == "nlp-only"
+Requires-Dist: tensorstore<0.1.72; platform_system != "Darwin" and extra == "nlp-only"
+Requires-Dist: tiktoken==0.7.0; extra == "nlp-only"
+Requires-Dist: zarr<3.0.0,>=2.18.2; extra == "nlp-only"
+Provides-Extra: tts
+Requires-Dist: attrdict; extra == "tts"
+Requires-Dist: cdifflib==1.2.6; extra == "tts"
+Requires-Dist: einops; extra == "tts"
+Requires-Dist: janome; extra == "tts"
+Requires-Dist: jieba; extra == "tts"
+Requires-Dist: kornia; extra == "tts"
+Requires-Dist: librosa; extra == "tts"
+Requires-Dist: matplotlib; extra == "tts"
+Requires-Dist: nemo_text_processing; ("arm" not in platform_machine and "aarch" not in platform_machine and sys_platform != "darwin") and extra == "tts"
+Requires-Dist: nltk; extra == "tts"
+Requires-Dist: pandas; extra == "tts"
+Requires-Dist: pypinyin; extra == "tts"
+Requires-Dist: pypinyin-dict; extra == "tts"
+Requires-Dist: seaborn; extra == "tts"
+Requires-Dist: braceexpand; extra == "tts"
+Requires-Dist: editdistance; extra == "tts"
+Requires-Dist: einops; extra == "tts"
+Requires-Dist: jiwer<4.0.0,>=3.1.0; extra == "tts"
+Requires-Dist: kaldi-python-io; extra == "tts"
+Requires-Dist: lhotse!=1.31.0; extra == "tts"
+Requires-Dist: librosa>=0.10.1; extra == "tts"
+Requires-Dist: marshmallow; extra == "tts"
+Requires-Dist: optuna; extra == "tts"
+Requires-Dist: packaging; extra == "tts"
+Requires-Dist: pyannote.core; extra == "tts"
+Requires-Dist: pyannote.metrics; extra == "tts"
+Requires-Dist: pydub; extra == "tts"
+Requires-Dist: pyloudnorm; extra == "tts"
+Requires-Dist: resampy; extra == "tts"
+Requires-Dist: ruamel.yaml; extra == "tts"
+Requires-Dist: scipy>=0.14; extra == "tts"
+Requires-Dist: soundfile; extra == "tts"
+Requires-Dist: sox<=1.5.0; extra == "tts"
+Requires-Dist: texterrors<1.0.0; extra == "tts"
+Requires-Dist: whisper_normalizer; extra == "tts"
+Requires-Dist: num2words; extra == "tts"
+Requires-Dist: numpy<2.0.0; extra == "tts"
+Requires-Dist: datasets; extra == "tts"
+Requires-Dist: einops; extra == "tts"
+Requires-Dist: inflect; extra == "tts"
+Requires-Dist: mediapy==1.1.6; extra == "tts"
+Requires-Dist: pandas; extra == "tts"
+Requires-Dist: sacremoses>=0.0.43; extra == "tts"
+Requires-Dist: sentencepiece<1.0.0; extra == "tts"
+Requires-Dist: cloudpickle; extra == "tts"
+Requires-Dist: fiddle; extra == "tts"
+Requires-Dist: hydra-core<=1.3.2,>1.3; extra == "tts"
+Requires-Dist: lightning<=2.4.0,>2.2.1; extra == "tts"
+Requires-Dist: omegaconf<=2.3; extra == "tts"
+Requires-Dist: peft; extra == "tts"
+Requires-Dist: torchmetrics>=0.11.0; extra == "tts"
+Requires-Dist: transformers<=4.52.0,>=4.51.0; extra == "tts"
+Requires-Dist: wandb; extra == "tts"
+Requires-Dist: webdataset>=0.2.86; extra == "tts"
+Requires-Dist: bitsandbytes==0.46.0; (platform_machine == "x86_64" and platform_system != "Darwin") and extra == "tts"
+Requires-Dist: datasets; extra == "tts"
+Requires-Dist: einops; extra == "tts"
+Requires-Dist: inflect; extra == "tts"
+Requires-Dist: mediapy==1.1.6; extra == "tts"
+Requires-Dist: pandas; extra == "tts"
+Requires-Dist: sacremoses>=0.0.43; extra == "tts"
+Requires-Dist: sentencepiece<1.0.0; extra == "tts"
+Requires-Dist: cloudpickle; extra == "tts"
+Requires-Dist: fiddle; extra == "tts"
+Requires-Dist: hydra-core<=1.3.2,>1.3; extra == "tts"
+Requires-Dist: lightning<=2.4.0,>2.2.1; extra == "tts"
+Requires-Dist: omegaconf<=2.3; extra == "tts"
+Requires-Dist: peft; extra == "tts"
+Requires-Dist: torchmetrics>=0.11.0; extra == "tts"
+Requires-Dist: transformers<=4.52.0,>=4.51.0; extra == "tts"
+Requires-Dist: wandb; extra == "tts"
+Requires-Dist: webdataset>=0.2.86; extra == "tts"
+Requires-Dist: bitsandbytes==0.46.0; (platform_machine == "x86_64" and platform_system != "Darwin") and extra == "tts"
+Provides-Extra: slu
+Requires-Dist: jiwer<4.0.0,>=2.0.0; extra == "slu"
+Requires-Dist: progress>=1.5; extra == "slu"
+Requires-Dist: tabulate>=0.8.7; extra == "slu"
+Requires-Dist: textdistance>=4.1.5; extra == "slu"
+Requires-Dist: tqdm; extra == "slu"
+Requires-Dist: braceexpand; extra == "slu"
+Requires-Dist: editdistance; extra == "slu"
+Requires-Dist: einops; extra == "slu"
+Requires-Dist: jiwer<4.0.0,>=3.1.0; extra == "slu"
+Requires-Dist: kaldi-python-io; extra == "slu"
+Requires-Dist: lhotse!=1.31.0; extra == "slu"
+Requires-Dist: librosa>=0.10.1; extra == "slu"
+Requires-Dist: marshmallow; extra == "slu"
+Requires-Dist: optuna; extra == "slu"
+Requires-Dist: packaging; extra == "slu"
+Requires-Dist: pyannote.core; extra == "slu"
+Requires-Dist: pyannote.metrics; extra == "slu"
+Requires-Dist: pydub; extra == "slu"
+Requires-Dist: pyloudnorm; extra == "slu"
+Requires-Dist: resampy; extra == "slu"
+Requires-Dist: ruamel.yaml; extra == "slu"
+Requires-Dist: scipy>=0.14; extra == "slu"
+Requires-Dist: soundfile; extra == "slu"
+Requires-Dist: sox<=1.5.0; extra == "slu"
+Requires-Dist: texterrors<1.0.0; extra == "slu"
+Requires-Dist: whisper_normalizer; extra == "slu"
+Requires-Dist: num2words; extra == "slu"
+Requires-Dist: numpy<2.0.0; extra == "slu"
+Requires-Dist: datasets; extra == "slu"
+Requires-Dist: einops; extra == "slu"
+Requires-Dist: inflect; extra == "slu"
+Requires-Dist: mediapy==1.1.6; extra == "slu"
+Requires-Dist: pandas; extra == "slu"
+Requires-Dist: sacremoses>=0.0.43; extra == "slu"
+Requires-Dist: sentencepiece<1.0.0; extra == "slu"
+Requires-Dist: cloudpickle; extra == "slu"
+Requires-Dist: fiddle; extra == "slu"
+Requires-Dist: hydra-core<=1.3.2,>1.3; extra == "slu"
+Requires-Dist: lightning<=2.4.0,>2.2.1; extra == "slu"
+Requires-Dist: omegaconf<=2.3; extra == "slu"
+Requires-Dist: peft; extra == "slu"
+Requires-Dist: torchmetrics>=0.11.0; extra == "slu"
+Requires-Dist: transformers<=4.52.0,>=4.51.0; extra == "slu"
+Requires-Dist: wandb; extra == "slu"
+Requires-Dist: webdataset>=0.2.86; extra == "slu"
+Requires-Dist: bitsandbytes==0.46.0; (platform_machine == "x86_64" and platform_system != "Darwin") and extra == "slu"
+Provides-Extra: multimodal-only
+Requires-Dist: addict; extra == "multimodal-only"
+Requires-Dist: clip; extra == "multimodal-only"
+Requires-Dist: decord; (sys_platform == "linux" and platform_machine == "x86_64") and extra == "multimodal-only"
+Requires-Dist: diffusers>=0.19.3; extra == "multimodal-only"
+Requires-Dist: einops_exts; extra == "multimodal-only"
+Requires-Dist: imageio; extra == "multimodal-only"
+Requires-Dist: kornia; extra == "multimodal-only"
+Requires-Dist: megatron-energon==5.2.0; extra == "multimodal-only"
+Requires-Dist: nerfacc>=0.5.3; extra == "multimodal-only"
+Requires-Dist: open_clip_torch==2.24.0; extra == "multimodal-only"
+Requires-Dist: qwen_vl_utils; extra == "multimodal-only"
+Requires-Dist: taming-transformers; extra == "multimodal-only"
+Requires-Dist: torchdiffeq; extra == "multimodal-only"
+Requires-Dist: torchsde; extra == "multimodal-only"
+Requires-Dist: trimesh; extra == "multimodal-only"
+Provides-Extra: audio
+Requires-Dist: einops; extra == "audio"
+Requires-Dist: lhotse>=1.22.0; extra == "audio"
+Requires-Dist: librosa>=0.10.0; extra == "audio"
+Requires-Dist: matplotlib; extra == "audio"
+Requires-Dist: pesq; (platform_machine != "x86_64" or platform_system != "Darwin") and extra == "audio"
+Requires-Dist: pystoi; extra == "audio"
+Requires-Dist: scipy>=0.14; extra == "audio"
+Requires-Dist: soundfile; extra == "audio"
+Requires-Dist: datasets; extra == "audio"
+Requires-Dist: einops; extra == "audio"
+Requires-Dist: inflect; extra == "audio"
+Requires-Dist: mediapy==1.1.6; extra == "audio"
+Requires-Dist: pandas; extra == "audio"
+Requires-Dist: sacremoses>=0.0.43; extra == "audio"
+Requires-Dist: sentencepiece<1.0.0; extra == "audio"
+Requires-Dist: cloudpickle; extra == "audio"
+Requires-Dist: fiddle; extra == "audio"
+Requires-Dist: hydra-core<=1.3.2,>1.3; extra == "audio"
+Requires-Dist: lightning<=2.4.0,>2.2.1; extra == "audio"
+Requires-Dist: omegaconf<=2.3; extra == "audio"
+Requires-Dist: peft; extra == "audio"
+Requires-Dist: torchmetrics>=0.11.0; extra == "audio"
+Requires-Dist: transformers<=4.52.0,>=4.51.0; extra == "audio"
+Requires-Dist: wandb; extra == "audio"
+Requires-Dist: webdataset>=0.2.86; extra == "audio"
+Requires-Dist: bitsandbytes==0.46.0; (platform_machine == "x86_64" and platform_system != "Darwin") and extra == "audio"
+Provides-Extra: deploy
+Requires-Dist: accelerated-scan; extra == "deploy"
+Requires-Dist: boto3; extra == "deploy"
+Requires-Dist: faiss-cpu; extra == "deploy"
+Requires-Dist: flask_restful; extra == "deploy"
+Requires-Dist: ftfy; extra == "deploy"
+Requires-Dist: gdown; extra == "deploy"
+Requires-Dist: h5py; extra == "deploy"
+Requires-Dist: ijson; extra == "deploy"
+Requires-Dist: jieba; extra == "deploy"
+Requires-Dist: markdown2; extra == "deploy"
+Requires-Dist: matplotlib>=3.3.2; extra == "deploy"
+Requires-Dist: megatron_core; extra == "deploy"
+Requires-Dist: multi-storage-client>=0.21.0; extra == "deploy"
+Requires-Dist: nltk>=3.6.5; extra == "deploy"
+Requires-Dist: numpy<2; extra == "deploy"
+Requires-Dist: nvidia-modelopt[torch]<=0.31.0,>=0.27.0; platform_system != "Darwin" and extra == "deploy"
+Requires-Dist: nvidia-resiliency-ext<1.0.0,>=0.3.0; platform_system != "Darwin" and extra == "deploy"
+Requires-Dist: nvtx; extra == "deploy"
+Requires-Dist: opencc; extra == "deploy"
+Requires-Dist: pangu; extra == "deploy"
+Requires-Dist: prettytable; extra == "deploy"
+Requires-Dist: rapidfuzz; extra == "deploy"
+Requires-Dist: rouge_score; extra == "deploy"
+Requires-Dist: sacrebleu; extra == "deploy"
+Requires-Dist: sentence_transformers; extra == "deploy"
+Requires-Dist: tensorstore<0.1.72; platform_system != "Darwin" and extra == "deploy"
+Requires-Dist: tiktoken==0.7.0; extra == "deploy"
+Requires-Dist: zarr<3.0.0,>=2.18.2; extra == "deploy"
+Requires-Dist: flask; extra == "deploy"
+Requires-Dist: nvidia-lm-eval; extra == "deploy"
+Requires-Dist: datasets; extra == "deploy"
+Requires-Dist: einops; extra == "deploy"
+Requires-Dist: inflect; extra == "deploy"
+Requires-Dist: mediapy==1.1.6; extra == "deploy"
+Requires-Dist: pandas; extra == "deploy"
+Requires-Dist: sacremoses>=0.0.43; extra == "deploy"
+Requires-Dist: sentencepiece<1.0.0; extra == "deploy"
+Requires-Dist: cloudpickle; extra == "deploy"
+Requires-Dist: fiddle; extra == "deploy"
+Requires-Dist: hydra-core<=1.3.2,>1.3; extra == "deploy"
+Requires-Dist: lightning<=2.4.0,>2.2.1; extra == "deploy"
+Requires-Dist: omegaconf<=2.3; extra == "deploy"
+Requires-Dist: peft; extra == "deploy"
+Requires-Dist: torchmetrics>=0.11.0; extra == "deploy"
+Requires-Dist: transformers<=4.52.0,>=4.51.0; extra == "deploy"
+Requires-Dist: wandb; extra == "deploy"
+Requires-Dist: webdataset>=0.2.86; extra == "deploy"
+Requires-Dist: bitsandbytes==0.46.0; (platform_machine == "x86_64" and platform_system != "Darwin") and extra == "deploy"
+Requires-Dist: addict; extra == "deploy"
+Requires-Dist: clip; extra == "deploy"
+Requires-Dist: decord; (sys_platform == "linux" and platform_machine == "x86_64") and extra == "deploy"
+Requires-Dist: diffusers>=0.19.3; extra == "deploy"
+Requires-Dist: einops_exts; extra == "deploy"
+Requires-Dist: imageio; extra == "deploy"
+Requires-Dist: kornia; extra == "deploy"
+Requires-Dist: megatron-energon==5.2.0; extra == "deploy"
+Requires-Dist: nerfacc>=0.5.3; extra == "deploy"
+Requires-Dist: open_clip_torch==2.24.0; extra == "deploy"
+Requires-Dist: qwen_vl_utils; extra == "deploy"
+Requires-Dist: taming-transformers; extra == "deploy"
+Requires-Dist: torchdiffeq; extra == "deploy"
+Requires-Dist: torchsde; extra == "deploy"
+Requires-Dist: trimesh; extra == "deploy"
+Requires-Dist: accelerated-scan; extra == "deploy"
+Requires-Dist: boto3; extra == "deploy"
+Requires-Dist: faiss-cpu; extra == "deploy"
+Requires-Dist: flask_restful; extra == "deploy"
+Requires-Dist: ftfy; extra == "deploy"
+Requires-Dist: gdown; extra == "deploy"
+Requires-Dist: h5py; extra == "deploy"
+Requires-Dist: ijson; extra == "deploy"
+Requires-Dist: jieba; extra == "deploy"
+Requires-Dist: markdown2; extra == "deploy"
+Requires-Dist: matplotlib>=3.3.2; extra == "deploy"
+Requires-Dist: megatron_core; extra == "deploy"
+Requires-Dist: multi-storage-client>=0.21.0; extra == "deploy"
+Requires-Dist: nltk>=3.6.5; extra == "deploy"
+Requires-Dist: numpy<2; extra == "deploy"
+Requires-Dist: nvidia-modelopt[torch]<=0.31.0,>=0.27.0; platform_system != "Darwin" and extra == "deploy"
+Requires-Dist: nvidia-resiliency-ext<1.0.0,>=0.3.0; platform_system != "Darwin" and extra == "deploy"
+Requires-Dist: nvtx; extra == "deploy"
+Requires-Dist: opencc; extra == "deploy"
+Requires-Dist: pangu; extra == "deploy"
+Requires-Dist: prettytable; extra == "deploy"
+Requires-Dist: rapidfuzz; extra == "deploy"
+Requires-Dist: rouge_score; extra == "deploy"
+Requires-Dist: sacrebleu; extra == "deploy"
+Requires-Dist: sentence_transformers; extra == "deploy"
+Requires-Dist: tensorstore<0.1.72; platform_system != "Darwin" and extra == "deploy"
+Requires-Dist: tiktoken==0.7.0; extra == "deploy"
+Requires-Dist: zarr<3.0.0,>=2.18.2; extra == "deploy"
+Requires-Dist: flask; extra == "deploy"
+Requires-Dist: nvidia-lm-eval; extra == "deploy"
+Requires-Dist: datasets; extra == "deploy"
+Requires-Dist: einops; extra == "deploy"
+Requires-Dist: inflect; extra == "deploy"
+Requires-Dist: mediapy==1.1.6; extra == "deploy"
+Requires-Dist: pandas; extra == "deploy"
+Requires-Dist: sacremoses>=0.0.43; extra == "deploy"
+Requires-Dist: sentencepiece<1.0.0; extra == "deploy"
+Requires-Dist: cloudpickle; extra == "deploy"
+Requires-Dist: fiddle; extra == "deploy"
+Requires-Dist: hydra-core<=1.3.2,>1.3; extra == "deploy"
+Requires-Dist: lightning<=2.4.0,>2.2.1; extra == "deploy"
+Requires-Dist: omegaconf<=2.3; extra == "deploy"
+Requires-Dist: peft; extra == "deploy"
+Requires-Dist: torchmetrics>=0.11.0; extra == "deploy"
+Requires-Dist: transformers<=4.52.0,>=4.51.0; extra == "deploy"
+Requires-Dist: wandb; extra == "deploy"
+Requires-Dist: webdataset>=0.2.86; extra == "deploy"
+Requires-Dist: bitsandbytes==0.46.0; (platform_machine == "x86_64" and platform_system != "Darwin") and extra == "deploy"
+Requires-Dist: datasets; extra == "deploy"
+Requires-Dist: einops; extra == "deploy"
+Requires-Dist: inflect; extra == "deploy"
+Requires-Dist: mediapy==1.1.6; extra == "deploy"
+Requires-Dist: pandas; extra == "deploy"
+Requires-Dist: sacremoses>=0.0.43; extra == "deploy"
+Requires-Dist: sentencepiece<1.0.0; extra == "deploy"
+Requires-Dist: cloudpickle; extra == "deploy"
+Requires-Dist: fiddle; extra == "deploy"
+Requires-Dist: hydra-core<=1.3.2,>1.3; extra == "deploy"
+Requires-Dist: lightning<=2.4.0,>2.2.1; extra == "deploy"
+Requires-Dist: omegaconf<=2.3; extra == "deploy"
+Requires-Dist: peft; extra == "deploy"
+Requires-Dist: torchmetrics>=0.11.0; extra == "deploy"
+Requires-Dist: transformers<=4.52.0,>=4.51.0; extra == "deploy"
+Requires-Dist: wandb; extra == "deploy"
+Requires-Dist: webdataset>=0.2.86; extra == "deploy"
+Requires-Dist: bitsandbytes==0.46.0; (platform_machine == "x86_64" and platform_system != "Darwin") and extra == "deploy"
+Requires-Dist: attrdict; extra == "deploy"
+Requires-Dist: cdifflib==1.2.6; extra == "deploy"
+Requires-Dist: einops; extra == "deploy"
+Requires-Dist: janome; extra == "deploy"
+Requires-Dist: jieba; extra == "deploy"
+Requires-Dist: kornia; extra == "deploy"
+Requires-Dist: librosa; extra == "deploy"
+Requires-Dist: matplotlib; extra == "deploy"
+Requires-Dist: nemo_text_processing; ("arm" not in platform_machine and "aarch" not in platform_machine and sys_platform != "darwin") and extra == "deploy"
+Requires-Dist: nltk; extra == "deploy"
+Requires-Dist: pandas; extra == "deploy"
+Requires-Dist: pypinyin; extra == "deploy"
+Requires-Dist: pypinyin-dict; extra == "deploy"
+Requires-Dist: seaborn; extra == "deploy"
+Requires-Dist: braceexpand; extra == "deploy"
+Requires-Dist: editdistance; extra == "deploy"
+Requires-Dist: einops; extra == "deploy"
+Requires-Dist: jiwer<4.0.0,>=3.1.0; extra == "deploy"
+Requires-Dist: kaldi-python-io; extra == "deploy"
+Requires-Dist: lhotse!=1.31.0; extra == "deploy"
+Requires-Dist: librosa>=0.10.1; extra == "deploy"
+Requires-Dist: marshmallow; extra == "deploy"
+Requires-Dist: optuna; extra == "deploy"
+Requires-Dist: packaging; extra == "deploy"
+Requires-Dist: pyannote.core; extra == "deploy"
+Requires-Dist: pyannote.metrics; extra == "deploy"
+Requires-Dist: pydub; extra == "deploy"
+Requires-Dist: pyloudnorm; extra == "deploy"
+Requires-Dist: resampy; extra == "deploy"
+Requires-Dist: ruamel.yaml; extra == "deploy"
+Requires-Dist: scipy>=0.14; extra == "deploy"
+Requires-Dist: soundfile; extra == "deploy"
+Requires-Dist: sox<=1.5.0; extra == "deploy"
+Requires-Dist: texterrors<1.0.0; extra == "deploy"
+Requires-Dist: whisper_normalizer; extra == "deploy"
+Requires-Dist: num2words; extra == "deploy"
+Requires-Dist: numpy<2.0.0; extra == "deploy"
+Requires-Dist: datasets; extra == "deploy"
+Requires-Dist: einops; extra == "deploy"
+Requires-Dist: inflect; extra == "deploy"
+Requires-Dist: mediapy==1.1.6; extra == "deploy"
+Requires-Dist: pandas; extra == "deploy"
+Requires-Dist: sacremoses>=0.0.43; extra == "deploy"
+Requires-Dist: sentencepiece<1.0.0; extra == "deploy"
+Requires-Dist: cloudpickle; extra == "deploy"
+Requires-Dist: fiddle; extra == "deploy"
+Requires-Dist: hydra-core<=1.3.2,>1.3; extra == "deploy"
+Requires-Dist: lightning<=2.4.0,>2.2.1; extra == "deploy"
+Requires-Dist: omegaconf<=2.3; extra == "deploy"
+Requires-Dist: peft; extra == "deploy"
+Requires-Dist: torchmetrics>=0.11.0; extra == "deploy"
+Requires-Dist: transformers<=4.52.0,>=4.51.0; extra == "deploy"
+Requires-Dist: wandb; extra == "deploy"
+Requires-Dist: webdataset>=0.2.86; extra == "deploy"
+Requires-Dist: bitsandbytes==0.46.0; (platform_machine == "x86_64" and platform_system != "Darwin") and extra == "deploy"
+Requires-Dist: datasets; extra == "deploy"
+Requires-Dist: einops; extra == "deploy"
+Requires-Dist: inflect; extra == "deploy"
+Requires-Dist: mediapy==1.1.6; extra == "deploy"
+Requires-Dist: pandas; extra == "deploy"
+Requires-Dist: sacremoses>=0.0.43; extra == "deploy"
+Requires-Dist: sentencepiece<1.0.0; extra == "deploy"
+Requires-Dist: cloudpickle; extra == "deploy"
+Requires-Dist: fiddle; extra == "deploy"
+Requires-Dist: hydra-core<=1.3.2,>1.3; extra == "deploy"
+Requires-Dist: lightning<=2.4.0,>2.2.1; extra == "deploy"
+Requires-Dist: omegaconf<=2.3; extra == "deploy"
+Requires-Dist: peft; extra == "deploy"
+Requires-Dist: torchmetrics>=0.11.0; extra == "deploy"
+Requires-Dist: transformers<=4.52.0,>=4.51.0; extra == "deploy"
+Requires-Dist: wandb; extra == "deploy"
+Requires-Dist: webdataset>=0.2.86; extra == "deploy"
+Requires-Dist: bitsandbytes==0.46.0; (platform_machine == "x86_64" and platform_system != "Darwin") and extra == "deploy"
+Requires-Dist: accelerate; extra == "deploy"
+Requires-Dist: fastapi; extra == "deploy"
+Requires-Dist: nvidia-pytriton; platform_system != "Darwin" and extra == "deploy"
+Requires-Dist: nvtx; extra == "deploy"
+Requires-Dist: pydantic-settings; extra == "deploy"
+Requires-Dist: tensorstore<0.1.72; platform_system != "Darwin" and extra == "deploy"
+Requires-Dist: uvicorn; extra == "deploy"
+Requires-Dist: zarr<3.0.0,>=2.18.2; extra == "deploy"
+Provides-Extra: eval
+Requires-Dist: flask; extra == "eval"
+Requires-Dist: nvidia-lm-eval; extra == "eval"
+Provides-Extra: all
+Requires-Dist: black~=24.3; extra == "all"
+Requires-Dist: click>=8.1; extra == "all"
+Requires-Dist: coverage; extra == "all"
+Requires-Dist: isort<6.0.0,>5.1.0; extra == "all"
+Requires-Dist: parameterized; extra == "all"
+Requires-Dist: pytest; extra == "all"
+Requires-Dist: pytest-httpserver; extra == "all"
+Requires-Dist: pytest-mock; extra == "all"
+Requires-Dist: pytest-runner; extra == "all"
+Requires-Dist: ruamel.yaml; extra == "all"
+Requires-Dist: sphinx; extra == "all"
+Requires-Dist: sphinxcontrib-bibtex; extra == "all"
+Requires-Dist: wandb; extra == "all"
+Requires-Dist: wget; extra == "all"
+Requires-Dist: wrapt; extra == "all"
+Requires-Dist: nemo_run; extra == "all"
+Requires-Dist: cloudpickle; extra == "all"
+Requires-Dist: fiddle; extra == "all"
+Requires-Dist: hydra-core<=1.3.2,>1.3; extra == "all"
+Requires-Dist: lightning<=2.4.0,>2.2.1; extra == "all"
+Requires-Dist: omegaconf<=2.3; extra == "all"
+Requires-Dist: peft; extra == "all"
+Requires-Dist: torchmetrics>=0.11.0; extra == "all"
+Requires-Dist: transformers<=4.52.0,>=4.51.0; extra == "all"
+Requires-Dist: wandb; extra == "all"
+Requires-Dist: webdataset>=0.2.86; extra == "all"
+Requires-Dist: bitsandbytes==0.46.0; (platform_machine == "x86_64" and platform_system != "Darwin") and extra == "all"
+Requires-Dist: cloudpickle; extra == "all"
+Requires-Dist: fiddle; extra == "all"
+Requires-Dist: hydra-core<=1.3.2,>1.3; extra == "all"
+Requires-Dist: lightning<=2.4.0,>2.2.1; extra == "all"
+Requires-Dist: omegaconf<=2.3; extra == "all"
+Requires-Dist: peft; extra == "all"
+Requires-Dist: torchmetrics>=0.11.0; extra == "all"
+Requires-Dist: transformers<=4.52.0,>=4.51.0; extra == "all"
+Requires-Dist: wandb; extra == "all"
+Requires-Dist: webdataset>=0.2.86; extra == "all"
+Requires-Dist: bitsandbytes==0.46.0; (platform_machine == "x86_64" and platform_system != "Darwin") and extra == "all"
+Requires-Dist: datasets; extra == "all"
+Requires-Dist: einops; extra == "all"
+Requires-Dist: inflect; extra == "all"
+Requires-Dist: mediapy==1.1.6; extra == "all"
+Requires-Dist: pandas; extra == "all"
+Requires-Dist: sacremoses>=0.0.43; extra == "all"
+Requires-Dist: sentencepiece<1.0.0; extra == "all"
+Requires-Dist: braceexpand; extra == "all"
+Requires-Dist: editdistance; extra == "all"
+Requires-Dist: einops; extra == "all"
+Requires-Dist: jiwer<4.0.0,>=3.1.0; extra == "all"
+Requires-Dist: kaldi-python-io; extra == "all"
+Requires-Dist: lhotse!=1.31.0; extra == "all"
+Requires-Dist: librosa>=0.10.1; extra == "all"
+Requires-Dist: marshmallow; extra == "all"
+Requires-Dist: optuna; extra == "all"
+Requires-Dist: packaging; extra == "all"
+Requires-Dist: pyannote.core; extra == "all"
+Requires-Dist: pyannote.metrics; extra == "all"
+Requires-Dist: pydub; extra == "all"
+Requires-Dist: pyloudnorm; extra == "all"
+Requires-Dist: resampy; extra == "all"
+Requires-Dist: ruamel.yaml; extra == "all"
+Requires-Dist: scipy>=0.14; extra == "all"
+Requires-Dist: soundfile; extra == "all"
+Requires-Dist: sox<=1.5.0; extra == "all"
+Requires-Dist: texterrors<1.0.0; extra == "all"
+Requires-Dist: whisper_normalizer; extra == "all"
+Requires-Dist: num2words; extra == "all"
+Requires-Dist: numpy<2.0.0; extra == "all"
+Requires-Dist: accelerated-scan; extra == "all"
+Requires-Dist: boto3; extra == "all"
+Requires-Dist: faiss-cpu; extra == "all"
+Requires-Dist: flask_restful; extra == "all"
+Requires-Dist: ftfy; extra == "all"
+Requires-Dist: gdown; extra == "all"
+Requires-Dist: h5py; extra == "all"
+Requires-Dist: ijson; extra == "all"
+Requires-Dist: jieba; extra == "all"
+Requires-Dist: markdown2; extra == "all"
+Requires-Dist: matplotlib>=3.3.2; extra == "all"
+Requires-Dist: megatron_core; extra == "all"
+Requires-Dist: multi-storage-client>=0.21.0; extra == "all"
+Requires-Dist: nltk>=3.6.5; extra == "all"
+Requires-Dist: numpy<2; extra == "all"
+Requires-Dist: nvidia-modelopt[torch]<=0.31.0,>=0.27.0; platform_system != "Darwin" and extra == "all"
+Requires-Dist: nvidia-resiliency-ext<1.0.0,>=0.3.0; platform_system != "Darwin" and extra == "all"
+Requires-Dist: nvtx; extra == "all"
+Requires-Dist: opencc; extra == "all"
+Requires-Dist: pangu; extra == "all"
+Requires-Dist: prettytable; extra == "all"
+Requires-Dist: rapidfuzz; extra == "all"
+Requires-Dist: rouge_score; extra == "all"
+Requires-Dist: sacrebleu; extra == "all"
+Requires-Dist: sentence_transformers; extra == "all"
+Requires-Dist: tensorstore<0.1.72; platform_system != "Darwin" and extra == "all"
+Requires-Dist: tiktoken==0.7.0; extra == "all"
+Requires-Dist: zarr<3.0.0,>=2.18.2; extra == "all"
+Requires-Dist: attrdict; extra == "all"
+Requires-Dist: cdifflib==1.2.6; extra == "all"
+Requires-Dist: einops; extra == "all"
+Requires-Dist: janome; extra == "all"
+Requires-Dist: jieba; extra == "all"
+Requires-Dist: kornia; extra == "all"
+Requires-Dist: librosa; extra == "all"
+Requires-Dist: matplotlib; extra == "all"
+Requires-Dist: nemo_text_processing; ("arm" not in platform_machine and "aarch" not in platform_machine and sys_platform != "darwin") and extra == "all"
+Requires-Dist: nltk; extra == "all"
+Requires-Dist: pandas; extra == "all"
+Requires-Dist: pypinyin; extra == "all"
+Requires-Dist: pypinyin-dict; extra == "all"
+Requires-Dist: seaborn; extra == "all"
+Requires-Dist: jiwer<4.0.0,>=2.0.0; extra == "all"
+Requires-Dist: progress>=1.5; extra == "all"
+Requires-Dist: tabulate>=0.8.7; extra == "all"
+Requires-Dist: textdistance>=4.1.5; extra == "all"
+Requires-Dist: tqdm; extra == "all"
+Requires-Dist: addict; extra == "all"
+Requires-Dist: clip; extra == "all"
+Requires-Dist: decord; (sys_platform == "linux" and platform_machine == "x86_64") and extra == "all"
+Requires-Dist: diffusers>=0.19.3; extra == "all"
+Requires-Dist: einops_exts; extra == "all"
+Requires-Dist: imageio; extra == "all"
+Requires-Dist: kornia; extra == "all"
+Requires-Dist: megatron-energon==5.2.0; extra == "all"
+Requires-Dist: nerfacc>=0.5.3; extra == "all"
+Requires-Dist: open_clip_torch==2.24.0; extra == "all"
+Requires-Dist: qwen_vl_utils; extra == "all"
+Requires-Dist: taming-transformers; extra == "all"
+Requires-Dist: torchdiffeq; extra == "all"
+Requires-Dist: torchsde; extra == "all"
+Requires-Dist: trimesh; extra == "all"
+Requires-Dist: einops; extra == "all"
+Requires-Dist: lhotse>=1.22.0; extra == "all"
+Requires-Dist: librosa>=0.10.0; extra == "all"
+Requires-Dist: matplotlib; extra == "all"
+Requires-Dist: pesq; (platform_machine != "x86_64" or platform_system != "Darwin") and extra == "all"
+Requires-Dist: pystoi; extra == "all"
+Requires-Dist: scipy>=0.14; extra == "all"
+Requires-Dist: soundfile; extra == "all"
+Requires-Dist: flask; extra == "all"
+Requires-Dist: nvidia-lm-eval; extra == "all"
+Provides-Extra: common
+Requires-Dist: datasets; extra == "common"
+Requires-Dist: einops; extra == "common"
+Requires-Dist: inflect; extra == "common"
+Requires-Dist: mediapy==1.1.6; extra == "common"
+Requires-Dist: pandas; extra == "common"
+Requires-Dist: sacremoses>=0.0.43; extra == "common"
+Requires-Dist: sentencepiece<1.0.0; extra == "common"
+Requires-Dist: cloudpickle; extra == "common"
+Requires-Dist: fiddle; extra == "common"
+Requires-Dist: hydra-core<=1.3.2,>1.3; extra == "common"
+Requires-Dist: lightning<=2.4.0,>2.2.1; extra == "common"
+Requires-Dist: omegaconf<=2.3; extra == "common"
+Requires-Dist: peft; extra == "common"
+Requires-Dist: torchmetrics>=0.11.0; extra == "common"
+Requires-Dist: transformers<=4.52.0,>=4.51.0; extra == "common"
+Requires-Dist: wandb; extra == "common"
+Requires-Dist: webdataset>=0.2.86; extra == "common"
+Requires-Dist: bitsandbytes==0.46.0; (platform_machine == "x86_64" and platform_system != "Darwin") and extra == "common"
+Provides-Extra: asr
+Requires-Dist: braceexpand; extra == "asr"
+Requires-Dist: editdistance; extra == "asr"
+Requires-Dist: einops; extra == "asr"
+Requires-Dist: jiwer<4.0.0,>=3.1.0; extra == "asr"
+Requires-Dist: kaldi-python-io; extra == "asr"
+Requires-Dist: lhotse!=1.31.0; extra == "asr"
+Requires-Dist: librosa>=0.10.1; extra == "asr"
+Requires-Dist: marshmallow; extra == "asr"
+Requires-Dist: optuna; extra == "asr"
+Requires-Dist: packaging; extra == "asr"
+Requires-Dist: pyannote.core; extra == "asr"
+Requires-Dist: pyannote.metrics; extra == "asr"
+Requires-Dist: pydub; extra == "asr"
+Requires-Dist: pyloudnorm; extra == "asr"
+Requires-Dist: resampy; extra == "asr"
+Requires-Dist: ruamel.yaml; extra == "asr"
+Requires-Dist: scipy>=0.14; extra == "asr"
+Requires-Dist: soundfile; extra == "asr"
+Requires-Dist: sox<=1.5.0; extra == "asr"
+Requires-Dist: texterrors<1.0.0; extra == "asr"
+Requires-Dist: whisper_normalizer; extra == "asr"
+Requires-Dist: num2words; extra == "asr"
+Requires-Dist: numpy<2.0.0; extra == "asr"
+Requires-Dist: datasets; extra == "asr"
+Requires-Dist: einops; extra == "asr"
+Requires-Dist: inflect; extra == "asr"
+Requires-Dist: mediapy==1.1.6; extra == "asr"
+Requires-Dist: pandas; extra == "asr"
+Requires-Dist: sacremoses>=0.0.43; extra == "asr"
+Requires-Dist: sentencepiece<1.0.0; extra == "asr"
+Requires-Dist: cloudpickle; extra == "asr"
+Requires-Dist: fiddle; extra == "asr"
+Requires-Dist: hydra-core<=1.3.2,>1.3; extra == "asr"
+Requires-Dist: lightning<=2.4.0,>2.2.1; extra == "asr"
+Requires-Dist: omegaconf<=2.3; extra == "asr"
+Requires-Dist: peft; extra == "asr"
+Requires-Dist: torchmetrics>=0.11.0; extra == "asr"
+Requires-Dist: transformers<=4.52.0,>=4.51.0; extra == "asr"
+Requires-Dist: wandb; extra == "asr"
+Requires-Dist: webdataset>=0.2.86; extra == "asr"
+Requires-Dist: bitsandbytes==0.46.0; (platform_machine == "x86_64" and platform_system != "Darwin") and extra == "asr"
+Provides-Extra: nlp
+Requires-Dist: accelerated-scan; extra == "nlp"
+Requires-Dist: boto3; extra == "nlp"
+Requires-Dist: faiss-cpu; extra == "nlp"
+Requires-Dist: flask_restful; extra == "nlp"
+Requires-Dist: ftfy; extra == "nlp"
+Requires-Dist: gdown; extra == "nlp"
+Requires-Dist: h5py; extra == "nlp"
+Requires-Dist: ijson; extra == "nlp"
+Requires-Dist: jieba; extra == "nlp"
+Requires-Dist: markdown2; extra == "nlp"
+Requires-Dist: matplotlib>=3.3.2; extra == "nlp"
+Requires-Dist: megatron_core; extra == "nlp"
+Requires-Dist: multi-storage-client>=0.21.0; extra == "nlp"
+Requires-Dist: nltk>=3.6.5; extra == "nlp"
+Requires-Dist: numpy<2; extra == "nlp"
+Requires-Dist: nvidia-modelopt[torch]<=0.31.0,>=0.27.0; platform_system != "Darwin" and extra == "nlp"
+Requires-Dist: nvidia-resiliency-ext<1.0.0,>=0.3.0; platform_system != "Darwin" and extra == "nlp"
+Requires-Dist: nvtx; extra == "nlp"
+Requires-Dist: opencc; extra == "nlp"
+Requires-Dist: pangu; extra == "nlp"
+Requires-Dist: prettytable; extra == "nlp"
+Requires-Dist: rapidfuzz; extra == "nlp"
+Requires-Dist: rouge_score; extra == "nlp"
+Requires-Dist: sacrebleu; extra == "nlp"
+Requires-Dist: sentence_transformers; extra == "nlp"
+Requires-Dist: tensorstore<0.1.72; platform_system != "Darwin" and extra == "nlp"
+Requires-Dist: tiktoken==0.7.0; extra == "nlp"
+Requires-Dist: zarr<3.0.0,>=2.18.2; extra == "nlp"
+Requires-Dist: flask; extra == "nlp"
+Requires-Dist: nvidia-lm-eval; extra == "nlp"
+Requires-Dist: datasets; extra == "nlp"
+Requires-Dist: einops; extra == "nlp"
+Requires-Dist: inflect; extra == "nlp"
+Requires-Dist: mediapy==1.1.6; extra == "nlp"
+Requires-Dist: pandas; extra == "nlp"
+Requires-Dist: sacremoses>=0.0.43; extra == "nlp"
+Requires-Dist: sentencepiece<1.0.0; extra == "nlp"
+Requires-Dist: cloudpickle; extra == "nlp"
+Requires-Dist: fiddle; extra == "nlp"
+Requires-Dist: hydra-core<=1.3.2,>1.3; extra == "nlp"
+Requires-Dist: lightning<=2.4.0,>2.2.1; extra == "nlp"
+Requires-Dist: omegaconf<=2.3; extra == "nlp"
+Requires-Dist: peft; extra == "nlp"
+Requires-Dist: torchmetrics>=0.11.0; extra == "nlp"
+Requires-Dist: transformers<=4.52.0,>=4.51.0; extra == "nlp"
+Requires-Dist: wandb; extra == "nlp"
+Requires-Dist: webdataset>=0.2.86; extra == "nlp"
+Requires-Dist: bitsandbytes==0.46.0; (platform_machine == "x86_64" and platform_system != "Darwin") and extra == "nlp"
+Provides-Extra: llm
+Requires-Dist: accelerated-scan; extra == "llm"
+Requires-Dist: boto3; extra == "llm"
+Requires-Dist: faiss-cpu; extra == "llm"
+Requires-Dist: flask_restful; extra == "llm"
+Requires-Dist: ftfy; extra == "llm"
+Requires-Dist: gdown; extra == "llm"
+Requires-Dist: h5py; extra == "llm"
+Requires-Dist: ijson; extra == "llm"
+Requires-Dist: jieba; extra == "llm"
+Requires-Dist: markdown2; extra == "llm"
+Requires-Dist: matplotlib>=3.3.2; extra == "llm"
+Requires-Dist: megatron_core; extra == "llm"
+Requires-Dist: multi-storage-client>=0.21.0; extra == "llm"
+Requires-Dist: nltk>=3.6.5; extra == "llm"
+Requires-Dist: numpy<2; extra == "llm"
+Requires-Dist: nvidia-modelopt[torch]<=0.31.0,>=0.27.0; platform_system != "Darwin" and extra == "llm"
+Requires-Dist: nvidia-resiliency-ext<1.0.0,>=0.3.0; platform_system != "Darwin" and extra == "llm"
+Requires-Dist: nvtx; extra == "llm"
+Requires-Dist: opencc; extra == "llm"
+Requires-Dist: pangu; extra == "llm"
+Requires-Dist: prettytable; extra == "llm"
+Requires-Dist: rapidfuzz; extra == "llm"
+Requires-Dist: rouge_score; extra == "llm"
+Requires-Dist: sacrebleu; extra == "llm"
+Requires-Dist: sentence_transformers; extra == "llm"
+Requires-Dist: tensorstore<0.1.72; platform_system != "Darwin" and extra == "llm"
+Requires-Dist: tiktoken==0.7.0; extra == "llm"
+Requires-Dist: zarr<3.0.0,>=2.18.2; extra == "llm"
+Requires-Dist: flask; extra == "llm"
+Requires-Dist: nvidia-lm-eval; extra == "llm"
+Requires-Dist: datasets; extra == "llm"
+Requires-Dist: einops; extra == "llm"
+Requires-Dist: inflect; extra == "llm"
+Requires-Dist: mediapy==1.1.6; extra == "llm"
+Requires-Dist: pandas; extra == "llm"
+Requires-Dist: sacremoses>=0.0.43; extra == "llm"
+Requires-Dist: sentencepiece<1.0.0; extra == "llm"
+Requires-Dist: cloudpickle; extra == "llm"
+Requires-Dist: fiddle; extra == "llm"
+Requires-Dist: hydra-core<=1.3.2,>1.3; extra == "llm"
+Requires-Dist: lightning<=2.4.0,>2.2.1; extra == "llm"
+Requires-Dist: omegaconf<=2.3; extra == "llm"
+Requires-Dist: peft; extra == "llm"
+Requires-Dist: torchmetrics>=0.11.0; extra == "llm"
+Requires-Dist: transformers<=4.52.0,>=4.51.0; extra == "llm"
+Requires-Dist: wandb; extra == "llm"
+Requires-Dist: webdataset>=0.2.86; extra == "llm"
+Requires-Dist: bitsandbytes==0.46.0; (platform_machine == "x86_64" and platform_system != "Darwin") and extra == "llm"
+Provides-Extra: multimodal
+Requires-Dist: addict; extra == "multimodal"
+Requires-Dist: clip; extra == "multimodal"
+Requires-Dist: decord; (sys_platform == "linux" and platform_machine == "x86_64") and extra == "multimodal"
+Requires-Dist: diffusers>=0.19.3; extra == "multimodal"
+Requires-Dist: einops_exts; extra == "multimodal"
+Requires-Dist: imageio; extra == "multimodal"
+Requires-Dist: kornia; extra == "multimodal"
+Requires-Dist: megatron-energon==5.2.0; extra == "multimodal"
+Requires-Dist: nerfacc>=0.5.3; extra == "multimodal"
+Requires-Dist: open_clip_torch==2.24.0; extra == "multimodal"
+Requires-Dist: qwen_vl_utils; extra == "multimodal"
+Requires-Dist: taming-transformers; extra == "multimodal"
+Requires-Dist: torchdiffeq; extra == "multimodal"
+Requires-Dist: torchsde; extra == "multimodal"
+Requires-Dist: trimesh; extra == "multimodal"
+Requires-Dist: accelerated-scan; extra == "multimodal"
+Requires-Dist: boto3; extra == "multimodal"
+Requires-Dist: faiss-cpu; extra == "multimodal"
+Requires-Dist: flask_restful; extra == "multimodal"
+Requires-Dist: ftfy; extra == "multimodal"
+Requires-Dist: gdown; extra == "multimodal"
+Requires-Dist: h5py; extra == "multimodal"
+Requires-Dist: ijson; extra == "multimodal"
+Requires-Dist: jieba; extra == "multimodal"
+Requires-Dist: markdown2; extra == "multimodal"
+Requires-Dist: matplotlib>=3.3.2; extra == "multimodal"
+Requires-Dist: megatron_core; extra == "multimodal"
+Requires-Dist: multi-storage-client>=0.21.0; extra == "multimodal"
+Requires-Dist: nltk>=3.6.5; extra == "multimodal"
+Requires-Dist: numpy<2; extra == "multimodal"
+Requires-Dist: nvidia-modelopt[torch]<=0.31.0,>=0.27.0; platform_system != "Darwin" and extra == "multimodal"
+Requires-Dist: nvidia-resiliency-ext<1.0.0,>=0.3.0; platform_system != "Darwin" and extra == "multimodal"
+Requires-Dist: nvtx; extra == "multimodal"
+Requires-Dist: opencc; extra == "multimodal"
+Requires-Dist: pangu; extra == "multimodal"
+Requires-Dist: prettytable; extra == "multimodal"
+Requires-Dist: rapidfuzz; extra == "multimodal"
+Requires-Dist: rouge_score; extra == "multimodal"
+Requires-Dist: sacrebleu; extra == "multimodal"
+Requires-Dist: sentence_transformers; extra == "multimodal"
+Requires-Dist: tensorstore<0.1.72; platform_system != "Darwin" and extra == "multimodal"
+Requires-Dist: tiktoken==0.7.0; extra == "multimodal"
+Requires-Dist: zarr<3.0.0,>=2.18.2; extra == "multimodal"
+Requires-Dist: flask; extra == "multimodal"
+Requires-Dist: nvidia-lm-eval; extra == "multimodal"
+Requires-Dist: datasets; extra == "multimodal"
+Requires-Dist: einops; extra == "multimodal"
+Requires-Dist: inflect; extra == "multimodal"
+Requires-Dist: mediapy==1.1.6; extra == "multimodal"
+Requires-Dist: pandas; extra == "multimodal"
+Requires-Dist: sacremoses>=0.0.43; extra == "multimodal"
+Requires-Dist: sentencepiece<1.0.0; extra == "multimodal"
+Requires-Dist: cloudpickle; extra == "multimodal"
+Requires-Dist: fiddle; extra == "multimodal"
+Requires-Dist: hydra-core<=1.3.2,>1.3; extra == "multimodal"
+Requires-Dist: lightning<=2.4.0,>2.2.1; extra == "multimodal"
+Requires-Dist: omegaconf<=2.3; extra == "multimodal"
+Requires-Dist: peft; extra == "multimodal"
+Requires-Dist: torchmetrics>=0.11.0; extra == "multimodal"
+Requires-Dist: transformers<=4.52.0,>=4.51.0; extra == "multimodal"
+Requires-Dist: wandb; extra == "multimodal"
+Requires-Dist: webdataset>=0.2.86; extra == "multimodal"
+Requires-Dist: bitsandbytes==0.46.0; (platform_machine == "x86_64" and platform_system != "Darwin") and extra == "multimodal"
+Requires-Dist: datasets; extra == "multimodal"
+Requires-Dist: einops; extra == "multimodal"
+Requires-Dist: inflect; extra == "multimodal"
+Requires-Dist: mediapy==1.1.6; extra == "multimodal"
+Requires-Dist: pandas; extra == "multimodal"
+Requires-Dist: sacremoses>=0.0.43; extra == "multimodal"
+Requires-Dist: sentencepiece<1.0.0; extra == "multimodal"
+Requires-Dist: cloudpickle; extra == "multimodal"
+Requires-Dist: fiddle; extra == "multimodal"
+Requires-Dist: hydra-core<=1.3.2,>1.3; extra == "multimodal"
+Requires-Dist: lightning<=2.4.0,>2.2.1; extra == "multimodal"
+Requires-Dist: omegaconf<=2.3; extra == "multimodal"
+Requires-Dist: peft; extra == "multimodal"
+Requires-Dist: torchmetrics>=0.11.0; extra == "multimodal"
+Requires-Dist: transformers<=4.52.0,>=4.51.0; extra == "multimodal"
+Requires-Dist: wandb; extra == "multimodal"
+Requires-Dist: webdataset>=0.2.86; extra == "multimodal"
+Requires-Dist: bitsandbytes==0.46.0; (platform_machine == "x86_64" and platform_system != "Darwin") and extra == "multimodal"
+Dynamic: author
+Dynamic: download-url
+Dynamic: home-page
+Dynamic: license-file
+Dynamic: maintainer
+Dynamic: provides-extra
+Dynamic: requires-dist
+Dynamic: requires-python
+
+[![Project Status: Active -- The project has reached a stable, usable state and is being actively developed.](http://www.repostatus.org/badges/latest/active.svg)](http://www.repostatus.org/#active)
+[![Documentation](https://readthedocs.com/projects/nvidia-nemo/badge/?version=main)](https://docs.nvidia.com/deeplearning/nemo/user-guide/docs/en/main/)
+[![CodeQL](https://github.com/nvidia/nemo/actions/workflows/codeql.yml/badge.svg?branch=main&event=push)](https://github.com/nvidia/nemo/actions/workflows/codeql.yml)
+[![NeMo core license and license for collections in this repo](https://img.shields.io/badge/License-Apache%202.0-brightgreen.svg)](https://github.com/NVIDIA/NeMo/blob/master/LICENSE)
+[![Release version](https://badge.fury.io/py/nemo-toolkit.svg)](https://badge.fury.io/py/nemo-toolkit)
+[![Python version](https://img.shields.io/pypi/pyversions/nemo-toolkit.svg)](https://badge.fury.io/py/nemo-toolkit)
+[![PyPi total downloads](https://static.pepy.tech/personalized-badge/nemo-toolkit?period=total&units=international_system&left_color=grey&right_color=brightgreen&left_text=downloads)](https://pepy.tech/project/nemo-toolkit)
+[![Code style: black](https://img.shields.io/badge/code%20style-black-000000.svg)](https://github.com/psf/black)
+
+# **NVIDIA NeMo Framework**
+
+## Latest News
+
+<!-- markdownlint-disable -->
+<details open>
+  <summary><b>Pretrain and finetune :hugs:Hugging Face models via AutoModel</b></summary>
+      Nemo Framework's latest feature AutoModel enables broad support for :hugs:Hugging Face models, with 25.04 focusing on
+
+  
+- <a href=https://huggingface.co/transformers/v3.5.1/model_doc/auto.html#automodelforcausallm>AutoModelForCausalLM<a> in the <a href="https://huggingface.co/models?pipeline_tag=text-generation&sort=trending">Text Generation<a> category
+- <a href=https://huggingface.co/docs/transformers/main/model_doc/auto#transformers.AutoModelForImageTextToText>AutoModelForImageTextToText<a> in the <a href="https://huggingface.co/models?pipeline_tag=image-text-to-text&sort=trending">Image-Text-to-Text<a> category
+
+More Details in Blog: <a href=https://developer.nvidia.com/blog/run-hugging-face-models-instantly-with-day-0-support-from-nvidia-nemo-framework>Run Hugging Face Models Instantly with Day-0 Support from NVIDIA NeMo Framework<a>. Future releases will enable support for more model families such as Video Generation models.(2025-05-19)
+</details>
+
+<details open>
+  <summary><b>Training on Blackwell using Nemo</b></summary>
+      NeMo Framework has added Blackwell support, with <a href=https://docs.nvidia.com/nemo-framework/user-guide/latest/performance/performance_summary.html>performance benchmarks on GB200 & B200<a>. More optimizations to come in the upcoming releases.(2025-05-19)
+</details>
+
+<details open>
+  <summary><b>Training Performance on GPU Tuning Guide</b></summary>
+      NeMo Framework has published <a href=https://docs.nvidia.com/nemo-framework/user-guide/latest/performance/performance-guide.html>a comprehensive guide for performance tuning to achieve optimal throughput<a>! (2025-05-19)
+</details>
+
+<details open>
+  <summary><b>New Models Support</b></summary>
+      NeMo Framework has added support for latest community models - <a href=https://docs.nvidia.com/nemo-framework/user-guide/latest/vlms/llama4.html>Llama 4<a>, <a href=https://docs.nvidia.com/nemo-framework/user-guide/latest/vision/diffusionmodels/flux.html>Flux<a>, <a href=https://docs.nvidia.com/nemo-framework/user-guide/latest/llms/llama_nemotron.html>Llama Nemotron<a>, <a href=https://docs.nvidia.com/nemo-framework/user-guide/latest/llms/hyena.html#>Hyena & Evo2<a>, <a href=https://docs.nvidia.com/nemo-framework/user-guide/latest/vlms/qwen2vl.html>Qwen2-VL<a>, <a href=https://docs.nvidia.com/nemo-framework/user-guide/latest/llms/qwen2.html>Qwen2.5<a>, Gemma3, Qwen3-30B&32B.(2025-05-19)
+</details>
+
+
+<details open>
+  <summary><b>NeMo Framework 2.0</b></summary>
+      We've released NeMo 2.0, an update on the NeMo Framework which prioritizes modularity and ease-of-use. Please refer to the <a href=https://docs.nvidia.com/nemo-framework/user-guide/latest/nemo-2.0/index.html>NeMo Framework User Guide</a> to get started.
+</details>
+<details open>
+  <summary><b>New Cosmos World Foundation Models Support</b></summary>
+    <details> 
+      <summary> <a href="https://developer.nvidia.com/blog/advancing-physical-ai-with-nvidia-cosmos-world-foundation-model-platform">Advancing Physical AI with NVIDIA Cosmos World Foundation Model Platform </a> (2025-01-09) 
+      </summary> 
+        The end-to-end NVIDIA Cosmos platform accelerates world model development for physical AI systems. Built on CUDA, Cosmos combines state-of-the-art world foundation models, video tokenizers, and AI-accelerated data processing pipelines. Developers can accelerate world model development by fine-tuning Cosmos world foundation models or building new ones from the ground up. These models create realistic synthetic videos of environments and interactions, providing a scalable foundation for training complex systems, from simulating humanoid robots performing advanced actions to developing end-to-end autonomous driving models. 
+        <br><br>
+    </details>
+    <details>
+      <summary>
+        <a href="https://developer.nvidia.com/blog/accelerate-custom-video-foundation-model-pipelines-with-new-nvidia-nemo-framework-capabilities/">
+          Accelerate Custom Video Foundation Model Pipelines with New NVIDIA NeMo Framework Capabilities
+        </a> (2025-01-07)
+      </summary>
+        The NeMo Framework now supports training and customizing the <a href="https://github.com/NVIDIA/Cosmos">NVIDIA Cosmos</a> collection of world foundation models. Cosmos leverages advanced text-to-world generation techniques to create fluid, coherent video content from natural language prompts.
+        <br><br>
+        You can also now accelerate your video processing step using the <a href="https://developer.nvidia.com/nemo-curator-video-processing-early-access">NeMo Curator</a> library, which provides optimized video processing and captioning features that can deliver up to 89x faster video processing when compared to an unoptimized CPU pipeline.
+      <br><br>
+    </details>
+</details>
+<details open>
+  <summary><b>Large Language Models and Multimodal Models</b></summary>
+    <details>
+      <summary>
+        <a href="https://developer.nvidia.com/blog/state-of-the-art-multimodal-generative-ai-model-development-with-nvidia-nemo/">
+          State-of-the-Art Multimodal Generative AI Model Development with NVIDIA NeMo
+        </a> (2024-11-06)
+      </summary>
+        NVIDIA recently announced significant enhancements to the NeMo platform, focusing on multimodal generative AI models. The update includes NeMo Curator and the Cosmos tokenizer, which streamline the data curation process and enhance the quality of visual data. These tools are designed to handle large-scale data efficiently, making it easier to develop high-quality AI models for various applications, including robotics and autonomous driving. The Cosmos tokenizers, in particular, efficiently map visual data into compact, semantic tokens, which is crucial for training large-scale generative models. The tokenizer is available now on the <a href=http://github.com/NVIDIA/cosmos-tokenizer/NVIDIA/cosmos-tokenizer>NVIDIA/cosmos-tokenizer</a> GitHub repo and on <a href=https://huggingface.co/nvidia/Cosmos-Tokenizer-CV8x8x8>Hugging Face</a>.
+      <br><br>
+    </details>
+    <details>
+      <summary>
+        <a href="https://docs.nvidia.com/nemo-framework/user-guide/latest/llms/llama/index.html#new-llama-3-1-support for more information/">
+        New Llama 3.1 Support
+        </a> (2024-07-23)
+      </summary>
+        The NeMo Framework now supports training and customizing the Llama 3.1 collection of LLMs from Meta.
+      <br><br>
+    </details>
+    <details>
+      <summary>
+        <a href="https://aws.amazon.com/blogs/machine-learning/accelerate-your-generative-ai-distributed-training-workloads-with-the-nvidia-nemo-framework-on-amazon-eks/">
+          Accelerate your Generative AI Distributed Training Workloads with the NVIDIA NeMo Framework on Amazon EKS
+        </a> (2024-07-16)
+      </summary>
+     NVIDIA NeMo Framework now runs distributed training workloads on an Amazon Elastic Kubernetes Service (Amazon EKS) cluster. For step-by-step instructions on creating an EKS cluster and running distributed training workloads with NeMo, see the GitHub repository <a href="https://github.com/aws-samples/awsome-distributed-training/tree/main/3.test_cases/2.nemo-launcher/EKS/"> here.</a>
+      <br><br>
+    </details>
+    <details>
+      <summary>
+        <a href="https://developer.nvidia.com/blog/nvidia-nemo-accelerates-llm-innovation-with-hybrid-state-space-model-support/">
+          NVIDIA NeMo Accelerates LLM Innovation with Hybrid State Space Model Support
+        </a> (2024/06/17)
+      </summary>
+     NVIDIA NeMo and Megatron Core now support pre-training and fine-tuning of state space models (SSMs). NeMo also supports training models based on the Griffin architecture as described by Google DeepMind. 
+      <br><br>
+    </details>
+      <details>
+      <summary>
+        <a href="https://huggingface.co/models?sort=trending&search=nvidia%2Fnemotron-4-340B">
+          NVIDIA releases 340B base, instruct, and reward models pretrained on a total of 9T tokens.
+        </a> (2024-06-18)
+      </summary>
+      See documentation and tutorials for SFT, PEFT, and PTQ with 
+      <a href="https://docs.nvidia.com/nemo-framework/user-guide/latest/llms/nemotron/index.html">
+        Nemotron 340B 
+      </a>
+      in the NeMo Framework User Guide.
+      <br><br>
+    </details>
+    <details>
+      <summary>
+        <a href="https://developer.nvidia.com/blog/nvidia-sets-new-generative-ai-performance-and-scale-records-in-mlperf-training-v4-0/">
+          NVIDIA sets new generative AI performance and scale records in MLPerf Training v4.0
+        </a> (2024/06/12)
+      </summary>
+      Using NVIDIA NeMo Framework and NVIDIA Hopper GPUs NVIDIA was able to scale to 11,616 H100 GPUs and achieve near-linear performance scaling on LLM pretraining. 
+      NVIDIA also achieved the highest LLM fine-tuning performance and raised the bar for text-to-image training.
+      <br><br>
+    </details>
+    <details>
+        <summary>
+          <a href="https://cloud.google.com/blog/products/compute/gke-and-nvidia-nemo-framework-to-train-generative-ai-models">
+            Accelerate your generative AI journey with NVIDIA NeMo Framework on GKE
+          </a> (2024/03/16)
+        </summary>
+        An end-to-end walkthrough to train generative AI models on the Google Kubernetes Engine (GKE) using the NVIDIA NeMo Framework is available at https://github.com/GoogleCloudPlatform/nvidia-nemo-on-gke. 
+        The walkthrough includes detailed instructions on how to set up a Google Cloud Project and pre-train a GPT model using the NeMo Framework.
+        <br><br>
+      </details>
+</details>
+<details open>
+  <summary><b>Speech Recognition</b></summary>
+  <details>
+      <summary>
+        <a href="https://developer.nvidia.com/blog/accelerating-leaderboard-topping-asr-models-10x-with-nvidia-nemo/">
+          Accelerating Leaderboard-Topping ASR Models 10x with NVIDIA NeMo
+        </a> (2024/09/24)
+      </summary>
+      NVIDIA NeMo team released a number of inference optimizations for CTC, RNN-T, and TDT models that resulted in up to 10x inference speed-up. 
+      These models now exceed an inverse real-time factor (RTFx) of 2,000, with some reaching RTFx of even 6,000.
+      <br><br>
+    </details>
+    <details>
+      <summary>
+        <a href="https://developer.nvidia.com/blog/new-standard-for-speech-recognition-and-translation-from-the-nvidia-nemo-canary-model/">
+          New Standard for Speech Recognition and Translation from the NVIDIA NeMo Canary Model
+        </a> (2024/04/18)
+      </summary>
+      The NeMo team just released Canary, a multilingual model that transcribes speech in English, Spanish, German, and French with punctuation and capitalization. 
+      Canary also provides bi-directional translation, between English and the three other supported languages.
+      <br><br>
+    </details>
+    <details>
+      <summary>
+        <a href="https://developer.nvidia.com/blog/pushing-the-boundaries-of-speech-recognition-with-nemo-parakeet-asr-models/">
+          Pushing the Boundaries of Speech Recognition with NVIDIA NeMo Parakeet ASR Models
+        </a> (2024/04/18)
+      </summary>
+      NVIDIA NeMo, an end-to-end platform for the development of multimodal generative AI models at scale anywhere—on any cloud and on-premises—released the Parakeet family of automatic speech recognition (ASR) models. 
+      These state-of-the-art ASR models, developed in collaboration with Suno.ai, transcribe spoken English with exceptional accuracy.
+      <br><br>
+    </details>
+  <details>
+    <summary>
+      <a href="https://developer.nvidia.com/blog/turbocharge-asr-accuracy-and-speed-with-nvidia-nemo-parakeet-tdt/">
+        Turbocharge ASR Accuracy and Speed with NVIDIA NeMo Parakeet-TDT
+      </a> (2024/04/18)
+    </summary>
+    NVIDIA NeMo, an end-to-end platform for developing multimodal generative AI models at scale anywhere—on any cloud and on-premises—recently released Parakeet-TDT. 
+    This new addition to the  NeMo ASR Parakeet model family boasts better accuracy and 64% greater speed over the previously best model, Parakeet-RNNT-1.1B.
+    <br><br>
+  </details>
+</details>
+<!-- markdownlint-enable -->
+
+## Introduction
+
+NVIDIA NeMo Framework is a scalable and cloud-native generative AI
+framework built for researchers and PyTorch developers working on Large
+Language Models (LLMs), Multimodal Models (MMs), Automatic Speech
+Recognition (ASR), Text to Speech (TTS), and Computer Vision (CV)
+domains. It is designed to help you efficiently create, customize, and
+deploy new generative AI models by leveraging existing code and
+pre-trained model checkpoints.
+
+For technical documentation, please see the [NeMo Framework User
+Guide](https://docs.nvidia.com/nemo-framework/user-guide/latest/playbooks/index.html).
+
+## What's New in NeMo 2.0
+
+NVIDIA NeMo 2.0 introduces several significant improvements over its predecessor, NeMo 1.0, enhancing flexibility, performance, and scalability.
+
+- **Python-Based Configuration** - NeMo 2.0 transitions from YAML files to a Python-based configuration, providing more flexibility and control. This shift makes it easier to extend and customize configurations programmatically.
+
+- **Modular Abstractions** - By adopting PyTorch Lightning’s modular abstractions, NeMo 2.0 simplifies adaptation and experimentation. This modular approach allows developers to more easily modify and experiment with different components of their models.
+
+- **Scalability** - NeMo 2.0 seamlessly scaling large-scale experiments across thousands of GPUs using [NeMo-Run](https://github.com/NVIDIA/NeMo-Run), a powerful tool designed to streamline the configuration, execution, and management of machine learning experiments across computing environments.
+
+Overall, these enhancements make NeMo 2.0 a powerful, scalable, and user-friendly framework for AI model development.
+
+> [!IMPORTANT]  
+> NeMo 2.0 is currently supported by the LLM (large language model) and VLM (vision language model) collections.
+
+### Get Started with NeMo 2.0
+
+- Refer to the [Quickstart](https://docs.nvidia.com/nemo-framework/user-guide/latest/nemo-2.0/quickstart.html) for examples of using NeMo-Run to launch NeMo 2.0 experiments locally and on a slurm cluster.
+- For more information about NeMo 2.0, see the [NeMo Framework User Guide](https://docs.nvidia.com/nemo-framework/user-guide/latest/nemo-2.0/index.html).
+- [NeMo 2.0 Recipes](https://github.com/NVIDIA/NeMo/blob/main/nemo/collections/llm/recipes) contains additional examples of launching large-scale runs using NeMo 2.0 and NeMo-Run.
+- For an in-depth exploration of the main features of NeMo 2.0, see the [Feature Guide](https://docs.nvidia.com/nemo-framework/user-guide/latest/nemo-2.0/features/index.html#feature-guide).
+- To transition from NeMo 1.0 to 2.0, see the [Migration Guide](https://docs.nvidia.com/nemo-framework/user-guide/latest/nemo-2.0/migration/index.html#migration-guide) for step-by-step instructions.
+
+### Get Started with Cosmos
+
+NeMo Curator and NeMo Framework support video curation and post-training of the Cosmos World Foundation Models, which are open and available on [NGC](https://catalog.ngc.nvidia.com/orgs/nvidia/teams/cosmos/collections/cosmos) and [Hugging Face](https://huggingface.co/collections/nvidia/cosmos-6751e884dc10e013a0a0d8e6). For more information on video datasets, refer to [NeMo Curator](https://developer.nvidia.com/nemo-curator). To post-train World Foundation Models using the NeMo Framework for your custom physical AI tasks, see the [Cosmos Diffusion models](https://github.com/NVIDIA/Cosmos/blob/main/cosmos1/models/diffusion/nemo/post_training/README.md) and the [Cosmos Autoregressive models](https://github.com/NVIDIA/Cosmos/blob/main/cosmos1/models/autoregressive/nemo/post_training/README.md).
+
+## LLMs and MMs Training, Alignment, and Customization
+
+All NeMo models are trained with
+[Lightning](https://github.com/Lightning-AI/lightning). Training is
+automatically scalable to 1000s of GPUs. You can check the performance benchmarks using the
+latest NeMo Framework container [here](https://docs.nvidia.com/nemo-framework/user-guide/latest/performance/performance_summary.html).
+
+When applicable, NeMo models leverage cutting-edge distributed training
+techniques, incorporating [parallelism
+strategies](https://docs.nvidia.com/nemo-framework/user-guide/latest/modeloverview.html)
+to enable efficient training of very large models. These techniques
+include Tensor Parallelism (TP), Pipeline Parallelism (PP), Fully
+Sharded Data Parallelism (FSDP), Mixture-of-Experts (MoE), and Mixed
+Precision Training with BFloat16 and FP8, as well as others.
+
+NeMo Transformer-based LLMs and MMs utilize [NVIDIA Transformer
+Engine](https://github.com/NVIDIA/TransformerEngine) for FP8 training on
+NVIDIA Hopper GPUs, while leveraging [NVIDIA Megatron
+Core](https://github.com/NVIDIA/Megatron-LM/tree/main/megatron/core) for
+scaling Transformer model training.
+
+NeMo LLMs can be aligned with state-of-the-art methods such as SteerLM,
+Direct Preference Optimization (DPO), and Reinforcement Learning from
+Human Feedback (RLHF). See [NVIDIA NeMo
+Aligner](https://github.com/NVIDIA/NeMo-Aligner) for more information.
+
+In addition to supervised fine-tuning (SFT), NeMo also supports the
+latest parameter efficient fine-tuning (PEFT) techniques such as LoRA,
+P-Tuning, Adapters, and IA3. Refer to the [NeMo Framework User
+Guide](https://docs.nvidia.com/nemo-framework/user-guide/latest/sft_peft/index.html)
+for the full list of supported models and techniques.
+
+## LLMs and MMs Deployment and Optimization
+
+NeMo LLMs and MMs can be deployed and optimized with [NVIDIA NeMo
+Microservices](https://developer.nvidia.com/nemo-microservices-early-access).
+
+## Speech AI
+
+NeMo ASR and TTS models can be optimized for inference and deployed for
+production use cases with [NVIDIA Riva](https://developer.nvidia.com/riva).
+
+## NeMo Framework Launcher
+
+> [!IMPORTANT]  
+> NeMo Framework Launcher is compatible with NeMo version 1.0 only. [NeMo-Run](https://github.com/NVIDIA/NeMo-Run) is recommended for launching experiments using NeMo 2.0.
+
+[NeMo Framework
+Launcher](https://github.com/NVIDIA/NeMo-Megatron-Launcher) is a
+cloud-native tool that streamlines the NeMo Framework experience. It is
+used for launching end-to-end NeMo Framework training jobs on CSPs and
+Slurm clusters.
+
+The NeMo Framework Launcher includes extensive recipes, scripts,
+utilities, and documentation for training NeMo LLMs. It also includes
+the NeMo Framework [Autoconfigurator](https://github.com/NVIDIA/NeMo-Megatron-Launcher#53-using-autoconfigurator-to-find-the-optimal-configuration),
+which is designed to find the optimal model parallel configuration for
+training on a specific cluster.
+
+To get started quickly with the NeMo Framework Launcher, please see the
+[NeMo Framework
+Playbooks](https://docs.nvidia.com/nemo-framework/user-guide/latest/playbooks/index.html).
+The NeMo Framework Launcher does not currently support ASR and TTS
+training, but it will soon.
+
+## Get Started with NeMo Framework
+
+Getting started with NeMo Framework is easy. State-of-the-art pretrained
+NeMo models are freely available on [Hugging Face
+Hub](https://huggingface.co/models?library=nemo&sort=downloads&search=nvidia)
+and [NVIDIA
+NGC](https://catalog.ngc.nvidia.com/models?query=nemo&orderBy=weightPopularDESC).
+These models can be used to generate text or images, transcribe audio,
+and synthesize speech in just a few lines of code.
+
+We have extensive
+[tutorials](https://docs.nvidia.com/deeplearning/nemo/user-guide/docs/en/stable/starthere/tutorials.html)
+that can be run on [Google Colab](https://colab.research.google.com) or
+with our [NGC NeMo Framework
+Container](https://catalog.ngc.nvidia.com/orgs/nvidia/containers/nemo).
+We also have
+[playbooks](https://docs.nvidia.com/nemo-framework/user-guide/latest/playbooks/index.html)
+for users who want to train NeMo models with the NeMo Framework
+Launcher.
+
+For advanced users who want to train NeMo models from scratch or
+fine-tune existing NeMo models, we have a full suite of [example
+scripts](https://github.com/NVIDIA/NeMo/tree/main/examples) that support
+multi-GPU/multi-node training.
+
+## Key Features
+
+- [Large Language Models](nemo/collections/nlp/README.md)
+- [Multimodal](nemo/collections/multimodal/README.md)
+- [Automatic Speech Recognition](nemo/collections/asr/README.md)
+- [Text to Speech](nemo/collections/tts/README.md)
+- [Computer Vision](nemo/collections/vision/README.md)
+
+## Requirements
+
+- Python 3.10 or above
+- Pytorch 2.5 or above
+- NVIDIA GPU (if you intend to do model training)
+
+## Developer Documentation
+
+| Version | Status                                                                                                                                                              | Description                                                                                                                    |
+| ------- | ------------------------------------------------------------------------------------------------------------------------------------------------------------------- | ------------------------------------------------------------------------------------------------------------------------------ |
+| Latest  | [![Documentation Status](https://readthedocs.com/projects/nvidia-nemo/badge/?version=main)](https://docs.nvidia.com/deeplearning/nemo/user-guide/docs/en/main/)     | [Documentation of the latest (i.e. main) branch.](https://docs.nvidia.com/deeplearning/nemo/user-guide/docs/en/main/)          |
+| Stable  | [![Documentation Status](https://readthedocs.com/projects/nvidia-nemo/badge/?version=stable)](https://docs.nvidia.com/deeplearning/nemo/user-guide/docs/en/stable/) | [Documentation of the stable (i.e. most recent release)](https://docs.nvidia.com/deeplearning/nemo/user-guide/docs/en/stable/) |
+
+## Install NeMo Framework
+
+The NeMo Framework can be installed in a variety of ways, depending on
+your needs. Depending on the domain, you may find one of the following
+installation methods more suitable.
+
+- [Conda / Pip](#conda--pip): Install NeMo-Framework with native Pip into a virtual environment.
+  - Used to explore NeMo on any supported platform.
+  - This is the recommended method for ASR and TTS domains.
+  - Limited feature-completeness for other domains.
+- [NGC PyTorch container](#ngc-pytorch-container): Install NeMo-Framework from source with feature-completeness into a highly optimized container.
+  - For users that want to install from source in a highly optimized container.
+- [NGC NeMo container](#ngc-nemo-container): Ready-to-go solution of NeMo-Framework
+  - For users that seek highest performance.
+  - Contains all dependencies installed and tested for performance and convergence.
+
+### Support matrix
+
+NeMo-Framework provides tiers of support based on OS / Platform and mode of installation. Please refer the following overview of support levels:
+
+- Fully supported: Max performance and feature-completeness.
+- Limited supported: Used to explore NeMo.
+- No support yet: In development.
+- Deprecated: Support has reached end of life.
+
+Please refer to the following table for current support levels:
+
+| OS / Platform              | Install from PyPi | Source into NGC container |
+|----------------------------|-------------------|---------------------------|
+| `linux` - `amd64/x84_64`   | Limited support   | Full support              |
+| `linux` - `arm64`          | Limited support   | Limited support           |
+| `darwin` - `amd64/x64_64`  | Deprecated        | Deprecated                |
+| `darwin` - `arm64`         | Limited support   | Limited support           |
+| `windows` - `amd64/x64_64` | No support yet    | No support yet            |
+| `windows` - `arm64`        | No support yet    | No support yet            |
+
+### Conda / Pip
+
+Install NeMo in a fresh Conda environment:
+
+```bash
+conda create --name nemo python==3.10.12
+conda activate nemo
+```
+
+#### Pick the right version
+
+NeMo-Framework publishes pre-built wheels with each release.
+To install nemo_toolkit from such a wheel, use the following installation method:
+
+```bash
+pip install "nemo_toolkit[all]"
+```
+
+If a more specific version is desired, we recommend a Pip-VCS install. From [NVIDIA/NeMo](github.com/NVIDIA/NeMo), fetch the commit, branch, or tag that you would like to install.  
+To install nemo_toolkit from this Git reference `$REF`, use the following installation method:
+
+```bash
+git clone https://github.com/NVIDIA/NeMo
+cd NeMo
+git checkout @${REF:-'main'}
+pip install '.[all]'
+```
+
+#### Install a specific Domain
+
+To install a specific domain of NeMo, you must first install the
+nemo_toolkit using the instructions listed above. Then, you run the
+following domain-specific commands:
+
+```bash
+pip install nemo_toolkit['all'] # or pip install "nemo_toolkit['all']@git+https://github.com/NVIDIA/NeMo@${REF:-'main'}"
+pip install nemo_toolkit['asr'] # or pip install "nemo_toolkit['asr']@git+https://github.com/NVIDIA/NeMo@$REF:-'main'}"
+pip install nemo_toolkit['nlp'] # or pip install "nemo_toolkit['nlp']@git+https://github.com/NVIDIA/NeMo@${REF:-'main'}"
+pip install nemo_toolkit['tts'] # or pip install "nemo_toolkit['tts']@git+https://github.com/NVIDIA/NeMo@${REF:-'main'}"
+pip install nemo_toolkit['vision'] # or pip install "nemo_toolkit['vision']@git+https://github.com/NVIDIA/NeMo@${REF:-'main'}"
+pip install nemo_toolkit['multimodal'] # or pip install "nemo_toolkit['multimodal']@git+https://github.com/NVIDIA/NeMo@${REF:-'main'}"
+```
+
+### NGC PyTorch container
+
+**NOTE: The following steps are supported beginning with 24.04 (NeMo-Toolkit 2.3.0)**
+
+We recommended that you start with a base NVIDIA PyTorch container:
+nvcr.io/nvidia/pytorch:25.01-py3.
+
+If starting with a base NVIDIA PyTorch container, you must first launch
+the container:
+
+```bash
+docker run \
+  --gpus all \
+  -it \
+  --rm \
+  --shm-size=16g \
+  --ulimit memlock=-1 \
+  --ulimit stack=67108864 \
+  nvcr.io/nvidia/pytorch:${NV_PYTORCH_TAG:-'nvcr.io/nvidia/pytorch:25.01-py3'}
+```
+
+From [NVIDIA/NeMo](github.com/NVIDIA/NeMo), fetch the commit/branch/tag that you want to install.  
+To install nemo_toolkit including all of its dependencies from this Git reference `$REF`, use the following installation method:
+
+```bash
+cd /opt
+git clone https://github.com/NVIDIA/NeMo
+cd NeMo
+git checkout ${REF:-'main'}
+bash docker/common/install_dep.sh --library all
+pip install ".[all]"
+```
+
+## NGC NeMo container
+
+NeMo containers are launched concurrently with NeMo version updates.
+NeMo Framework now supports LLMs, MMs, ASR, and TTS in a single
+consolidated Docker container. You can find additional information about
+released containers on the [NeMo releases
+page](https://github.com/NVIDIA/NeMo/releases).
+
+To use a pre-built container, run the following code:
+
+```bash
+docker run \
+  --gpus all \
+  -it \
+  --rm \
+  --shm-size=16g \
+  --ulimit memlock=-1 \
+  --ulimit stack=67108864 \
+  nvcr.io/nvidia/pytorch:${NV_PYTORCH_TAG:-'nvcr.io/nvidia/nemo:25.02'}
+```
+
+## Future Work
+
+The NeMo Framework Launcher does not currently support ASR and TTS
+training, but it will soon.
+
+## Discussions Board
+
+FAQ can be found on the NeMo [Discussions
+board](https://github.com/NVIDIA/NeMo/discussions). You are welcome to
+ask questions or start discussions on the board.
+
+## Contribute to NeMo
+
+We welcome community contributions! Please refer to
+[CONTRIBUTING.md](https://github.com/NVIDIA/NeMo/blob/stable/CONTRIBUTING.md)
+for the process.
+
+## Publications
+
+We provide an ever-growing list of
+[publications](https://nvidia.github.io/NeMo/publications/) that utilize
+the NeMo Framework.
+
+To contribute an article to the collection, please submit a pull request
+to the `gh-pages-src` branch of this repository. For detailed
+information, please consult the README located at the [gh-pages-src
+branch](https://github.com/NVIDIA/NeMo/tree/gh-pages-src#readme).
+
+## Blogs
+
+<!-- markdownlint-disable -->
+<details open>
+  <summary><b>Large Language Models and Multimodal Models</b></summary>
+    <details>
+      <summary>
+        <a href="https://blogs.nvidia.com/blog/bria-builds-responsible-generative-ai-using-nemo-picasso/">
+          Bria Builds Responsible Generative AI for Enterprises Using NVIDIA NeMo, Picasso
+        </a> (2024/03/06)
+      </summary>
+      Bria, a Tel Aviv startup at the forefront of visual generative AI for enterprises now leverages the NVIDIA NeMo Framework. 
+      The Bria.ai platform uses reference implementations from the NeMo Multimodal collection, trained on NVIDIA Tensor Core GPUs, to enable high-throughput and low-latency image generation. 
+      Bria has also adopted NVIDIA Picasso, a foundry for visual generative AI models, to run inference.
+      <br><br>
+    </details>
+    <details>
+      <summary>
+        <a href="https://developer.nvidia.com/blog/new-nvidia-nemo-framework-features-and-nvidia-h200-supercharge-llm-training-performance-and-versatility/">
+          New NVIDIA NeMo Framework Features and NVIDIA H200
+        </a> (2023/12/06)
+      </summary>
+      NVIDIA NeMo Framework now includes several optimizations and enhancements, 
+      including: 
+      1) Fully Sharded Data Parallelism (FSDP) to improve the efficiency of training large-scale AI models, 
+      2) Mix of Experts (MoE)-based LLM architectures with expert parallelism for efficient LLM training at scale, 
+      3) Reinforcement Learning from Human Feedback (RLHF) with TensorRT-LLM for inference stage acceleration, and 
+      4) up to 4.2x speedups for Llama 2 pre-training on NVIDIA H200 Tensor Core GPUs.
+      <br><br>
+      <a href="https://developer.nvidia.com/blog/new-nvidia-nemo-framework-features-and-nvidia-h200-supercharge-llm-training-performance-and-versatility">
+      <img src="https://github.com/sbhavani/TransformerEngine/blob/main/docs/examples/H200-NeMo-performance.png" alt="H200-NeMo-performance" style="width: 600px;"></a>
+      <br><br>
+    </details>
+    <details>
+      <summary>
+        <a href="https://blogs.nvidia.com/blog/nemo-amazon-titan/">
+          NVIDIA now powers training for Amazon Titan Foundation models
+        </a> (2023/11/28)
+      </summary>
+      NVIDIA NeMo Framework now empowers the Amazon Titan foundation models (FM) with efficient training of large language models (LLMs). 
+      The Titan FMs form the basis of Amazon’s generative AI service, Amazon Bedrock. 
+      The NeMo Framework provides a versatile framework for building, customizing, and running LLMs.
+      <br><br>
+    </details>
+</details>
+<!-- markdownlint-enable -->
+
+## Licenses
+
+NeMo is licensed under the [Apache License 2.0](https://github.com/NVIDIA/NeMo?tab=Apache-2.0-1-ov-file).

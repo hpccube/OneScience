@@ -1,0 +1,25 @@
+type: cwb
+data_path: ./cwa_dataset/cwa_dataset.zarr
+in_channels: [0, 1, 2, 3, 4, 5, 6, 7, 8, 9, 10, 11, 12, 13, 14, 15, 16, 17, 18, 19]
+# in_channels: [0, 1, 2, 3, 4, 9, 10, 11, 12, 17, 18, 19] # 4个地表变量 + 500、850hPa的大气变量
+# out_channels: [0, 17, 18, 19] # 分别对应maximum_radar_reflectivity、temperature_2m、eastward_wind_10m、northward_wind_10m
+out_channels: [0, 1, 2, 3]
+img_shape_x: 448
+img_shape_y: 448
+add_grid: true
+ds_factor: 4
+min_path: null
+max_path: null
+global_means_path: null
+global_stds_path: null
+
+# input_channels:[ChannelMetadata(name='tcwv', level='', auxiliary=False), ChannelMetadata(name='geopotential_height', level='500.0', auxiliary=False), 
+#               ChannelMetadata(name='temperature', level='500.0', auxiliary=False), ChannelMetadata(name='eastward_wind', level='500.0', auxiliary=False), 
+#               ChannelMetadata(name='northward_wind', level='500.0', auxiliary=False), ChannelMetadata(name='geopotential_height', level='700.0', auxiliary=False),
+#               ChannelMetadata(name='temperature', level='700.0', auxiliary=False), ChannelMetadata(name='eastward_wind', level='700.0', auxiliary=False), 
+#               ChannelMetadata(name='northward_wind', level='700.0', auxiliary=False), ChannelMetadata(name='geopotential_height', level='850.0', auxiliary=False), 
+#               ChannelMetadata(name='temperature', level='850.0', auxiliary=False), ChannelMetadata(name='eastward_wind', level='850.0', auxiliary=False), 
+#               ChannelMetadata(name='northward_wind', level='850.0', auxiliary=False), ChannelMetadata(name='geopotential_height', level='925.0', auxiliary=False), 
+#               ChannelMetadata(name='temperature', level='925.0', auxiliary=False), ChannelMetadata(name='eastward_wind', level='925.0', auxiliary=False), 
+#               ChannelMetadata(name='northward_wind', level='925.0', auxiliary=False), ChannelMetadata(name='temperature_2m', level='', auxiliary=False), 
+#               ChannelMetadata(name='eastward_wind_10m', level='', auxiliary=False), ChannelMetadata(name='northward_wind_10m', level='', auxiliary=False)]

@@ -1,0 +1,4 @@
+# Validation dataset options
+# (need to set dataset.train_test_split == true to have an effect)
+train: false
+all_times: false

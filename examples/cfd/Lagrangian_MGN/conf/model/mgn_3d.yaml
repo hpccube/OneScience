@@ -1,0 +1,6 @@
+defaults:
+  - mgn   # Use MGN model as a base.
+
+input_dim_nodes: 30 # 3 (pos) + 3*5 (history of velocity) + 6 boundary features + 6 (node type)
+output_dim: 3 # 3 acceleration
+input_dim_edges: 4 # 3 displacement + 1 distance

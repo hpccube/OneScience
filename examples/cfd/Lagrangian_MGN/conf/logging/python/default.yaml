@@ -1,0 +1,40 @@
+version: 1
+disable_existing_loggers: false
+
+output: ???
+rank: ???
+rank0_only: true
+base_filename: train
+
+formatters:
+  default:
+    (): loggers.TermColorFormatter
+    format: "[%(asctime)s - %(name)s - %(levelname)s] %(message)s"
+    datefmt: "%H:%M:%S"
+    log_colors:
+      DEBUG: blue
+      INFO: light_blue
+      WARNING: light_yellow
+      ERROR: light_red
+      CRITICAL: red
+
+handlers:
+  console:
+    class: logging.StreamHandler
+    level: ${...loggers.lmgn.level}
+    formatter: default
+
+  file:
+    class: logging.FileHandler
+    filename: ${...output}/${...base_filename}_${...rank}.log
+    level: ${...loggers.lmgn.level}
+    formatter: default
+
+loggers:
+  root:
+    level: INFO
+    handlers: [console, file]
+  lmgn:
+    handlers: [console, file]
+    level: INFO
+    propagate: false

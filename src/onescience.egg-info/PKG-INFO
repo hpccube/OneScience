@@ -1,0 +1,153 @@
+Metadata-Version: 2.4
+Name: onescience
+Version: 0.1.2rc1
+Summary: First release
+Home-page: https://github.com/hpccube/OneScience
+Author: sugon-ai4s
+Author-email: ai4s@sugon.com
+Requires-Python: >=3.10.0
+Requires-Dist: numpy==1.26.3
+Requires-Dist: tqdm>=4.60.0
+Requires-Dist: wandb>=0.13.7
+Requires-Dist: hydra-core>=1.2.0
+Requires-Dist: treelib>=1.2.5
+Requires-Dist: hydra-core>=1.2.0
+Requires-Dist: termcolor>=2.1.1
+Requires-Dist: mlflow>=2.1.1
+Requires-Dist: pytest>=6.0.0
+Requires-Dist: pyyaml>=6.0
+Requires-Dist: h5py>=3.7.0
+Requires-Dist: ruamel.yaml>=0.17.21
+Requires-Dist: scikit-learn<=1.6.0,>=1.2.2
+Requires-Dist: scikit-image>=0.24.0
+Requires-Dist: vtk<9.4.0,>=9.2.6
+Requires-Dist: pyvista>=0.40.1
+Requires-Dist: einops>=0.7.0
+Requires-Dist: onnx>=1.14.0
+Requires-Dist: pandas>=2.2.2
+Requires-Dist: omegaconf>=2.3.0
+Requires-Dist: mpi4py
+Requires-Dist: torchdata<=0.9.0
+Requires-Dist: pybind11
+Requires-Dist: torchmetrics
+Requires-Dist: torch-runstats>=0.2.0
+Requires-Dist: torch-ema>=0.3.0
+Requires-Dist: opt_einsum
+Requires-Dist: prettytable
+Requires-Dist: matplotlib
+Provides-Extra: earth
+Requires-Dist: pytz>=2023.3; extra == "earth"
+Requires-Dist: xarray>=2023.1.0; extra == "earth"
+Requires-Dist: zarr>=2.14.2; extra == "earth"
+Requires-Dist: s3fs==2023.9.0; extra == "earth"
+Requires-Dist: netcdf4>=1.6.3; extra == "earth"
+Requires-Dist: cftime>=1.6.2; extra == "earth"
+Requires-Dist: dask>=2024.11.1; extra == "earth"
+Requires-Dist: opencv-python==3.4.18.65; extra == "earth"
+Provides-Extra: bio
+Requires-Dist: rdkit; extra == "bio"
+Requires-Dist: matplotlib; extra == "bio"
+Requires-Dist: contextlib2; extra == "bio"
+Requires-Dist: ml-collections==0.1.1; extra == "bio"
+Requires-Dist: dm-tree==0.1.8; extra == "bio"
+Requires-Dist: dm-haiku==0.0.14; extra == "bio"
+Requires-Dist: diffrax==0.6.0; extra == "bio"
+Requires-Dist: biopandas==0.5.1; extra == "bio"
+Requires-Dist: biopython==1.84; extra == "bio"
+Requires-Dist: pyrsistent; extra == "bio"
+Requires-Dist: chex==0.1.90; extra == "bio"
+Requires-Dist: flax==0.10.4; extra == "bio"
+Requires-Dist: nemo-toolkit@ file:///public/home/onescience2025404/biao.liu/onescience-evo2/src/onescience/models/evo2/3rdparty/NeMo ; extra == "bio"
+Requires-Dist: megatron-core@ file:///public/home/onescience2025404/biao.liu/onescience-evo2/src/onescience/models/evo2/3rdparty/Megatron-LM ; extra == "bio"
+Provides-Extra: cfd
+Requires-Dist: shapely>=2.0.6; extra == "cfd"
+Requires-Dist: seaborn; extra == "cfd"
+Requires-Dist: deepxde; extra == "cfd"
+Provides-Extra: chem
+Requires-Dist: e3nn==0.4.4; extra == "chem"
+Requires-Dist: ase; extra == "chem"
+Requires-Dist: xtb; extra == "chem"
+Requires-Dist: rdkit; extra == "chem"
+Requires-Dist: matscipy; extra == "chem"
+Requires-Dist: python-hostlist; extra == "chem"
+Requires-Dist: configargparse; extra == "chem"
+Requires-Dist: lmdb; extra == "chem"
+Requires-Dist: orjson; extra == "chem"
+Requires-Dist: pymatgen; extra == "chem"
+Provides-Extra: quantum
+Requires-Dist: openfermion==1.5.1; extra == "quantum"
+Requires-Dist: pymatgen; extra == "quantum"
+Provides-Extra: dev
+Requires-Dist: setuptools>=65.5.0; extra == "dev"
+Provides-Extra: all
+Requires-Dist: numpy==1.26.3; extra == "all"
+Requires-Dist: xarray>=2023.1.0; extra == "all"
+Requires-Dist: zarr>=2.14.2; extra == "all"
+Requires-Dist: s3fs==2023.9.0; extra == "all"
+Requires-Dist: setuptools>=65.5.0; extra == "all"
+Requires-Dist: pytz>=2023.3; extra == "all"
+Requires-Dist: treelib>=1.2.5; extra == "all"
+Requires-Dist: tqdm>=4.60.0; extra == "all"
+Requires-Dist: hydra-core>=1.2.0; extra == "all"
+Requires-Dist: termcolor>=2.1.1; extra == "all"
+Requires-Dist: wandb>=0.13.7; extra == "all"
+Requires-Dist: mlflow>=2.1.1; extra == "all"
+Requires-Dist: pytest>=6.0.0; extra == "all"
+Requires-Dist: pyyaml>=6.0; extra == "all"
+Requires-Dist: h5py>=3.7.0; extra == "all"
+Requires-Dist: netcdf4>=1.6.3; extra == "all"
+Requires-Dist: ruamel.yaml>=0.17.21; extra == "all"
+Requires-Dist: scikit-learn<=1.6.0,>=1.2.2; extra == "all"
+Requires-Dist: scikit-image>=0.24.0; extra == "all"
+Requires-Dist: vtk<9.4.0,>=9.2.6; extra == "all"
+Requires-Dist: pyvista>=0.40.1; extra == "all"
+Requires-Dist: cftime>=1.6.2; extra == "all"
+Requires-Dist: einops>=0.7.0; extra == "all"
+Requires-Dist: shapely>=2.0.6; extra == "all"
+Requires-Dist: onnx>=1.14.0; extra == "all"
+Requires-Dist: pandas>=2.2.2; extra == "all"
+Requires-Dist: omegaconf>=2.3.0; extra == "all"
+Requires-Dist: dask>=2024.11.1; extra == "all"
+Requires-Dist: mpi4py; extra == "all"
+Requires-Dist: seaborn; extra == "all"
+Requires-Dist: torchdata<=0.9.0; extra == "all"
+Requires-Dist: openfermion==1.5.1; extra == "all"
+Requires-Dist: pybind11; extra == "all"
+Requires-Dist: torchmetrics; extra == "all"
+Requires-Dist: e3nn==0.4.4; extra == "all"
+Requires-Dist: deepxde; extra == "all"
+Requires-Dist: ase; extra == "all"
+Requires-Dist: rdkit; extra == "all"
+Requires-Dist: xtb; extra == "all"
+Requires-Dist: pymatgen; extra == "all"
+Requires-Dist: torch-runstats>=0.2.0; extra == "all"
+Requires-Dist: torch-ema>=0.3.0; extra == "all"
+Requires-Dist: matscipy; extra == "all"
+Requires-Dist: python-hostlist; extra == "all"
+Requires-Dist: configargparse; extra == "all"
+Requires-Dist: opt_einsum; extra == "all"
+Requires-Dist: prettytable; extra == "all"
+Requires-Dist: lmdb; extra == "all"
+Requires-Dist: orjson; extra == "all"
+Requires-Dist: matplotlib; extra == "all"
+Requires-Dist: contextlib2; extra == "all"
+Requires-Dist: ml-collections==0.1.1; extra == "all"
+Requires-Dist: dm-tree==0.1.8; extra == "all"
+Requires-Dist: dm-haiku==0.0.14; extra == "all"
+Requires-Dist: diffrax==0.6.0; extra == "all"
+Requires-Dist: biopandas==0.5.1; extra == "all"
+Requires-Dist: biopython==1.84; extra == "all"
+Requires-Dist: pyrsistent; extra == "all"
+Requires-Dist: opencv-python==3.4.18.65; extra == "all"
+Requires-Dist: chex==0.1.90; extra == "all"
+Requires-Dist: flax==0.10.4; extra == "all"
+Dynamic: author
+Dynamic: author-email
+Dynamic: description
+Dynamic: home-page
+Dynamic: provides-extra
+Dynamic: requires-dist
+Dynamic: requires-python
+Dynamic: summary
+
+OneScience is a scientific computing toolkit built on an advanced deep learning framework

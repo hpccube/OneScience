@@ -1,0 +1,213 @@
+/
+ ├── XLAT (450, 450) float32
+ ├── XLAT_U (450, 451) float32
+ ├── XLAT_V (451, 450) float32
+ ├── XLONG (450, 450) float32
+ ├── XLONG_U (450, 451) float32
+ ├── XLONG_V (451, 450) float32
+ ├── XTIME () float32
+ ├── cwb (35064, 4, 450, 450) float32
+ ├── cwb_center (4,) float32
+ ├── cwb_pressure (4,) float64
+ ├── cwb_scale (4,) float32
+ ├── cwb_valid (35064,) int8
+ ├── cwb_variable (4,) <U26
+ ├── era5 (35064, 20, 450, 450) float32
+ ├── era5_center (20,) float32
+ ├── era5_pressure (20,) float64
+ ├── era5_scale (20,) float32
+ ├── era5_valid (35064, 20) int8
+ ├── era5_variable (20,) <U19
+ └── time (35064,) int64
+<zarr.attrs.Attributes object at 0x2b4f9ce93f70>
+
+Array name: XLAT
+Shape: (450, 450)
+Dtype: float32
+Chunk size: (225, 225)
+Number of chunks: 4
+Fill value: nan
+Attributes: <zarr.attrs.Attributes object at 0x2b4fe2e6fa90>
+
+
+Array name: XLAT_U
+Shape: (450, 451)
+Dtype: float32
+Chunk size: (225, 226)
+Number of chunks: 4
+Fill value: nan
+Attributes: <zarr.attrs.Attributes object at 0x2b4fe2e6f850>
+
+
+Array name: XLAT_V
+Shape: (451, 450)
+Dtype: float32
+Chunk size: (226, 225)
+Number of chunks: 4
+Fill value: nan
+Attributes: <zarr.attrs.Attributes object at 0x2b4fe2ec8400>
+
+
+Array name: XLONG
+Shape: (450, 450)
+Dtype: float32
+Chunk size: (225, 225)
+Number of chunks: 4
+Fill value: nan
+Attributes: <zarr.attrs.Attributes object at 0x2b4fe2ec9120>
+
+
+Array name: XLONG_U
+Shape: (450, 451)
+Dtype: float32
+Chunk size: (225, 226)
+Number of chunks: 4
+Fill value: nan
+Attributes: <zarr.attrs.Attributes object at 0x2b4fe2ec9e10>
+
+
+Array name: XLONG_V
+Shape: (451, 450)
+Dtype: float32
+Chunk size: (226, 225)
+Number of chunks: 4
+Fill value: nan
+Attributes: <zarr.attrs.Attributes object at 0x2b4fe2eca740>
+
+
+Array name: XTIME
+Shape: ()
+Dtype: float32
+Chunk size: ()
+Number of chunks: 1
+Fill value: nan
+Attributes: <zarr.attrs.Attributes object at 0x2b4fe2eca9e0>
+
+
+Array name: cwb
+Shape: (35064, 4, 450, 450)
+Dtype: float32
+Chunk size: (1, 20, 450, 450)
+Number of chunks: 35064
+Fill value: nan
+Attributes: <zarr.attrs.Attributes object at 0x2b4fe2ecab60>
+35064 = 24 * 365 * 4 + 24 * 1, 0~26303为训练集, 26304~35063为验证集
+
+Array name: cwb_center
+Shape: (4,)
+Dtype: float32
+Chunk size: (20,)
+Number of chunks: 1
+Fill value: nan
+Attributes: <zarr.attrs.Attributes object at 0x2b4fe2ecac50>
+array([  2.8728955, 296.67792  ,  -2.4250958,  -1.74273  ], dtype=float32)
+
+Array name: cwb_pressure
+Shape: (4,)
+Dtype: float64
+Chunk size: (20,)
+Number of chunks: 1
+Fill value: nan
+Attributes: <zarr.attrs.Attributes object at 0x2b4fe2ecae90>
+array([nan, nan, nan, nan])
+
+Array name: cwb_scale
+Shape: (4,)
+Dtype: float32
+Chunk size: (20,)
+Number of chunks: 1
+Fill value: nan
+Attributes: <zarr.attrs.Attributes object at 0x2b4fe2ecb0d0>
+array([7.3989487, 5.7858133, 4.477587 , 5.517276 ], dtype=float32)
+
+Array name: cwb_valid
+Shape: (35064,)
+Dtype: int8
+Chunk size: (35064,)
+Number of chunks: 1
+Fill value: None
+Attributes: <zarr.attrs.Attributes object at 0x2b4fe2ecb340>
+array([1, 1, 1, ..., 1, 1, 1], dtype=int8)
+
+Array name: cwb_variable
+Shape: (4,)
+Dtype: <U26
+Chunk size: (20,)
+Number of chunks: 1
+Fill value: None
+Attributes: <zarr.attrs.Attributes object at 0x2b4fe2ecb5b0>
+
+
+Array name: era5
+Shape: (35064, 20, 450, 450)
+Dtype: float32
+Chunk size: (1, 20, 450, 450)
+Number of chunks: 35064
+Fill value: nan
+Attributes: <zarr.attrs.Attributes object at 0x2b4fe2ecb8b0>
+35064 = 24 * 365 * 4 + 24 * 1, 0~26303为训练集, 26304~35063为验证集
+
+Array name: era5_center
+Shape: (20,)
+Dtype: float32
+Chunk size: (20,)
+Number of chunks: 1
+Fill value: nan
+Attributes: <zarr.attrs.Attributes object at 0x2b4fe2ecb9a0>
+array([ 4.0756191e+01,  5.7383762e+04,  2.6734906e+02,  1.0549440e+01,
+        1.4951272e+00,  3.0808010e+04,  2.8163379e+02,  4.5764146e+00,
+        1.3242023e+00,  1.4835352e+04,  2.8862000e+02, -3.0873349e-01,
+        5.9789032e-01,  7.7467144e+03,  2.9182388e+02, -2.3875043e+00,
+       -7.4283850e-01,  2.9668073e+02, -2.3695333e+00, -1.5233605e+00],
+      dtype=float32)
+
+Array name: era5_pressure
+Shape: (20,)
+Dtype: float64
+Chunk size: (20,)
+Number of chunks: 1
+Fill value: nan
+Attributes: <zarr.attrs.Attributes object at 0x2b4fe2ecbc10>
+array([ nan, 500., 500., 500., 500., 700., 700., 700., 700., 850., 850.,
+       850., 850., 925., 925., 925., 925.,  nan,  nan,  nan])
+
+Array name: era5_scale
+Shape: (20,)
+Dtype: float32
+Chunk size: (20,)
+Number of chunks: 1
+Fill value: nan
+Attributes: <zarr.attrs.Attributes object at 0x2b4fe2ecbe80>
+array([ 14.70123  , 452.9635   ,   2.961594 ,  11.571043 ,   5.2568445,
+       295.7178   ,   3.616785 ,   6.789274 ,   4.4144316, 346.84357  ,
+         4.895034 ,   5.9592533,   5.0256424, 437.5354   ,   5.4060206,
+         6.1095357,   6.090453 ,   5.273516 ,   4.2408953,   5.179821 ],
+      dtype=float32)
+
+Array name: era5_valid
+Shape: (35064, 20)
+Dtype: int8
+Chunk size: (17532, 10)
+Number of chunks: 4
+Fill value: None
+Attributes: <zarr.attrs.Attributes object at 0x2b4fe2ee0130>
+
+
+Array name: era5_variable
+Shape: (20,)
+Dtype: <U19
+Chunk size: (20,)
+Number of chunks: 1
+Fill value: None
+Attributes: <zarr.attrs.Attributes object at 0x2b4fe2ee0340>
+
+
+Array name: time
+Shape: (35064,)
+Dtype: int64
+Chunk size: (17532,)
+Number of chunks: 2
+Fill value: None
+Attributes: <zarr.attrs.Attributes object at 0x2b4fe2ee05b0>
+
+

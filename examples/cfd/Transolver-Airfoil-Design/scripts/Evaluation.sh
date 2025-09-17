@@ -1,0 +1,1 @@
+python main_evaluation.py --model=Transolver  --task=full   --data_path ./dataset/Dataset   --gpu=3

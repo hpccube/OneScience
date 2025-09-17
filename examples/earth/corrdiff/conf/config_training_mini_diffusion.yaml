@@ -1,0 +1,18 @@
+hydra:
+  job:
+    chdir: true
+    name: mini_diffusion
+  run:
+    dir: ./outputs/${hydra:job.name}
+
+# Get defaults
+defaults:
+
+  # Dataset
+  - dataset/hrrrmini
+
+  # Model
+  - model/corrdiff_diffusion_mini
+
+  # Training
+  - training/corrdiff_diffusion_mini

@@ -1,0 +1,42 @@
+[NeMo I 2025-09-15 16:16:46 nemo_logging:393] Using byte-level tokenization
+[NeMo W 2025-09-15 16:16:46 nemo_logging:405] /public/home/onescience2025404/.conda/envs/evo2-biao/lib/python3.11/site-packages/nemo/collections/llm/gpt/data/pre_training.py:214: UserWarning: split='900,50,50' will be ignored since datasets are being created from 3 separate distributions.
+      warnings.warn(
+    
+[NeMo W 2025-09-15 16:16:46 nemo_logging:405] WandB is currently turned off.
+[NeMo W 2025-09-15 16:16:46 nemo_logging:405] User-set tensorboard is currently turned off. Internally one may still be set by NeMo2.
+[NeMo I 2025-09-15 16:16:46 nemo_logging:393] Experiments will be logged at results/evo2/dev
+[NeMo W 2025-09-15 16:16:46 nemo_logging:405] There were no checkpoints found in checkpoint_dir or no checkpoint folder at checkpoint_dir :results/evo2/checkpoints. Training from scratch.
+[NeMo I 2025-09-15 16:16:46 nemo_logging:393] Fixing mis-match between ddp-config & mcore-optimizer config
+[NeMo I 2025-09-15 16:16:47 nemo_logging:393] Rank 7 has data parallel group : [0, 1, 2, 3, 4, 5, 6, 7]
+[NeMo I 2025-09-15 16:16:47 nemo_logging:393] Rank 7 has combined group of data parallel and context parallel : [0, 1, 2, 3, 4, 5, 6, 7]
+[NeMo I 2025-09-15 16:16:47 nemo_logging:393] All data parallel group ranks with context parallel combined: [[0, 1, 2, 3, 4, 5, 6, 7]]
+[NeMo I 2025-09-15 16:16:47 nemo_logging:393] Ranks 7 has data parallel rank: 7
+[NeMo I 2025-09-15 16:16:47 nemo_logging:393] Rank 7 has context parallel group: [7]
+[NeMo I 2025-09-15 16:16:47 nemo_logging:393] All context parallel group ranks: [[0], [1], [2], [3], [4], [5], [6], [7]]
+[NeMo I 2025-09-15 16:16:47 nemo_logging:393] Ranks 7 has context parallel rank: 0
+[NeMo I 2025-09-15 16:16:47 nemo_logging:393] Rank 7 has model parallel group: [7]
+[NeMo I 2025-09-15 16:16:47 nemo_logging:393] All model parallel group ranks: [[0], [1], [2], [3], [4], [5], [6], [7]]
+[NeMo I 2025-09-15 16:16:47 nemo_logging:393] Rank 7 has tensor model parallel group: [7]
+[NeMo I 2025-09-15 16:16:47 nemo_logging:393] All tensor model parallel group ranks: [[0], [1], [2], [3], [4], [5], [6], [7]]
+[NeMo I 2025-09-15 16:16:47 nemo_logging:393] Rank 7 has tensor model parallel rank: 0
+[NeMo I 2025-09-15 16:16:47 nemo_logging:393] Rank 7 has pipeline model parallel group: [7]
+[NeMo I 2025-09-15 16:16:47 nemo_logging:393] Rank 7 has embedding group: [7]
+[NeMo I 2025-09-15 16:16:47 nemo_logging:393] All pipeline model parallel group ranks: [[0], [1], [2], [3], [4], [5], [6], [7]]
+[NeMo I 2025-09-15 16:16:47 nemo_logging:393] Rank 7 has pipeline model parallel rank 0
+[NeMo I 2025-09-15 16:16:47 nemo_logging:393] All embedding group ranks: [[0], [1], [2], [3], [4], [5], [6], [7]]
+[NeMo I 2025-09-15 16:16:47 nemo_logging:393] Rank 7 has embedding rank: 0
+[NeMo I 2025-09-15 16:16:49 nemo_logging:393] Padded vocab_size: 512, original vocab_size: 512, dummy tokens: 0.
+[NeMo W 2025-09-15 16:16:49 random:222] CPU RNG state changed within GPU RNG context
+[NeMo W 2025-09-15 16:16:49 nemo_logging:405] /public/home/onescience2025404/.conda/envs/evo2-biao/lib/python3.11/site-packages/transformer_engine/pytorch/attention.py:3107: UserWarning: window_size should be (-1, 0) or (>=0, 0) for attn_mask_type=causal
+      warnings.warn(
+    
+[NeMo W 2025-09-15 16:16:49 random:222] CPU RNG state changed within GPU RNG context
+[NeMo W 2025-09-15 16:16:49 random:222] CPU RNG state changed within GPU RNG context
+[NeMo W 2025-09-15 16:16:49 random:222] CPU RNG state changed within GPU RNG context
+[NeMo W 2025-09-15 16:16:49 random:222] CPU RNG state changed within GPU RNG context
+[NeMo W 2025-09-15 16:16:49 random:222] CPU RNG state changed within GPU RNG context
+[NeMo W 2025-09-15 16:16:49 random:222] CPU RNG state changed within GPU RNG context
+[NeMo W 2025-09-15 16:16:49 random:222] CPU RNG state changed within GPU RNG context
+[NeMo W 2025-09-15 16:16:49 random:222] CPU RNG state changed within GPU RNG context
+[NeMo I 2025-09-15 16:16:49 nemo_logging:393] Copying Trainer's 'max_steps' (1000) to LR scheduler's 'max_steps'.
+[NeMo W 2025-09-15 16:17:05 rerun_state_machine:1300] Implicit initialization of Rerun State Machine!

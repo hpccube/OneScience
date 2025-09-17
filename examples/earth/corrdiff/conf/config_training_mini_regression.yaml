@@ -1,0 +1,18 @@
+hydra:
+  job:
+    chdir: true
+    name: mini_regression
+  run:
+    dir: ./outputs/${hydra:job.name}
+
+# Get defaults
+defaults:
+
+  # Dataset
+  - dataset/hrrrmini
+
+  # Model
+  - model/corrdiff_regression_mini
+
+  # Training
+  - training/corrdiff_regression_mini

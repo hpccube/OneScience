@@ -1,0 +1,22 @@
+[NeMo W 2025-09-15 16:16:26 nemo_logging:405] /public/home/onescience2025404/.conda/envs/evo2-biao/lib/python3.11/site-packages/nemo/collections/llm/gpt/data/pre_training.py:214: UserWarning: split='900,50,50' will be ignored since datasets are being created from 3 separate distributions.
+      warnings.warn(
+    
+[NeMo W 2025-09-15 16:16:26 nemo_logging:405] WandB is currently turned off.
+[NeMo W 2025-09-15 16:16:26 nemo_logging:405] User-set tensorboard is currently turned off. Internally one may still be set by NeMo2.
+[NeMo W 2025-09-15 16:16:26 nemo_logging:405] There were no checkpoints found in checkpoint_dir or no checkpoint folder at checkpoint_dir :results/evo2/checkpoints. Training from scratch.
+[NeMo W 2025-09-15 16:16:26 nemo_logging:405] /public/home/onescience2025404/.conda/envs/evo2-biao/lib/python3.11/site-packages/lightning/fabric/plugins/environments/slurm.py:204: The `srun` command is available on your system but is not used. HINT: If your intention is to run Lightning on SLURM, prepend your python command with `srun` like so: srun python /public/home/onescience2025404/biao.liu/onescience-e ...
+    
+[NeMo W 2025-09-15 16:16:49 random:222] CPU RNG state changed within GPU RNG context
+[NeMo W 2025-09-15 16:16:49 nemo_logging:405] /public/home/onescience2025404/.conda/envs/evo2-biao/lib/python3.11/site-packages/transformer_engine/pytorch/attention.py:3107: UserWarning: window_size should be (-1, 0) or (>=0, 0) for attn_mask_type=causal
+      warnings.warn(
+    
+[NeMo W 2025-09-15 16:16:49 random:222] CPU RNG state changed within GPU RNG context
+[NeMo W 2025-09-15 16:16:49 random:222] CPU RNG state changed within GPU RNG context
+[NeMo W 2025-09-15 16:16:49 random:222] CPU RNG state changed within GPU RNG context
+[NeMo W 2025-09-15 16:16:49 random:222] CPU RNG state changed within GPU RNG context
+[NeMo W 2025-09-15 16:16:49 random:222] CPU RNG state changed within GPU RNG context
+[NeMo W 2025-09-15 16:16:49 random:222] CPU RNG state changed within GPU RNG context
+[NeMo W 2025-09-15 16:16:49 random:222] CPU RNG state changed within GPU RNG context
+[NeMo W 2025-09-15 16:16:49 random:222] CPU RNG state changed within GPU RNG context
+[NeMo W 2025-09-15 16:16:50 nemo_logging:405] /public/home/onescience2025404/.conda/envs/evo2-biao/lib/python3.11/site-packages/lightning/pytorch/utilities/model_summary/model_summary.py:231: Precision bf16-mixed is not supported by the model summary.  Estimated model size in MB will not be accurate. Using 32 bits instead.
+    

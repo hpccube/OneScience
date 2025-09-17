@@ -1,0 +1,29 @@
+defaults:
+  - /data@data.train: lagrangian_dataset
+  - /data@data.valid: lagrangian_dataset
+  - /data@data.test: lagrangian_dataset
+  - /model: mgn_3d
+  - /loss: mseloss
+  - /optimizer: fused_adam
+  - /lr_scheduler: cosine
+
+dim: 3
+
+data:
+  name: Water
+  dt: 0.005
+  radius: 0.035
+  train:
+    num_sequences: 1000
+    radius: ${..radius}
+    dt: ${..dt}
+  valid:
+    num_sequences: 100
+    num_steps: 206
+    radius: ${..radius}
+    dt: ${..dt}
+  test:
+    num_sequences: 100
+    num_steps: 206
+    radius: ${..radius}
+    dt: ${..dt}

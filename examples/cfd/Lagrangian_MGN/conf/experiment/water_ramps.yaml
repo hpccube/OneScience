@@ -1,0 +1,19 @@
+defaults:
+  - /data@data.train: lagrangian_dataset
+  - /data@data.valid: lagrangian_dataset
+  - /data@data.test: lagrangian_dataset
+  - /model: mgn_2d
+  - /loss: mseloss
+  - /optimizer: fused_adam
+  - /lr_scheduler: cosine
+
+data:
+  name: WaterRamps
+  train:
+    num_sequences: 1000
+  valid:
+    num_sequences: 30
+    num_steps: 206
+  test:
+    num_sequences: 30
+    num_steps: 206
