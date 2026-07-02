@@ -12,13 +12,6 @@ _DOMAIN_DEFAULT_DATASETS = {
     "matchem": "mace",
 }
 
-# 模型 config.yaml 中 datapipe.name → CLI 数据集名映射（通用方案：直接转小写）
-# 模型在 conf/config.yaml 中声明 datapipe.name，例如：
-#   datapipe:
-#     name: "ERA5"    → 使用数据集 "era5"
-#     name: "CMEMS"   → 使用数据集 "cmems"
-
-
 def _get_model_default_dataset(model_dir: Path) -> str | None:
     """从模型目录的 conf/config.yaml 中读取 datapipe.name，转小写作为数据集名"""
     config_path = model_dir / "conf" / "config.yaml"
@@ -38,8 +31,61 @@ def _get_model_default_dataset(model_dir: Path) -> str | None:
         return None
 
 
+def _is_container_alias(alias: str, all_models: list[dict]) -> bool:
+    """检查别名是否为容器模型
+
+    容器模型（如 cfd_benchmark）的 sub_model 为空，但该目录下有其他模型
+    以非空 sub_model 独立注册。执行时不应重复执行容器模型本身。
+    """
+    info = next((m for m in all_models if m["alias"] == alias), None)
+    if not info:
+        return False
+    if info.get("sub_model", ""):
+        return False
+    model_name = info.get("model", "")
+    if not model_name:
+        return False
+    return any(
+        m["alias"] != alias and m.get("model") == model_name and m.get("sub_model", "")
+        for m in all_models
+    )
+
+
+def _resolve_model_dataset(alias: str, info: dict, user_dataset: str | None = None) -> str | None:
+    """解析模型的有效数据集名称
+
+    优先级:
+      1. 用户指定的 -dataset（最高优先级，信任用户选择）
+      2. 模型 conf/config.yaml 中声明的 datapipe.name
+      3. 与模型同名的内置数据集（BUILTIN_DATASETS 中存在相同 key）
+      4. 该模型所属领域的默认数据集（_DOMAIN_DEFAULT_DATASETS）
+
+    Returns:
+        数据集名称（str），或 None（完全无法确定时）
+    """
+    # 1. 用户指定
+    if user_dataset:
+        return user_dataset
+
+    # 2. 模型配置文件声明
+    model_dir = info.get("model_dir")
+    if model_dir:
+        model_ds = _get_model_default_dataset(Path(model_dir))
+        if model_ds:
+            return model_ds
+
+    # 3. 同名数据集
+    from ..core.config import BUILTIN_DATASETS
+    if alias.lower() in BUILTIN_DATASETS:
+        return alias.lower()
+
+    # 4. 领域默认
+    domain = info.get("domain", "")
+    return _DOMAIN_DEFAULT_DATASETS.get(domain)
+
+
 @click.command("bench")
-@click.option("-dataset", default=None, help="数据集名称或路径")
+@click.option("-dataset", default=None, help="数据集名称或路径（不指定则自动检测）")
 @click.option("-models", default=None, help="模型别名列表，逗号分隔")
 @click.option("--domain", default=None, help="按领域执行所有模型（如 earth/cfd/all）")
 @click.option("--dir", "model_dir", default=None, help="按模型目录名执行该目录下所有模型（如 CFD_Benchmark）")
@@ -56,12 +102,16 @@ def bench(dataset, models, domain, model_dir):
             aliases = [m["alias"] for m in all_models]
         else:
             aliases = [m["alias"] for m in all_models if m.get("domain") == domain]
+        # 隐式选择时，排除容器模型（如 cfd_benchmark 已由子模型覆盖）
+        aliases = [a for a in aliases if not _is_container_alias(a, all_models)]
         if not aliases:
             click.secho(f"领域 '{domain}' 下没有找到可用模型", fg="red")
             return
     elif model_dir:
         all_models = model_registry.list_models()
         aliases = [m["alias"] for m in all_models if m.get("model") == model_dir]
+        # 隐式选择时，排除容器模型（如 cfd_benchmark 已由子模型覆盖）
+        aliases = [a for a in aliases if not _is_container_alias(a, all_models)]
         if not aliases:
             click.secho(f"目录 '{model_dir}' 下没有找到可用模型", fg="red")
             return
@@ -69,55 +119,26 @@ def bench(dataset, models, domain, model_dir):
         click.secho("请指定 -models / --domain / --dir 参数", fg="red")
         return
 
-    # ── 解析数据集 ──────────────────────────────────
-    # 兼容旧用法：使用 -models 时 -dataset 必填
-    if models and not dataset:
-        click.secho("使用 -models 时必须指定 -dataset 参数", fg="red")
-        return
-    # --dir 必须指定 -dataset
-    if model_dir and not dataset:
-        click.secho("使用 --dir 时必须指定 -dataset 参数", fg="red")
-        return
-
     # ── 执行模型 ──────────────────────────────────
     results = []
 
-    if domain == "all" and not dataset:
-        # -domain all 无 -dataset：按领域分组，每组用默认数据集
-        models_by_domain: dict = {}
-        for m in all_models:
-            d = m.get("domain", "_custom")
-            models_by_domain.setdefault(d, []).append(m["alias"])
+    for alias in aliases:
+        info = model_registry.resolve(alias)
+        if not info:
+            click.secho(f"  跳过 {alias}（未知模型）", fg="yellow")
+            continue
 
-        for d, domain_aliases in models_by_domain.items():
-            default_ds = _DOMAIN_DEFAULT_DATASETS.get(d)
-            if not default_ds:
-                click.echo(f"  跳过领域 '{d}'（无默认数据集，请使用 -dataset 指定）")
-                continue
-            click.secho(f"\n{'=' * 56}", fg="cyan")
-            click.secho(f"  领域: {d}  |  数据集: {default_ds}", fg="cyan")
-            click.secho(f"{'=' * 56}", fg="cyan")
-            for alias in domain_aliases:
-                # 优先使用模型 config.yaml 中声明的数据集
-                info = model_registry.resolve(alias)
-                model_dataset = None
-                if info and info.get("model_dir"):
-                    model_dataset = _get_model_default_dataset(Path(info["model_dir"]))
-                effective_ds = model_dataset or default_ds
-                if model_dataset:
-                    click.secho(f"  → {alias} 使用自声明数据集: {model_dataset}", fg="cyan")
-                _run_single_model(alias, effective_ds, results)
-    else:
-        # 已有 dataset（由用户通过 -dataset 或在 -domain <特定> 时自动补全）
-        effective_dataset = dataset
-        if not effective_dataset and domain:
-            effective_dataset = _DOMAIN_DEFAULT_DATASETS.get(domain)
-        if not effective_dataset:
-            click.secho(f"领域 '{domain}' 没有默认数据集，请通过 -dataset 指定", fg="red")
-            return
+        effective_ds = _resolve_model_dataset(alias, info, user_dataset=dataset)
+        if not effective_ds:
+            domain_name = info.get("domain", "?")
+            click.secho(
+                f"  跳过 {alias}（领域 '{domain_name}' 无默认数据集，"
+                f"模型未声明 datapipe.name，且无同名内置数据集）",
+                fg="yellow",
+            )
+            continue
 
-        for alias in aliases:
-            _run_single_model(alias, effective_dataset, results)
+        _run_single_model(alias, effective_ds, results)
 
     collect_results(results)
     click.echo(f"所有模型执行完成")
@@ -137,6 +158,13 @@ def _run_single_model(alias: str, dataset: str, results: list):
     click.echo(f"{'=' * 48}")
     r = run_model(alias, "bench", dataset)
     results.append(r)
+    # 每个模型执行后尝试释放 GPU 显存，避免累积导致 OOM
+    try:
+        import torch
+        if torch.cuda.is_available():
+            torch.cuda.empty_cache()
+    except Exception:
+        pass
     if r["success"]:
         click.secho(f"模型执行完成: {alias}", fg="green")
     else:

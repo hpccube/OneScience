@@ -20,7 +20,7 @@ def help_cmd(ctx):
     click.echo("  train     - 仅执行模型训练")
     click.echo("  infer     - 仅执行模型推理")
     click.echo("  eval      - 仅执行模型评估")
-    click.echo("  REMOCK    - 重置模型环境")
+    click.echo("  remock    - 重置模型环境")
     click.echo("  log       - 查看模型日志")
     click.echo("  status    - 查看模型执行状态")
     click.echo("  list      - 列出可用资源")

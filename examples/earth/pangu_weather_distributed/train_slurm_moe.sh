@@ -23,7 +23,11 @@ export PYTHONNOUSERSITE=1
 
 module load sghpc-mpi-gcc/26.3
 
+source /public/software/sghpc_sdk.bak/Linux_x86_64/26.3/dtk/dtk-25.04.4/env.sh
+source /public/software/sghpc_sdk.bak/Linux_x86_64/26.3/dtk/dtk-25.04.4/cuda/env.sh
+
 source ../../../env.sh
+mkdir -p logs
 
 which python
 which hipcc

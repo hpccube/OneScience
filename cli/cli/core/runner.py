@@ -428,15 +428,17 @@ def _retry_with_fixed_static_files(cmd, cwd, log_path, env, failed_output):
             env=env, text=True, bufsize=1,
         )
         retry_lines = []
-        for line in iter(process.stdout.readline, ""):
+        for line in iter(process.stdout.readline, ""): 
             retry_lines.append(line)
         process.wait()
         retry_output = "".join(retry_lines)
-        log_path.parent.mkdir(parents=True, exist_ok=True)
-        log_path.write_text(retry_output, encoding="utf-8")
+        # 重试日志写入不同路径，避免覆盖首次失败的完整日志
+        retry_log_path = log_path.with_stem(log_path.stem + "_retry")
+        retry_log_path.parent.mkdir(parents=True, exist_ok=True)
+        retry_log_path.write_text(retry_output, encoding="utf-8")
         if process.returncode != 0:
-            click.secho(f"重试仍失败（exit code {process.returncode}），完整日志: {log_path}", fg="red")
-        return {"success": process.returncode == 0, "output": retry_output, "log_path": log_path}
+            click.secho(f"重试仍失败（exit code {process.returncode}），完整日志: {log_path}，重试日志: {retry_log_path}", fg="red")
+        return {"success": process.returncode == 0, "output": retry_output, "log_path": retry_log_path}
     except Exception as e:
         click.secho(str(e), fg="red")
         return None
@@ -847,20 +849,25 @@ def run_model(model_alias: str, cmd_type: str, dataset: str) -> dict:
     # 通用配置补丁：将数据集路径注入到模型的所有 YAML 配置文件
     config_backups: t.Dict[str, str] = {}
     if "ONESCIENCE_DATASET_PATH" in env:
+        # 提前保存 conf/config.yaml 的原始内容
+        # _patch_model_configs 会修改该文件，后续 earth 补丁需要真正的原始内容
+        earth_config_original = None
+        earth_config_path = model_dir / "conf" / "config.yaml"
+        if earth_config_path.exists():
+            earth_config_original = earth_config_path.read_text(encoding="utf-8")
+
         config_backups = _patch_model_configs(model_dir, env["ONESCIENCE_DATASET_PATH"])
 
-    # 特定领域补丁 (earth 模型：ERA5 年份检测、stats/static 路径等)
-    if "ONESCIENCE_DATASET_PATH" in env:
-        config_path = model_dir / "conf" / "config.yaml"
-        if config_path.exists():
-            earth_info = _earth_config_patches(env, config_path)
+        # 特定领域补丁 (earth 模型：ERA5 年份检测、stats/static 路径等)
+        # 使用提前保存的原始内容，避免 _patch_model_configs 的修改污染备份
+        if earth_config_original is not None:
+            earth_info = _earth_config_patches(env, earth_config_path)
             if earth_info is not None:
                 _, patches = earth_info
-                original = config_path.read_text(encoding="utf-8")
-                modified = _patch_config_values(original, patches)
+                modified = _patch_config_values(earth_config_original, patches)
                 if modified is not None:
-                    config_backups[str(config_path)] = original
-                    config_path.write_text(modified, encoding="utf-8")
+                    config_backups[str(earth_config_path)] = earth_config_original
+                    earth_config_path.write_text(modified, encoding="utf-8")
 
     try:
         # 按模型类型选择执行方式

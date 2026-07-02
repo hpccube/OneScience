@@ -1,12 +1,12 @@
 #!/bin/bash
-#SBATCH -p hpctest01
+#SBATCH -p hpctest02
 #SBATCH -N 1
 #SBATCH --gres=dcu:8
 #SBATCH --cpus-per-task=16
 #SBATCH --ntasks-per-node=8
-#SBATCH -J pangu_weather_fp16
-#SBATCH -o logs/gcc256_%j.out
-#SBATCH -e logs/gcc256_%j.out
+#SBATCH -J xihe_distributed
+#SBATCH -o logs/gcc263_%j.out
+#SBATCH -e logs/gcc263_%j.out
 #SBATCH --exclusive
 
 unset ROCBLAS_TENSILE_LIBPATH
@@ -18,7 +18,7 @@ module load sghpcdas/25.6
 conda init bash
 source ~/.bashrc
 
-conda activate pp_update260423
+conda activate onescience-merge-test
 export PYTHONNOUSERSITE=1
 
 module load sghpc-mpi-gcc/26.3
@@ -27,6 +27,7 @@ source /public/software/sghpc_sdk.bak/Linux_x86_64/26.3/dtk/dtk-25.04.4/env.sh
 source /public/software/sghpc_sdk.bak/Linux_x86_64/26.3/dtk/dtk-25.04.4/cuda/env.sh
 
 source ../../../env.sh
+
 mkdir -p logs
 
 which python
@@ -54,14 +55,14 @@ echo "Nodes: ${nodes_array[*]}"
 srun -u --mpi=pmix \
     bash -c "
     source export_DDP_vars.sh
-    python test_distributed_4stage.py --micro-batch-size 1 --global-batch-size 1 --encoder-seq-length=1 --num-layers=4 --hidden-size=256 \
+    python train.py --micro-batch-size 1 --global-batch-size 1 --encoder-seq-length=1 --num-layers=4 --hidden-size=192 \
             --num-attention-heads=8 --max-position-embeddings=1 --tokenizer-type=NullTokenizer --vocab-size=128 --lr-decay-style linear \
-            --train-iters 1314000 --lr 0.0001 --pipeline-model-parallel-size 4 --tensor-model-parallel-size 2 \
-            --eval-interval 26280 --eval-iters 1314 \
+            --train-iters 219000 --lr 0.0001 --pipeline-model-parallel-size 2 --tensor-model-parallel-size 4 \
+            --eval-interval 4380 --eval-iters 438 \
             --init-method-std 0.005 \
             --weight-decay 0.001 --adam-beta2 0.95 \
             --log-interval 1 \
             --fp16 \
             --initial-loss-scale 8192 \
-            --load ./save_dir
+            --num-workers 1
     "

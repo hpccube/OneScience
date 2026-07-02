@@ -47,8 +47,9 @@ class CLI(click.Group):
         try:
             return super().main(*args, **kwargs)
         except SystemExit as e:
-            from .status_codes import ExitStatus
-            raise SystemExit(e.code if e.code is not None else ExitStatus.ERROR)
+            # None 在 Python 语义中表示正常退出（exit 0），此处不做转换
+            code = e.code if e.code is not None else 0
+            raise SystemExit(code)
 
 
 @click.group(cls=CLI)

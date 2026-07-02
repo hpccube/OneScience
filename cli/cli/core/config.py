@@ -110,6 +110,7 @@ BUILTIN_DOMAIN_DIR_MAP: t.Dict[str, str] = {
 }
 
 BUILTIN_DATASETS: t.Dict[str, str] = {
+    "cfd_benchmark": "CFD_Benchmark",
     "airfoil": "CFD_Benchmark/airfoil",
     "airfrans": "Transolver-Airfoil-Design/Dataset",
     "darcy": "CFD_Benchmark/darcy",
@@ -138,13 +139,14 @@ BUILTIN_DATASETS: t.Dict[str, str] = {
 # ModelScope 数据集名称映射（数据集名 → ModelScope 上的数据集名）
 # 当本地不存在时，自动从 ModelScope 拉取
 MODELSCOPE_DATASETS: t.Dict[str, str] = {
-    "airfoil": "airfoil",
+    "cfd_benchmark": "cfd_benchmark",
+    "airfoil": "cfd_benchmark",
     "airfrans": "airfrans",
-    "darcy": "darcy",
-    "elasticity": "elasticity",
-    "ns": "ns",
-    "pipe": "pipe",
-    "plasticity": "plasticity",
+    "darcy": "cfd_benchmark",
+    "elasticity": "cfd_benchmark",
+    "ns": "cfd_benchmark",
+    "pipe": "cfd_benchmark",
+    "plasticity": "cfd_benchmark",
     "era5": "ERA5",
     "era5_stats": "ERA5",
     "era5_static": "ERA5",
@@ -272,7 +274,10 @@ def _auto_download_dataset(name: str, target_dir: Path) -> t.Optional[str]:
     ms_name = MODELSCOPE_DATASETS.get(name, name)
 
     if target_dir.exists():
-        return str(target_dir)
+        if any(target_dir.iterdir()):
+            return str(target_dir)
+        # 空目录，删除后重新下载
+        target_dir.rmdir()
 
     target_dir.parent.mkdir(parents=True, exist_ok=True)
 
@@ -766,12 +771,19 @@ class Config:
             if "/" in rel:
                 # 子路径数据集（如 era5_stats → ERA5/stats），先确保父数据集已下载
                 parent_rel = rel.split("/")[0]
-                parent_key = next((k for k, v in BUILTIN_DATASETS.items() if v == parent_rel), name)
-                parent_target = Path(self.datasets_dir) / parent_rel
-                if not parent_target.exists() or not any(parent_target.iterdir()):
-                    _auto_download_dataset(parent_key, parent_target)
-                # 子路径数据集，下载父数据集后检查子路径是否存在
-                return str(p) if p.exists() and any(p.iterdir()) else None
+                parent_key = next((k for k, v in BUILTIN_DATASETS.items() if v == parent_rel), None)
+                if parent_key:
+                    # 父级是已知数据集（如 ERA5/stats 中的 ERA5）
+                    parent_target = Path(self.datasets_dir) / parent_rel
+                    if not parent_target.exists() or not any(parent_target.iterdir()):
+                        _auto_download_dataset(parent_key, parent_target)
+                    return str(p) if p.exists() and any(p.iterdir()) else None
+                # 父级不是数据集（如 CFD_Benchmark/airfoil），直接下载到完整路径
+                target = p
+                result = _auto_download_dataset(name, target)
+                if result:
+                    return result
+                return None
             # 非子路径数据集，直接下载
             target = p
             result = _auto_download_dataset(name, target)
