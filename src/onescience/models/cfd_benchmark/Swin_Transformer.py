@@ -3,7 +3,8 @@ import torch.nn as nn
 import torch.nn.functional as F
 import torch.utils.checkpoint as checkpoint
 from timm.layers import trunc_normal_
-from onescience.modules import OneMlp, OneTransformer
+from onescience.modules.mlp.MLP import StandardMLP
+from onescience.modules.transformer.SwinTransformerBlock import SwinTransformerBlock
 from onescience.modules.embedding import timestep_embedding, unified_pos_embedding
 
 class BasicLayer(nn.Module):
@@ -37,8 +38,7 @@ class BasicLayer(nn.Module):
 
         # build blocks
         self.blocks = nn.ModuleList([
-            OneTransformer(
-                style="SwinTransformerBlock",
+            SwinTransformerBlock(
                 dim=dim,
                 input_resolution=input_resolution,
                 num_heads=num_heads,
@@ -94,8 +94,7 @@ class Model(nn.Module):
         else:
             in_dim = args.fun_dim + args.space_dim
 
-        self.preprocess = OneMlp(
-            style="StandardMLP",
+        self.preprocess = StandardMLP(
             input_dim=in_dim,
             output_dim=args.n_hidden,
             hidden_dims=[args.n_hidden * 2],

@@ -12,6 +12,8 @@ model = Fengwu(img_size=[721, 1440],
                    num_heads=[6, 12, 12, 6],
                    window_size=[2, 6, 12],
                    ).to(device)
+num_params = sum(p.numel() for p in model.parameters())
+print(f'Fengwu parameter count: {num_params}')
 x = torch.randn(2, 189, 721, 1440).to(device)
 surface = x[:, :4, :, :]
 z = x[:, 4:41, :, :]

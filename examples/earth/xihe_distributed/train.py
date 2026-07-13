@@ -5,7 +5,7 @@ from functools import partial
 import numpy as np
 import torch
 
-from onescience.datapipes.climate import CMEMSHDF5Dataset
+from onescience.datapipes.climate import CMEMSDataset
 from onescience.utils.YParams import YParams
 from onescience.models.xihe_distributed import Xihe_stage0, Xihe_stage1
 from onescience.utils.fcn.darcy_loss import LpLoss
@@ -157,11 +157,11 @@ def forward_step_func(data_iterator, model):
     def loss_func(output, outvar=outvar):
         loss_fn = LpLoss()
         loss = loss_fn(outvar, output)
-        num_tokens = torch.tensor(1, device="cuda")
-        reporting_loss = torch.cat([loss.clone().detach().view(1), num_tokens.view(1)])
+        num_tokens = torch.tensor(1, device=output.device)
+        reporting_loss = torch.cat([loss.detach().view(1), num_tokens.view(1)])
         return loss, num_tokens, {'lm loss': reporting_loss}
 
-    return output, partial(loss_func, output)
+    return output, loss_func
 
 
 if __name__ == '__main__':

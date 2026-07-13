@@ -51,7 +51,6 @@ launch:
 # 环境配置
 # ============================================================
 env:
-  conda_env: matchem                # conda 环境名
   modules:
     - sghpc-mpi-gcc/26.3         # 需要加载的 module
 

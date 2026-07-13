@@ -6,17 +6,16 @@
 # ==========================================
 
 # ---------- 1. 基础环境配置 ----------
-export MATCHEM_CONDA_NAME=matchem_opt          # conda 环境名
-export ONESCIENCE_MAIN_DIR=/public/home/easyscience2024/wangrui/onescience  # OneScience 源码根目录
+export MATCHEM_CONDA_NAME=matchem_test
+export ONESCIENCE_MAIN_DIR=/public/home/easyscience2024/wangrui/onescience
 
 # ---------- 2. 训练软件源码/安装路径 ----------
-export DEEPMD_SRC_DIR=/public/home/easyscience2024/wangrui/software/deepmd-kit_dcu   # DeepMD-kit 源码
-export MATPL_SRC_DIR="${MATPL_SRC_DIR:-/public/home/easyscience2024/wangrui/software/matpl_dcu}"  # MatPL 源码
+export DEEPMD_SRC_DIR=/public/home/easyscience2024/wangrui/software/deepmd-kit_dcu
+export MATPL_SRC_DIR=/public/home/easyscience2024/wangrui/software/matpl_dcu
 
 # ---------- 3. LAMMPS 与 C++ 接口路径 ----------
-export LAMMPS_SRC_DIR="${LAMMPS_SRC_DIR:-/public/home/easyscience2024/wangrui/MD/lammps/lammps_0426}"        # LAMMPS 源码目录（编译 C++ 接口时需要）
-export LAMMPS_INSTALL_DIR="${LAMMPS_INSTALL_DIR:-/public/home/easyscience2024/wangrui/software/lammps_dcu}"  # LAMMPS 安装目录
-export DP_CPP_DIR="${DP_CPP_DIR:-/public/home/easyscience2024/wangrui/software/dp_cpp_dcu_v3}"                  # DeepMD C++ 接口安装目录(pytorch和tensoflow双框架)
+export LAMMPS_INSTALL_DIR="/public/home/easyscience2024/wangrui/software/lammps_dcu"
+export DP_CPP_DIR="/public/home/easyscience2024/wangrui/software/dp_cpp_dcu"
 
 # ---------- 4. 加载集群模块与 conda ----------
 source ~/.bashrc
@@ -27,3 +26,8 @@ conda activate $MATCHEM_CONDA_NAME
 
 # ---------- 5. 加载 OneScience 环境变量 ----------
 source $ONESCIENCE_MAIN_DIR/env.sh
+
+# ---------- 6. LAMMPS 运行时环境 ----------
+export LD_LIBRARY_PATH=${LAMMPS_INSTALL_DIR}/lib64:${LD_LIBRARY_PATH:-}
+export LD_LIBRARY_PATH=${LAMMPS_INSTALL_DIR}/lib_override:${LD_LIBRARY_PATH:-}
+export LAMMPS_PLUGIN_PATH=${DP_CPP_DIR}/lib

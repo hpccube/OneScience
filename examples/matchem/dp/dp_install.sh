@@ -12,18 +12,24 @@ cd "$SCRIPT_DIR"
 # 1. 环境准备
 echo ">>> Step 1: 加载环境"
 source "$SCRIPT_DIR/../matchem_env.sh"
-module load sghpc-mpi-gcc/26.3
 
-# 2. 源码准备
+# 2. 交互式配置源码路径
+DEEPMD_SRC="${DEEPMD_SRC_DIR:-/public/home/easyscience2024/wangrui/software/deepmd-kit_dcu}"
+if [ -t 0 ]; then
+    read -rp "请输入 DeepMD-kit 源码路径 [默认: ${DEEPMD_SRC}]: " input_src
+    DEEPMD_SRC="${input_src:-${DEEPMD_SRC}}"
+fi
+echo "[提示] 使用 DeepMD-kit 源码路径: ${DEEPMD_SRC}"
+
+# 3. 源码准备
 # 说明：
 #   - 开发/测试阶段：自动通过 HTTPS + 代理拉取源码
 #   - 生产/客户场景：建议提前上传源码到集群，通过 DEEPMD_SRC_DIR 指定
-DEEPMD_SRC="${DEEPMD_SRC_DIR:-/public/home/easyscience2024/wangrui/software/deepmd-kit_dcu}"
 if [ ! -d "$DEEPMD_SRC/.git" ] && [ ! -f "$DEEPMD_SRC/setup.py" ]; then
     echo ">>> Step 2: 拉取 DeepMD-kit 源码"
-    # 当前集群需通过 HTTP 代理访问外网，配置 git 代理
-    git config --global http.proxy "http://jsyadmin:1cdf8f60@10.13.17.166:3128"
-    git clone --depth 1 "https://oauth2:${GITEE_TOKEN}@gitee.com/wang-rui-sugon/deepmd-kit_dcu.git" "$DEEPMD_SRC"
+    # 计算节点需通过 HTTP 代理访问外网，配置 git 代理，如代理实效，可向集群管理员重新申请
+    git config --global http.proxy "http://scnethpc2601:sWMtqVS@10.16.1.52:3120"
+    git clone --depth 1 "https://gitee.com/wang-rui-sugon/deepmd-kit_dcu.git" "$DEEPMD_SRC"
 else
     echo ">>> Step 2: 源码已存在，跳过拉取"
 fi
@@ -50,7 +56,7 @@ ROCM_ROOT="$ROCM_PATH" \
 DP_ENABLE_TENSORFLOW=1 \
 DP_ENABLE_PYTORCH=1 \
 PYTORCH_ROOT="${TORCH_PATH}" \
-    pip install . -i https://pypi.tuna.tsinghua.edu.cn/simple --trusted-host pypi.tuna.tsinghua.edu.cn
+    pip install . "numpy==1.26.3" -i https://pypi.tuna.tsinghua.edu.cn/simple --trusted-host pypi.tuna.tsinghua.edu.cn
 
 # 6. 验证
 echo ">>> Step 6: 验证安装"
@@ -83,11 +89,11 @@ if [ "${COMPILE_DP_CPP:-0}" = "1" ]; then
     cmake -DENABLE_TENSORFLOW=ON \
           -DENABLE_PYTORCH=ON \
           -DUSE_ROCM_TOOLKIT=ON \
-          -DTENSORFLOW_ROOT="/public/home/easyscience2024/.conda/envs/matchem_opt/lib/python3.11/site-packages/tensorflow" \
-          -DTensorFlow_INCLUDE_DIRS="/public/home/easyscience2024/.conda/envs/matchem_opt/lib/python3.11/site-packages/tensorflow/include" \
-          -DTorch_DIR="/public/home/easyscience2024/.conda/envs/matchem_opt/lib/python3.11/site-packages/torch/share/cmake/Torch" \
-          -DHIP_ROOT_DIR="/public/software/sghpc_sdk.bak/Linux_x86_64/26.3/dtk/dtk-25.04.4/hip" \
-          -DCMAKE_PREFIX_PATH="/public/home/easyscience2024/.conda/envs/matchem_opt;/public/software/sghpc_sdk.bak/Linux_x86_64/26.3/dtk/dtk-25.04.4/lib/cmake" \
+          -DTENSORFLOW_ROOT="${CONDA_PREFIX}/lib/python3.11/site-packages/tensorflow" \
+          -DTensorFlow_INCLUDE_DIRS="${CONDA_PREFIX}/lib/python3.11/site-packages/tensorflow/include" \
+          -DTorch_DIR="${CONDA_PREFIX}/lib/python3.11/site-packages/torch/share/cmake/Torch" \
+          -DHIP_ROOT_DIR="${ROCM_PATH}/hip" \
+          -DCMAKE_PREFIX_PATH="${CONDA_PREFIX};${ROCM_PATH}/lib/cmake" \
           -DLAMMPS_SOURCE_ROOT="${LAMMPS_SRC_DIR}" \
           -DCMAKE_INSTALL_PREFIX="${DP_CPP_DIR}" \
           ..
@@ -109,3 +115,24 @@ else
     rm -f dp_cpp_dcu.tar.gz
     echo ">>> Step 7: C++ 接口安装完成（${DP_CPP_DIR}）"
 fi
+
+# 8. 将配置写回 matchem_env.sh
+MATCHEM_ENV_FILE="${SCRIPT_DIR}/../matchem_env.sh"
+if [ -f "${MATCHEM_ENV_FILE}" ]; then
+    echo "[提示] 更新 ${MATCHEM_ENV_FILE} "
+    sed -i "s|^export DEEPMD_SRC_DIR=.*|export DEEPMD_SRC_DIR=${DEEPMD_SRC}|" "${MATCHEM_ENV_FILE}"
+else
+    echo "[警告] 未找到 ${MATCHEM_ENV_FILE}，跳过写入配置。"
+fi
+
+echo ""
+echo "=========================================="
+echo " DeePMD-kit DCU 安装完成!"
+echo " 支持 Pytorch/Tensorflow后端训练"
+echo "=========================================="
+echo "源码路径: $DEEPMD_SRC"
+echo ""
+echo "每次使用前请执行:"
+echo "  source $SCRIPT_DIR/../matchem_env.sh"
+
+

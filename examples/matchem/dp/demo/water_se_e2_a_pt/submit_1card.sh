@@ -1,6 +1,6 @@
 #!/bin/bash
 #SBATCH --job-name=dp_pt_se_e2_a
-#SBATCH --partition=hpctest01
+#SBATCH --partition=hpctest02
 #SBATCH --nodes=1
 #SBATCH --ntasks-per-node=1
 #SBATCH --gres=dcu:1

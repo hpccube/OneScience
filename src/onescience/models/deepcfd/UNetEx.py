@@ -1,11 +1,13 @@
 import torch
 import torch.nn as nn
-from onescience.modules import OneEncoder, OneDecoder, OneHead
+from onescience.modules.decoder.unet_decoder import UNetDecoder2D
+from onescience.modules.encoder.unet_encoder import UNetEncoder2D
+from onescience.modules.head.unet_head import UNetHead2D
 
 class DecoderPath(nn.Module):
     """
     辅助类：单通道独立解码器路径。
-    包含一个 OneDecoder (负责上采样和特征融合) 和一个 OneHead (负责映射到单通道输出)。
+    包含一个 UNetDecoder2D (负责上采样和特征融合) 和一个 UNetHead2D (负责映射到单通道输出)。
 
     Args:
         base_channels (int): 初始特征通道数。
@@ -20,16 +22,14 @@ class DecoderPath(nn.Module):
     """
     def __init__(self, base_channels, num_stages, bilinear, normtype, kernel_size):
         super().__init__()
-        self.decoder = OneDecoder(
-            style="UNetDecoder2D",
+        self.decoder = UNetDecoder2D(
             base_channels=base_channels,
             num_stages=num_stages,
             bilinear=bilinear,
             normtype=normtype,
             kernel_size=kernel_size
         )
-        self.head = OneHead(
-            style="UNetHead2D",
+        self.head = UNetHead2D(
             in_channels=base_channels,
             out_channels=1,
             kernel_size=1
@@ -81,8 +81,7 @@ class UNetEx(nn.Module):
     ):
         super(UNetEx, self).__init__()
         
-        self.encoder = OneEncoder(
-            style="UNetEncoder2D",
+        self.encoder = UNetEncoder2D(
             in_channels=in_channels,
             base_channels=base_channels,
             num_stages=num_stages,

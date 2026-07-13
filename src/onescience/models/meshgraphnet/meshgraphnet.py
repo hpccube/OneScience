@@ -14,7 +14,9 @@ from itertools import chain
 from typing import Callable, List, Tuple, Union
 
 import onescience  # noqa: F401 for docs
-from onescience.modules import OneEdge, OneNode, OneMlp
+from onescience.modules.edge.mesh_edge_block import MeshEdgeBlock
+from onescience.modules.mlp.mesh_graph_mlp import MeshGraphMLP
+from onescience.modules.node.mesh_node_block import MeshNodeBlock
 
 from onescience.modules.utils.gnnlayer_utils import CuGraphCSC, set_checkpoint_fn
 from onescience.modules.layer.activations import get_activation
@@ -48,7 +50,7 @@ class MeshGraphNet(Module):
         2. **Processor**: 通过多层消息传递（Message Passing）在图中传播信息，更新节点和边的隐状态。
         3. **Decoder**: 将处理后的节点特征解码回物理空间（例如加速度或速度增量）。
 
-        本实现完全基于 OneXxx 模块工厂构建，支持灵活的组件替换。
+        本实现使用 MeshGraphMLP、MeshEdgeBlock 和 MeshNodeBlock 构建。
 
         Args:
             input_dim_nodes (int): 输入节点特征的维度。
@@ -103,9 +105,8 @@ class MeshGraphNet(Module):
 
         activation_fn = get_activation(mlp_activation_fn)
 
-        # 1. Edge Encoder (OneMlp)
-        self.edge_encoder = OneMlp(
-            style="MeshGraphMLP",
+        # 1. Edge Encoder
+        self.edge_encoder = MeshGraphMLP(
             input_dim=input_dim_edges,
             output_dim=hidden_dim_processor,
             hidden_dim=hidden_dim_edge_encoder,
@@ -115,9 +116,8 @@ class MeshGraphNet(Module):
             recompute_activation=recompute_activation,
         )
 
-        # 2. Node Encoder (OneMlp)
-        self.node_encoder = OneMlp(
-            style="MeshGraphMLP",
+        # 2. Node Encoder
+        self.node_encoder = MeshGraphMLP(
             input_dim=input_dim_nodes,
             output_dim=hidden_dim_processor,
             hidden_dim=hidden_dim_node_encoder,
@@ -127,9 +127,8 @@ class MeshGraphNet(Module):
             recompute_activation=recompute_activation,
         )
 
-        # 3. Node Decoder (OneMlp)
-        self.node_decoder = OneMlp(
-            style="MeshGraphMLP",
+        # 3. Node Decoder
+        self.node_decoder = MeshGraphMLP(
             input_dim=hidden_dim_processor,
             output_dim=output_dim,
             hidden_dim=hidden_dim_node_decoder,
@@ -172,8 +171,8 @@ class MeshGraphNetProcessor(nn.Module):
 
         该模块由一系列堆叠的消息传递块 (Message Passing Blocks) 组成。
         每个块包含两个步骤：
-        1. **Edge Block**: 使用 OneEdge (如 MeshEdgeBlock) 更新边特征。
-        2. **Node Block**: 使用 OneNode (如 MeshNodeBlock) 聚合边信息并更新节点特征。
+        1. **Edge Block**: 使用 MeshEdgeBlock 更新边特征。
+        2. **Node Block**: 使用 MeshNodeBlock 聚合边信息并更新节点特征。
 
         支持梯度检查点 (Gradient Checkpointing) 以减少大规模图训练时的显存占用。
 
@@ -219,8 +218,7 @@ class MeshGraphNetProcessor(nn.Module):
 
         for _ in range(self.processor_size):
             edge_blocks.append(
-                OneEdge(
-                    style="MeshEdgeBlock",
+                MeshEdgeBlock(
                     input_dim_nodes=input_dim_node,
                     input_dim_edges=input_dim_edge,
                     output_dim=input_dim_edge,
@@ -232,10 +230,8 @@ class MeshGraphNetProcessor(nn.Module):
                     recompute_activation=False
                 )
             )
-            # 使用 OneNode 工厂
             node_blocks.append(
-                OneNode(
-                    style="MeshNodeBlock",
+                MeshNodeBlock(
                     aggregation=aggregation,
                     input_dim_nodes=input_dim_node,
                     input_dim_edges=input_dim_edge,

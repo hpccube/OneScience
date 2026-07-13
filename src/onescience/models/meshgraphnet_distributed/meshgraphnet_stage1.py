@@ -10,10 +10,11 @@ from typing import Tuple, Optional
 from itertools import chain
 
 import onescience
-from onescience.modules import OneEdge, OneNode
-from onescience.modules.edge.oneedge import _EDGE_REGISTRY
-from onescience.modules.node.onenode import _NODE_REGISTRY
+from onescience.modules.edge.mesh_edge_block import MeshEdgeBlock
+from onescience.modules.edge.mesh_edge_distributed_block import DistributedMeshEdgeBlock
 from onescience.modules.layer.activations import get_activation
+from onescience.modules.node.mesh_node_block import MeshNodeBlock
+from onescience.modules.node.mesh_node_distributed_block import DistributedMeshNodeBlock
 
 
 class MeshGraphNetStage1(nn.Module):
@@ -64,25 +65,17 @@ class MeshGraphNetStage1(nn.Module):
 
         activation_fn = get_activation(mlp_activation_fn)
 
-        # Determine if using distributed modules
-        use_distributed = config and config.tensor_model_parallel_size > 1
-        edge_style = "MeshEdgeDistributedBlock" if use_distributed else "MeshEdgeBlock"
-        node_style = "MeshNodeDistributedBlock" if use_distributed else "MeshNodeBlock"
+        use_distributed = config is not None and config.tensor_model_parallel_size > 1
 
-        # Factory functions for creating blocks
-        def _create_edge_block(style, config, **kwargs):
-            if style == "MeshEdgeDistributedBlock":
-                # return _EDGE_REGISTRY[style](config=config, **kwargs)
-                return OneEdge(style=style, config=config, **kwargs)
-            else:
-                return _EDGE_REGISTRY[style](**kwargs)
+        def _create_edge_block(**kwargs):
+            if use_distributed:
+                return DistributedMeshEdgeBlock(config=config, **kwargs)
+            return MeshEdgeBlock(**kwargs)
 
-        def _create_node_block(style, config, **kwargs):
-            if style == "MeshNodeDistributedBlock":
-                # return _NODE_REGISTRY[style](config=config, **kwargs)
-                return OneNode(style=style, config=config, **kwargs)
-            else:
-                return _NODE_REGISTRY[style](**kwargs)
+        def _create_node_block(**kwargs):
+            if use_distributed:
+                return DistributedMeshNodeBlock(config=config, **kwargs)
+            return MeshNodeBlock(**kwargs)
 
         # Create edge and node blocks (only for specified layer range)
         edge_blocks = []
@@ -100,7 +93,7 @@ class MeshGraphNetStage1(nn.Module):
                 "do_concat_trick": do_concat_trick,
                 "recompute_activation": recompute_activation,
             }
-            edge_blocks.append(_create_edge_block(edge_style, config, **edge_kwargs))
+            edge_blocks.append(_create_edge_block(**edge_kwargs))
 
             node_kwargs = {
                 "aggregation": aggregation,
@@ -113,7 +106,7 @@ class MeshGraphNetStage1(nn.Module):
                 "norm_type": norm_type,
                 "recompute_activation": recompute_activation,
             }
-            node_blocks.append(_create_node_block(node_style, config, **node_kwargs))
+            node_blocks.append(_create_node_block(**node_kwargs))
 
         # Interleave edge and node blocks
         layers = list(chain(*zip(edge_blocks, node_blocks)))

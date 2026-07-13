@@ -13,7 +13,9 @@ from itertools import chain
 from typing import Callable, List, Tuple, Union
 
 # --- 引入模块工厂 ---
-from onescience.modules import OneEdge, OneNode, OneMlp
+from onescience.modules.edge.mesh_edge_block import MeshEdgeBlock
+from onescience.modules.mlp.mesh_graph_mlp import MeshGraphMLP
+from onescience.modules.node.mesh_node_block import MeshNodeBlock
 
 # 保持工具类引用
 from onescience.modules.utils.gnnlayer_utils import CuGraphCSC, set_checkpoint_fn
@@ -42,7 +44,7 @@ class Model(Module):
     """
     LSMMeshGraphNet 网络架构 (Refactored).
     
-    使用 OneMlp, OneEdge, OneNode 工厂构建。
+    使用网格图的 MLP、边更新和节点更新模块构建。
     """
 
     def __init__(
@@ -76,8 +78,7 @@ class Model(Module):
         activation_fn = get_activation(mlp_activation_fn)
 
         # 1. Edge Encoder
-        self.edge_encoder = OneMlp(
-            style="MeshGraphMLP",
+        self.edge_encoder = MeshGraphMLP(
             input_dim=self.input_dim_edges,
             output_dim=hidden_dim_processor,
             hidden_dim=hidden_dim_edge_encoder,
@@ -88,8 +89,7 @@ class Model(Module):
         )
 
         # 2. Node Encoder
-        self.node_encoder = OneMlp(
-            style="MeshGraphMLP",
+        self.node_encoder = MeshGraphMLP(
             input_dim=self.input_dim_nodes,
             output_dim=hidden_dim_processor,
             hidden_dim=hidden_dim_node_encoder,
@@ -100,8 +100,7 @@ class Model(Module):
         )
 
         # 3. Node Decoder
-        self.node_decoder = OneMlp(
-            style="MeshGraphMLP",
+        self.node_decoder = MeshGraphMLP(
             input_dim=hidden_dim_processor,
             output_dim=self.output_dim,
             hidden_dim=hidden_dim_node_decoder,
@@ -140,7 +139,7 @@ class Model(Module):
 
 class MeshGraphNetProcessor(nn.Module):
     """
-    MeshGraphNet processor block constructed via OneEdge and OneNode factories.
+    MeshGraphNet processor block constructed from edge and node update modules.
     """
 
     def __init__(
@@ -165,8 +164,7 @@ class MeshGraphNetProcessor(nn.Module):
 
         for _ in range(self.processor_size):
             edge_blocks.append(
-                OneEdge(
-                    style="MeshEdgeBlock",
+                MeshEdgeBlock(
                     input_dim_nodes=input_dim_node,
                     input_dim_edges=input_dim_edge,
                     output_dim=input_dim_edge,
@@ -179,8 +177,7 @@ class MeshGraphNetProcessor(nn.Module):
                 )
             )
             node_blocks.append(
-                OneNode(
-                    style="MeshNodeBlock",
+                MeshNodeBlock(
                     aggregation=aggregation,
                     input_dim_nodes=input_dim_node,
                     input_dim_edges=input_dim_edge,

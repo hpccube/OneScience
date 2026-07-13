@@ -6,12 +6,11 @@ from torch import nn
 from dataclasses import dataclass
 from onescience.models.meta import ModelMetaData
 
-from onescience.modules import (
-    OneEmbedding,
-    OneFuser,
-    OneRecovery,
-    OneSample,
-)
+from onescience.modules.embedding.panguembedding import PanguEmbedding
+from onescience.modules.fuser.pangufuser import PanguFuser
+from onescience.modules.recovery.pangupatchrecovery import PanguPatchRecovery
+from onescience.modules.sample.pangudownsample import PanguDownSample
+from onescience.modules.sample.panguupsample import PanguUpSample
 
 @dataclass
 class MetaData(ModelMetaData):
@@ -83,15 +82,13 @@ class Pangu(nn.Module):
         # Surface input contains 4 predicted variables and 3 static masks:
         # topography mask, land-sea mask, and soil type mask.
 
-        self.patchembed2d = OneEmbedding(
-            style="PanguEmbedding",
+        self.patchembed2d = PanguEmbedding(
             img_size=img_size,
             patch_size=patch_size[1:],
             Variables=7,
             embed_dim=embed_dim,
         )
-        self.patchembed3d = OneEmbedding(
-            style="PanguEmbedding",
+        self.patchembed3d = PanguEmbedding(
             img_size=(13, *img_size),
             patch_size=patch_size,
             Variables=5,
@@ -104,8 +101,7 @@ class Pangu(nn.Module):
             math.ceil(img_size[1] / patch_size[2]),
         )
 
-        self.layer1 = OneFuser(
-            style="PanguFuser",
+        self.layer1 = PanguFuser(
             dim=embed_dim,
             input_resolution=patched_input_shape,
             depth=2,
@@ -120,14 +116,12 @@ class Pangu(nn.Module):
             math.ceil(patched_input_shape[2] / 2),
         )
 
-        self.downsample = OneSample(
-            style="PanguDownSample",
+        self.downsample = PanguDownSample(
             in_dim=embed_dim,
             input_resolution=patched_input_shape,
             output_resolution=patched_downsampled_shape,
         )
-        self.layer2 = OneFuser(
-            style="PanguFuser",
+        self.layer2 = PanguFuser(
             dim=embed_dim * 2,
             input_resolution=patched_downsampled_shape,
             depth=6,
@@ -135,8 +129,7 @@ class Pangu(nn.Module):
             window_size=window_size,
             drop_path=drop_path[2:],
         )
-        self.layer3 = OneFuser(
-            style="PanguFuser",
+        self.layer3 = PanguFuser(
             dim=embed_dim * 2,
             input_resolution=patched_downsampled_shape,
             depth=6,
@@ -144,15 +137,13 @@ class Pangu(nn.Module):
             window_size=window_size,
             drop_path=drop_path[2:],
         )
-        self.upsample = OneSample(
-            style="PanguUpSample",
+        self.upsample = PanguUpSample(
             in_dim=embed_dim * 2,
             out_dim=embed_dim,
             input_resolution=patched_downsampled_shape,
             output_resolution=patched_input_shape,
         )
-        self.layer4 = OneFuser(
-            style="PanguFuser",
+        self.layer4 = PanguFuser(
             dim=embed_dim,
             input_resolution=patched_input_shape,
             depth=2,
@@ -163,15 +154,13 @@ class Pangu(nn.Module):
 
         # The recovered surface output contains only the 4 prognostic surface variables.
         # Static masks are input-only features and are not part of the prediction target.
-        self.patchrecovery2d = OneRecovery(
-            style="PanguPatchRecovery",
+        self.patchrecovery2d = PanguPatchRecovery(
             img_size=(721, 1440),
             patch_size=(4, 4),
             in_chans=embed_dim * 2,
             out_chans=4,
         )
-        self.patchrecovery3d = OneRecovery(
-            style="PanguPatchRecovery",
+        self.patchrecovery3d = PanguPatchRecovery(
             img_size=(13, 721, 1440),
             patch_size=(2, 4, 4),
             in_chans=embed_dim * 2,

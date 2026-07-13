@@ -6,6 +6,8 @@ import warnings
 warnings.filterwarnings("ignore", message=".*torch.meshgrid.*")
 
 model = GraphCastNet().to(dtype=torch.bfloat16).to('cuda:0')
+num_params = sum(p.numel() for p in model.parameters())
+print(f'GraphCast parameter count: {num_params}')
 model.set_checkpoint_encoder('true')
 model.set_checkpoint_decoder('false')
 x = torch.randn([1, 237, 721, 1440]).to(dtype=torch.bfloat16).to('cuda:0')

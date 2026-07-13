@@ -197,16 +197,25 @@ def run(args) -> None:
                 )
                 if not hasattr(legacy_modules_pkg, "__path__"):
                     legacy_modules_pkg.__path__ = []  # type: ignore[attr-defined]
+                legacy_modules_pkg.__package__ = "mace.modules"  # type: ignore[attr-defined]
 
                 for legacy_name, new_name in legacy_aliases.items():
-                    module_obj = importlib.import_module(new_name)
-                    sys.modules[legacy_name] = module_obj
-                    if legacy_name.startswith("mace.modules."):
-                        setattr(
-                            legacy_modules_pkg,
-                            legacy_name.split(".")[-1],
-                            module_obj,
+                    try:
+                        module_obj = importlib.import_module(new_name)
+                        sys.modules[legacy_name] = module_obj
+                        if legacy_name.startswith("mace.modules."):
+                            setattr(
+                                legacy_modules_pkg,
+                                legacy_name.split(".")[-1],
+                                module_obj,
+                            )
+                    except Exception as e:
+                        logging.warning(
+                            f"Failed to create alias {legacy_name} -> {new_name}: {e}"
                         )
+                # 让 mace.modules 能通过 mace.modules.models 的方式被访问
+                if "mace" in sys.modules:
+                    sys.modules["mace"].modules = legacy_modules_pkg  # type: ignore[attr-defined]
                 logging.info("Legacy module aliases created successfully.")
             except Exception as e:
                 logging.warning(f"Failed to create module alias: {e}")

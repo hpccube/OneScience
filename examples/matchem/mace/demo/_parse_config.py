@@ -228,6 +228,17 @@ def print_data_files(cfg: dict[str, Any], config_path: str) -> None:
 
     train_args = cfg.get("train_args", {}) or {}
     files: list[str] = []
+    # foundation_model 可以是 mace-mp/mace-off 模型尺寸关键字，不是文件路径
+    foundation_model_keywords = {
+        "small",
+        "medium",
+        "large",
+        "small_off",
+        "medium_off",
+        "large_off",
+        "medium-mpa-0",
+        "medium-omat-0",
+    }
     for key in (
         "train_file",
         "valid_file",
@@ -237,8 +248,11 @@ def print_data_files(cfg: dict[str, Any], config_path: str) -> None:
         "pt_train_file",
     ):
         val = train_args.get(key)
-        if val:
-            files.append(str(val))
+        if not val:
+            continue
+        if key == "foundation_model" and str(val) in foundation_model_keywords:
+            continue
+        files.append(str(val))
     _print_unique(files)
 
 

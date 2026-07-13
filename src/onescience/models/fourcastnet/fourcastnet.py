@@ -4,7 +4,8 @@ import torch.nn as nn
 from timm.models.layers import trunc_normal_
 from einops import rearrange
 
-from onescience.modules import OneEmbedding, OneFuser
+from onescience.modules.embedding.fourcastnetembedding import FourCastNetEmbedding
+from onescience.modules.fuser.fourcastnetfuser import FourCastNetFuser
 
 
 class FourCastNet(nn.Module):
@@ -84,8 +85,7 @@ class FourCastNet(nn.Module):
         self.patch_grid_height = img_size[0] // self.patch_size[0]
         self.patch_grid_width = img_size[1] // self.patch_size[1]
 
-        self.patch_embed = OneEmbedding(
-            style="FourCastNetEmbedding",
+        self.patch_embed = FourCastNetEmbedding(
             img_size=img_size,
             patch_size=patch_size,
             in_chans=in_chans,
@@ -93,8 +93,7 @@ class FourCastNet(nn.Module):
         )
 
         self.blocks = nn.ModuleList([
-            OneFuser(
-                style="FourCastNetFuser",
+            FourCastNetFuser(
                 dim=embed_dim,
                 mlp_ratio=mlp_ratio,
                 drop=drop_rate,

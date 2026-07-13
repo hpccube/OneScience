@@ -72,7 +72,6 @@ launch:
 # 环境配置
 # ============================================================
 env:
-  conda_env: matchem                # conda 环境名
   modules:
     - sghpc-mpi-gcc/26.3         # 需要加载的 module
 
@@ -109,6 +108,6 @@ extra_env:
 # SLURM 配置（仅 --submit 模式使用）
 # ============================================================
 slurm:
-  partition: hpctest01           # SLURM 分区
+  partition: hpctest02           # SLURM 分区
   time: "2:00:00"               # 作业时间限制
   cpus_per_task: 128             # CPU 核心数

@@ -5,7 +5,7 @@ from onescience.modules.func_utils import (
     Mlp, DistributedMlp, crop3d, get_pad3d,
     window_partition, window_reverse, DropPath,
 )
-from onescience.modules.attention.oneattention import OneAttention
+from onescience.modules.attention.earthdistributedattention3d import EarthDistributedAttention3D
 
 
 class XiheDistributedLocalTransformer(nn.Module):
@@ -44,8 +44,7 @@ class XiheDistributedLocalTransformer(nn.Module):
         pad_resolution[1] += padding[2] + padding[3]
         pad_resolution[2] += padding[0] + padding[1]
 
-        self.attn = OneAttention(
-            style="EarthDistributedAttention3D",
+        self.attn = EarthDistributedAttention3D(
             dim=dim,
             input_resolution=pad_resolution,
             window_size=window_size,

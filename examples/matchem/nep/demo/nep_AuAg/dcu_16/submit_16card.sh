@@ -1,6 +1,6 @@
 #!/bin/bash
 #SBATCH --job-name=nep_AuAg_16card
-#SBATCH --partition=hpctest01
+#SBATCH --partition=hpctest02
 #SBATCH --nodes=2
 #SBATCH --ntasks-per-node=8
 #SBATCH --gres=dcu:8

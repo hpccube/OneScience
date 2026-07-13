@@ -4,8 +4,7 @@ import torch.nn as nn
 from onescience.modules.func_utils import (
     Mlp, crop3d, get_pad3d, window_partition, window_reverse, DropPath,
 )
-from onescience.modules.attention.oneattention import OneAttention
-from onescience.modules.transformer.onetransformer import OneTransformer
+from onescience.modules.transformer.xihedistributedlocaltransformer import XiheDistributedLocalTransformer
 
 
 class XiheDistributedLocalSIEFuser(nn.Module):
@@ -31,11 +30,10 @@ class XiheDistributedLocalSIEFuser(nn.Module):
 
         self.blocks = nn.ModuleList(
             [
-                OneTransformer(
+                XiheDistributedLocalTransformer(
                     dim=dim,
                     input_resolution=input_resolution,
                     num_heads=num_heads,
-                    style="XiheDistributedLocalTransformer",
                     config=config,
                 )
                 for i in range(depth)

@@ -6,6 +6,8 @@ import warnings
 warnings.filterwarnings("ignore", message=".*torch.meshgrid.*")
 device = "cuda" if torch.cuda.is_available() else "cpu"
 model = FourCastNet().to(device)
+num_params = sum(p.numel() for p in model.parameters())
+print(f'FourCastNet parameter count: {num_params}')
 x = torch.randn(2, 19, 720, 1440).to(device)
 
 out = model(x)

@@ -15,13 +15,12 @@ description: "Water 势能面 - 基于 MACE-MP-0 (medium) 微调 - 8 DCU"
 # ============================================================
 train_args:
   # --- 基础模型配置 ---
-  # 使用 mace-mp-0 medium 预训练模型（自动下载或加载本地缓存）
-  # 可选: small / medium / large / medium-mpa-0 / medium-omat-0 等
-  foundation_model: medium
+  # 使用本地 mace-mp-0 medium 预训练模型
+  foundation_model: "${ONESCIENCE_MAIN_DIR}/examples/matchem/mace/models/mace-mp-0-medium.model"
 
   # 保留基础模型的所有元素（不仅限于当前数据集出现的元素）
   # 设置为 true 可防止元素嵌入被截断，有利于泛化
-  foundation_model_elements: true
+  foundation_model_elements: "True"
 
   # --- 模型配置 ---
   # 当指定 foundation_model 时，以下参数通常会自动从基础模型继承
@@ -37,8 +36,8 @@ train_args:
   train_file: "${ONESCIENCE_DATASETS_DIR}/matchem/mace/water/water_train.xyz"
   test_file: "${ONESCIENCE_DATASETS_DIR}/matchem/mace/water/water_test.xyz"
   valid_fraction: 0.05
-  E0s: isolated
-  energy_key: TolEnergy
+  E0s: average
+  energy_key: TotEnergy
   forces_key: force
 
   # --- 训练超参（微调建议） ---
@@ -84,7 +83,6 @@ launch:
 # 环境配置
 # ============================================================
 env:
-  conda_env: matchem
   modules:
     - sghpc-mpi-gcc/26.3
 

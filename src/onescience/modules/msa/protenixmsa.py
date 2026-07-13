@@ -22,7 +22,7 @@ from onescience.models.openfold.triangular_multiplicative_update import (
     ProtenixTriangleMultiplicationOutgoing# Alg 12 in AF3
 )
 from onescience.utils.openfold.checkpointing import checkpoint_blocks, get_checkpoint_fn
-from onescience.modules.pairformer.onepairformer import OnePairformer
+from onescience.modules.pairformer.protenixpairformer import ProtenixPairformerBlock
 from onescience.modules.linear.protenixlinear import ProtenixLinearNoBias
 
 class ProtenixMSAPairWeightedAveraging(nn.Module):
@@ -295,7 +295,7 @@ class ProtenixMSABlock(nn.Module):
                 msa_max_size=msa_max_size,
             )
         # Pair stack
-        self.pair_stack = OnePairformer(style="ProtenixPairformerBlock", c_z=c_z, c_s=0, dropout=pair_dropout)
+        self.pair_stack = ProtenixPairformerBlock(c_z=c_z, c_s=0, dropout=pair_dropout)
 
     def forward(
         self,

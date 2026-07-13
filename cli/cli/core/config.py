@@ -294,13 +294,16 @@ def _auto_download_dataset(name: str, target_dir: Path) -> t.Optional[str]:
             timeout=3600,
         )
         if r.returncode != 0:
-            if target_dir.exists() and not any(target_dir.iterdir()):
-                target_dir.rmdir()
+            if target_dir.exists():
+                import shutil
+                shutil.rmtree(str(target_dir))
             click.secho(f"数据集 '{name}' 从 ModelScope 下载失败（exit code {r.returncode}）", fg="red")
+            click.secho(f"  请检查数据集名称 '{name}' 是否正确，以及网络连接是否正常。", fg="yellow")
             return None
     except Exception as e:
-        if target_dir.exists() and not any(target_dir.iterdir()):
-            target_dir.rmdir()
+        if target_dir.exists():
+            import shutil
+            shutil.rmtree(str(target_dir))
         click.secho(f"数据集 '{name}' 下载异常: {e}", fg="red")
         return None
 
@@ -336,13 +339,16 @@ def _auto_download_model(name: str, target_dir: Path) -> t.Optional[Path]:
             timeout=3600,
         )
         if r.returncode != 0:
-            if target_dir.exists() and not any(target_dir.iterdir()):
-                target_dir.rmdir()
+            if target_dir.exists():
+                import shutil
+                shutil.rmtree(str(target_dir))
             click.secho(f"模型 '{name}' 从 ModelScope 下载失败（exit code {r.returncode}）", fg="red")
+            click.secho(f"  请检查模型名称 '{name}' 是否正确，以及网络连接是否正常。", fg="yellow")
             return None
     except Exception as e:
-        if target_dir.exists() and not any(target_dir.iterdir()):
-            target_dir.rmdir()
+        if target_dir.exists():
+            import shutil
+            shutil.rmtree(str(target_dir))
         click.secho(f"模型 '{name}' 下载异常: {e}", fg="red")
         return None
 
@@ -532,7 +538,7 @@ class Config:
 
     # ---- 模型发现（6 级优先级） ----
 
-    def resolve_model(self, name: str) -> dict:
+    def resolve_model(self, name: str, download: bool = True) -> dict:
         """6 级优先级查找模型"""
         name_lower = name.lower().strip()
 
@@ -614,7 +620,7 @@ class Config:
                 }
 
             # 级别 6: ModelScope 自动下载（内置模型本地不存在时）
-            if name_lower in MODELSCOPE_MODELS:
+            if download and name_lower in MODELSCOPE_MODELS:
                 target = Path(self.models_dir) / model_dir
                 result = _auto_download_model(name_lower, target)
                 if result:
@@ -640,31 +646,34 @@ class Config:
             }
 
         # 级别 6: ModelScope 自动下载（所有未找到的模型）
-        # 对于未注册的模型名，尝试从 ModelScope 拉取
-        target = Path(self.models_dir) / name_lower
-        result = _auto_download_model(name_lower, target)
-        if result:
+        if download:
+            # 对于未注册的模型名，尝试从 ModelScope 拉取
+            target = Path(self.models_dir) / name_lower
+            result = _auto_download_model(name_lower, target)
+            if result:
+                return {
+                    "alias": name_lower,
+                    "domain": "_custom",
+                    "model": name_lower,
+                    "sub_model": "",
+                    "description": f"从 ModelScope 自动下载: {name_lower}",
+                    "model_dir": result,
+                    "source": "modelscope",
+                }
+
+            # 下载失败时返回带有 model_dir=None 的结果，而非 None
+            # 这样 runner 可以展示更清晰的提示信息，而非"未知模型"
             return {
                 "alias": name_lower,
                 "domain": "_custom",
                 "model": name_lower,
                 "sub_model": "",
-                "description": f"从 ModelScope 自动下载: {name_lower}",
-                "model_dir": result,
+                "description": f"模型不存在且从 ModelScope 下载失败: {name_lower}",
+                "model_dir": None,
                 "source": "modelscope",
             }
 
-        # 下载失败时返回带有 model_dir=None 的结果，而非 None
-        # 这样 runner 可以展示更清晰的提示信息，而非"未知模型"
-        return {
-            "alias": name_lower,
-            "domain": "_custom",
-            "model": name_lower,
-            "sub_model": "",
-            "description": f"模型不存在且从 ModelScope 下载失败: {name_lower}",
-            "model_dir": None,
-            "source": "modelscope",
-        }
+        return None
 
     def list_models(self, domain: t.Optional[str] = None) -> t.List[dict]:
         """列出所有可用模型（内置 + 自定义 + 扫描目录发现）"""
@@ -729,6 +738,21 @@ class Config:
 
         return results
 
+    # ── 数据集自动发现 ─────────────────────────────────
+
+    @staticmethod
+    def _get_dataset_search_roots() -> t.List[str]:
+        """获取数据集自动发现搜索路径（按优先级排序）"""
+        roots = []
+        # 1. ~/.onescience/datasets/ （回退目录，最可能已有数据）
+        home_ds = str(Path.home() / ".onescience" / "datasets")
+        if os.path.isdir(home_ds):
+            roots.append(home_ds)
+        # 2. 内置默认路径（共享集群目录）
+        if os.path.isdir(BUILTIN_DATASETS_DIR):
+            roots.append(BUILTIN_DATASETS_DIR)
+        return roots
+
     def resolve_dataset(self, name: str) -> t.Optional[str]:
         """解析数据集名称 → 完整路径
 
@@ -742,6 +766,16 @@ class Config:
             if os.path.exists(name):
                 return os.path.abspath(name)
             return None
+
+        # 保存原始名称，用于后续文件系统路径查找（大小写敏感）
+        original_name = name
+
+        # 大小写不敏感匹配内置数据集名（如 "ERA5" → "era5"）
+        if name not in BUILTIN_DATASETS:
+            for key in BUILTIN_DATASETS:
+                if key.lower() == name.lower():
+                    name = key
+                    break
 
         # 自定义数据集
         custom = self._data.get("datasets", {})
@@ -777,7 +811,13 @@ class Config:
                     parent_target = Path(self.datasets_dir) / parent_rel
                     if not parent_target.exists() or not any(parent_target.iterdir()):
                         _auto_download_dataset(parent_key, parent_target)
-                    return str(p) if p.exists() and any(p.iterdir()) else None
+                    if p.exists() and any(p.iterdir()):
+                        return str(p)
+                    # 下载后再次检查 data/{name} 子目录（兼容无软链接的目录结构）
+                    data_fallback = p.parent / "data" / name
+                    if data_fallback.exists() and any(data_fallback.iterdir()):
+                        return str(data_fallback)
+                    return None
                 # 父级不是数据集（如 CFD_Benchmark/airfoil），直接下载到完整路径
                 target = p
                 result = _auto_download_dataset(name, target)
@@ -792,7 +832,7 @@ class Config:
             return None
 
         # datasets_dir 下的同名子目录
-        p = Path(self.datasets_dir) / name
+        p = Path(self.datasets_dir) / original_name
         if p.exists() and any(p.iterdir()):
             return str(p)
         # 空目录则删除后重新触发下载
@@ -800,10 +840,16 @@ class Config:
             p.rmdir()
 
         # 未知数据集，尝试从 ModelScope 自动拉取
-        target = Path(self.datasets_dir) / name
+        target = Path(self.datasets_dir) / original_name
         result = _auto_download_dataset(name, target)
         if result:
             return result
+
+        # 自动发现：在常用目录中搜索已存在的数据集
+        for search_root in self._get_dataset_search_roots():
+            candidate = Path(search_root) / original_name
+            if candidate.exists() and any(candidate.iterdir()):
+                return str(candidate)
 
         return None
 

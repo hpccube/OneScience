@@ -3,7 +3,8 @@ import torch.nn as nn
 import torch.nn.functional as F
 import numpy as np
 from timm.layers import trunc_normal_
-from onescience.modules import OneMlp, OneAttention
+from onescience.modules.attention.flashattention import FlashAttention
+from onescience.modules.mlp.MLP import StandardMLP
 from onescience.modules.embedding import timestep_embedding, unified_pos_embedding
 from einops import rearrange, repeat
 
@@ -27,8 +28,7 @@ class Transformer_block(nn.Module):
         self.last_layer = last_layer
         self.ln_1 = nn.LayerNorm(hidden_dim)
 
-        self.Attn = OneAttention(
-            style="FlashAttention",
+        self.Attn = FlashAttention(
             dim=hidden_dim,
             heads=num_heads,
             dim_head=hidden_dim // num_heads,
@@ -37,8 +37,7 @@ class Transformer_block(nn.Module):
         
         self.ln_2 = nn.LayerNorm(hidden_dim)
         
-        self.mlp = OneMlp(
-            style="StandardMLP",
+        self.mlp = StandardMLP(
             input_dim=hidden_dim,
             output_dim=hidden_dim,
             hidden_dims=[hidden_dim * mlp_ratio],
@@ -78,8 +77,7 @@ class Model(nn.Module):
         else:
             input_dim = args.fun_dim + args.space_dim
 
-        self.preprocess = OneMlp(
-            style="StandardMLP",
+        self.preprocess = StandardMLP(
             input_dim=input_dim,
             output_dim=args.n_hidden,
             hidden_dims=[args.n_hidden * 2],

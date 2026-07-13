@@ -4,7 +4,9 @@ from dataclasses import dataclass
 import numpy as np
 import torch
 from torch import nn
-from onescience.modules import OneEncoder, OneDecoder, OneFuser
+from onescience.modules.decoder.fengwudecoder import FengWuDecoder
+from onescience.modules.encoder.fengwuencoder import FengWuEncoder
+from onescience.modules.fuser.fengwufuser import FengWuFuser
 
 from onescience.models.meta import ModelMetaData
 
@@ -86,8 +88,7 @@ class Fengwu(nn.Module):
         decoder_num_heads = (num_heads[3], num_heads[2])
         drop_path = np.linspace(0, 0.2, 8).tolist()
 
-        self.encoder_surface = OneEncoder(
-            style="FengWuEncoder",
+        self.encoder_surface = FengWuEncoder(
             input_resolution=input_resolution,
             middle_resolution=middle_resolution,
             in_chans=4,
@@ -98,8 +99,7 @@ class Fengwu(nn.Module):
             window_size=window_size[1:],
             drop_path=drop_path,
         )
-        self.encoder_z = OneEncoder(
-            style="FengWuEncoder",
+        self.encoder_z = FengWuEncoder(
             input_resolution=input_resolution,
             middle_resolution=middle_resolution,
             in_chans=pressure_level,
@@ -110,8 +110,7 @@ class Fengwu(nn.Module):
             window_size=window_size[1:],
             drop_path=drop_path,
         )
-        self.encoder_r = OneEncoder(
-            style="FengWuEncoder",
+        self.encoder_r = FengWuEncoder(
             input_resolution=input_resolution,
             middle_resolution=middle_resolution,
             in_chans=pressure_level,
@@ -122,8 +121,7 @@ class Fengwu(nn.Module):
             window_size=window_size[1:],
             drop_path=drop_path,
         )
-        self.encoder_u = OneEncoder(
-            style="FengWuEncoder",
+        self.encoder_u = FengWuEncoder(
             input_resolution=input_resolution,
             middle_resolution=middle_resolution,
             in_chans=pressure_level,
@@ -134,8 +132,7 @@ class Fengwu(nn.Module):
             window_size=window_size[1:],
             drop_path=drop_path,
         )
-        self.encoder_v = OneEncoder(
-            style="FengWuEncoder",
+        self.encoder_v = FengWuEncoder(
             input_resolution=input_resolution,
             middle_resolution=middle_resolution,
             in_chans=pressure_level,
@@ -146,8 +143,7 @@ class Fengwu(nn.Module):
             window_size=window_size[1:],
             drop_path=drop_path,
         )
-        self.encoder_t = OneEncoder(
-            style="FengWuEncoder",
+        self.encoder_t = FengWuEncoder(
             input_resolution=input_resolution,
             middle_resolution=middle_resolution,
             in_chans=pressure_level,
@@ -159,8 +155,7 @@ class Fengwu(nn.Module):
             drop_path=drop_path,
         )
 
-        self.fuser = OneFuser(
-            style="FengWuFuser",
+        self.fuser = FengWuFuser(
             input_resolution=(6, *middle_resolution),
             dim=embed_dim * 2,
             num_heads=num_heads[2],
@@ -168,8 +163,7 @@ class Fengwu(nn.Module):
             drop_path=drop_path[2:],
         )
 
-        self.decoder_surface = OneDecoder(
-            style="FengWuDecoder",
+        self.decoder_surface = FengWuDecoder(
             output_resolution=input_resolution,
             middle_resolution=middle_resolution,
             out_chans=4,
@@ -180,8 +174,7 @@ class Fengwu(nn.Module):
             window_size=window_size[1:],
             drop_path=drop_path,
         )
-        self.decoder_z = OneDecoder(
-            style="FengWuDecoder",
+        self.decoder_z = FengWuDecoder(
             output_resolution=input_resolution,
             middle_resolution=middle_resolution,
             out_chans=pressure_level,
@@ -192,8 +185,7 @@ class Fengwu(nn.Module):
             window_size=window_size[1:],
             drop_path=drop_path,
         )
-        self.decoder_r = OneDecoder(
-            style="FengWuDecoder",
+        self.decoder_r = FengWuDecoder(
             output_resolution=input_resolution,
             middle_resolution=middle_resolution,
             out_chans=pressure_level,
@@ -204,8 +196,7 @@ class Fengwu(nn.Module):
             window_size=window_size[1:],
             drop_path=drop_path,
         )
-        self.decoder_u = OneDecoder(
-            style="FengWuDecoder",
+        self.decoder_u = FengWuDecoder(
             output_resolution=input_resolution,
             middle_resolution=middle_resolution,
             out_chans=pressure_level,
@@ -216,8 +207,7 @@ class Fengwu(nn.Module):
             window_size=window_size[1:],
             drop_path=drop_path,
         )
-        self.decoder_v = OneDecoder(
-            style="FengWuDecoder",
+        self.decoder_v = FengWuDecoder(
             output_resolution=input_resolution,
             middle_resolution=middle_resolution,
             out_chans=pressure_level,
@@ -228,8 +218,7 @@ class Fengwu(nn.Module):
             window_size=window_size[1:],
             drop_path=drop_path,
         )
-        self.decoder_t = OneDecoder(
-            style="FengWuDecoder",
+        self.decoder_t = FengWuDecoder(
             output_resolution=input_resolution,
             middle_resolution=middle_resolution,
             out_chans=pressure_level,

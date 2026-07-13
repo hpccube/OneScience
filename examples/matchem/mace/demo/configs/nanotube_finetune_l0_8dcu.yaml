@@ -38,7 +38,6 @@ launch:
   num_gpus: 8
 
 env:
-  conda_env: matchem
   modules:
     - sghpc-mpi-gcc/26.3
 

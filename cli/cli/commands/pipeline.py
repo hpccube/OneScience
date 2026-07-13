@@ -47,7 +47,7 @@ def _run_pipeline(steps, on_error):
     results = []
 
     for i, (cmd_type, model_alias, dataset) in enumerate(steps, 1):
-        info = model_registry.resolve(model_alias)
+        info = model_registry.resolve(model_alias, download=False)
         domain = info["domain"] if info else "?"
         desc = f"[{i}/{len(steps)}] {cmd_type} {model_alias} ({domain})"
         if dataset:

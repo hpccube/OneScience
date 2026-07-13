@@ -12,21 +12,26 @@ cd "$SCRIPT_DIR"
 # 1. 环境准备
 echo ">>> Step 1: 加载环境"
 source "$SCRIPT_DIR/../matchem_env.sh"
-module load sghpc-mpi-gcc/26.3
 
-# 2. 源码准备
+# 2. 交互式配置源码路径
+MATPL_SRC="${MATPL_SRC_DIR:-/public/home/easyscience2024/wangrui/software/matpl_dcu}"
+if [ -t 0 ]; then
+    read -rp "请输入 MatPL 源码路径 [默认: ${MATPL_SRC}]: " input_src
+    MATPL_SRC="${input_src:-${MATPL_SRC}}"
+fi
+echo "[提示] 使用 MatPL 源码路径: ${MATPL_SRC}"
+
+# 3. 源码准备
 # 说明：
 #   - 开发/测试阶段：自动通过 HTTPS + 代理拉取源码
 #   - 生产/客户场景：建议提前上传源码到集群，通过 MATPL_SRC_DIR 指定
-MATPL_SRC="${MATPL_SRC_DIR:-/public/home/easyscience2024/wangrui/software/matpl_dcu}"
 if [ ! -d "$MATPL_SRC/.git" ] && [ ! -f "$MATPL_SRC/main.py" ]; then
-    echo ">>> Step 2: 拉取 MatPL DCU 源码"
-    # 当前集群需通过 HTTP 代理访问外网，配置 git 代理
-    git config --global http.proxy "http://jsyadmin:1cdf8f60@10.13.17.166:3128"
-    git clone --depth 1 --branch nep-dcu/2026.3 \
-        "https://oauth2:${GITEE_TOKEN}@gitee.com/wang-rui-sugon/matpl_dcu.git" "$MATPL_SRC"
+    echo ">>> Step 3: 拉取 MatPL DCU 源码"
+    # 计算节点需通过 HTTP 代理访问外网，配置 git 代理，如代理实效，可向集群管理员重新申请
+    git config --global http.proxy "http://scnethpc2601:sWMtqVS@10.16.1.52:3120"
+    git clone --depth 1 --branch nep-dcu/2026.3 "https://gitee.com/wang-rui-sugon/matpl_dcu.git" "$MATPL_SRC"
 else
-    echo ">>> Step 2: 源码已存在，跳过拉取"
+    echo ">>> Step 3: 源码已存在，跳过拉取"
 fi
 
 cd "$MATPL_SRC"
@@ -36,25 +41,42 @@ echo " MatPL DCU 一键安装脚本"
 echo "=========================================="
 echo "工作目录: $MATPL_SRC"
 
-# 3. 修复 torch cmake 中硬编码的 /opt/dtk 路径
+# 4. 修复 torch cmake 中硬编码的 /opt/dtk 路径
 TORCH_CMAKE="$CONDA_PREFIX/lib/python3.11/site-packages/torch/share/cmake/Caffe2/Caffe2Targets.cmake"
 if [ -f "$TORCH_CMAKE" ]; then
     if grep -q "/opt/dtk" "$TORCH_CMAKE"; then
-        echo ">>> Step 3: 修复 torch cmake 硬编码路径"
+        echo ">>> Step 4: 修复 torch cmake 硬编码路径"
         sed -i "s|/opt/dtk|$ROCM_PATH|g" "$TORCH_CMAKE"
     else
-        echo ">>> Step 3: torch cmake 路径已正确，跳过修复"
+        echo ">>> Step 4: torch cmake 路径已正确，跳过修复"
     fi
 else
     echo "警告: 未找到 torch Caffe2Targets.cmake，跳过修复"
 fi
 
-# 4. 确保安装兼容版 glog（0.7+ API 不兼容）
-echo ">>> Step 4: 确保 glog 0.6 已安装"
-conda install -c conda-forge glog=0.6 -y
+# 5. 确保安装兼容版 glog（0.7+ API 不兼容）
+echo ">>> Step 5: 确保 glog 0.6 已安装"
+if [ -f "$CONDA_PREFIX/lib/libglog.so.1" ]; then
+    echo "glog 0.6+ 已存在，跳过安装"
+else
+    echo "从源码编译 glog 0.6 ..."
+    GLOG_BUILD_DIR=$(mktemp -d)
+    cd "$GLOG_BUILD_DIR"
+    wget -q https://github.com/google/glog/archive/refs/tags/v0.6.0.tar.gz
+    tar -xzf v0.6.0.tar.gz
+    cd glog-0.6.0
+    cmake -S . -B build \
+        -DCMAKE_INSTALL_PREFIX="$CONDA_PREFIX" \
+        -DBUILD_SHARED_LIBS=ON \
+        -DWITH_GTEST=OFF
+    cmake --build build -j$(nproc)
+    cmake --install build
+    cd "$MATPL_SRC"
+    rm -rf "$GLOG_BUILD_DIR"
+fi
 
-# 5. 导出编译所需环境变量
-echo ">>> Step 5: 导出编译环境变量"
+# 6. 导出编译所需环境变量
+echo ">>> Step 6: 导出编译环境变量"
 export ROCM_PATH="$ROCM_PATH"
 export CUDA_TOOLKIT_ROOT_DIR="${ROCM_PATH}/cuda/cuda-12"
 export PATH="${ROCM_PATH}/cuda/cuda-12/bin:$PATH"
@@ -66,13 +88,13 @@ export CPLUS_INCLUDE_PATH="$CONDA_PREFIX/include:${CPLUS_INCLUDE_PATH:-}"
 export CC=/public/software/sghpc_sdk.bak/Linux_x86_64/26.3/compilers/gcc-12.4.0/bin/gcc
 export CXX=/public/software/sghpc_sdk.bak/Linux_x86_64/26.3/compilers/gcc-12.4.0/bin/g++
 
-# 6. 清理历史编译产物并重新编译
-echo ">>> Step 6: 开始编译 MatPL"
+# 7. 清理历史编译产物并重新编译
+echo ">>> Step 7: 开始编译 MatPL"
 cd src
 rm -rf feature/nep_find_neigh/build feature/NEP_GPU/build op/build
 bash build.sh -j$(nproc)
 
-# 7. 生成 env.sh
+# 8. 生成 env.sh
 cd "$MATPL_SRC"
 cat > env.sh <<EOF
 # Load for MatPL
@@ -80,12 +102,21 @@ export PYTHONPATH=$MATPL_SRC:\${PYTHONPATH:-}
 export PATH=$MATPL_SRC/src/bin:\${PATH:-}
 EOF
 
-# 8. 验证
-echo ">>> Step 7: 验证安装"
+# 9. 验证
+echo ">>> Step 9: 验证安装"
 source env.sh
 python -c "import matpl; print('MatPL import OK')" 2>/dev/null || \
     python -c "import sys; sys.path.insert(0, '$MATPL_SRC'); import matpl; print('MatPL import OK')" 2>/dev/null || \
     echo "注意: MatPL Python 包导入验证跳过（不影响 C++ 算子使用）"
+
+# 10. 将配置写回 matchem_env.sh
+MATCHEM_ENV_FILE="${SCRIPT_DIR}/../matchem_env.sh"
+if [ -f "${MATCHEM_ENV_FILE}" ]; then
+    echo "[提示] 更新 ${MATCHEM_ENV_FILE} ..."
+    sed -i "s|^export MATPL_SRC_DIR=.*|export MATPL_SRC_DIR=${MATPL_SRC}|" "${MATCHEM_ENV_FILE}"
+else
+    echo "[警告] 未找到 ${MATCHEM_ENV_FILE}，跳过写入配置。"
+fi
 
 echo ""
 echo "=========================================="

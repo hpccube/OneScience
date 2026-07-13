@@ -27,7 +27,7 @@ def log(model_aliases, tail, head, search, show_all, log_type, follow, log_date,
         return
     aliases = [a.strip() for a in model_aliases.split(",") if a.strip()]
     for alias in aliases:
-        info = model_registry.resolve(alias)
+        info = model_registry.resolve(alias, download=False)
         if not info:
             click.secho(f"未知模型: {alias}", fg="red")
             continue
@@ -98,7 +98,7 @@ def _clean_all(model_aliases: str, days: int):
     click.echo(f"正在清理 {days} 天前的旧日志...")
     aliases = [a.strip() for a in model_aliases.split(",") if a.strip()]
     for alias in aliases:
-        info = model_registry.resolve(alias)
+        info = model_registry.resolve(alias, download=False)
         if not info:
             continue
         model_dir = info.get("model_dir")

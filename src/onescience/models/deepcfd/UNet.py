@@ -1,13 +1,15 @@
 import torch
 import torch.nn as nn
-from onescience.modules import OneEncoder, OneDecoder, OneHead
+from onescience.modules.decoder.unet_decoder import UNetDecoder2D
+from onescience.modules.encoder.unet_encoder import UNetEncoder2D
+from onescience.modules.head.unet_head import UNetHead2D
 
 class UNet(nn.Module):
     """
     该 U-Net 模型使用高度封装的编码器、解码器和预测头构建。
-    - OneEncoder: 自动执行多级下采样，并返回所有层级的特征列表。
-    - OneDecoder: 接收特征列表，自动匹配跳跃连接 (Skip Connections) 进行上采样融合。
-    - OneHead: 将解码后的深层特征映射为目标物理量。
+    - UNetEncoder2D: 自动执行多级下采样，并返回所有层级的特征列表。
+    - UNetDecoder2D: 接收特征列表，自动匹配跳跃连接 (Skip Connections) 进行上采样融合。
+    - UNetHead2D: 将解码后的深层特征映射为目标物理量。
 
     Args:
         in_channels (int): 输入特征/图像的通道数。
@@ -41,8 +43,7 @@ class UNet(nn.Module):
     ):
         super(UNet, self).__init__()
         
-        self.encoder = OneEncoder(
-            style="UNetEncoder2D",
+        self.encoder = UNetEncoder2D(
             in_channels=in_channels,
             base_channels=base_channels,
             num_stages=num_stages,
@@ -51,8 +52,7 @@ class UNet(nn.Module):
             kernel_size=kernel_size
         )
         
-        self.decoder = OneDecoder(
-            style="UNetDecoder2D",
+        self.decoder = UNetDecoder2D(
             base_channels=base_channels,
             num_stages=num_stages,
             bilinear=bilinear,
@@ -60,8 +60,7 @@ class UNet(nn.Module):
             kernel_size=kernel_size
         )
         
-        self.head = OneHead(
-            style="UNetHead2D",
+        self.head = UNetHead2D(
             in_channels=base_channels,
             out_channels=out_channels,
             kernel_size=1  

@@ -1,6 +1,7 @@
+import typing as t
 import click
 from pathlib import Path
-from ..core.runner import run_model, collect_results, print_comparison, print_metrics
+from ..core.runner import run_model, collect_results, print_comparison, print_metrics, print_perf_comparison
 from ..core.registry import model_registry
 
 
@@ -89,7 +90,11 @@ def _resolve_model_dataset(alias: str, info: dict, user_dataset: str | None = No
 @click.option("-models", default=None, help="模型别名列表，逗号分隔")
 @click.option("--domain", default=None, help="按领域执行所有模型（如 earth/cfd/all）")
 @click.option("--dir", "model_dir", default=None, help="按模型目录名执行该目录下所有模型（如 CFD_Benchmark）")
-def bench(dataset, models, domain, model_dir):
+@click.option("--epoch", default=None, type=int,
+              help="统一设置训练轮数（所有领域通用，详见 onescience help）")
+@click.option("-O", "overrides", multiple=True, default=None,
+              help="覆写 config.yaml 任意参数，支持点号路径，可多次使用（执行后自动还原）")
+def bench(dataset, models, domain, model_dir, epoch, overrides):
     """使用指定数据集运行多个模型（训练+推理+评估）"""
 
     # ── 解析模型列表 ──────────────────────────────────
@@ -138,25 +143,27 @@ def bench(dataset, models, domain, model_dir):
             )
             continue
 
-        _run_single_model(alias, effective_ds, results)
+        _run_single_model(info, alias, effective_ds, results, epoch=epoch, overrides=overrides)
 
     collect_results(results)
     click.echo(f"所有模型执行完成")
     print_comparison(results)
+    print_perf_comparison(results)
 
 
-def _run_single_model(alias: str, dataset: str, results: list):
+def _run_single_model(info: dict, alias: str, dataset: str, results: list,
+                      epoch: t.Optional[int] = None,
+                      overrides: t.Optional[t.List[str]] = None):
     """执行单个模型并记录结果"""
-    info = model_registry.resolve(alias)
-    if not info:
-        click.secho(f"未知模型: {alias}", fg="red")
-        return
+    # info 由调用方传入，避免重复 resolve() 触发不必要的下载
     click.echo(f"\n{'=' * 48}")
     click.secho(f"开始执行模型: {alias}", fg="green")
     click.secho(f"模型领域: {info['domain']}", fg="green")
     click.secho(f"数据集: {dataset}", fg="green")
+    if epoch is not None:
+        click.secho(f"训练轮数: {epoch}", fg="green")
     click.echo(f"{'=' * 48}")
-    r = run_model(alias, "bench", dataset)
+    r = run_model(alias, "bench", dataset, epoch=epoch, overrides=overrides)
     results.append(r)
     # 每个模型执行后尝试释放 GPU 显存，避免累积导致 OOM
     try:

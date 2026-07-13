@@ -4,7 +4,9 @@ import torch.nn as nn
 from torch import Tensor
 
 from .base_model import AutoCfdModel
-from onescience.modules import OneEncoder, OneDecoder, OneHead
+from onescience.modules.decoder.unet_decoder import UNetDecoder2D
+from onescience.modules.encoder.unet_encoder import UNetEncoder2D
+from onescience.modules.head.unet_head import UNetHead2D
 
 class UNet(AutoCfdModel):
     def __init__(
@@ -32,8 +34,7 @@ class UNet(AutoCfdModel):
             encoder_in_chan += n_case_params
 
         # 1. Encoder
-        self.encoder = OneEncoder(
-            style="UNetEncoder2D",
+        self.encoder = UNetEncoder2D(
             in_channels=encoder_in_chan,
             base_channels=dim,
             num_stages=4,
@@ -48,8 +49,7 @@ class UNet(AutoCfdModel):
             self.case_params_fc = nn.Linear(n_case_params, bottleneck_dim)
 
         # 3. Decoder
-        self.decoder = OneDecoder(
-            style="UNetDecoder2D",
+        self.decoder = UNetDecoder2D(
             base_channels=dim,
             num_stages=4,
             bilinear=bilinear,
@@ -57,8 +57,7 @@ class UNet(AutoCfdModel):
         )
 
         # 4. Head
-        self.head = OneHead(
-            style="UNetHead2D",
+        self.head = UNetHead2D(
             in_channels=dim,
             out_channels=out_chan
         )

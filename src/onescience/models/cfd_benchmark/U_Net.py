@@ -3,22 +3,31 @@ import math
 import torch.nn as nn
 import numpy as np
 import torch.nn.functional as F
-from onescience.modules import (
-    OneMlp,
-    OneFourier,
-    OneEncoder,
-    OneDecoder,
-    OneHead
+from onescience.modules.decoder.unet_decoder import (
+    UNetDecoder1D,
+    UNetDecoder2D,
+    UNetDecoder3D,
 )
-from onescience.modules.fourier.geo_spectral import IPHI
+from onescience.modules.encoder.unet_encoder import (
+    UNetEncoder1D,
+    UNetEncoder2D,
+    UNetEncoder3D,
+)
+from onescience.modules.fourier.geo_spectral import GeoSpectralConv2d, IPHI
+from onescience.modules.head.unet_head import UNetHead1D, UNetHead2D, UNetHead3D
+from onescience.modules.mlp.MLP import StandardMLP
 from onescience.modules.embedding import timestep_embedding, unified_pos_embedding
+
+EncoderList = [None, UNetEncoder1D, UNetEncoder2D, UNetEncoder3D]
+DecoderList = [None, UNetDecoder1D, UNetDecoder2D, UNetDecoder3D]
+HeadList = [None, UNetHead1D, UNetHead2D, UNetHead3D]
 
 class Model(nn.Module):
     """
     多尺度物理场 U-Net 模型。
 
     该模型支持结构化网格（1D/2D/3D）和非结构化网格（通过 GeoFNO 的几何投影）的物理场预测。
-    利用 OneEncoder 和 OneDecoder 实现多尺度特征提取与融合，极大地简化了网络搭建过程。
+    利用编码器和解码器实现多尺度特征提取与融合。
 
     Args:
         args: 包含模型配置的参数命名空间 (如 task, geotype, n_hidden 等)。
@@ -50,8 +59,7 @@ class Model(nn.Module):
         else:
             input_dim = args.fun_dim + args.space_dim
 
-        self.preprocess = OneMlp(
-            style="StandardMLP",
+        self.preprocess = StandardMLP(
             input_dim=input_dim,
             hidden_dims=[args.n_hidden * 2],
             output_dim=args.n_hidden,
@@ -69,8 +77,7 @@ class Model(nn.Module):
         # 2. 几何投影 (Geometry Projection)
         # ==========================================
         if self.args.geotype == "unstructured":
-            self.fftproject_in = OneFourier(
-                style="GeoSpectralConv2d",
+            self.fftproject_in = GeoSpectralConv2d(
                 in_channels=args.n_hidden, 
                 out_channels=args.n_hidden, 
                 modes1=args.modes, 
@@ -78,8 +85,7 @@ class Model(nn.Module):
                 s1=s1, 
                 s2=s2
             )
-            self.fftproject_out = OneFourier(
-                style="GeoSpectralConv2d",
+            self.fftproject_out = GeoSpectralConv2d(
                 in_channels=args.n_hidden, 
                 out_channels=args.n_hidden, 
                 modes1=args.modes, 
@@ -101,9 +107,7 @@ class Model(nn.Module):
         dim = len(patch_size)
         num_stages = 4 
         
-        # 使用工厂模式极简实例化 U-Net
-        self.encoder = OneEncoder(
-            style=f"UNetEncoder{dim}D",
+        self.encoder = EncoderList[dim](
             in_channels=args.n_hidden,
             base_channels=args.n_hidden,
             num_stages=num_stages,
@@ -111,16 +115,14 @@ class Model(nn.Module):
             normtype=normtype
         )
         
-        self.decoder = OneDecoder(
-            style=f"UNetDecoder{dim}D",
+        self.decoder = DecoderList[dim](
             base_channels=args.n_hidden,
             num_stages=num_stages,
             bilinear=bilinear,
             normtype=normtype
         )
         
-        self.outc = OneHead(
-            style=f"UNetHead{dim}D",
+        self.outc = HeadList[dim](
             in_channels=args.n_hidden,
             out_channels=args.n_hidden
         )

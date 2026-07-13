@@ -1,6 +1,6 @@
 import torch
 import torch.nn as nn
-from onescience.modules import OneMlp
+from onescience.modules.mlp.MLP import StandardMLP
 from onescience.modules.embedding import timestep_embedding, unified_pos_embedding
 
 class Model(nn.Module):
@@ -29,9 +29,8 @@ class Model(nn.Module):
         if args.time_input:
             branch_in_dim += args.n_hidden  # 增加时间嵌入维度
 
-        # 分支网络（函数空间）- 使用 OneMlp 重构
-        self.branch_net = OneMlp(
-            style="StandardMLP",
+        # 分支网络（函数空间）
+        self.branch_net = StandardMLP(
             input_dim=branch_in_dim,
             output_dim=args.n_hidden,
             hidden_dims=[args.n_hidden] * args.branch_depth,
@@ -39,9 +38,8 @@ class Model(nn.Module):
             use_bias=True
         )
 
-        # 主干网络（物理空间）- 使用 OneMlp 重构
-        self.trunk_net = OneMlp(
-            style="StandardMLP",
+        # 主干网络（物理空间）
+        self.trunk_net = StandardMLP(
             input_dim=trunk_in_dim,
             output_dim=args.n_hidden,
             hidden_dims=[args.n_hidden] * args.trunk_depth,

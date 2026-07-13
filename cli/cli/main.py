@@ -51,11 +51,20 @@ class CLI(click.Group):
             code = e.code if e.code is not None else 0
             raise SystemExit(code)
 
+    def parse_args(self, ctx, args):
+        """将 -profile 转换为 --profile，允许单短横使用长选项"""
+        args = ['--profile' if a == '-profile' else a for a in args]
+        return super().parse_args(ctx, args)
+
 
 @click.group(cls=CLI)
 @click.version_option(version="0.3.0")
-def cli():
+@click.option('--profile', is_flag=True, default=False,
+              help='使用 hipprof 进行 GPU 性能分析（仅 DCU 平台有效）')
+@click.pass_context
+def cli(ctx, profile):
     """OneScience 科学计算 CLI 工具"""
+    ctx.meta['profile'] = profile
     _auto_bootstrap()
 
 

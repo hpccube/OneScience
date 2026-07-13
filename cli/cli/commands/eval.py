@@ -6,10 +6,9 @@ from ..core.registry import model_registry
 @click.command("eval")
 @click.argument("model_alias")
 @click.option("-dataset", required=True, help="数据集名称或路径")
-@click.option("-metrics-type", "metrics_type", default=None,
-              type=click.Choice(["earth", "cfd", "bio", "matchem", "auto"]),
-              help="指标类型（默认自动检测）")
-def eval(model_alias, dataset, metrics_type):
+@click.option("-O", "overrides", multiple=True, default=None,
+              help="覆写 config.yaml 任意参数，支持点号路径，可多次使用")
+def eval(model_alias, dataset, overrides):
     """仅执行模型评估"""
     info = model_registry.resolve(model_alias)
     if not info:
@@ -17,9 +16,7 @@ def eval(model_alias, dataset, metrics_type):
         return
     click.secho(f"开始评估: {model_alias}", fg="green")
     click.secho(f"数据集: {dataset}", fg="green")
-    if metrics_type and metrics_type != "auto":
-        click.secho(f"指标类型: {metrics_type}", fg="green")
-    r = run_model(model_alias, "eval", dataset)
+    r = run_model(model_alias, "eval", dataset, overrides=overrides)
     if r["success"]:
         click.secho(f"评估完成: {model_alias}", fg="green")
     else:

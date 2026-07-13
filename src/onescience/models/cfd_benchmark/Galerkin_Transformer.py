@@ -153,7 +153,8 @@ import torch.nn as nn
 from timm.layers import trunc_normal_
 
 # --- 引入模块工厂 ---
-from onescience.modules import OneMlp, OneTransformer
+from onescience.modules.mlp.MLP import StandardMLP
+from onescience.modules.transformer.galerkin_transformer_block import Galerkin_Transformer_block
 from onescience.modules.embedding import timestep_embedding, unified_pos_embedding
 
 class Model(nn.Module):
@@ -167,7 +168,7 @@ class Model(nn.Module):
         self.__name__ = "Galerkin_Transformer"
         self.args = args
         
-        # 1. Embedding & Preprocessing (使用 OneMlp)
+        # 1. Embedding & Preprocessing
         # -----------------------------------------------------------
         input_dim = args.fun_dim
         if args.unified_pos and args.geotype != "unstructured":
@@ -176,10 +177,8 @@ class Model(nn.Module):
         else:
             input_dim += args.space_dim
 
-        # 使用 OneMlp (StandardMLP) 替换 Basic.MLP
         # 对应原代码: MLP(input_dim, hidden*2, hidden, n_layers=0)
-        self.preprocess = OneMlp(
-            style="StandardMLP",
+        self.preprocess = StandardMLP(
             input_dim=input_dim,
             output_dim=args.n_hidden,
             hidden_dims=[args.n_hidden * 2], # 中间层
@@ -194,12 +193,11 @@ class Model(nn.Module):
                 nn.Linear(args.n_hidden, args.n_hidden),
             )
 
-        # 2. Transformer Blocks (使用 OneTransformer)
+        # 2. Transformer Blocks
         # -----------------------------------------------------------
         # 使用工厂实例化 Galerkin_Transformer_block
         self.blocks = nn.ModuleList([
-            OneTransformer(
-                style="Galerkin_Transformer_block",
+            Galerkin_Transformer_block(
                 num_heads=args.n_heads,
                 hidden_dim=args.n_hidden,
                 dropout=args.dropout,

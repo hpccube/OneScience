@@ -3,7 +3,7 @@ import torch
 from torch import nn
 from ..func_utils import DropPath, DistributedMlp, get_pad3d, crop3d, window_partition, window_reverse, get_shift_window_mask
 
-from ..attention.oneattention import OneAttention
+from ..attention.earthdistributedattention3d import EarthDistributedAttention3D
 
 from onescience.distributed.megatron.core.models.gpt.moe_module_specs import get_moe_module_spec
 from onescience.distributed.megatron.core.transformer.moe.moe_utils import get_default_model_comm_pgs
@@ -107,8 +107,7 @@ class EarthDistributedTransformer3DBlock(nn.Module):
         pad_resolution[1] += padding[2] + padding[3]
         pad_resolution[2] += padding[0] + padding[1]
 
-        self.attn = OneAttention(
-            style="EarthDistributedAttention3D",
+        self.attn = EarthDistributedAttention3D(
             dim=dim,
             input_resolution=pad_resolution,
             window_size=window_size,

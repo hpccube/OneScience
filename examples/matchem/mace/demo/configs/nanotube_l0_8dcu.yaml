@@ -36,7 +36,7 @@ train_args:
   # --- 训练超参 ---
   seed: 123                      # 随机种子
   device: cuda                   # 设备: cuda / cpu
-  enable_cueq: true              # 启用 cuequivariance + FastEq 加速
+  #  enable_cueq: true              # 启用 cuequivariance + FastEq 加速
   r_max: 6.0                     # 截断半径 (Angstrom)
   batch_size: 4                  # 训练批大小
   valid_batch_size: 8            # 验证批大小
@@ -70,7 +70,6 @@ launch:
 # 环境配置
 # ============================================================
 env:
-  conda_env: matchem                # conda 环境名
   modules:
     - sghpc-mpi-gcc/26.3         # 需要加载的 module
 

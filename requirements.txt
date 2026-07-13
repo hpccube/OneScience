@@ -36,7 +36,7 @@ torchmetrics
 e3nn==0.4.4
 deepxde
 ase
-rdkit
+rdkit>=2025.3.5
 xtb
 pymatgen
 torch-runstats>=0.2.0
@@ -148,6 +148,7 @@ ninja==1.13.0
 
 #openfold
 pdbfixer==1.12.0
+dllogger @ git+https://github.com/NVIDIA/dllogger.git
 
 #diffdock
 ProDy==2.6.1

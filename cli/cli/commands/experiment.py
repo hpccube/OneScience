@@ -37,7 +37,7 @@ def list_experiments(model_alias, domain, fmt):
     from ..core.formatter import Formatter
 
     if model_alias:
-        info = model_registry.resolve(model_alias)
+        info = model_registry.resolve(model_alias, download=False)
         if not info:
             click.secho(f"未知模型: {model_alias}", fg="red")
             return
@@ -94,7 +94,7 @@ def list_experiments(model_alias, domain, fmt):
 @click.argument("model_alias")
 def experiment_info(model_alias):
     """显示模型的详细实验记录"""
-    info = model_registry.resolve(model_alias)
+    info = model_registry.resolve(model_alias, download=False)
     if not info:
         click.secho(f"未知模型: {model_alias}", fg="red")
         return

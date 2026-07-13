@@ -2,7 +2,7 @@ import torch
 import torch.nn as nn
 import torch_geometric.nn as nng
 from onescience.modules.embedding import timestep_embedding, unified_pos_embedding
-from onescience.modules import OneMlp
+from onescience.modules.mlp.MLP import StandardMLP
 
 class Model(nn.Module):
     """
@@ -15,8 +15,7 @@ class Model(nn.Module):
         self.__name__ = "PointNet"
 
         # 1. Input Block
-        self.in_block = OneMlp(
-            style="StandardMLP",
+        self.in_block = StandardMLP(
             input_dim=args.n_hidden,
             output_dim=args.n_hidden * 2,
             hidden_dims=[args.n_hidden * 2],
@@ -25,8 +24,7 @@ class Model(nn.Module):
         )
 
         # 2. Max Pooling Block
-        self.max_block = OneMlp(
-            style="StandardMLP",
+        self.max_block = StandardMLP(
             input_dim=args.n_hidden * 2,
             output_dim=args.n_hidden * 32,
             hidden_dims=[args.n_hidden * 8],
@@ -35,8 +33,7 @@ class Model(nn.Module):
         )
 
         # 3. Output Block
-        self.out_block = OneMlp(
-            style="StandardMLP",
+        self.out_block = StandardMLP(
             input_dim=args.n_hidden * (2 + 32), # 34 * hidden
             output_dim=args.n_hidden * 4,
             hidden_dims=[args.n_hidden * 16],
@@ -45,8 +42,7 @@ class Model(nn.Module):
         )
 
         # 4. Encoder
-        self.encoder = OneMlp(
-            style="StandardMLP",
+        self.encoder = StandardMLP(
             input_dim=args.fun_dim + args.space_dim,
             output_dim=args.n_hidden,
             hidden_dims=[args.n_hidden * 2],
@@ -55,8 +51,7 @@ class Model(nn.Module):
         )
 
         # 5. Decoder
-        self.decoder = OneMlp(
-            style="StandardMLP",
+        self.decoder = StandardMLP(
             input_dim=args.n_hidden,
             output_dim=args.out_dim,
             hidden_dims=[args.n_hidden * 2],
@@ -102,4 +97,4 @@ class Model(nn.Module):
         z = self.fcfinal(z)
         z = self.decoder(z)
 
-        return z.unsqueeze(0) 
+        return z.unsqueeze(0)

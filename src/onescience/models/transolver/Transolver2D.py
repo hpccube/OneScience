@@ -3,7 +3,8 @@ import torch.nn as nn
 import numpy as np
 from timm.layers import trunc_normal_
 from einops import rearrange, repeat
-from onescience.modules import OneMlp, OneTransformer
+from onescience.modules.mlp.MLP import StandardMLP
+from onescience.modules.transformer.Transolver_block import Transolver_block
 
 class Transolver2D(nn.Module):
     """
@@ -55,8 +56,7 @@ class Transolver2D(nn.Module):
         else:
             input_dim = fun_dim + space_dim
 
-        self.preprocess = OneMlp(
-            style="StandardMLP",
+        self.preprocess = StandardMLP(
             input_dim=input_dim,
             hidden_dims=[n_hidden * 2], 
             output_dim=n_hidden,
@@ -68,8 +68,7 @@ class Transolver2D(nn.Module):
         self.space_dim = space_dim
 
         self.blocks = nn.ModuleList([
-            OneTransformer(
-                style="Transolver_block",
+            Transolver_block(
                 num_heads=n_head,
                 hidden_dim=n_hidden,
                 dropout=dropout,

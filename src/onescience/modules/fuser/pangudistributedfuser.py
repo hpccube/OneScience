@@ -2,7 +2,7 @@ from collections.abc import Sequence
 
 from torch import nn
 
-from onescience.modules.transformer.onetransformer import OneTransformer
+from onescience.modules.transformer.earthdistributedtransformer3Dblock import EarthDistributedTransformer3DBlock
 
 
 class PanguDistributedFuser(nn.Module):
@@ -66,8 +66,7 @@ class PanguDistributedFuser(nn.Module):
 
         self.blocks = nn.ModuleList(
             [
-                OneTransformer(
-                    style="EarthDistributedTransformer3DBlock",
+                EarthDistributedTransformer3DBlock(
                     dim=dim,
                     input_resolution=input_resolution,
                     num_heads=num_heads,

@@ -4,9 +4,14 @@ import math
 import torch.nn as nn
 import numpy as np
 import torch.nn.functional as F
-from onescience.modules import OneMlp, OneFourier, OneTransformer
+from onescience.modules.mlp.MLP import StandardMLP
+from onescience.modules.transformer.Neural_Spectral_Block import (
+    NeuralSpectralBlock1D,
+    NeuralSpectralBlock2D,
+    NeuralSpectralBlock3D,
+)
 from onescience.modules.embedding import timestep_embedding, unified_pos_embedding
-from onescience.modules.fourier.geo_spectral import IPHI
+from onescience.modules.fourier.geo_spectral import GeoSpectralConv2d, IPHI
 from onescience.modules.layer.unet_layer import (
     DoubleConv1D, Down1D, Up1D, OutConv1D,
     DoubleConv2D, Down2D, Up2D, OutConv2D,
@@ -17,6 +22,12 @@ ConvList = [None, DoubleConv1D, DoubleConv2D, DoubleConv3D]
 DownList = [None, Down1D, Down2D, Down3D]
 UpList = [None, Up1D, Up2D, Up3D]
 OutList = [None, OutConv1D, OutConv2D, OutConv3D]
+NeuralSpectralBlockList = [
+    None,
+    NeuralSpectralBlock1D,
+    NeuralSpectralBlock2D,
+    NeuralSpectralBlock3D,
+]
 
 class Model(nn.Module):
     """
@@ -42,8 +53,7 @@ class Model(nn.Module):
         else:
             in_dim = args.fun_dim + args.space_dim
 
-        self.preprocess = OneMlp(
-            style="StandardMLP",
+        self.preprocess = StandardMLP(
             input_dim=in_dim,
             output_dim=args.n_hidden,
             hidden_dims=[args.n_hidden * 2],
@@ -62,8 +72,7 @@ class Model(nn.Module):
 
         # 2. Geometry Projection 
         if self.args.geotype == "unstructured":
-            self.fftproject_in = OneFourier(
-                style="GeoSpectralConv2d",
+            self.fftproject_in = GeoSpectralConv2d(
                 in_channels=args.n_hidden,
                 out_channels=args.n_hidden,
                 modes1=args.modes,
@@ -71,8 +80,7 @@ class Model(nn.Module):
                 s1=s1,
                 s2=s2
             )
-            self.fftproject_out = OneFourier(
-                style="GeoSpectralConv2d",
+            self.fftproject_out = GeoSpectralConv2d(
                 in_channels=args.n_hidden,
                 out_channels=args.n_hidden,
                 modes1=args.modes,
@@ -109,42 +117,37 @@ class Model(nn.Module):
         self.outc = OutList[dim](args.n_hidden, args.n_hidden)
 
         # 4. Patchified Neural Spectral Blocks 
-        style_name = f"NeuralSpectralBlock{dim}D"
+        block_class = NeuralSpectralBlockList[dim]
         
-        self.process1 = OneTransformer(
-            style=style_name,
+        self.process1 = block_class(
             width=args.n_hidden,
             num_basis=num_basis,
             patch_size=patch_size,
             num_token=num_token,
             n_heads=args.n_heads
         )
-        self.process2 = OneTransformer(
-            style=style_name,
+        self.process2 = block_class(
             width=args.n_hidden * 2,
             num_basis=num_basis,
             patch_size=patch_size,
             num_token=num_token,
             n_heads=args.n_heads
         )
-        self.process3 = OneTransformer(
-            style=style_name,
+        self.process3 = block_class(
             width=args.n_hidden * 4,
             num_basis=num_basis,
             patch_size=patch_size,
             num_token=num_token,
             n_heads=args.n_heads
         )
-        self.process4 = OneTransformer(
-            style=style_name,
+        self.process4 = block_class(
             width=args.n_hidden * 8,
             num_basis=num_basis,
             patch_size=patch_size,
             num_token=num_token,
             n_heads=args.n_heads
         )
-        self.process5 = OneTransformer(
-            style=style_name,
+        self.process5 = block_class(
             width=args.n_hidden * 16 // factor,
             num_basis=num_basis,
             patch_size=patch_size,

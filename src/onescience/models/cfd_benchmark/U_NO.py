@@ -4,10 +4,14 @@ import torch.nn as nn
 import torch.nn.functional as F
 import numpy as np
 
-# --- 引入模块工厂 ---
-from onescience.modules import OneMlp, OneFourier
+from onescience.modules.fourier.fno_layers import (
+    SpectralConv1d,
+    SpectralConv2d,
+    SpectralConv3d,
+)
+from onescience.modules.mlp.MLP import StandardMLP
 from onescience.modules.embedding import timestep_embedding, unified_pos_embedding
-from onescience.modules.fourier.geo_spectral import IPHI
+from onescience.modules.fourier.geo_spectral import GeoSpectralConv2d, IPHI
 
 # --- 引入 U-Net 基础组件 (替代 UNet_Blocks) ---
 from onescience.modules.layer.unet_layer import (
@@ -20,6 +24,7 @@ ConvList = [None, DoubleConv1D, DoubleConv2D, DoubleConv3D]
 DownList = [None, Down1D, Down2D, Down3D]
 UpList = [None, Up1D, Up2D, Up3D]
 OutList = [None, OutConv1D, OutConv2D, OutConv3D]
+SpectralConvList = [None, SpectralConv1d, SpectralConv2d, SpectralConv3d]
 
 class Model(nn.Module):
     """
@@ -47,8 +52,7 @@ class Model(nn.Module):
         else:
             input_dim += args.space_dim
 
-        self.preprocess = OneMlp(
-            style="StandardMLP",
+        self.preprocess = StandardMLP(
             input_dim=input_dim,
             output_dim=args.n_hidden,
             hidden_dims=[args.n_hidden * 2],
@@ -66,8 +70,7 @@ class Model(nn.Module):
         # 2. Geometry Projection (GeoFNO for unstructured)
         # -----------------------------------------------------------
         if self.args.geotype == "unstructured":
-            self.fftproject_in = OneFourier(
-                style="GeoSpectralConv2d",
+            self.fftproject_in = GeoSpectralConv2d(
                 in_channels=args.n_hidden,
                 out_channels=args.n_hidden,
                 modes1=args.modes,
@@ -75,8 +78,7 @@ class Model(nn.Module):
                 s1=s1,
                 s2=s2
             )
-            self.fftproject_out = OneFourier(
-                style="GeoSpectralConv2d",
+            self.fftproject_out = GeoSpectralConv2d(
                 in_channels=args.n_hidden,
                 out_channels=args.n_hidden,
                 modes1=args.modes,
@@ -124,7 +126,6 @@ class Model(nn.Module):
                 for res in res_list
             ]
 
-            style = f"FNOSpectralConv{dim}d"
             kwargs = {
                 "in_channels": in_c,
                 "out_channels": out_c
@@ -133,7 +134,7 @@ class Model(nn.Module):
             for i, m in enumerate(modes_list):
                 if i < len(mode_names):
                     kwargs[mode_names[i]] = m
-            return OneFourier(style, **kwargs)
+            return SpectralConvList[dim](**kwargs)
 
         # Down Path FNOs
         self.process1_down = get_fno_layer(args.n_hidden, args.n_hidden, self.augmented_resolution, 2)

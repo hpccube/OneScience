@@ -2,7 +2,9 @@ import torch
 from torch import nn
 from torch.nn import functional as F
 
-from onescience.modules import OneEmbedding, OneTransformer, OneFC
+from onescience.modules.embedding.fuxiembedding import FuxiEmbedding
+from onescience.modules.fc.fuxifc import FuxiFC
+from onescience.modules.transformer.fuxitransformer import FuxiTransformer
 
 
 class Fuxi(nn.Module):
@@ -72,23 +74,20 @@ class Fuxi(nn.Module):
             EmbeddedWidth // 2,
         )
 
-        self.cube_embedding = OneEmbedding(
-            style="FuxiEmbedding",
+        self.cube_embedding = FuxiEmbedding(
             img_size=img_size,
             patch_size=patch_size,
             in_chans=in_chans,
             embed_dim=embed_dim,
         )
-        self.u_transformer = OneTransformer(
-            style="FuxiTransformer",
+        self.u_transformer = FuxiTransformer(
             embed_dim=embed_dim,
             num_groups=num_groups,
             input_resolution=TransformerInputResolution,
             num_heads=num_heads,
             window_size=window_size,
         )
-        self.fc = OneFC(
-            style="FuxiFC",
+        self.fc = FuxiFC(
             in_channels=embed_dim,
             out_channels=out_chans * PatchHeight * PatchWidth,
         )

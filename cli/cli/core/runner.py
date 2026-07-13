@@ -42,17 +42,20 @@ def _patch_config_values(content: str, patches: t.Dict[str, str]) -> t.Optional[
     modified = False
     for path_key, value_str in patches.items():
         parts = path_key.split('.')
-        # 导航到目标节点的父节点
+        # 导航到目标节点，缺失时自动创建中间节点
         parent = data
         for part in parts[:-1]:
             if isinstance(parent, dict) and part in parent:
                 parent = parent[part]
+            elif isinstance(parent, dict):
+                parent[part] = {}
+                parent = parent[part]
             else:
                 parent = None
                 break
-        if parent is None or not isinstance(parent, dict) or parts[-1] not in parent:
+        if parent is None or not isinstance(parent, dict):
             continue
-        # 将补丁值解析为 YAML 类型并设置
+        # 将补丁值解析为 YAML 类型并设置（key 不存在时自动新增）
         try:
             parsed = yaml.load(value_str)
             parent[parts[-1]] = parsed
@@ -89,7 +92,7 @@ def _patch_config_values_text(content: str, patches: t.Dict[str, str]) -> t.Opti
             if trimmed.rstrip().endswith(':'):
                 indent_stack.append((indent, key))
 
-            path_key = '.'.join(k for _, k in indent_stack[-2:]) + '.' + key if len(indent_stack) >= 2 else key
+            path_key = '.'.join(k for _, k in indent_stack) + '.' + key
             if path_key in patches:
                 prefix = line[:len(line) - len(line.lstrip())]
                 comment = ''
@@ -227,11 +230,12 @@ def _earth_config_patches(env: dict, config_path: t.Optional[Path] = None) -> t.
             f"⚠️  在数据集目录中未找到 HDF5 数据文件:\n"
             f"    {data_glob}\n"
             f"    {os.path.join(data_dir, 'data', '*', '*.h5')}\n"
-            f"    请检查数据集目录结构",
+            f"    数据集路径: {data_dir}\n"
+            f"    将仅注入 data_dir/static_dir/stats_dir，跳过年份检测",
             fg="yellow",
         )
-        # 没有检测到数据时不打补丁，保留模型原始 config 配置
-        return None
+        # 即使没有检测到年份，仍然注入 data_dir/static_dir/stats_dir 等基础配置
+        return (data_dir, patches)
 
 
 def _detect_era5_years(data_dir: str) -> t.Optional[t.List[int]]:
@@ -262,12 +266,10 @@ def _detect_era5_years(data_dir: str) -> t.Optional[t.List[int]]:
             if os.path.isdir(os.path.join(data_dir_path, d)) and d.isdigit()
         ])
         if year_dirs:
-            years = [int(d) for d in year_dirs]
-            # 验证年份目录里确实有 h5 文件
-            for y in year_dirs[:1]:
-                if glob.glob(os.path.join(data_dir_path, y, "*.h5")):
-                    return years
-            return years
+            # 验证年份目录里确实有 h5 文件，只返回有数据的年份
+            years_with_data = [int(d) for d in year_dirs if glob.glob(os.path.join(data_dir_path, d, "*.h5"))]
+            if years_with_data:
+                return years_with_data
 
     return None
 
@@ -394,6 +396,53 @@ def _extract_metrics(log_text: str, domain: str) -> dict:
     return metrics
 
 
+def _extract_perf_data(log_text: str) -> dict:
+    """从 hipprof 输出中提取 GPU 性能指标
+
+    解析 hipprof 的输出表格，提取关键性能数据用于跨模型对比。
+
+    返回格式:
+        {
+            "run_time_s": 4,              # 总运行时间 (秒)
+            "hip_total_ns": 104143742,    # HIP API 总耗时 (纳秒)
+            "hip_malloc_ns": 47596169,    # 显存分配耗时 (纳秒)
+            "hip_memcpy_ns": 1829076,     # 数据传输耗时 (纳秒)
+            "hip_kernel_launch_ns": 54198544,  # Kernel 启动耗时 (纳秒)
+        }
+
+    如果没有检测到 hipprof 输出，返回空字典。
+    """
+    perf = {}
+
+    # 提取总运行时间: HIP_PROF:process end run total cost:X(s)
+    m = re.search(r'run total cost:(\d+)\(s\)', log_text)
+    if m:
+        perf["run_time_s"] = int(m.group(1))
+
+    # 提取 HIP API Total 行:
+    # |Total  |316   |104143742  |329568  |100.0  |
+    m = re.search(r'\|\s*Total\s+\|\s*\d+\s+\|\s*(\d+)\s+\|', log_text)
+    if m:
+        perf["hip_total_ns"] = int(m.group(1))
+
+    # 提取 hipMalloc
+    m = re.search(r'\|hipMalloc\s+\|\s*\d+\s+\|\s*(\d+)\s+\|', log_text)
+    if m:
+        perf["hip_malloc_ns"] = int(m.group(1))
+
+    # 提取 hipMemcpyWithStream
+    m = re.search(r'\|hipMemcpyWithStream\s+\|\s*\d+\s+\|\s*(\d+)\s+\|', log_text)
+    if m:
+        perf["hip_memcpy_ns"] = int(m.group(1))
+
+    # 提取 hipLaunchKernel
+    m = re.search(r'\|hipLaunchKernel\s+\|\s*\d+\s+\|\s*(\d+)\s+\|', log_text)
+    if m:
+        perf["hip_kernel_launch_ns"] = int(m.group(1))
+
+    return perf
+
+
 def _retry_with_fixed_static_files(cmd, cwd, log_path, env, failed_output):
     """检测失败是否因缺失静态文件导致，自动生成后重试。
 
@@ -455,6 +504,16 @@ def _run_cmd(cmd: t.List[str], cwd: Path, log_path: Path, env: t.Optional[dict] 
     if "PYTORCH_CUDA_ALLOC_CONF" not in merged_env:
         merged_env["PYTORCH_CUDA_ALLOC_CONF"] = "expandable_segments:True"
 
+    # ── hipprof 性能分析 ────────────────────────────────
+    # 当用户使用 --profile 全局选项时，自动用 hipprof 包装命令
+    try:
+        ctx = click.get_current_context()
+        if ctx.meta.get('profile', False):
+            click.secho("  ⚡ hipprof 性能分析已启用", fg="yellow")
+            cmd = ["hipprof"] + cmd
+    except (RuntimeError, AttributeError):
+        pass
+
     try:
         process = subprocess.Popen(
             cmd, cwd=str(cwd), stdout=subprocess.PIPE, stderr=subprocess.STDOUT,
@@ -463,14 +522,14 @@ def _run_cmd(cmd: t.List[str], cwd: Path, log_path: Path, env: t.Optional[dict] 
         output_lines = []
         for line in iter(process.stdout.readline, ""):
             output_lines.append(line)
-            click.echo(line, nl=False)
         process.wait()
         output = "".join(output_lines)
         log_path.parent.mkdir(parents=True, exist_ok=True)
         log_path.write_text(output, encoding="utf-8")
 
-        # ── 智能补救：进程失败且因缺失静态文件 → 生成后重试 ─────────
+        # ── 进程失败时，在终端显示完整输出 ─────────────────
         if process.returncode != 0:
+            click.echo(output)
             retry = _retry_with_fixed_static_files(cmd, cwd, log_path, merged_env, output)
             if retry is not None:
                 return retry
@@ -486,7 +545,8 @@ def _run_cmd(cmd: t.List[str], cwd: Path, log_path: Path, env: t.Optional[dict] 
         return {"success": False, "output": msg, "log_path": log_path}
 
 
-def _run_cfd_benchmark_script(model_dir: Path, cmd_type: str, sub_model: str, dataset: str, env: dict) -> dict:
+def _run_cfd_benchmark_script(model_dir: Path, cmd_type: str, sub_model: str, dataset: str, env: dict,
+                               epoch: t.Optional[int] = None) -> dict:
     """执行 CFD_Benchmark 模型（兼容旧版）"""
     output = ""
     all_success = True
@@ -495,15 +555,30 @@ def _run_cfd_benchmark_script(model_dir: Path, cmd_type: str, sub_model: str, da
         script_path = model_dir / "scripts" / "StandardBench" / dataset_name / f"{sub_model}.sh"
         log_path = _get_log_path(model_dir, sub_model)
         if script_path.exists():
+            script_content = script_path.read_text(encoding="utf-8")
+            need_temp = False
+
+            # 注入数据集路径
             correct_data_path = env.get("ONESCIENCE_DATASET_PATH", "")
             if correct_data_path:
-                script_content = script_path.read_text(encoding="utf-8")
                 escaped_path = correct_data_path.replace('\\', '\\\\')
                 script_content = re.sub(
                     r'--data_path\s+\S+',
                     f'--data_path {escaped_path}',
                     script_content
                 )
+                need_temp = True
+
+            # 注入 --epoch 训练轮数
+            if epoch is not None:
+                script_content = re.sub(
+                    r'--epochs\s+\d+',
+                    f'--epochs {epoch}',
+                    script_content
+                )
+                need_temp = True
+
+            if need_temp:
                 temp_script = model_dir / f".{sub_model}_tmp.sh"
                 try:
                     temp_script.write_text(script_content, encoding="utf-8")
@@ -528,10 +603,71 @@ def _run_cfd_benchmark_script(model_dir: Path, cmd_type: str, sub_model: str, da
             if cmd_type in ("INFER", "EVAL", "infer", "eval"):
                 args.append("--eval")
                 args.append("1")
+            if epoch is not None:
+                args.extend(["--epochs", str(epoch)])
             result = _run_cmd(args, model_dir, log_path, env)
             output += result["output"]
             all_success = result["success"]
     return {"success": all_success, "output": output}
+
+
+# 领域映射表：--epoch 统一参数 → 各领域实际 YAML 配置路径
+# value 为 None 表示直接使用 epoch 数值，否则使用固定值（如 patience=0）
+_DOMAIN_EPOCH_CONFIGS = {
+    "earth": {
+        "model.max_epoch": None,    # 替换为 --epoch 的值
+        "model.patience": "0",      # 固定覆盖为 0，防止 early stopping 干扰
+    },
+    "cfd": {
+        "training.epochs": None,
+    },
+    "biosciences": {
+        "training.num_epochs": None,
+    },
+    "matchem": {
+        "model.max_epoch": None,
+    },
+}
+
+
+def _apply_epoch_patch(config_content: str, domain: str, epoch: int) -> t.Optional[str]:
+    """将 --epoch N 转换为领域对应的 YAML 配置覆写
+
+    Returns:
+        修改后的 YAML 内容，若无匹配字段则返回 None
+    """
+    mapping = _DOMAIN_EPOCH_CONFIGS.get(domain)
+    if not mapping:
+        click.secho(f"  ⚠ 领域 '{domain}' 不支持 --epoch 参数", fg="yellow")
+        return None
+    patches = {}
+    for key, value in mapping.items():
+        patches[key] = str(epoch) if value is None else value
+    return _patch_config_values(config_content, patches)
+
+
+def _apply_overrides(config_content: str, overrides: t.List[str]) -> t.Optional[str]:
+    """将 -O key=value 列表应用到 YAML 内容
+
+    支持点号路径（如 datapipe.dataloader.batch_size=2），
+    自动推断基础类型（int/float/bool/string）。
+
+    Args:
+        overrides: ["key=value", ...] 格式的列表
+
+    Returns:
+        修改后的 YAML 内容，若无匹配字段则返回 None
+    """
+    patches = {}
+    for ov in overrides:
+        if "=" not in ov:
+            click.secho(f"  ⚠ 忽略无效覆写: {ov}（格式需为 key=value）", fg="yellow")
+            continue
+        key, value = ov.split("=", 1)
+        patches[key.strip()] = value.strip()
+    if not patches:
+        return None
+    return _patch_config_values(config_content, patches)
 
 
 # 内建模型特殊配置（模型目录名 → 配置项）
@@ -675,8 +811,22 @@ def _build_execution_plan(scripts: dict, cmd_type: str, variant_order: t.Optiona
         else:
             # 非 bench 模式：执行对应阶段的所有脚本
             for phase in phases:
-                for s in sorted(scripts.get(phase, [])):
-                    plan.append((f"{s}.py", []))
+                phase_scripts = scripts.get(phase, [])
+                if not phase_scripts:
+                    continue
+                if phase == "infer" and scripts["has_plain_infer"]:
+                    # 有朴素 infer 脚本时，每个变体依次执行（如 inference.py short）
+                    plain_infer = next(s for s in scripts["infer"] if s in ('inference', 'infer'))
+                    for variant in variants:
+                        plan.append((f"{plain_infer}.py", [variant]))
+                elif phase == "eval" and scripts["has_plain_eval"]:
+                    # 有朴素 eval 脚本时，每个变体依次执行（如 result.py short）
+                    plain_eval = next(s for s in scripts["eval"] if s in ('result', 'eval'))
+                    for variant in variants:
+                        plan.append((f"{plain_eval}.py", [variant]))
+                else:
+                    for s in sorted(phase_scripts):
+                        plan.append((f"{s}.py", []))
     else:
         # ── 普通模型 ──────────────────────────────────────
         for phase in phases:
@@ -747,7 +897,9 @@ def _run_generic_model(model_dir: Path, cmd_type: str, env: dict, domain: str) -
     return {"success": all_success, "output": output, "found_any": found}
 
 
-def run_model(model_alias: str, cmd_type: str, dataset: str) -> dict:
+def run_model(model_alias: str, cmd_type: str, dataset: str,
+              epoch: t.Optional[int] = None,
+              overrides: t.Optional[t.List[str]] = None) -> dict:
     """执行模型
 
     model_alias 支持：
@@ -760,8 +912,8 @@ def run_model(model_alias: str, cmd_type: str, dataset: str) -> dict:
     if not info:
         return {"success": False, "error": f"未知模型: {model_alias}", "alias": model_alias}
 
-    domain = info["domain"]
-    model = info["model"]
+    domain = info.get("domain", "")
+    model = info.get("model", "")
     sub_model = info.get("sub_model", "")
 
     # 获取模型目录
@@ -778,8 +930,11 @@ def run_model(model_alias: str, cmd_type: str, dataset: str) -> dict:
         if info.get("source") == "modelscope":
             hint = (
                 f"\n  提示: 模型 '{model_alias}' 从 ModelScope 自动下载失败。"
-                f"\n  可能是网络问题（代理不可达或外网不通），请检查网络连接后重试。"
-                f"\n  或使用 'onescience env init' 配置模型扫描路径。"
+                f"\n  可能的原因: 模型名称 '{model_alias}' 不正确，或网络连接异常。"
+                f"\n  请检查以下事项:"
+                f"\n    1. 确认模型名称是否存在: onescience list models"
+                f"\n    2. 检查网络连接是否正常（能否访问 modelscope.cn）"
+                f"\n    3. 使用 'onescience env init' 配置模型扫描路径"
             )
         elif model_alias.lower() in MODELSCOPE_MODELS:
             ms_name = MODELSCOPE_MODELS[model_alias.lower()]
@@ -838,9 +993,39 @@ def run_model(model_alias: str, cmd_type: str, dataset: str) -> dict:
 
     # remock: 重置环境
     if cmd_type == "remock":
-        for d in ["result", "results", "checkpoints", "logs", "__pycache__"]:
-            p = model_dir / d
-            if p.exists():
+        # ---- 情况 1: 有独立子目录 ----
+        if sub_model and (model_dir / sub_model).exists():
+            target_dir = model_dir / sub_model
+            for d in ["result", "results", "checkpoints", "logs"]:
+                p = target_dir / d
+                if p.exists():
+                    shutil.rmtree(p)
+
+        # ---- 情况 2: 共享目录，按 sub_model 名精确匹配清理 ----
+        elif sub_model:
+            for d in ["result", "results", "checkpoints", "logs"]:
+                base = model_dir / d
+                if not base.exists():
+                    continue
+                # 删除子模型命名的子目录，如 result/LSM/
+                sub_dir = base / sub_model
+                if sub_dir.exists():
+                    shutil.rmtree(sub_dir)
+                # 删除文件名中包含子模型名的文件，如 result/lsm_metrics.json
+                for f in list(base.iterdir()):
+                    if f.is_file() and sub_model.lower() in f.name.lower():
+                        f.unlink()
+
+        # ---- 情况 3: 无 sub_model，清整个目录 ----
+        else:
+            for d in ["result", "results", "checkpoints", "logs"]:
+                p = model_dir / d
+                if p.exists():
+                    shutil.rmtree(p)
+
+        # 全局清理：__pycache__ 和 execution.log 不影响其他模型
+        for p in list(model_dir.rglob("__pycache__")):
+            if p.is_dir():
                 shutil.rmtree(p)
         for f in model_dir.glob("*_execution.log"):
             f.unlink()
@@ -848,26 +1033,49 @@ def run_model(model_alias: str, cmd_type: str, dataset: str) -> dict:
 
     # 通用配置补丁：将数据集路径注入到模型的所有 YAML 配置文件
     config_backups: t.Dict[str, str] = {}
+    config_path = model_dir / "conf" / "config.yaml"  # 所有领域统一入口
+    config_original = config_path.read_text(encoding="utf-8") if config_path.exists() else None
+
     if "ONESCIENCE_DATASET_PATH" in env:
         # 提前保存 conf/config.yaml 的原始内容
         # _patch_model_configs 会修改该文件，后续 earth 补丁需要真正的原始内容
-        earth_config_original = None
-        earth_config_path = model_dir / "conf" / "config.yaml"
-        if earth_config_path.exists():
-            earth_config_original = earth_config_path.read_text(encoding="utf-8")
+        if config_original is not None:
+            # 领域特定补丁 (earth 模型：ERA5 年份检测、stats/static 路径等)
+            # 在 _patch_model_configs 之前保存，避免其修改污染
+            pass  # config_original 已在上方保存
 
         config_backups = _patch_model_configs(model_dir, env["ONESCIENCE_DATASET_PATH"])
 
         # 特定领域补丁 (earth 模型：ERA5 年份检测、stats/static 路径等)
         # 使用提前保存的原始内容，避免 _patch_model_configs 的修改污染备份
-        if earth_config_original is not None:
-            earth_info = _earth_config_patches(env, earth_config_path)
+        if config_original is not None:
+            earth_info = _earth_config_patches(env, config_path)
             if earth_info is not None:
                 _, patches = earth_info
-                modified = _patch_config_values(earth_config_original, patches)
+                modified = _patch_config_values(config_original, patches)
                 if modified is not None:
-                    config_backups[str(earth_config_path)] = earth_config_original
-                    earth_config_path.write_text(modified, encoding="utf-8")
+                    config_backups[str(config_path)] = config_original
+                    config_path.write_text(modified, encoding="utf-8")
+
+    # ── --epoch 统一训练轮数（所有领域通用） ───────────
+    if epoch is not None and config_path.exists():
+        current = config_path.read_text(encoding="utf-8")
+        epoch_patched = _apply_epoch_patch(current, domain, epoch)
+        if epoch_patched is not None:
+            if str(config_path) not in config_backups:
+                config_backups[str(config_path)] = current
+            config_path.write_text(epoch_patched, encoding="utf-8")
+            click.echo(f"  --epoch={epoch} 已应用")
+
+    # ── -O 通用参数覆写（所有领域通用，最高优先级） ──
+    if overrides and config_path.exists():
+        current = config_path.read_text(encoding="utf-8")
+        overridden = _apply_overrides(current, list(overrides))
+        if overridden is not None:
+            if str(config_path) not in config_backups:
+                config_backups[str(config_path)] = current
+            config_path.write_text(overridden, encoding="utf-8")
+            click.echo(f"  -O 覆写已应用 ({len(overrides)} 项)")
 
     try:
         # 按模型类型选择执行方式
@@ -875,7 +1083,7 @@ def run_model(model_alias: str, cmd_type: str, dataset: str) -> dict:
         all_success = True
 
         if model_dir.name == "CFD_Benchmark":
-            result = _run_cfd_benchmark_script(model_dir, cmd_type, sub_model, dataset, env)
+            result = _run_cfd_benchmark_script(model_dir, cmd_type, sub_model, dataset, env, epoch=epoch)
             output += result["output"]
             all_success = all_success and result["success"]
         else:
@@ -899,6 +1107,16 @@ def run_model(model_alias: str, cmd_type: str, dataset: str) -> dict:
                     all_success = False if not result.get("found_any") else all_success
 
         metrics = _extract_metrics(output, domain)
+
+        # ── hipprof 性能数据采集 ──────────────────────
+        perf_data = {}
+        try:
+            ctx = click.get_current_context()
+            if ctx.meta.get('profile', False):
+                perf_data = _extract_perf_data(output)
+        except (RuntimeError, AttributeError):
+            pass
+
         return {
             "success": all_success,
             "output": output,
@@ -906,6 +1124,7 @@ def run_model(model_alias: str, cmd_type: str, dataset: str) -> dict:
             "model": model,
             "alias": model_alias,
             "metrics": metrics,
+            "perf_data": perf_data,
         }
     finally:
         for filepath, original in config_backups.items():
@@ -930,13 +1149,21 @@ def collect_results(run_results: t.List[dict]):
             except Exception:
                 pass
 
+        # 保存性能数据
+        if r.get("perf_data"):
+            perf_path = dst / "perf.json"
+            try:
+                perf_path.write_text(json.dumps(r["perf_data"], ensure_ascii=False, indent=2), encoding="utf-8")
+            except Exception:
+                pass
+
         # 结果目录和脚本仅成功时复制
         if not r.get("success"):
             continue
 
         # 尝试查找模型目录
         model_dir = None
-        info = model_registry.resolve(alias)
+        info = model_registry.resolve(alias, download=False)
         if info and info.get("model_dir") and Path(info["model_dir"]).exists():
             model_dir = Path(info["model_dir"])
         else:
@@ -1052,6 +1279,94 @@ def print_comparison(results: t.List[dict]):
                     click.echo(f"    {k}: {v}")
 
 
+def print_perf_comparison(results: t.List[dict]):
+    """打印 hipprof 性能对比表
+
+    仅在 --profile 模式下、且有 >= 2 个模型包含 perf_data 时调用。
+    """
+    perf_results = [r for r in results if r.get("perf_data")]
+    if not perf_results:
+        return
+
+    click.echo(f"\n{'=' * 72}")
+    click.secho("hipprof GPU 性能对比", fg="cyan", bold=True)
+
+    # ── 纳秒 → 人类可读格式 ────────────────────────
+    def _ns_fmt(ns):
+        if ns is None:
+            return "N/A"
+        if ns >= 1e9:
+            return f"{ns / 1e9:.2f} s"
+        if ns >= 1e6:
+            return f"{ns / 1e6:.2f} ms"
+        if ns >= 1e3:
+            return f"{ns / 1e3:.2f} μs"
+        return f"{ns} ns"
+
+    # ── 对比指标 ──────────────────────────────────
+    PERF_KEYS = [
+        ("总耗时",     "run_time_s",         _ns_fmt, int),
+        ("HIP API",    "hip_total_ns",       _ns_fmt, int),
+        ("Malloc",     "hip_malloc_ns",      _ns_fmt, int),
+        ("Memcpy",     "hip_memcpy_ns",      _ns_fmt, int),
+        ("LaunchKrnl", "hip_kernel_launch_ns",_ns_fmt, int),
+    ]
+
+    # 收集各列数值，计算 best/worst（数值越小越好）
+    vals = {k: [] for _, k, _, _ in PERF_KEYS}
+    for r in perf_results:
+        for label, key, _, _ in PERF_KEYS:
+            v = r["perf_data"].get(key)
+            n = _num(v) if not isinstance(v, (int, float)) else v
+            if n is not None:
+                vals[key].append(n)
+    lo = {k: min(vals[k]) if vals[k] else None for _, k, _, _ in PERF_KEYS}
+    hi = {k: max(vals[k]) if vals[k] else None for _, k, _, _ in PERF_KEYS}
+
+    # 计算列宽
+    col_widths = {}
+    col_widths["模型"] = max(max(len(r["alias"]) for r in perf_results), 4) + 2
+    for label, key, fmt_fn, _ in PERF_KEYS:
+        max_w = len(label) + 2
+        for r in perf_results:
+            v = r["perf_data"].get(key)
+            s = fmt_fn(v)
+            max_w = max(max_w, len(s) + 2)
+        col_widths[label] = max_w
+
+    # 渲染
+    header = ["模型"] + [label for label, _, _, _ in PERF_KEYS]
+    sep = "+" + "+".join("-" * col_widths[c] for c in header) + "+"
+    click.echo(sep)
+
+    hdr = ""
+    for c in header:
+        hdr += f" {c:{col_widths[c]-1}}|"
+    click.echo("|" + hdr)
+
+    click.echo(sep)
+
+    for r in perf_results:
+        pd = r["perf_data"]
+        row = f" {r['alias']:{col_widths['模型']-1}}|"
+        for label, key, fmt_fn, _ in PERF_KEYS:
+            v = pd.get(key)
+            s = fmt_fn(v)
+            # 着色：best（最小值）= 蓝色加粗，worst（最大值）= 红色加粗
+            n = _num(v) if not isinstance(v, (int, float)) else v
+            if n is not None:
+                lo_n = lo.get(key)
+                hi_n = hi.get(key)
+                if lo_n is not None and abs(n - lo_n) < 1e-9:
+                    s = click.style(s, fg="blue", bold=True)
+                elif hi_n is not None and abs(n - hi_n) < 1e-9:
+                    s = click.style(s, fg="red", bold=True)
+            row += f" {s:>{col_widths[label]-1}}|"
+        click.echo("|" + row)
+
+    click.echo(sep)
+
+
 def load_saved_results(aliases: t.Optional[t.List[str]] = None) -> t.List[dict]:
     """从 RESULTS_DIR 加载之前保存的模型结果
 
@@ -1081,7 +1396,7 @@ def load_saved_results(aliases: t.Optional[t.List[str]] = None) -> t.List[dict]:
             metrics = json.loads(metrics_file.read_text(encoding="utf-8"))
         except Exception:
             continue
-        info = model_registry.resolve(alias)
+        info = model_registry.resolve(alias, download=False)
         results.append({
             "alias": alias,
             "domain": info["domain"] if info else "",

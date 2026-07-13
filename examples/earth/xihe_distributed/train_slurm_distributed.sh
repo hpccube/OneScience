@@ -1,5 +1,5 @@
 #!/bin/bash
-#SBATCH -p hpctest02
+#SBATCH -p hx1hdexclu12
 #SBATCH -N 1
 #SBATCH --gres=dcu:8
 #SBATCH --cpus-per-task=16
@@ -18,13 +18,13 @@ module load sghpcdas/25.6
 conda init bash
 source ~/.bashrc
 
-conda activate onescience-merge-test
+conda activate onescience-refactor
 export PYTHONNOUSERSITE=1
 
 module load sghpc-mpi-gcc/26.3
 
-source /public/software/sghpc_sdk.bak/Linux_x86_64/26.3/dtk/dtk-25.04.4/env.sh
-source /public/software/sghpc_sdk.bak/Linux_x86_64/26.3/dtk/dtk-25.04.4/cuda/env.sh
+source $ROCM_PATH/env.sh
+source $ROCM_PATH/cuda/env.sh
 
 source ../../../env.sh
 

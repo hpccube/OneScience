@@ -29,8 +29,8 @@ train_args:
   train_file: "${ONESCIENCE_DATASETS_DIR}/matchem/mace/water/water_train.xyz"
   test_file: "${ONESCIENCE_DATASETS_DIR}/matchem/mace/water/water_test.xyz"
   valid_fraction: 0.05           # 从训练集中划分 5% 作为验证集
-  E0s: isolated                  # 原子参考能量方式: average / isolated / 显式字典
-  energy_key: TolEnergy          # XYZ 文件中能量字段名
+  E0s: average                   # 原子参考能量方式: average / isolated / 显式字典
+  energy_key: TotEnergy          # XYZ 文件中能量字段名
   forces_key: force              # XYZ 文件中力字段名
 
   # --- 训练超参 ---
@@ -67,7 +67,6 @@ launch:
 # 环境配置
 # ============================================================
 env:
-  conda_env: matchem                # conda 环境名
   modules:
     - sghpc-mpi-gcc/26.3         # 需要加载的 module
 

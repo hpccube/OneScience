@@ -6,12 +6,12 @@ import torch
 
 from onescience.models.meta import ModelMetaData
 from onescience.modules.module import Module
-from onescience.modules import (
-    OneEmbedding,
-    OneFuser,
-    OneRecovery,
-    OneSample,
-)
+from onescience.modules.embedding.panguembedding import PanguEmbedding
+from onescience.modules.fuser.pangufuser import PanguFuser
+from onescience.modules.fuser.pangudistributedfuser import PanguDistributedFuser
+from onescience.modules.recovery.pangupatchrecovery import PanguPatchRecovery
+from onescience.modules.sample.pangudownsample import PanguDownSample
+from onescience.modules.sample.panguupsample import PanguUpSample
 
 from onescience.distributed.megatron.training import get_args
 from onescience.distributed.megatron.training.arguments import core_transformer_config_from_args
@@ -73,18 +73,16 @@ class Pangu(Module):
         drop_path = np.linspace(0, 0.2, self.l1d + self.l2d + self.l3d + self.l4d).tolist()
         # In addition, three constant masks(the topography mask, land-sea mask and soil type mask)
         
-        self.patchembed2d = OneEmbedding(
-            style="PanguEmbedding",
+        self.patchembed2d = PanguEmbedding(
             img_size=img_size,
             patch_size=patch_size[1:],
             embed_dim=embed_dim,
-            in_chans=4 + 3,
+            Variables=7,
         )
-        self.patchembed3d = OneEmbedding(
-            style="PanguEmbedding",
+        self.patchembed3d = PanguEmbedding(
             img_size=(13, img_size[0], img_size[1]),
             patch_size=patch_size,
-            in_chans=5,
+            Variables=5,
             embed_dim=embed_dim,
         )
         patched_inp_shape = (
@@ -93,15 +91,13 @@ class Pangu(Module):
             math.ceil(img_size[1] / patch_size[2]),
         )
 
-        self.layer1 = OneFuser(
-            style="PanguFuser",
+        self.layer1 = PanguFuser(
             dim=embed_dim,
             input_resolution=patched_inp_shape,
             depth=self.l1d,
             num_heads=num_heads[0],
             window_size=window_size,
             drop_path=drop_path[:self.l1d],
-            config = config
         )
 
         patched_inp_shape_downsample = (
@@ -109,59 +105,49 @@ class Pangu(Module):
             math.ceil(patched_inp_shape[1] / 2),
             math.ceil(patched_inp_shape[2] / 2),
         )
-        self.downsample = OneSample(
-            style="PanguDownSample",
+        self.downsample = PanguDownSample(
             input_resolution=patched_inp_shape,
             output_resolution=patched_inp_shape_downsample,
             in_dim=embed_dim,
         )
-        self.layer2 = OneFuser(
-            style="PanguFuser",
+        self.layer2 = PanguFuser(
             dim=embed_dim * 2,
             input_resolution=patched_inp_shape_downsample,
             depth=self.l2d,
             num_heads=num_heads[1],
             window_size=window_size,
             drop_path=drop_path[-self.l2d:],
-            config = config
         )
-        self.layer3 = OneFuser(
-            style="PanguFuser",
+        self.layer3 = PanguFuser(
             dim=embed_dim * 2,
             input_resolution=patched_inp_shape_downsample,
             depth=self.l3d,
             num_heads=num_heads[2],
             window_size=window_size,
             drop_path=drop_path[-self.l3d:],
-            config = config
         )
-        self.upsample = OneSample(
-            style="PanguUpSample",
+        self.upsample = PanguUpSample(
             in_dim=embed_dim * 2,
             out_dim=embed_dim,
             input_resolution=patched_inp_shape_downsample,
             output_resolution=patched_inp_shape
         )
-        self.layer4 = OneFuser(
-            style="PanguFuser",
+        self.layer4 = PanguFuser(
             dim=embed_dim,
             input_resolution=patched_inp_shape,
             depth=self.l4d,
             num_heads=num_heads[3],
             window_size=window_size,
             drop_path=drop_path[:self.l4d],
-            config = config
         )
         # The outputs of the 2nd encoder layer and the 7th decoder layer are concatenated along the channel dimension.
-        self.patchrecovery2d = OneRecovery(
-            style="PanguPatchRecovery",
+        self.patchrecovery2d = PanguPatchRecovery(
             img_size=img_size,
             patch_size=patch_size[1:],
             in_chans=2 * embed_dim,
             out_chans=4,
         )
-        self.patchrecovery3d = OneRecovery(
-            style="PanguPatchRecovery",
+        self.patchrecovery3d = PanguPatchRecovery(
             img_size=(13, img_size[0], img_size[1]),
             patch_size=patch_size,
             in_chans=2 * embed_dim,
@@ -272,15 +258,13 @@ class Pangu_stage0(Module):
         drop_path = np.linspace(0, 0.2, self.l1d + self.l2d + self.l3d + self.l4d).tolist()
         # In addition, three constant masks(the topography mask, land-sea mask and soil type mask)
         
-        self.patchembed2d = OneEmbedding(
-            style="PanguEmbedding",
+        self.patchembed2d = PanguEmbedding(
             img_size=img_size,
             patch_size=patch_size[1:],
             embed_dim=embed_dim,
             Variables=7,
         )
-        self.patchembed3d = OneEmbedding(
-            style="PanguEmbedding",
+        self.patchembed3d = PanguEmbedding(
             img_size=(13, img_size[0], img_size[1]),
             patch_size=patch_size,
             Variables=5,
@@ -292,8 +276,7 @@ class Pangu_stage0(Module):
             math.ceil(img_size[1] / patch_size[2]),
         )
 
-        self.layer1 = OneFuser(
-            style="PanguDistributedFuser",
+        self.layer1 = PanguDistributedFuser(
             dim=embed_dim,
             input_resolution=patched_inp_shape,
             depth=self.l1d,
@@ -406,14 +389,12 @@ class Pangu_stage1(Module):
             math.ceil(patched_inp_shape[1] / 2),
             math.ceil(patched_inp_shape[2] / 2),
         )
-        self.downsample = OneSample(
-            style="PanguDownSample",
+        self.downsample = PanguDownSample(
             input_resolution=patched_inp_shape,
             output_resolution=patched_inp_shape_downsample,
             in_dim=embed_dim,
         )
-        self.layer2 = OneFuser(
-            style="PanguDistributedFuser",
+        self.layer2 = PanguDistributedFuser(
             dim=embed_dim * 2,
             input_resolution=patched_inp_shape_downsample,
             depth=self.l2d,
@@ -520,15 +501,13 @@ class Pangu_stage2(Module):
             math.ceil(patched_inp_shape[1] / 2),
             math.ceil(patched_inp_shape[2] / 2),
         )
-        self.downsample = OneSample(
-            style="PanguDownSample",
+        self.downsample = PanguDownSample(
             input_resolution=patched_inp_shape,
             output_resolution=patched_inp_shape_downsample,
             in_dim=embed_dim,
         )
 
-        self.layer3 = OneFuser(
-            style="PanguDistributedFuser",
+        self.layer3 = PanguDistributedFuser(
             dim=embed_dim * 2,
             input_resolution=patched_inp_shape_downsample,
             depth=self.l3d,
@@ -537,8 +516,7 @@ class Pangu_stage2(Module):
             drop_path=drop_path[-self.l3d:],
             config = config
         )
-        self.upsample = OneSample(
-            style="PanguUpSample",
+        self.upsample = PanguUpSample(
             in_dim=embed_dim * 2,
             out_dim=embed_dim,
             input_resolution=patched_inp_shape_downsample,
@@ -658,8 +636,7 @@ class Pangu_stage3(Module):
         self.lat_tokens = math.ceil(img_size[0] / patch_size[1])
         self.lon_tokens = math.ceil(img_size[1] / patch_size[2])
 
-        self.layer4 = OneFuser(
-            style="PanguDistributedFuser",
+        self.layer4 = PanguDistributedFuser(
             dim=embed_dim,
             input_resolution=patched_inp_shape,
             depth=self.l4d,
@@ -670,15 +647,13 @@ class Pangu_stage3(Module):
         )
         # The outputs of the 2nd encoder layer and the 7th decoder layer are concatenated along the channel dimension.
 
-        self.patchrecovery2d = OneRecovery(
-            style="PanguPatchRecovery",
+        self.patchrecovery2d = PanguPatchRecovery(
             img_size=img_size,
             patch_size=patch_size[1:],
             in_chans=2 * embed_dim,
             out_chans=4,
         )
-        self.patchrecovery3d = OneRecovery(
-            style="PanguPatchRecovery",
+        self.patchrecovery3d = PanguPatchRecovery(
             img_size=(13, img_size[0], img_size[1]),
             patch_size=patch_size,
             in_chans=2 * embed_dim,

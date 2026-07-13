@@ -12,11 +12,13 @@ except ImportError:
     # for Python versions < 3.11
     from typing_extensions import Self
 
-from onescience.modules import OneDecoder
-from onescience.modules import OneEncoder
-from onescience.modules import OneEmbedding
-from onescience.modules import OneMlp
-
+from onescience.modules.decoder.mesh_graph_decoder import MeshGraphDecoder
+from onescience.modules.embedding.graphcast_embedder import (
+    GraphCastDecoderEmbedder,
+    GraphCastEncoderEmbedder,
+)
+from onescience.modules.encoder.mesh_graph_encoder import MeshGraphEncoder
+from onescience.modules.mlp.mesh_graph_mlp import MeshGraphMLP
 from onescience.modules.utils.gnnlayer_utils import CuGraphCSC, set_checkpoint_fn
 from onescience.modules.layer.activations import get_activation
 from onescience.modules.utils.graphcast.graph import Graph
@@ -285,8 +287,7 @@ class GraphCastNet(nn.Module):
         self.decoder_checkpoint_fn = set_checkpoint_fn(False)
 
         # initial feature embedder
-        self.encoder_embedder = OneEmbedding(
-            style='GraphCastEncoderEmbedder',
+        self.encoder_embedder = GraphCastEncoderEmbedder(
             input_dim_grid_nodes=input_dim_grid_nodes,
             input_dim_mesh_nodes=input_dim_mesh_nodes,
             input_dim_edges=input_dim_edges,
@@ -297,8 +298,7 @@ class GraphCastNet(nn.Module):
             norm_type=norm_type,
             recompute_activation=recompute_activation,
         )
-        self.decoder_embedder = OneEmbedding(
-            style='GraphCastDecoderEmbedder',
+        self.decoder_embedder = GraphCastDecoderEmbedder(
             input_dim_edges=input_dim_edges,
             output_dim=hidden_dim,
             hidden_dim=hidden_dim,
@@ -309,8 +309,7 @@ class GraphCastNet(nn.Module):
         )
 
         # grid2mesh encoder
-        self.encoder = OneEncoder(
-            style='MeshGraphEncoder',
+        self.encoder = MeshGraphEncoder(
             aggregation=aggregation,
             input_dim_src_nodes=hidden_dim,
             input_dim_dst_nodes=hidden_dim,
@@ -378,8 +377,7 @@ class GraphCastNet(nn.Module):
             self.processor_decoder = torch.nn.Identity()
 
         # mesh2grid decoder
-        self.decoder = OneDecoder(
-            style='MeshGraphDecoder',
+        self.decoder = MeshGraphDecoder(
             aggregation=aggregation,
             input_dim_src_nodes=hidden_dim,
             input_dim_dst_nodes=hidden_dim,
@@ -395,8 +393,7 @@ class GraphCastNet(nn.Module):
         )
 
         # final MLP
-        self.finale = OneMlp(
-            style='MeshGraphMLP',
+        self.finale = MeshGraphMLP(
             input_dim=hidden_dim,
             output_dim=output_dim_grid_nodes,
             hidden_dim=hidden_dim,

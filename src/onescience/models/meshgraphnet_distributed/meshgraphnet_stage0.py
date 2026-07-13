@@ -10,8 +10,8 @@ from typing import Tuple, Optional
 from dgl import DGLGraph
 
 import onescience
-from onescience.modules import OneMlp
-from onescience.modules.mlp.onemlp import _MLP_REGISTRY
+from onescience.modules.mlp.mesh_graph_distributed_mlp import DistributedMeshGraphMLP
+from onescience.modules.mlp.mesh_graph_mlp import MeshGraphMLP
 from onescience.modules.layer.activations import get_activation
 
 
@@ -52,17 +52,12 @@ class MeshGraphNetStage0(nn.Module):
 
         activation_fn = get_activation(mlp_activation_fn)
 
-        # Determine if using distributed MLP
-        use_distributed = config and config.tensor_model_parallel_size > 1
-        mlp_style = "MeshGraphDistributedMLP" if use_distributed else "MeshGraphMLP"
+        use_distributed = config is not None and config.tensor_model_parallel_size > 1
 
-        # Factory function for creating MLP
-        def _create_mlp(style, config, **kwargs):
-            if style == "MeshGraphDistributedMLP":
-                # return _MLP_REGISTRY[style](config=config, **kwargs)
-                return OneMlp(style=style, config=config, **kwargs)
-            else:
-                return _MLP_REGISTRY[style](**kwargs)
+        def _create_mlp(**kwargs):
+            if use_distributed:
+                return DistributedMeshGraphMLP(config=config, **kwargs)
+            return MeshGraphMLP(**kwargs)
 
         # Edge Encoder
         edge_encoder_kwargs = {
@@ -74,7 +69,7 @@ class MeshGraphNetStage0(nn.Module):
             "norm_type": "LayerNorm",
             "recompute_activation": recompute_activation,
         }
-        self.edge_encoder = _create_mlp(mlp_style, config, **edge_encoder_kwargs)
+        self.edge_encoder = _create_mlp(**edge_encoder_kwargs)
 
         # Node Encoder
         node_encoder_kwargs = {
@@ -86,7 +81,7 @@ class MeshGraphNetStage0(nn.Module):
             "norm_type": "LayerNorm",
             "recompute_activation": recompute_activation,
         }
-        self.node_encoder = _create_mlp(mlp_style, config, **node_encoder_kwargs)
+        self.node_encoder = _create_mlp(**node_encoder_kwargs)
 
     def set_input_tensor(self, input_tensor):
         """Megatron pipeline scheduling hook (not used in Stage 0)"""

@@ -7,12 +7,11 @@ import torch.nn as nn
 from dataclasses import dataclass
 from onescience.utils.YParams import YParams
 from onescience.models.meta import ModelMetaData
-from onescience.modules import (
-    OneEmbedding,
-    OneRecovery,
-    OneSample,
-)
-from onescience.modules.fuser.onefuser import  OneFuser
+from onescience.modules.embedding.xiheembedding import XiheEmbedding
+from onescience.modules.fuser.xihefuse import XiheFuser
+from onescience.modules.recovery.xihepatchrecovery import XihePatchRecovery
+from onescience.modules.sample.pangudownsample import PanguDownSample
+from onescience.modules.sample.xiheupsample import XiheUpSample
 
 
 
@@ -77,8 +76,8 @@ class Xihe(nn.Module):
         self.skip_proj = nn.Linear(2*self.embed_dim, self.embed_dim)
 
 
-        self.patchembed2d = OneEmbedding(style="XiheEmbedding")
-        self.patchrecovery2d = OneRecovery(style="XihePatchRecovery")
+        self.patchembed2d = XiheEmbedding()
+        self.patchrecovery2d = XihePatchRecovery()
 
         # patch 后的 3D 分辨率: (Pl=1, Lat_out, Lon_out)
         H_out = math.ceil(img_size[0] / patch_size[0])
@@ -95,9 +94,9 @@ class Xihe(nn.Module):
         else:
             drop_path = 0.0
 
-        self.block1=OneFuser(dim=self.embed_dim,input_resolution=input_resolution,num_local=1,style="XiheFuser")
+        self.block1=XiheFuser(dim=self.embed_dim,input_resolution=input_resolution,num_local=1)
 
-        self.downsample = OneSample(style="PanguDownSample",
+        self.downsample = PanguDownSample(
                                     in_dim=self.embed_dim,
                                     input_resolution=(H_out, W_out),
                                     output_resolution=(H_out // 2, W_out // 2))
@@ -105,14 +104,14 @@ class Xihe(nn.Module):
         input_resolution = (1, H_out // 2, W_out // 2)
         self.mask_h_w=input_resolution
 
-        self.block2=OneFuser(dim=2*self.embed_dim,input_resolution=input_resolution,num_local=2,style="XiheFuser")
+        self.block2=XiheFuser(dim=2*self.embed_dim,input_resolution=input_resolution,num_local=2)
 
-        self.block3=OneFuser(dim=2*self.embed_dim,input_resolution=input_resolution,num_local=2,style="XiheFuser")
-        self.block4=OneFuser(dim=2*self.embed_dim,input_resolution=input_resolution,num_local=2,style="XiheFuser")
+        self.block3=XiheFuser(dim=2*self.embed_dim,input_resolution=input_resolution,num_local=2)
+        self.block4=XiheFuser(dim=2*self.embed_dim,input_resolution=input_resolution,num_local=2)
 
-        self.upsample = OneSample(style="XiheUpSample",in_dim=2*self.embed_dim,out_dim=embed_dim,input_resolution=(H_out // 2, W_out // 2),  output_resolution=(H_out, W_out), )
+        self.upsample = XiheUpSample(in_dim=2*self.embed_dim,out_dim=embed_dim,input_resolution=(H_out // 2, W_out // 2),  output_resolution=(H_out, W_out), )
         input_resolution = (1, H_out, W_out)
-        self.block5=OneFuser(dim=self.embed_dim,input_resolution=input_resolution,num_local=1,style="XiheFuser")
+        self.block5=XiheFuser(dim=self.embed_dim,input_resolution=input_resolution,num_local=1)
     def change_mask(self,mask_full, x, h_out, w_out):
         #根据当前层特征分辨率，自动生成掩码（海洋=1，陆地=0）
             if not torch.is_tensor(mask_full):
@@ -179,4 +178,3 @@ class Xihe(nn.Module):
         x_out = x_out.transpose(1, 2).reshape(B, C, H_, W_)
         x=self.patchrecovery2d(x_out)
         return x
-

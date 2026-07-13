@@ -2,7 +2,8 @@ import torch
 import torch.nn as nn
 import numpy as np
 from timm.layers import trunc_normal_
-from onescience.modules import OneMlp, OneTransformer
+from onescience.modules.mlp.MLP import StandardMLP
+from onescience.modules.transformer.Transolver_block import Transolver_block
 from onescience.modules.embedding import timestep_embedding, unified_pos_embedding
 
 class Model(nn.Module):
@@ -20,8 +21,7 @@ class Model(nn.Module):
             args.unified_pos and args.geotype != "unstructured"
         ):  
             self.pos = unified_pos_embedding(args.shapelist, args.ref, device=device)
-            self.preprocess = OneMlp(
-                style="StandardMLP",
+            self.preprocess = StandardMLP(
                 input_dim=args.fun_dim + args.ref ** len(args.shapelist),
                 output_dim=args.n_hidden,
                 hidden_dims=[args.n_hidden * 2],
@@ -29,8 +29,7 @@ class Model(nn.Module):
                 use_bias=True
             )
         else:
-            self.preprocess = OneMlp(
-                style="StandardMLP",
+            self.preprocess = StandardMLP(
                 input_dim=args.fun_dim + args.space_dim,
                 output_dim=args.n_hidden,
                 hidden_dims=[args.n_hidden * 2],
@@ -48,8 +47,7 @@ class Model(nn.Module):
         ## models
         self.blocks = nn.ModuleList(
             [
-                OneTransformer(
-                    style="Transolver_block",
+                Transolver_block(
                     num_heads=args.n_heads,
                     hidden_dim=args.n_hidden,
                     dropout=args.dropout,

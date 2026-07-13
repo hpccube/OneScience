@@ -17,7 +17,7 @@
 
   # 3. 变异打分推理
   python ./variant-prediction/predict.py \
-    --model-location esm1v_t33_650M_UR90S_1 \
+    --model-location "$ONESCIENCE_MODELS_DIR/esm_models/esm1v_t33_650M_UR90S_1.pt" \
     --sequence WTSEQUENCE_HERE \
     --dms-input ./variant-prediction/data/BLAT_ECOLX_Ranganathan2015.csv \
     --mutation-col mutant \

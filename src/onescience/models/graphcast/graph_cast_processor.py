@@ -6,10 +6,8 @@ import torch.nn as nn
 from dgl import DGLGraph
 from torch import Tensor
 
-# from onescience.models.gnn_layers.mesh_edge_block import MeshEdgeBlock
-# from onescience.models.gnn_layers.mesh_node_block import MeshNodeBlock
-from onescience.modules import OneEdge
-from onescience.modules import OneNode
+from onescience.modules.edge.mesh_edge_block import MeshEdgeBlock
+from onescience.modules.node.mesh_node_block import MeshNodeBlock
 from onescience.modules.utils.gnnlayer_utils import CuGraphCSC, set_checkpoint_fn
 
 
@@ -83,15 +81,11 @@ class GraphCastProcessor(nn.Module):
 
         layers = []
         for _ in range(processor_layers):
-            # layers.append(OneEdge(style='MeshEdgeBlock'))
-                # MeshEdgeBlock(*edge_block_invars))
-            # layers.append(OneNode(style='MeshNodeBlock'))
-                # MeshNodeBlock(*node_block_invars))
-            layers.append(OneEdge(style='MeshEdgeBlock', **dict(zip(
+            layers.append(MeshEdgeBlock(**dict(zip(
               ['input_dim_nodes','input_dim_edges','output_dim','hidden_dim',
                'hidden_layers','activation_fn','norm_type','do_concat_trick',
                'recompute_activation'], edge_block_invars))))
-            layers.append(OneNode(style='MeshNodeBlock', **dict(zip(
+            layers.append(MeshNodeBlock(**dict(zip(
               ['aggregation','input_dim_nodes','input_dim_edges','output_dim',
                'hidden_dim','hidden_layers','activation_fn','norm_type',
                'recompute_activation'], node_block_invars))))

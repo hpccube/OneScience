@@ -24,6 +24,11 @@ def parse_requirements(filename):
     with open(filename, "r") as f:
         return [line.strip() for line in f if line.strip() and not line.startswith("#")]
 
+def requirement_key(dep):
+    """Return the package name used by setup.py requirement groups."""
+    if " @ " in dep:
+        return dep.split(" @ ", 1)[0]
+    return re.split(r"[=<>~!]", dep)[0]
 
 def resolve(requires, deps_dict):
     """将短名称列表映射为 requirements.txt 中的完整版本约束"""
@@ -154,7 +159,7 @@ class develop(_develop):
 # - earth/cfd/bio/matchem_requires: 特定领域的定制依赖
 
 one_deps = parse_requirements("requirements.txt")
-deps = {re.split(r"[=<>~!]", dep)[0]: dep for dep in one_deps}
+deps = {requirement_key(dep): dep for dep in one_deps}
 
 core_requires = [
     "numpy",
@@ -265,6 +270,7 @@ bio_requires = [
     "typeguard",
     "pytest",
     "pdbfixer",
+    "dllogger",
     "e3nn",
     # diffdock dependencies
     "ProDy",
@@ -374,26 +380,9 @@ matchem_requires = [
     "pwdata",
     "scikit-learn-intelex",
     "pwact",
-]
-
-chemistry_requires = [
-    "e3nn",
-    "ase",
+    "torch_geometric",
     "xtb",
     "rdkit",
-    "matscipy",
-    "python-hostlist",
-    "configargparse",
-    "lmdb",
-    "orjson",
-    "pymatgen",
-    "ase_db_backends",
-    "submitit",
-    "clusterscope",
-    "huggingface_hub",
-    "numba",
-    "opt_einsum-fx",
-    "torchtnt",
 ]
 
 

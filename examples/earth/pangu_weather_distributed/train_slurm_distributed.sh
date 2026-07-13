@@ -14,10 +14,6 @@ echo "START TIME: $(date)"
 
 module purge
 
-# source /public/home/onescience2025404/guancl/pangu_test/bin/activate
-# export PATH=/public/home/onescience2025404/guancl/pangu_test/bin:$PATH
-# export PYTHONPATH=/public/home/onescience2025404/guancl/pangu_test/lib/python3.10/site-packages:$PYTHONPATH
-
 module load sghpcdas/25.6
 conda init bash
 source ~/.bashrc
@@ -27,8 +23,8 @@ export PYTHONNOUSERSITE=1
 
 module load sghpc-mpi-gcc/26.3
 
-source /public/software/sghpc_sdk.bak/Linux_x86_64/26.3/dtk/dtk-25.04.4/env.sh
-source /public/software/sghpc_sdk.bak/Linux_x86_64/26.3/dtk/dtk-25.04.4/cuda/env.sh
+source $ROCM_PATH/env.sh
+source $ROCM_PATH/cuda/env.sh
 
 source ../../../env.sh
 mkdir -p logs

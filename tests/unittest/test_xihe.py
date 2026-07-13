@@ -30,6 +30,8 @@ def main():
     device = torch.device("cuda" if torch.cuda.is_available() else "cpu")
     
     model = Xihe(config).to(device)
+    num_params = sum(p.numel() for p in model.parameters())
+    print(f'Xihe parameter count: {num_params}')
    
     # 随机输入
     B, Lat, Lon = 1, config.img_size[0], config.img_size[1]
@@ -47,5 +49,4 @@ if __name__ == "__main__":
     print("current_path:",current_path)
     sys.path.append(current_path)
     main()
-
 

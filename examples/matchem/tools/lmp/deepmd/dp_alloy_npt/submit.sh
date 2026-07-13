@@ -1,6 +1,6 @@
 #!/bin/bash
 #SBATCH --job-name=dp_alloy_npt
-#SBATCH --partition=hpctest01
+#SBATCH --partition=hpctest02
 #SBATCH --nodes=1
 #SBATCH --ntasks-per-node=8
 #SBATCH --gres=dcu:8
@@ -17,11 +17,19 @@ source "$SCRIPT_DIR/../../../../matchem_env.sh"
 # LAMMPS 运行时库路径
 export LD_LIBRARY_PATH=${LAMMPS_INSTALL_DIR}/lib64:$LD_LIBRARY_PATH
 export LD_LIBRARY_PATH=/public/software/sghpc_sdk.bak/Linux_x86_64/26.3/dtk/dtk-25.04.4/lib:$LD_LIBRARY_PATH
+export LD_LIBRARY_PATH=/public/software/sghpc_sdk.bak/Linux_x86_64/26.3/dtk/dtk-25.04.4/lib64:$LD_LIBRARY_PATH
+export LD_LIBRARY_PATH=/public/software/sghpc_sdk.bak/Linux_x86_64/26.3/dtk/dtk-25.04.4/dcc/lib:$LD_LIBRARY_PATH
 export LD_LIBRARY_PATH=${LAMMPS_INSTALL_DIR}/lib_override:$LD_LIBRARY_PATH
-export LD_LIBRARY_PATH=/public/home/easyscience2024/.conda/envs/matchem_opt/lib/python3.11/site-packages/torch/lib:$LD_LIBRARY_PATH
+export LD_LIBRARY_PATH=/public/home/easyscience2024/.conda/envs/matchem_test/lib/python3.11/site-packages/torch/lib:$LD_LIBRARY_PATH
+
+# DeepMD C++ 接口依赖 TensorFlow C++ 运行时
+export LD_LIBRARY_PATH=/public/home/easyscience2024/.conda/envs/matchem_test/lib/python3.11/site-packages/tensorflow:$LD_LIBRARY_PATH
 
 # DeepMD LAMMPS 插件路径
 export LAMMPS_PLUGIN_PATH=${DP_CPP_DIR}/lib
+
+# 优先使用系统 hwloc，避免 conda hwloc 与集群 PMIx 在 MPI_Finalize 时冲突
+export LD_LIBRARY_PATH=/public/software/sghpc_sdk.bak/Linux_x86_64/26.3/comm_libs/hwloc/lib:$LD_LIBRARY_PATH
 
 export PATH=${LAMMPS_INSTALL_DIR}/bin:$PATH
 

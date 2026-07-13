@@ -19,6 +19,9 @@ echo "START TIME: $(date)"
 
 module purge
 
+source $ROCM_PATH/env.sh
+source $ROCM_PATH/cuda/env.sh
+
 ##### 集群环境加载 #####
 module load sghpcdas/25.6 
 conda init bash

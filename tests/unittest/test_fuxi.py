@@ -14,6 +14,8 @@ model = Fuxi(
     num_groups=32, 
     num_heads=8, 
     window_size=7).to(device)
+num_params = sum(p.numel() for p in model.parameters())
+print(f'FuXi parameter count: {num_params}')
 x = torch.randn(2, 2, 70, 721, 1440).to(device)
 x = x.permute(0, 2, 1, 3, 4) 
 with replace_function(model, ["cube_embedding", "u_transformer"], False):

@@ -4,7 +4,7 @@ import torch
 import torch.nn as nn
 from dgl import DGLGraph
 from torch import Tensor
-from onescience.modules import OneMlp
+from onescience.modules.mlp.mesh_graph_distributed_mlp import DistributedMeshGraphMLP
 from onescience.modules.utils.gnnlayer_utils import CuGraphCSC, aggregate_and_concat
 
 class DistributedMeshNodeBlock(nn.Module):
@@ -70,8 +70,7 @@ class DistributedMeshNodeBlock(nn.Module):
         self.aggregation = aggregation
         self.config = config
 
-        self.node_mlp = OneMlp(
-            style="MeshGraphDistributedMLP",
+        self.node_mlp = DistributedMeshGraphMLP(
             input_dim=input_dim_nodes + input_dim_edges,
             output_dim=output_dim,
             hidden_dim=hidden_dim,

@@ -1,11 +1,18 @@
+import torch
 import torch.nn as nn
 import torch.nn.functional as F
 import numpy as np
 
-from onescience.modules import OneFourier
+from onescience.modules.fourier.ffno_layers import (
+    SpectralConv1d,
+    SpectralConv2d,
+    SpectralConv3d,
+)
 from onescience.modules.mlp import StandardMLP
 from onescience.modules.embedding import timestep_embedding, unified_pos_embedding
-from onescience.modules.fourier.geo_spectral import IPHI
+from onescience.modules.fourier.geo_spectral import GeoSpectralConv2d, IPHI
+
+SpectralConvList = [None, SpectralConv1d, SpectralConv2d, SpectralConv3d]
 
 class Model(nn.Module):
     """
@@ -46,8 +53,7 @@ class Model(nn.Module):
         
         if self.args.geotype == "unstructured":
             # --- 非结构化网格路径 (GeoFNO) ---
-            self.fftproject_in = OneFourier(
-                style="GeoSpectralConv2d",
+            self.fftproject_in = GeoSpectralConv2d(
                 in_channels=args.n_hidden,
                 out_channels=args.n_hidden,
                 modes1=args.modes,
@@ -56,8 +62,7 @@ class Model(nn.Module):
                 s2=s2
             )
             
-            self.fftproject_out = OneFourier(
-                style="GeoSpectralConv2d",
+            self.fftproject_out = GeoSpectralConv2d(
                 in_channels=args.n_hidden,
                 out_channels=args.n_hidden,
                 modes1=args.modes,
@@ -70,7 +75,7 @@ class Model(nn.Module):
             self.padding = [(16 - size % 16) % 16 for size in [s1, s2]]
             
             # 中间层使用 FFNO
-            spectral_style = "FFNOSpectralConv2d"
+            spectral_class = SpectralConv2d
             conv_args = {
                 "in_dim": args.n_hidden,
                 "out_dim": args.n_hidden,
@@ -83,7 +88,7 @@ class Model(nn.Module):
             self.padding = [(16 - size % 16) % 16 for size in args.shapelist]
             
             dim = len(self.padding)
-            spectral_style = f"FFNOSpectralConv{dim}d"
+            spectral_class = SpectralConvList[dim]
             
             conv_args = {
                 "in_dim": args.n_hidden,
@@ -97,7 +102,7 @@ class Model(nn.Module):
 
         for _ in range(args.n_layers):
             self.spectral_layers.append(
-                OneFourier(style=spectral_style, **conv_args)
+                spectral_class(**conv_args)
             )
 
         # 3. Projectors (Decoder)

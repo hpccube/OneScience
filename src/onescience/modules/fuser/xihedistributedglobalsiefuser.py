@@ -1,8 +1,9 @@
 import torch
 import torch.nn as nn
 from onescience.modules.func_utils import Mlp
-from onescience.modules.attention.oneattention import OneAttention
-from onescience.modules.mlp.onemlp import OneMlp
+from onescience.modules.attention.xihedistributedfeaturegroupattention import DistributedFeatureGroupingAttention
+from onescience.modules.attention.xihedistributedfeatureungroupattention import DistributedFeatureUngroupingAttention
+from onescience.modules.mlp.xihedistributedmlp import XiheDistributedMlp
 
 
 class XiheDistributedGlobalSIEFuser(nn.Module):
@@ -18,24 +19,21 @@ class XiheDistributedGlobalSIEFuser(nn.Module):
         super().__init__()
         self.dim = dim
 
-        self.feature_grouping = OneAttention(
+        self.feature_grouping = DistributedFeatureGroupingAttention(
             dim=dim,
             num_heads=num_heads,
             num_groups=num_groups,
-            style="DistributedFeatureGroupingAttention",
             config=config,
         )
-        self.feature_ungrouping = OneAttention(
+        self.feature_ungrouping = DistributedFeatureUngroupingAttention(
             dim=dim,
             num_heads=num_heads,
-            style="DistributedFeatureUngroupingAttention",
             config=config,
         )
 
-        self.group_propagation = OneMlp(
+        self.group_propagation = XiheDistributedMlp(
             dim=dim,
             num_groups=num_groups,
-            style="XiheDistributedMlp",
             config=config,
         )
 

@@ -250,7 +250,7 @@ def generate_fake(model_alias, output):
     """
     from ..core.registry import model_registry, EXAMPLES_DIR
 
-    info = model_registry.resolve(model_alias)
+    info = model_registry.resolve(model_alias, download=False)
     if not info:
         click.secho(f"未知模型: {model_alias}", fg="red")
         return

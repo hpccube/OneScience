@@ -1,13 +1,12 @@
 import torch
 import torch.nn as nn
 
-# 从统一的模块工厂导入组件
-from onescience.modules import (
-    OneEncoder,
-    OneDecoder,
-    OnePooling,
-    OneTransformer,
-    OneEmbedding
+from onescience.modules.decoder.graphvit_decoder import GraphViTDecoder
+from onescience.modules.embedding.fourier_pos_embedding import FourierPosEmbedding
+from onescience.modules.encoder.graphvit_encoder import GraphViTEncoder
+from onescience.modules.pooling.rnn_cluster_pooling import RNNClusterPooling
+from onescience.modules.transformer.preln_transformer_block import (
+    PreLNTransformerBlock,
 )
 
 # 节点类型常量
@@ -38,23 +37,20 @@ class GraphViT(nn.Module):
         pos_length = 8
 
         # 1. 编码器: Mesh Space -> Latent Graph
-        self.encoder = OneEncoder(
-            style="GraphViTEncoder",
+        self.encoder = GraphViTEncoder(
             nb_gn=nb_gn, 
             state_size=state_size, 
             pos_length=pos_length
         )
 
         # 2. 池化层: Node Features -> Cluster Features
-        self.graph_pooling = OnePooling(
-            style="RNNClusterPooling",
+        self.graph_pooling = RNNClusterPooling(
             w_size=w_size, 
             pos_length=pos_length
         )
 
         # 3. 解码器: Cluster Features -> Node State Update
-        self.graph_retrieve = OneDecoder(
-            style="GraphViTDecoder",
+        self.graph_retrieve = GraphViTDecoder(
             w_size=w_size, 
             pos_length=pos_length, 
             state_size=state_size
@@ -62,8 +58,7 @@ class GraphViT(nn.Module):
 
         # 4. 潜在空间 Transformer 交互层
         self.attention = nn.ModuleList([
-            OneTransformer(
-                style="PreLNTransformerBlock", 
+            PreLNTransformerBlock(
                 w_size=w_size, 
                 pos_length=pos_length, 
                 n_heads=n_heads
@@ -75,8 +70,7 @@ class GraphViT(nn.Module):
         self.noise_std = 0.0
         
         # 5. 坐标嵌入层
-        self.positional_encoder = OneEmbedding(
-            style="FourierPosEmbedding",
+        self.positional_encoder = FourierPosEmbedding(
             pos_start=pos_start, 
             pos_length=pos_length
         )

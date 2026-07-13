@@ -9,8 +9,8 @@ import torch.nn as nn
 from typing import Tuple
 
 import onescience
-from onescience.modules import OneMlp
-from onescience.modules.mlp.onemlp import _MLP_REGISTRY
+from onescience.modules.mlp.mesh_graph_distributed_mlp import DistributedMeshGraphMLP
+from onescience.modules.mlp.mesh_graph_mlp import MeshGraphMLP
 from onescience.modules.layer.activations import get_activation
 
 
@@ -46,17 +46,12 @@ class MeshGraphNetStage2(nn.Module):
 
         activation_fn = get_activation(mlp_activation_fn)
 
-        # Determine if using distributed MLP
-        use_distributed = config and config.tensor_model_parallel_size > 1
-        mlp_style = "MeshGraphDistributedMLP" if use_distributed else "MeshGraphMLP"
+        use_distributed = config is not None and config.tensor_model_parallel_size > 1
 
-        # Factory function for creating MLP
-        def _create_mlp(style, config, **kwargs):
-            if style == "MeshGraphDistributedMLP":
-                # return _MLP_REGISTRY[style](config=config, **kwargs)
-                return OneMlp(style=style, config=config, **kwargs)
-            else:
-                return _MLP_REGISTRY[style](**kwargs)
+        def _create_mlp(**kwargs):
+            if use_distributed:
+                return DistributedMeshGraphMLP(config=config, **kwargs)
+            return MeshGraphMLP(**kwargs)
 
         # Node Decoder
         mlp_kwargs = {
@@ -68,7 +63,7 @@ class MeshGraphNetStage2(nn.Module):
             "norm_type": None,
             "recompute_activation": recompute_activation,
         }
-        self.node_decoder = _create_mlp(mlp_style, config, **mlp_kwargs)
+        self.node_decoder = _create_mlp(**mlp_kwargs)
 
     def set_input_tensor(self, input_tensor):
         """Megatron pipeline scheduling hook"""

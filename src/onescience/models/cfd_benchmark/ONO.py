@@ -1,7 +1,8 @@
 import torch
 import torch.nn as nn
 from timm.layers import trunc_normal_
-from onescience.modules import OneMlp, OneTransformer
+from onescience.modules.mlp.MLP import StandardMLP
+from onescience.modules.transformer.orthogonal_neural_block import OrthogonalNeuralBlock
 from onescience.modules.embedding import timestep_embedding, unified_pos_embedding
 
 class Model(nn.Module):
@@ -22,16 +23,14 @@ class Model(nn.Module):
             dim_x = args.fun_dim + args.space_dim
             dim_z = args.fun_dim + args.space_dim
 
-        self.preprocess_x = OneMlp(
-            style="StandardMLP",
+        self.preprocess_x = StandardMLP(
             input_dim=dim_x,
             output_dim=args.n_hidden,
             hidden_dims=[args.n_hidden * 2],
             activation=args.act,
             use_bias=True
         )
-        self.preprocess_z = OneMlp(
-            style="StandardMLP",
+        self.preprocess_z = StandardMLP(
             input_dim=dim_z,
             output_dim=args.n_hidden,
             hidden_dims=[args.n_hidden * 2],
@@ -48,8 +47,7 @@ class Model(nn.Module):
 
         # ONO Blocks 
         self.blocks = nn.ModuleList([
-            OneTransformer(
-                style="OrthogonalNeuralBlock", 
+            OrthogonalNeuralBlock(
                 num_heads=args.n_heads,
                 hidden_dim=args.n_hidden,
                 dropout=args.dropout,

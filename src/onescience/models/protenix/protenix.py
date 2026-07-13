@@ -16,14 +16,15 @@ from onescience.models.protenix.generator import (
 )
 from onescience.models.protenix.utils import simple_merge_dict_list
 from onescience.models.openfold.primitives import ProtenixLayerNorm
-from onescience.modules import (
-    OneEmbedding,
-    OneEncoder,
-    OnePairformer,
-    OneLinear,
-    OneDiffusion,
-    OneMSA,
+from onescience.modules.diffusion.protenixdiffusion import ProtenixDiffusionModule
+from onescience.modules.embedding.protenixembedding import (
+    ProtenixInputFeatureEmbedder,
+    ProtenixTemplateEmbedder,
 )
+from onescience.modules.encoder.protenixencoding import ProtenixRelativePositionEncoding
+from onescience.modules.linear.protenixlinear import ProtenixLinearNoBias
+from onescience.modules.msa.protenixmsa import ProtenixMSAModule
+from onescience.modules.pairformer.protenixpairformer import ProtenixPairformerStack
 from onescience.utils.protenix.logger import get_logger
 from onescience.utils.protenix.permutation.permutation import SymmetricPermutation
 from onescience.utils.protenix.torch_utils import autocasting_disable_decorator
@@ -60,29 +61,23 @@ class Protenix(nn.Module):
         self.diffusion_batch_size = self.configs.diffusion_batch_size
 
         # Model
-        self.input_embedder = OneEmbedding(
-            style="ProtenixInputFeatureEmbedder",
+        self.input_embedder = ProtenixInputFeatureEmbedder(
             **configs.model.input_embedder
         )
-        self.relative_position_encoding = OneEncoder(
-            style="ProtenixRelativePositionEncoding",
+        self.relative_position_encoding = ProtenixRelativePositionEncoding(
             **configs.model.relative_position_encoding
         )
-        self.template_embedder = OneEmbedding(
-            style="ProtenixTemplateEmbedder",
+        self.template_embedder = ProtenixTemplateEmbedder(
             **configs.model.template_embedder
         )
-        self.msa_module = OneMSA(
-            style="ProtenixMSAModule",
+        self.msa_module = ProtenixMSAModule(
             **configs.model.msa_module,
             msa_configs=configs.data.get("msa", {}),
         )
-        self.pairformer_stack = OnePairformer(
-            style="ProtenixPairformerStack",
+        self.pairformer_stack = ProtenixPairformerStack(
             **configs.model.pairformer
         )
-        self.diffusion_module = OneDiffusion(
-            style="ProtenixDiffusionModule",
+        self.diffusion_module = ProtenixDiffusionModule(
             **configs.model.diffusion_module
         )
         self.distogram_head = DistogramHead(**configs.model.distogram_head)
@@ -93,28 +88,22 @@ class Protenix(nn.Module):
             configs.c_z,
             configs.c_s_inputs,
         )
-        self.linear_no_bias_sinit = OneLinear(
-            style="ProtenixLinearNoBias",
+        self.linear_no_bias_sinit = ProtenixLinearNoBias(
             in_features=self.c_s_inputs, out_features=self.c_s
         )
-        self.linear_no_bias_zinit1 = OneLinear(
-            style="ProtenixLinearNoBias",
+        self.linear_no_bias_zinit1 = ProtenixLinearNoBias(
             in_features=self.c_s, out_features=self.c_z
         )
-        self.linear_no_bias_zinit2 = OneLinear(
-            style="ProtenixLinearNoBias",
+        self.linear_no_bias_zinit2 = ProtenixLinearNoBias(
             in_features=self.c_s, out_features=self.c_z
         )
-        self.linear_no_bias_token_bond = OneLinear(
-            style="ProtenixLinearNoBias",
+        self.linear_no_bias_token_bond = ProtenixLinearNoBias(
             in_features=1, out_features=self.c_z
         )
-        self.linear_no_bias_z_cycle = OneLinear(
-            style="ProtenixLinearNoBias",
+        self.linear_no_bias_z_cycle = ProtenixLinearNoBias(
             in_features=self.c_z, out_features=self.c_z
         )
-        self.linear_no_bias_s = OneLinear(
-            style="ProtenixLinearNoBias",
+        self.linear_no_bias_s = ProtenixLinearNoBias(
             in_features=self.c_s, out_features=self.c_s
         )
         self.layernorm_z_cycle = ProtenixLayerNorm(self.c_z)

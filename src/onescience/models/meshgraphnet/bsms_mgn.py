@@ -5,7 +5,9 @@ import torch
 from dgl import DGLGraph
 from torch import Tensor
 
-from onescience.modules import OneProcessor
+from onescience.modules.processor.bistride_processor import (
+    BistrideGraphMessagePassing,
+)
 from .meshgraphnet import MeshGraphNet
 from onescience.models.meta import ModelMetaData
 
@@ -123,9 +125,7 @@ class BiStrideMeshGraphNet(MeshGraphNet):
 
         self.bistride_unet_levels = bistride_unet_levels
 
-        # --- 使用 OneProcessor 工厂实例化 Bi-Stride 模块 ---
-        self.bistride_processor = OneProcessor(
-            style="BistrideGraphMessagePassing",
+        self.bistride_processor = BistrideGraphMessagePassing(
             unet_depth=num_mesh_levels,
             latent_dim=hidden_dim_processor,
             hidden_layer=num_layers_bistride,

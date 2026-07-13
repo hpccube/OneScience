@@ -3,7 +3,9 @@ import torch
 import torch.nn as nn
 import torch_geometric.nn as nng
 import random
-from onescience.modules import OneMlp, OneSample
+from onescience.modules.mlp.MLP import StandardMLP
+from onescience.modules.sample.SpatialGraphDownsample import SpatialGraphDownsample
+from onescience.modules.sample.SpatialGraphUpsample import SpatialGraphUpsample
 
 class Model(nn.Module):
     """
@@ -40,8 +42,7 @@ class Model(nn.Module):
         self.head = head
         self.activation = nn.ReLU()
         
-        self.encoder = OneMlp(
-            style="StandardMLP",
+        self.encoder = StandardMLP(
             input_dim=args.fun_dim,
             output_dim=args.n_hidden,
             hidden_dims=[args.n_hidden * 2],
@@ -49,8 +50,7 @@ class Model(nn.Module):
             use_bias=True
         )
         
-        self.decoder = OneMlp(
-            style="StandardMLP",
+        self.decoder = StandardMLP(
             input_dim=args.n_hidden,
             output_dim=args.out_dim,
             hidden_dims=[args.n_hidden * 2],
@@ -72,8 +72,7 @@ class Model(nn.Module):
         current_dim = self.size_hidden
         for n in range(self.L - 1):
             self.down_samples.append(
-                OneSample(
-                    style="SpatialGraphDownsample",
+                SpatialGraphDownsample(
                     in_channels=current_dim,
                     ratio=self.pool_ratio[n],
                     r=self.list_r[n],
@@ -94,8 +93,8 @@ class Model(nn.Module):
         # Up Path Layers
         self.up_convs = nn.ModuleList()
         
-        # --- 3. Upsample Module (使用 OneSample) ---
-        self.up_sampler = OneSample(style="SpatialGraphUpsample")
+        # --- 3. Upsample Module ---
+        self.up_sampler = SpatialGraphUpsample()
         
         self.up_bns = nn.ModuleList()
         

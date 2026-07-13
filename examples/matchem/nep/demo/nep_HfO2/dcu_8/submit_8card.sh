@@ -1,11 +1,11 @@
 #!/bin/bash
 #SBATCH --job-name=nep_HfO2_8card
-#SBATCH --partition=hpctest01
+#SBATCH --partition=hpctest02
 #SBATCH --nodes=1
 #SBATCH --ntasks-per-node=8
 #SBATCH --gres=dcu:8
 #SBATCH --cpus-per-task=4
-#SBATCH --mem=256G
+#SBATCH --mem=400G
 #SBATCH --time=2:00:00
 #SBATCH --output=slurm_8card_%j.out
 #SBATCH --error=slurm_8card_%j.err

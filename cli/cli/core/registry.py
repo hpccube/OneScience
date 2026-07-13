@@ -108,7 +108,7 @@ class ModelRegistry:
             self._aliases[alias] = (domain, model_dir, sub_model)
             self._descriptions[alias] = desc
 
-    def resolve(self, name: str) -> t.Optional[dict]:
+    def resolve(self, name: str, download: bool = True) -> t.Optional[dict]:
         """5 级优先级查找模型
 
         1. 完整路径 (含 / 或 \\)
@@ -121,7 +121,7 @@ class ModelRegistry:
         name_lower = name.lower().strip()
 
         # 级别 1-4: config 驱动
-        result = config.resolve_model(name)
+        result = config.resolve_model(name, download=download)
         if result:
             # 将 config 返回格式转为 ModelRegistry 格式
             return {

@@ -4,9 +4,21 @@ import torch.nn as nn
 import numpy as np
 import torch.nn.functional as F
 from timm.layers import trunc_normal_
-from onescience.modules import OneMlp, OneFourier
+from onescience.modules.fourier.MultiWaveletTransform import (
+    MultiWaveletTransform1D,
+    MultiWaveletTransform2D,
+    MultiWaveletTransform3D,
+)
+from onescience.modules.mlp.MLP import StandardMLP
 from onescience.modules.embedding import timestep_embedding, unified_pos_embedding
-from onescience.modules.fourier.geo_spectral import IPHI
+from onescience.modules.fourier.geo_spectral import GeoSpectralConv2d, IPHI
+
+MultiWaveletTransformList = [
+    None,
+    MultiWaveletTransform1D,
+    MultiWaveletTransform2D,
+    MultiWaveletTransform3D,
+]
 
 class Model(nn.Module):
     # this model requires H = W = Z and H, W, Z is the power of two
@@ -29,8 +41,7 @@ class Model(nn.Module):
             args.unified_pos and args.geotype != "unstructured"
         ):  # only for structured mesh
             self.pos = unified_pos_embedding(args.shapelist, args.ref, device=device)
-            self.preprocess = OneMlp(
-                style="StandardMLP",
+            self.preprocess = StandardMLP(
                 input_dim=args.fun_dim + args.ref ** len(args.shapelist),
                 output_dim=self.WMT_dim,
                 hidden_dims=[args.n_hidden * 2],
@@ -38,8 +49,7 @@ class Model(nn.Module):
                 use_bias=True
             )
         else:
-            self.preprocess = OneMlp(
-                style="StandardMLP",
+            self.preprocess = StandardMLP(
                 input_dim=args.fun_dim + args.space_dim,
                 output_dim=self.WMT_dim,
                 hidden_dims=[args.n_hidden * 2],
@@ -56,8 +66,7 @@ class Model(nn.Module):
             
         # geometry projection
         if self.args.geotype == "unstructured":
-            self.fftproject_in = OneFourier(
-                style="GeoSpectralConv2d",
+            self.fftproject_in = GeoSpectralConv2d(
                 in_channels=self.WMT_dim,
                 out_channels=self.WMT_dim,
                 modes1=args.modes,
@@ -65,8 +74,7 @@ class Model(nn.Module):
                 s1=s1,
                 s2=s2
             )
-            self.fftproject_out = OneFourier(
-                style="GeoSpectralConv2d",
+            self.fftproject_out = GeoSpectralConv2d(
                 in_channels=self.WMT_dim,
                 out_channels=self.WMT_dim,
                 modes1=args.modes,
@@ -83,12 +91,11 @@ class Model(nn.Module):
             self.augmented_resolution = [target for _ in range(len(self.padding))]
 
         dim = len(self.padding)
-        style_name = f"MultiWaveletTransform{dim}D"
-        
+        transform_class = MultiWaveletTransformList[dim]
+
         self.spectral_layers = nn.ModuleList(
             [
-                OneFourier(
-                    style=style_name,
+                transform_class(
                     k=self.k,
                     alpha=alpha,
                     L=L,

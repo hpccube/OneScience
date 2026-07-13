@@ -10,8 +10,8 @@ import ml_collections as mlc
 import pytorch_lightning as pl
 import torch
 from torch.utils.data import RandomSampler
-from onescience.datapipes.openfold.np.residue_constants import restypes
-from onescience.datapipes.openfold.data import (
+from onescience.utils.openfold.np.residue_constants import restypes
+from onescience.datapipes.openfold import (
     data_pipeline,
     feature_pipeline,
     mmcif_parsing,

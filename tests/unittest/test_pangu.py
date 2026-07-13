@@ -12,6 +12,8 @@ model = Pangu(img_size=(721, 1440),
               num_heads=[6, 12, 12, 6],
               window_size=[2, 6, 12],
               ).to(device)
+num_params = sum(p.numel() for p in model.parameters())
+print(f'Pangu parameter count: {num_params}')
 x = torch.randn(2, 69, 721, 1440).to(device)
 surface_mask = torch.randn(2, 3, 721, 1440).to(device)
 

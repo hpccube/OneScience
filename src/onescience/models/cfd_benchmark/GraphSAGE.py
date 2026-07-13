@@ -1,7 +1,7 @@
 import torch
 import torch.nn as nn
 import torch_geometric.nn as nng
-from onescience.modules import OneMlp
+from onescience.modules.mlp.MLP import StandardMLP
 
 class Model(nn.Module):
     """
@@ -18,8 +18,7 @@ class Model(nn.Module):
         self.bn_bool = True
         self.activation = nn.ReLU()
 
-        self.encoder = OneMlp(
-            style="StandardMLP",
+        self.encoder = StandardMLP(
             input_dim=args.fun_dim + args.space_dim,
             output_dim=args.n_hidden,
             hidden_dims=[args.n_hidden * 2],
@@ -27,8 +26,7 @@ class Model(nn.Module):
             use_bias=True
         )
         
-        self.decoder = OneMlp(
-            style="StandardMLP",
+        self.decoder = StandardMLP(
             input_dim=args.n_hidden,
             output_dim=args.out_dim,
             hidden_dims=[args.n_hidden * 2],
@@ -86,4 +84,4 @@ class Model(nn.Module):
 
         z = self.out_layer(z, edge_index)
         z = self.decoder(z)
-        return z.unsqueeze(0)  
+        return z.unsqueeze(0)

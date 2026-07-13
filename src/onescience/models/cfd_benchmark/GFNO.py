@@ -3,9 +3,12 @@ import torch.nn as nn
 import torch.nn.functional as F
 import numpy as np
 
-from onescience.modules import OneMlp, OneFourier, OneEquivariant
+from onescience.modules.equivariant.group_conv import GroupEquivariantConv2d
+from onescience.modules.fourier.group_spectral import GSpectralConv2d
+from onescience.modules.mlp.GMLP import GroupEquivariantMLP2d
+from onescience.modules.mlp.MLP import StandardMLP
 from onescience.modules.embedding import timestep_embedding, unified_pos_embedding
-from onescience.modules.fourier.geo_spectral import IPHI
+from onescience.modules.fourier.geo_spectral import GeoSpectralConv2d, IPHI
 
 class GNorm(nn.Module):
     def __init__(self, width, group_size):
@@ -45,8 +48,7 @@ class Model(nn.Module):
         else:
             in_dim = args.fun_dim + args.space_dim
         
-        self.preprocess = OneMlp(
-            style="StandardMLP",
+        self.preprocess = StandardMLP(
             input_dim=in_dim,
             output_dim=args.n_hidden,
             hidden_dims=[args.n_hidden * 2],
@@ -68,8 +70,7 @@ class Model(nn.Module):
         if args.geotype == "unstructured":
             self.group_size = 4 * (1 + reflection)
             
-            self.fftproject_in = OneFourier(
-                style="GeoSpectralConv2d",
+            self.fftproject_in = GeoSpectralConv2d(
                 in_channels=args.n_hidden,
                 out_channels=args.n_hidden,
                 modes1=args.modes,
@@ -77,8 +78,7 @@ class Model(nn.Module):
                 s1=s1,
                 s2=s2,
             )
-            self.fftproject_out = OneFourier(
-                style="GeoSpectralConv2d",
+            self.fftproject_out = GeoSpectralConv2d(
                 in_channels=self.width * self.group_size,
                 out_channels=self.width,
                 modes1=args.modes,
@@ -97,8 +97,7 @@ class Model(nn.Module):
         else:
             grid_h, grid_w = args.shapelist
             # 结构化输出头 (Explicit instantiation)
-            self.q = OneMlp(
-                style="GroupEquivariantMLP2d",
+            self.q = GroupEquivariantMLP2d(
                 in_channels=self.width,
                 out_channels=self.out_channels,
                 mid_channels=self.width * 4,
@@ -110,8 +109,7 @@ class Model(nn.Module):
 
         # 4. GFNO Stem Layers
         # Lifting Layer
-        self.p = OneEquivariant(
-            style="GroupEquivariantConv2d",
+        self.p = GroupEquivariantConv2d(
             in_channels=args.n_hidden,
             out_channels=self.width,
             kernel_size=1,
@@ -120,65 +118,56 @@ class Model(nn.Module):
         )
         
         # Spectral Layers
-        self.conv0 = OneFourier("GSpectralConv2d", in_channels=self.width, out_channels=self.width, modes=self.modes, reflection=reflection)
-        self.conv1 = OneFourier("GSpectralConv2d", in_channels=self.width, out_channels=self.width, modes=self.modes, reflection=reflection)
-        self.conv2 = OneFourier("GSpectralConv2d", in_channels=self.width, out_channels=self.width, modes=self.modes, reflection=reflection)
-        self.conv3 = OneFourier("GSpectralConv2d", in_channels=self.width, out_channels=self.width, modes=self.modes, reflection=reflection)
+        self.conv0 = GSpectralConv2d(in_channels=self.width, out_channels=self.width, modes=self.modes, reflection=reflection)
+        self.conv1 = GSpectralConv2d(in_channels=self.width, out_channels=self.width, modes=self.modes, reflection=reflection)
+        self.conv2 = GSpectralConv2d(in_channels=self.width, out_channels=self.width, modes=self.modes, reflection=reflection)
+        self.conv3 = GSpectralConv2d(in_channels=self.width, out_channels=self.width, modes=self.modes, reflection=reflection)
         
-        self.mlp0 = OneMlp(
-            style="GroupEquivariantMLP2d",
+        self.mlp0 = GroupEquivariantMLP2d(
             in_channels=self.width,
             out_channels=self.width,
             mid_channels=self.width,
             reflection=reflection
         )
-        self.mlp1 = OneMlp(
-            style="GroupEquivariantMLP2d",
+        self.mlp1 = GroupEquivariantMLP2d(
             in_channels=self.width,
             out_channels=self.width,
             mid_channels=self.width,
             reflection=reflection
         )
-        self.mlp2 = OneMlp(
-            style="GroupEquivariantMLP2d",
+        self.mlp2 = GroupEquivariantMLP2d(
             in_channels=self.width,
             out_channels=self.width,
             mid_channels=self.width,
             reflection=reflection
         )
-        self.mlp3 = OneMlp(
-            style="GroupEquivariantMLP2d",
+        self.mlp3 = GroupEquivariantMLP2d(
             in_channels=self.width,
             out_channels=self.width,
             mid_channels=self.width,
             reflection=reflection
         )
         
-        # Residual Weights (1x1 GConv via OneEquivariant)
-        # 显式构建
-        self.w0 = OneEquivariant(
-            style="GroupEquivariantConv2d",
+        # Residual Weights (1x1 GConv)
+        self.w0 = GroupEquivariantConv2d(
             in_channels=self.width,
             out_channels=self.width,
             kernel_size=1,
             reflection=reflection
         )
-        self.w1 = OneEquivariant(
-            style="GroupEquivariantConv2d",
+        self.w1 = GroupEquivariantConv2d(
             in_channels=self.width,
             out_channels=self.width,
             kernel_size=1,
             reflection=reflection
         )
-        self.w2 = OneEquivariant(
-            style="GroupEquivariantConv2d",
+        self.w2 = GroupEquivariantConv2d(
             in_channels=self.width,
             out_channels=self.width,
             kernel_size=1,
             reflection=reflection
         )
-        self.w3 = OneEquivariant(
-            style="GroupEquivariantConv2d",
+        self.w3 = GroupEquivariantConv2d(
             in_channels=self.width,
             out_channels=self.width,
             kernel_size=1,

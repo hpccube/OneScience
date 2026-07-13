@@ -7,7 +7,7 @@ import torch.nn as nn
 import torch.nn.functional as F
 from ..base_model import AutoCfdModel
 
-from onescience.modules import OneFourier
+from onescience.modules.fourier.fno_layers import SpectralConv2d
 torch.manual_seed(0)
 np.random.seed(0)
 
@@ -15,7 +15,7 @@ class FnoBlock(nn.Module):
     """
     FNO 块 (Fourier Neural Operator Block)。
     
-    包含一个 2D 频域卷积路径 (通过 OneFourier 调用) 和一个 1x1 的空间卷积残差路径，
+    包含一个 2D 频域卷积路径和一个 1x1 的空间卷积残差路径，
     最后加上可选的激活函数。
     """
     def __init__(
@@ -34,8 +34,7 @@ class FnoBlock(nn.Module):
         self.act_fn = act_fn
 
 
-        self.conv0 = OneFourier(
-            style="FNOSpectralConv2d",
+        self.conv0 = SpectralConv2d(
             in_channels=self.in_chan,
             out_channels=self.out_chan,
             modes1=self.modes1,

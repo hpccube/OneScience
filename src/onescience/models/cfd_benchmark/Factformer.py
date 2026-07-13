@@ -1,7 +1,8 @@
 import torch
 import torch.nn as nn
 from timm.layers import trunc_normal_
-from onescience.modules import OneTransformer, OneMlp
+from onescience.modules.mlp.MLP import StandardMLP
+from onescience.modules.transformer.factformer_block import Factformer_block
 from onescience.modules.embedding import timestep_embedding, unified_pos_embedding
 
 class Model(nn.Module):
@@ -29,8 +30,7 @@ class Model(nn.Module):
         else:
             input_dim += args.space_dim
 
-        self.preprocess = OneMlp(
-            style="StandardMLP",
+        self.preprocess = StandardMLP(
             input_dim=input_dim,
             output_dim=args.n_hidden,
             hidden_dims=[args.n_hidden * 2],
@@ -48,8 +48,7 @@ class Model(nn.Module):
 
         # 3. Transformer Blocks
         self.blocks = nn.ModuleList([
-            OneTransformer(
-                style="Factformer_block",
+            Factformer_block(
                 num_heads=args.n_heads,
                 hidden_dim=args.n_hidden,
                 dropout=args.dropout,

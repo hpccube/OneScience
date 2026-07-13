@@ -4,10 +4,13 @@ import torch.nn as nn
 import numpy as np
 import torch.nn.functional as F
 
-from onescience.modules import OneMlp
-from onescience.modules import OneFourier
-# IPHI 作为辅助映射网络，直接导入
-from onescience.modules.fourier.geo_spectral import IPHI
+from onescience.modules.fourier.fno_layers import (
+    SpectralConv1d,
+    SpectralConv2d,
+    SpectralConv3d,
+)
+from onescience.modules.fourier.geo_spectral import GeoSpectralConv2d, IPHI
+from onescience.modules.mlp.MLP import StandardMLP
 from onescience.modules.embedding import timestep_embedding, unified_pos_embedding
 
 ConvList = [None, nn.Conv1d, nn.Conv2d, nn.Conv3d]
@@ -32,14 +35,13 @@ class Model(nn.Module):
         else:
             input_dim = args.fun_dim + args.space_dim
 
-        self.preprocess = OneMlp(
-            style="StandardMLP",
+        self.preprocess = StandardMLP(
             input_dim=input_dim,
             hidden_dims=[args.n_hidden * 2],
             output_dim=args.n_hidden,
             activation=args.act,
-            n_layers=0, # 如果 OneMlp 支持这个参数来控制层数
-            res=False   # 如果 OneMlp 支持残差控制
+            n_layers=0,
+            res=False,
         )
 
         if args.time_input:
@@ -54,8 +56,7 @@ class Model(nn.Module):
         # ==========================================
         if self.args.geotype == "unstructured":
             # 明确传入具体参数
-            self.fftproject_in = OneFourier(
-                style="GeoSpectralConv2d",
+            self.fftproject_in = GeoSpectralConv2d(
                 in_channels=args.n_hidden, 
                 out_channels=args.n_hidden, 
                 modes1=args.modes, 
@@ -63,8 +64,7 @@ class Model(nn.Module):
                 s1=s1, 
                 s2=s2
             )
-            self.fftproject_out = OneFourier(
-                style="GeoSpectralConv2d",
+            self.fftproject_out = GeoSpectralConv2d(
                 in_channels=args.n_hidden, 
                 out_channels=args.n_hidden, 
                 modes1=args.modes, 
@@ -83,20 +83,20 @@ class Model(nn.Module):
         dim = len(self.padding)
         
         if dim == 1:
-            self.conv0 = OneFourier(style="FNOSpectralConv1d", in_channels=args.n_hidden, out_channels=args.n_hidden, modes1=args.modes)
-            self.conv1 = OneFourier(style="FNOSpectralConv1d", in_channels=args.n_hidden, out_channels=args.n_hidden, modes1=args.modes)
-            self.conv2 = OneFourier(style="FNOSpectralConv1d", in_channels=args.n_hidden, out_channels=args.n_hidden, modes1=args.modes)
-            self.conv3 = OneFourier(style="FNOSpectralConv1d", in_channels=args.n_hidden, out_channels=args.n_hidden, modes1=args.modes)
+            self.conv0 = SpectralConv1d(in_channels=args.n_hidden, out_channels=args.n_hidden, modes1=args.modes)
+            self.conv1 = SpectralConv1d(in_channels=args.n_hidden, out_channels=args.n_hidden, modes1=args.modes)
+            self.conv2 = SpectralConv1d(in_channels=args.n_hidden, out_channels=args.n_hidden, modes1=args.modes)
+            self.conv3 = SpectralConv1d(in_channels=args.n_hidden, out_channels=args.n_hidden, modes1=args.modes)
         elif dim == 2:
-            self.conv0 = OneFourier(style="FNOSpectralConv2d", in_channels=args.n_hidden, out_channels=args.n_hidden, modes1=args.modes, modes2=args.modes)
-            self.conv1 = OneFourier(style="FNOSpectralConv2d", in_channels=args.n_hidden, out_channels=args.n_hidden, modes1=args.modes, modes2=args.modes)
-            self.conv2 = OneFourier(style="FNOSpectralConv2d", in_channels=args.n_hidden, out_channels=args.n_hidden, modes1=args.modes, modes2=args.modes)
-            self.conv3 = OneFourier(style="FNOSpectralConv2d", in_channels=args.n_hidden, out_channels=args.n_hidden, modes1=args.modes, modes2=args.modes)
+            self.conv0 = SpectralConv2d(in_channels=args.n_hidden, out_channels=args.n_hidden, modes1=args.modes, modes2=args.modes)
+            self.conv1 = SpectralConv2d(in_channels=args.n_hidden, out_channels=args.n_hidden, modes1=args.modes, modes2=args.modes)
+            self.conv2 = SpectralConv2d(in_channels=args.n_hidden, out_channels=args.n_hidden, modes1=args.modes, modes2=args.modes)
+            self.conv3 = SpectralConv2d(in_channels=args.n_hidden, out_channels=args.n_hidden, modes1=args.modes, modes2=args.modes)
         elif dim == 3:
-            self.conv0 = OneFourier(style="FNOSpectralConv3d", in_channels=args.n_hidden, out_channels=args.n_hidden, modes1=args.modes, modes2=args.modes, modes3=args.modes)
-            self.conv1 = OneFourier(style="FNOSpectralConv3d", in_channels=args.n_hidden, out_channels=args.n_hidden, modes1=args.modes, modes2=args.modes, modes3=args.modes)
-            self.conv2 = OneFourier(style="FNOSpectralConv3d", in_channels=args.n_hidden, out_channels=args.n_hidden, modes1=args.modes, modes2=args.modes, modes3=args.modes)
-            self.conv3 = OneFourier(style="FNOSpectralConv3d", in_channels=args.n_hidden, out_channels=args.n_hidden, modes1=args.modes, modes2=args.modes, modes3=args.modes)
+            self.conv0 = SpectralConv3d(in_channels=args.n_hidden, out_channels=args.n_hidden, modes1=args.modes, modes2=args.modes, modes3=args.modes)
+            self.conv1 = SpectralConv3d(in_channels=args.n_hidden, out_channels=args.n_hidden, modes1=args.modes, modes2=args.modes, modes3=args.modes)
+            self.conv2 = SpectralConv3d(in_channels=args.n_hidden, out_channels=args.n_hidden, modes1=args.modes, modes2=args.modes, modes3=args.modes)
+            self.conv3 = SpectralConv3d(in_channels=args.n_hidden, out_channels=args.n_hidden, modes1=args.modes, modes2=args.modes, modes3=args.modes)
         else:
             raise ValueError(f"Unsupported dimension: {dim}. Only 1D, 2D, and 3D are supported.")
 

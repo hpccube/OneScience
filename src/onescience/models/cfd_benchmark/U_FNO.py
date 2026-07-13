@@ -2,9 +2,16 @@ import torch
 import torch.nn as nn
 import torch.nn.functional as F
 import numpy as np
-from onescience.modules import OneMlp, OneFourier
+from onescience.modules.fourier.fno_layers import (
+    SpectralConv1d,
+    SpectralConv2d,
+    SpectralConv3d,
+)
+from onescience.modules.mlp.MLP import StandardMLP
 from onescience.modules.embedding import timestep_embedding, unified_pos_embedding
-from onescience.modules.fourier.geo_spectral import IPHI
+from onescience.modules.fourier.geo_spectral import GeoSpectralConv2d, IPHI
+
+SpectralConvList = [None, SpectralConv1d, SpectralConv2d, SpectralConv3d]
 
 from .U_Net import Model as U_Net
 
@@ -31,8 +38,7 @@ class Model(nn.Module):
         else:
             input_dim += args.space_dim
 
-        self.preprocess = OneMlp(
-            style="StandardMLP",
+        self.preprocess = StandardMLP(
             input_dim=input_dim,
             output_dim=args.n_hidden,
             hidden_dims=[args.n_hidden * 2],
@@ -50,8 +56,7 @@ class Model(nn.Module):
         # 2. Geometry Projection & Padding Logic
         # -----------------------------------------------------------
         if self.args.geotype == "unstructured":
-            self.fftproject_in = OneFourier(
-                style="GeoSpectralConv2d",
+            self.fftproject_in = GeoSpectralConv2d(
                 in_channels=args.n_hidden,
                 out_channels=args.n_hidden,
                 modes1=args.modes,
@@ -59,8 +64,7 @@ class Model(nn.Module):
                 s1=s1,
                 s2=s2
             )
-            self.fftproject_out = OneFourier(
-                style="GeoSpectralConv2d",
+            self.fftproject_out = GeoSpectralConv2d(
                 in_channels=args.n_hidden,
                 out_channels=args.n_hidden,
                 modes1=args.modes,
@@ -79,7 +83,6 @@ class Model(nn.Module):
         
         # 辅助函数：构建 FNO 参数 
         def get_fno_layer(in_c, out_c):
-            style = f"FNOSpectralConv{dim}d"
             kwargs = {
                 "in_channels": in_c,
                 "out_channels": out_c
@@ -89,7 +92,7 @@ class Model(nn.Module):
             for i in range(dim):
                 if i < len(mode_names):
                     kwargs[mode_names[i]] = args.modes
-            return OneFourier(style, **kwargs)
+            return SpectralConvList[dim](**kwargs)
 
         self.conv0 = get_fno_layer(args.n_hidden, args.n_hidden)
         self.conv1 = get_fno_layer(args.n_hidden, args.n_hidden)
