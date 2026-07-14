@@ -183,7 +183,6 @@ core_requires = [
     "requests",
     "importlib_metadata",
     "scipy",
-    "torchdata",
     "setuptools",
     "click",
 ]
@@ -201,6 +200,7 @@ earth_requires = [
 ]
 
 cfd_requires = [
+    "torchdata",
     "timm",
     "vtk",
     "pyvista",
@@ -213,6 +213,7 @@ cfd_requires = [
 ]
 
 bio_requires = [
+    "torchdata",
     #"megatron-core",
     "lmdb",
     "orjson",
@@ -357,6 +358,7 @@ bio_requires = [
 ]
 
 matchem_requires = [
+    "torchdata",
     "ase",
     "pymatgen",
     "e3nn",

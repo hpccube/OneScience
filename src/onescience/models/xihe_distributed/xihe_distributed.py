@@ -5,9 +5,12 @@ import torch.nn as nn
 from dataclasses import dataclass
 
 from onescience.models.meta import ModelMetaData
-from onescience.modules import OneEmbedding, OneRecovery, OneSample
-from onescience.modules.fuser.onefuser import OneFuser
+from onescience.modules.embedding.xiheembedding import XiheEmbedding
+from onescience.modules.fuser.xihedistributedfuser import XiheDistributedFuser
 from onescience.modules.module import Module
+from onescience.modules.recovery.xihepatchrecovery import XihePatchRecovery
+from onescience.modules.sample.pangudownsample import PanguDownSample
+from onescience.modules.sample.xiheupsample import XiheUpSample
 
 from onescience.distributed.megatron.training import get_args
 from onescience.distributed.megatron.training.arguments import core_transformer_config_from_args
@@ -90,52 +93,48 @@ class Xihe_stage0(Module):
         if isinstance(mask_full, str):
             self.mask_full = np.load(mask_full)
 
-        self.patchembed2d = OneEmbedding(style="XiheEmbedding")
+        self.patchembed2d = XiheEmbedding()
 
         H_out = math.ceil(img_size[0] / patch_size[0])
         W_out = math.ceil(img_size[1] / patch_size[1])
         input_resolution = (1, H_out, W_out)
 
         window_size_3d = (1, window_size[0], window_size[1])
-        self.block1 = OneFuser(
+        self.block1 = XiheDistributedFuser(
             dim=embed_dim,
             input_resolution=input_resolution,
             num_local=1,
             num_global=0,
             num_heads=num_heads[0],
             window_size=window_size_3d,
-            style="XiheDistributedFuser",
             config=self.config,
         )
 
-        self.downsample = OneSample(
-            style="PanguDownSample",
+        self.downsample = PanguDownSample(
             in_dim=embed_dim,
             input_resolution=(H_out, W_out),
             output_resolution=(H_out // 2, W_out // 2),
         )
 
         input_resolution_half = (1, H_out // 2, W_out // 2)
-        self.block2 = OneFuser(
+        self.block2 = XiheDistributedFuser(
             dim=2 * embed_dim,
             input_resolution=input_resolution_half,
             num_local=2,
             num_global=1,
             num_heads=num_heads[1],
             window_size=window_size_3d,
-            style="XiheDistributedFuser",
             num_groups=num_groups,
             config=self.config,
         )
 
-        self.block3 = OneFuser(
+        self.block3 = XiheDistributedFuser(
             dim=2 * embed_dim,
             input_resolution=input_resolution_half,
             num_local=2,
             num_global=1,
             num_heads=num_heads[1],
             window_size=window_size_3d,
-            style="XiheDistributedFuser",
             num_groups=num_groups,
             config=self.config,
         )
@@ -215,20 +214,18 @@ class Xihe_stage1(Module):
         input_resolution_half = (1, H_out // 2, W_out // 2)
         window_size_3d = (1, window_size[0], window_size[1])
 
-        self.block4 = OneFuser(
+        self.block4 = XiheDistributedFuser(
             dim=2 * embed_dim,
             input_resolution=input_resolution_half,
             num_local=2,
             num_global=1,
             num_heads=num_heads[2],
             window_size=window_size_3d,
-            style="XiheDistributedFuser",
             num_groups=num_groups,
             config=self.config,
         )
 
-        self.upsample = OneSample(
-            style="XiheUpSample",
+        self.upsample = XiheUpSample(
             in_dim=2 * embed_dim,
             out_dim=embed_dim,
             input_resolution=(H_out // 2, W_out // 2),
@@ -236,20 +233,19 @@ class Xihe_stage1(Module):
         )
 
         input_resolution_full = (1, H_out, W_out)
-        self.block5 = OneFuser(
+        self.block5 = XiheDistributedFuser(
             dim=embed_dim,
             input_resolution=input_resolution_full,
             num_local=1,
             num_global=0,
             num_heads=num_heads[3],
             window_size=window_size_3d,
-            style="XiheDistributedFuser",
             config=self.config,
         )
 
         self.skip_proj = nn.Linear(2 * embed_dim, embed_dim)
 
-        self.patchrecovery2d = OneRecovery(style="XihePatchRecovery")
+        self.patchrecovery2d = XihePatchRecovery()
 
     def set_input_tensor(self, input_tensor):
         self.input_tensor = input_tensor
