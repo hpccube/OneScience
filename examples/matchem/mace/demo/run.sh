@@ -123,7 +123,7 @@ if $SUBMIT; then
 # 环境初始化
 SETUP_BLOCK
     echo "set +u
-source /public/home/easyscience2024/wangrui/onescience/examples/matchem/matchem_env.sh
+source \"$DEMO_DIR/../../matchem_env.sh\"
 set -u" >> "$SLURM_SCRIPT"
 
     # 添加预检
@@ -205,7 +205,7 @@ echo "========================================="
 
 # 环境初始化
 set +u
-source /public/home/easyscience2024/wangrui/onescience/examples/matchem/matchem_env.sh
+source "$DEMO_DIR/../../matchem_env.sh"
 set -u
 
 # 预检

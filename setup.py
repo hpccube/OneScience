@@ -188,6 +188,7 @@ core_requires = [
 ]
 
 earth_requires = [
+    "torchdata",
     "timm",
     "xarray",
     "zarr",
