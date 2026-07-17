@@ -1,6 +1,6 @@
 #!/bin/bash
 #SBATCH --job-name=H2O_NEP
-#SBATCH --partition=hpctest02
+#SBATCH --partition=hx1hdexclu12
 #SBATCH --nodes=1
 #SBATCH --ntasks-per-node=4
 #SBATCH --gres=dcu:4
@@ -12,6 +12,7 @@
 SCRIPT_DIR="$SLURM_SUBMIT_DIR"
 
 source /public/software/sghpc_sdk/Linux_x86_64/25.6/das/conda/etc/profile.d/conda.sh
+export MATCHEM_CONDA_NAME="${MATCHEM_CONDA_NAME:-test_pip}"
 source "$SCRIPT_DIR/../../../../matchem_env.sh"
 
 # LAMMPS 运行时库路径
@@ -20,7 +21,8 @@ export LD_LIBRARY_PATH=/public/software/sghpc_sdk.bak/Linux_x86_64/26.3/dtk/dtk-
 export LD_LIBRARY_PATH=/public/software/sghpc_sdk.bak/Linux_x86_64/26.3/dtk/dtk-25.04.4/lib64:$LD_LIBRARY_PATH
 export LD_LIBRARY_PATH=/public/software/sghpc_sdk.bak/Linux_x86_64/26.3/dtk/dtk-25.04.4/dcc/lib:$LD_LIBRARY_PATH
 export LD_LIBRARY_PATH=${LAMMPS_INSTALL_DIR}/lib_override:$LD_LIBRARY_PATH
-export LD_LIBRARY_PATH=/public/home/easyscience2024/.conda/envs/matchem_test/lib/python3.11/site-packages/torch/lib:$LD_LIBRARY_PATH
+SITE_PACKAGES=$(python -c 'import sysconfig; print(sysconfig.get_paths()["purelib"])')
+export LD_LIBRARY_PATH=${SITE_PACKAGES}/torch/lib:$LD_LIBRARY_PATH
 
 # 优先使用系统 hwloc，避免 conda hwloc 与集群 PMIx 在 MPI_Finalize 时冲突
 export LD_LIBRARY_PATH=/public/software/sghpc_sdk.bak/Linux_x86_64/26.3/comm_libs/hwloc/lib:$LD_LIBRARY_PATH

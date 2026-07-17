@@ -3,12 +3,12 @@
 # MatChem 统一环境配置脚本
 # 用途：加载模块、激活 conda、导出各组件路径
 # 用法：source matchem_env.sh
-# 注意：默认激活 conda 环境 matchem_pip；若使用其他环境名，请执行：
+# 注意：默认激活 conda 环境 test_pip；若使用其他环境名，请执行：
 #       MATCHEM_CONDA_NAME=your_env source matchem_env.sh
 # ==========================================
 
 # ---------- 1. 基础环境配置 ----------
-export MATCHEM_CONDA_NAME="${MATCHEM_CONDA_NAME:-matchem_pip}"
+export MATCHEM_CONDA_NAME="${MATCHEM_CONDA_NAME:-test_pip}"
 
 # ---------- 2. OneScience 运行时环境变量 ----------
 export ONESCIENCE_DATASETS_DIR="/public/share/sugonhpcapp01/onestore/onedatasets"
@@ -18,16 +18,16 @@ export LD_LIBRARY_PATH="${CONDA_PREFIX:-}/lib:${LD_LIBRARY_PATH:-}"
 
 # ---------- 3. 外部软件路径（使用 dp_install.sh / matpl_install.sh / lmp_install.sh 时会自动更新） ----------
 # DeepMD-kit 源码目录
-export DEEPMD_SRC_DIR=/path/to/deepmd-kit_dcu
+export DEEPMD_SRC_DIR=/public/home/yuxiaodong/deepmd-kit
 
 # MatPL 源码目录
-export MATPL_SRC_DIR=/path/to/matpl_dcu
+export MATPL_SRC_DIR=/public/home/yuxiaodong/MatPL
 
 # LAMMPS 安装目录
-export LAMMPS_INSTALL_DIR=/path/to/lammps_dcu
+export LAMMPS_INSTALL_DIR="/public/home/yuxiaodong/lammps_dcu"
 
 # DeepMD C++ 接口目录
-export DP_CPP_DIR=/path/to/dp_cpp_dcu
+export DP_CPP_DIR="/public/home/yuxiaodong/dp_cpp_dcu"
 
 # ---------- 4. 加载集群模块与 conda ----------
 set +u

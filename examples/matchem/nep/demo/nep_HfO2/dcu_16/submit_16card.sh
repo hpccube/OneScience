@@ -1,6 +1,6 @@
 #!/bin/bash
 #SBATCH --job-name=nep_HfO2_16card
-#SBATCH --partition=hpctest02
+#SBATCH --partition=hx1hdexclu12
 #SBATCH --nodes=2
 #SBATCH --ntasks-per-node=8
 #SBATCH --gres=dcu:8
@@ -14,6 +14,7 @@ SCRIPT_DIR="$SLURM_SUBMIT_DIR"
 
 # 统一走 matchem_env.sh 路径
 source /public/software/sghpc_sdk/Linux_x86_64/25.6/das/conda/etc/profile.d/conda.sh
+export MATCHEM_CONDA_NAME="${MATCHEM_CONDA_NAME:-test_pip}"
 source "$SCRIPT_DIR/../../../../matchem_env.sh"
 
 # MatPL 运行时环境（不侵入 matchem_env.sh，各算例自行维护）

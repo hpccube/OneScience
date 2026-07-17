@@ -5,8 +5,8 @@
 # 以实现 MACE 模型在 DCU 上的训练和推理加速。
 #
 # 使用方法：
-#   cd /public/home/easyscience2024/wangrui/onescience/examples/matchem/mace/fasteq 
-#   bash install.sh
+#   cd examples/matchem/mace/fasteq
+#   FASTEQ_HIP_ROOT=/path/to/FastEq-hip bash fasteq_install.sh
 
 set -e
 
@@ -19,7 +19,7 @@ source ~/.bashrc
 module load sghpcdas/25.6
 module load sghpc-mpi-gcc/26.3
 
-conda activate matchem_opt
+conda activate "${MATCHEM_CONDA_NAME:-test_pip}"
 
 # libgalaxyhip.so.5 位于 DTK 的 lib/ 和 hip/lib/ 下，但不在默认 LD_LIBRARY_PATH 中。
 # 不加此路径会导致导入 torch/fasteq 时报错：
@@ -41,8 +41,7 @@ export amd_comgr_DIR=/public/software/sghpc_sdk.bak/Linux_x86_64/26.3/dtk/dtk-25
 # =============================================================================
 # 2. FastEq-hip 源码路径
 # =============================================================================
-# 默认路径：与 onescience 项目同级目录。
-# 可通过环境变量覆盖：FASTEQ_HIP_ROOT=/your/path bash install.sh
+# 必须通过环境变量指定：FASTEQ_HIP_ROOT=/your/path bash fasteq_install.sh
 FASTEQ_HIP_ROOT="${FASTEQ_HIP_ROOT}"
 
 if [[ ! -d "$FASTEQ_HIP_ROOT" ]]; then

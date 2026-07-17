@@ -12,10 +12,36 @@ cd "$SCRIPT_DIR"
 echo ">>> Step 1: 加载环境"
 source "$SCRIPT_DIR/../../matchem_env.sh"
 
+# 1.5 确保 gflags/glog 运行库存在（lmp_mpi 的运行时依赖，pip 环境通常缺失）
+echo ">>> Step 1.5: 检查 gflags/glog 运行库"
+MISSING_PKGS=""
+ls "$CONDA_PREFIX"/lib/libgflags.so* >/dev/null 2>&1 || MISSING_PKGS="${MISSING_PKGS} gflags"
+ls "$CONDA_PREFIX"/lib/libglog.so* >/dev/null 2>&1 || MISSING_PKGS="${MISSING_PKGS} glog"
+if [ -n "${MISSING_PKGS}" ]; then
+    echo ">>> 安装缺失的运行库:${MISSING_PKGS}（conda-forge）"
+    conda install -y -c conda-forge ${MISSING_PKGS}
+else
+    echo ">>> gflags/glog 已存在，跳过"
+fi
+
+# 下载辅助：优先 curl，失败时回退 wget（部分节点 curl 存在 TLS/代理问题）
+download_file() {
+    local url="$1" out="$2"
+    if command -v curl >/dev/null 2>&1 && curl -fL -o "$out" "$url"; then
+        return 0
+    fi
+    echo "[提示] curl 下载失败，改用 wget: $url"
+    if command -v wget >/dev/null 2>&1 && wget -O "$out" "$url"; then
+        return 0
+    fi
+    echo "[错误] 下载失败: $url"
+    return 1
+}
+
 # 2. 交互式配置安装路径
 echo ">>> Step 2: 配置安装路径"
-DEFAULT_LAMMPS_INSTALL="${LAMMPS_INSTALL_DIR:-/public/home/easyscience2024/wangrui/software/lammps_dcu}"
-DEFAULT_DP_CPP="${DP_CPP_DIR:-/public/home/easyscience2024/wangrui/software/dp_cpp_dcu}"
+DEFAULT_LAMMPS_INSTALL="${LAMMPS_INSTALL_DIR:-${SCRIPT_DIR}/lammps_dcu}"
+DEFAULT_DP_CPP="${DP_CPP_DIR:-${SCRIPT_DIR}/dp_cpp_dcu}"
 
 if [ -t 0 ]; then
     read -rp "请输入 LAMMPS 安装路径 [默认: ${DEFAULT_LAMMPS_INSTALL}]: " input_lammps
@@ -36,7 +62,7 @@ echo ">>> Step 3: 下载并安装 LAMMPS"
 LAMMPS_URL="https://download.sourcefind.cn:65024/file/9/onesicence/dtk-25.04.2/deep_lammps/lammps_dcu.tar.gz"
 mkdir -p "${LAMMPS_INSTALL}"
 cd "${LAMMPS_INSTALL}"
-curl -L -o lammps_dcu.tar.gz "${LAMMPS_URL}"
+download_file "${LAMMPS_URL}" lammps_dcu.tar.gz || exit 1
 tar -xzf lammps_dcu.tar.gz --strip-components=1
 rm -f lammps_dcu.tar.gz
 echo ">>> Step 3: LAMMPS 安装完成（${LAMMPS_INSTALL}）"
@@ -44,15 +70,19 @@ echo ">>> Step 3: LAMMPS 安装完成（${LAMMPS_INSTALL}）"
 # 后处理：更新 lib_override 符号链接到当前 conda 环境的 torch.libs
 # 预编译包里的软链默认指向 matchem_opt，可能在新环境失效
 echo ">>> Step 3: 更新 lib_override 符号链接"
-TORCH_LIB_DIR="$(python -c 'import torch, os; print(os.path.join(os.path.dirname(torch.__file__), "lib"))' 2>/dev/null || true)"
+# 确保 lib_override 目录可写，避免预编译包中的只读文件导致 ln -sf 失败
+chmod -R u+w "${LAMMPS_INSTALL}/lib_override" 2>/dev/null || true
+TORCH_LIB_DIR="$(python -c 'import importlib.util, os; spec = importlib.util.find_spec("torch"); p = os.path.dirname(spec.origin) if spec and spec.origin else ""; print(os.path.join(p, "lib") if p else "")' 2>/dev/null || true)"
 if [ -n "${TORCH_LIB_DIR}" ] && [ -d "${TORCH_LIB_DIR}" ]; then
-    TORCH_LIBS_DIR="$(python -c 'import torch, os; print(os.path.join(os.path.dirname(torch.__file__), "..", "torch.libs"))' 2>/dev/null || true)"
+    TORCH_LIBS_DIR="$(python -c 'import importlib.util, os; spec = importlib.util.find_spec("torch"); p = os.path.dirname(spec.origin) if spec and spec.origin else ""; print(os.path.join(p, "..", "torch.libs") if p else "")' 2>/dev/null || true)"
     cd "${LAMMPS_INSTALL}/lib_override"
     if [ -f "${TORCH_LIBS_DIR}/libnl-3-04364822.so.200.26.0" ]; then
-        ln -sf "${TORCH_LIBS_DIR}/libnl-3-04364822.so.200.26.0" libnl-3.so.200
+        rm -f libnl-3.so.200
+        ln -s "${TORCH_LIBS_DIR}/libnl-3-04364822.so.200.26.0" libnl-3.so.200
     fi
     if [ -f "${TORCH_LIBS_DIR}/libnl-route-3-9b7e574d.so.200.26.0" ]; then
-        ln -sf "${TORCH_LIBS_DIR}/libnl-route-3-9b7e574d.so.200.26.0" libnl-route-3.so.200
+        rm -f libnl-route-3.so.200
+        ln -s "${TORCH_LIBS_DIR}/libnl-route-3-9b7e574d.so.200.26.0" libnl-route-3.so.200
     fi
     echo ">>> lib_override 已指向当前 conda 环境"
 else
@@ -64,7 +94,7 @@ echo ">>> Step 4: 下载并安装 DeepMD C++ 接口"
 DP_CPP_URL="https://download.sourcefind.cn:65024/file/9/onesicence/dtk-25.04.2/deep_lammps/dp_cpp_dcu.tar.gz"
 mkdir -p "${DP_CPP_INSTALL}"
 cd "${DP_CPP_INSTALL}"
-curl -L -o dp_cpp_dcu.tar.gz "${DP_CPP_URL}"
+download_file "${DP_CPP_URL}" dp_cpp_dcu.tar.gz || exit 1
 tar -xzf dp_cpp_dcu.tar.gz --strip-components=1
 rm -f dp_cpp_dcu.tar.gz
 
@@ -98,18 +128,24 @@ fi
 # 完整功能验证请提交 tools/lmp 下各测试算例的 submit.sh。
 echo ">>> Step 6: 验证安装"
 
-TORCH_LIB_DIR="$(python -c 'import torch, os; print(os.path.join(os.path.dirname(torch.__file__), "lib"))' 2>/dev/null || true)"
+TORCH_LIB_DIR="$(python -c 'import importlib.util, os; spec = importlib.util.find_spec("torch"); p = os.path.dirname(spec.origin) if spec and spec.origin else ""; print(os.path.join(p, "lib") if p else "")' 2>/dev/null || true)"
 if [ -z "${TORCH_LIB_DIR}" ] || [ ! -d "${TORCH_LIB_DIR}" ]; then
-    TORCH_LIB_DIR="${CONDA_PREFIX}/lib/python3.11/site-packages/torch/lib"
+    SITE_PACKAGES=$(python -c 'import sysconfig; print(sysconfig.get_paths()["purelib"])')
+    TORCH_LIB_DIR="${SITE_PACKAGES}/torch/lib"
 fi
 
-TF_LIB_DIR="$(python -c 'import tensorflow, os; print(os.path.dirname(tensorflow.__file__))' 2>/dev/null || true)"
+TF_LIB_DIR="$(python -c 'import importlib.util, os; spec = importlib.util.find_spec("tensorflow"); print(os.path.dirname(spec.origin) if spec and spec.origin else "")' 2>/dev/null || true)"
 if [ -z "${TF_LIB_DIR}" ] || [ ! -d "${TF_LIB_DIR}" ]; then
-    TF_LIB_DIR="${CONDA_PREFIX}/lib/python3.11/site-packages/tensorflow"
+    SITE_PACKAGES=$(python -c 'import sysconfig; print(sysconfig.get_paths()["purelib"])')
+    TF_LIB_DIR="${SITE_PACKAGES}/tensorflow"
 fi
 
-# 使用 ROCM_PATH（由 matchem_env.sh 加载的模块设置），回退到固定路径
-ROCM_LIB_DIR="${ROCM_PATH:-/public/software/sghpc_sdk.bak/Linux_x86_64/26.3/dtk/dtk-25.04.4}"
+# 使用 ROCM_PATH（由 matchem_env.sh 加载的模块设置），未设置则报错
+if [ -z "${ROCM_PATH:-}" ]; then
+    echo "[错误] ROCM_PATH 未设置，请检查 matchem_env.sh 模块加载"
+    exit 1
+fi
+ROCM_LIB_DIR="${ROCM_PATH}"
 
 VERIFY_LD_LIBRARY_PATH="${LAMMPS_INSTALL}/lib64:${LAMMPS_INSTALL}/lib_override"
 VERIFY_LD_LIBRARY_PATH="${ROCM_LIB_DIR}/lib:${VERIFY_LD_LIBRARY_PATH}"

@@ -5,7 +5,7 @@
 # 以实现 MACE 模型在 DCU 上的训练和推理加速。
 #
 # 使用方法：
-#   cd /public/home/scnethpc2601/wr/onescience/examples/matchem/mace/demo/FastEq-hip
+#   cd examples/matchem/mace/fasteq
 #   bash install.sh
 
 set -e
@@ -18,7 +18,7 @@ module load sghpcdas/25.6
 module load sghpc-mpi-gcc/26.3
 
 source ~/.bashrc
-conda activate matchem
+conda activate "${MATCHEM_CONDA_NAME:-test_pip}"
 
 # libgalaxyhip.so.5 位于 DTK 的 lib/ 和 hip/lib/ 下，但不在默认 LD_LIBRARY_PATH 中。
 # 不加此路径会导致导入 torch/fasteq 时报错：
@@ -31,9 +31,10 @@ export CMAKE_PREFIX_PATH="/public/software/sghpc_sdk.bak/Linux_x86_64/26.3/dtk/d
 # =============================================================================
 # 2. FastEq-hip 源码路径
 # =============================================================================
-# 默认路径：与 onescience 项目同级目录。
+# 默认路径：将 FastEq-hip 仓库克隆到本脚本同级目录。
 # 可通过环境变量覆盖：FASTEQ_HIP_ROOT=/your/path bash install.sh
-FASTEQ_HIP_ROOT="${FASTEQ_HIP_ROOT:-/public/home/scnethpc2601/wr/project/FastEq-hip}"
+SCRIPT_DIR="$(cd "$(dirname "${BASH_SOURCE[0]}")" && pwd)"
+FASTEQ_HIP_ROOT="${FASTEQ_HIP_ROOT:-${SCRIPT_DIR}/FastEq-hip}"
 
 if [[ ! -d "$FASTEQ_HIP_ROOT" ]]; then
     echo "错误：FastEq-hip 源码未找到于 $FASTEQ_HIP_ROOT"

@@ -1,6 +1,6 @@
 #!/bin/bash
 #SBATCH --job-name=dpa3_finetune
-#SBATCH --partition=hpctest02
+#SBATCH --partition=hx1hdexclu12
 #SBATCH --nodes=1
 #SBATCH --ntasks-per-node=1
 #SBATCH --gres=dcu:1
@@ -12,6 +12,7 @@
 SCRIPT_DIR="$SLURM_SUBMIT_DIR"
 
 source /public/software/sghpc_sdk/Linux_x86_64/25.6/das/conda/etc/profile.d/conda.sh
+export MATCHEM_CONDA_NAME="${MATCHEM_CONDA_NAME:-test_pip}"
 source "$SCRIPT_DIR/../../../matchem_env.sh"
 
 # 限制并行度，规避 ROCm kernel launch 问题

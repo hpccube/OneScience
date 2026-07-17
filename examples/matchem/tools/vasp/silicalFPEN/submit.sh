@@ -1,6 +1,6 @@
 #!/bin/bash
 #SBATCH --job-name=vasp_job
-#SBATCH --partition=hpctest01
+#SBATCH --partition=hx1hdexclu12
 #SBATCH --nodes=1
 #SBATCH --ntasks-per-node=1
 #SBATCH --cpus-per-task=64
@@ -9,7 +9,7 @@
 #SBATCH --time=2:00:00
 #SBATCH --output=J_%j.out
 #SBATCH --error=J_%j.err
-#SBATCH --nodelist=e02r4n15
+
 
 echo "========================================="
 echo "VASP job starts at $(date '+%Y-%m-%d %H:%M:%S')"

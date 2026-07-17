@@ -5,6 +5,14 @@
 
 ---
 
+## 0. 前置条件
+
+- 已按仓库外层安装文档创建 **Python 3.11** 的 conda 环境并完成 `bash install.sh matchem`。
+  > **注意**：LAMMPS / DeepMD C++ 预编译组件均基于 Python 3.11（cp311）构建，其他 Python 版本的环境无法使用。
+- 集群需可加载 `sghpcdas/25.6`、`sghpc-mpi-gcc/26.3` 模块（`matchem_env.sh` 会自动加载）。
+
+---
+
 ## 1. 环境架构概览
 
 | 能力 | 所属目录 | 说明 |
@@ -28,10 +36,11 @@
 source matchem_env.sh
 ```
 
-> 默认激活的 conda 环境名为 `matchem_pip`。如果你安装时使用了其他环境名（例如 `test_pip`），请覆盖该变量：
+> 默认激活的 conda 环境名为 `test_pip`。如果你使用其他环境名，请覆盖该变量：
 > ```bash
-> MATCHEM_CONDA_NAME=test_pip source matchem_env.sh
+> MATCHEM_CONDA_NAME=your_env source matchem_env.sh
 > ```
+> 所有 `submit.sh` 中已内置 `export MATCHEM_CONDA_NAME="${MATCHEM_CONDA_NAME:-test_pip}"`，提交作业时会自动沿用当前设置；如需切换环境，在提交前重新设置 `MATCHEM_CONDA_NAME` 即可。
 
 `matchem_env.sh` 会完成：
 - 加载 `sghpcdas/25.6`、`sghpc-mpi-gcc/26.3` 模块
@@ -39,15 +48,15 @@ source matchem_env.sh
 - 设置 `ONESCIENCE_DATASETS_DIR`、`ONESCIENCE_MODELS_DIR`、`device`、`LD_LIBRARY_PATH` 等运行时变量
 - 定义 `LAMMPS_INSTALL_DIR`、`DEEPMD_SRC_DIR`、`DP_CPP_DIR`、`MATPL_SRC_DIR` 等关键路径变量
 
-> 如果你需要使用 **DP 训练**、**NEP 训练** 或 **LAMMPS 推理**，请先编辑 `matchem_env.sh`，将以下变量修改为你的实际路径，然后重新 `source matchem_env.sh`：
-> ```bash
-> export DEEPMD_SRC_DIR=/path/to/deepmd-kit_dcu
-> export MATPL_SRC_DIR=/path/to/matpl_dcu
-> export LAMMPS_INSTALL_DIR=/path/to/lammps_dcu
-> export DP_CPP_DIR=/path/to/dp_cpp_dcu
-> ```
+> 如果你需要使用 **DP 训练**、**NEP 训练** 或 **LAMMPS 推理**，对应的安装脚本（`dp_install.sh`、`matpl_install.sh`、`lmp_install.sh`）会自动将实际安装路径写回 `matchem_env.sh`，无需手动编辑。
 >
-> 或者运行对应的 `dp_install.sh`、`matpl_install.sh`、`lmp_install.sh`，它们会自动将这些路径写回 `matchem_env.sh`。
+> 如需自定义路径，可在运行安装脚本前通过环境变量指定：
+> ```bash
+> export DEEPMD_SRC_DIR=/your/deepmd-kit_dcu
+> export MATPL_SRC_DIR=/your/matpl_dcu
+> export LAMMPS_INSTALL_DIR=/your/lammps_dcu
+> export DP_CPP_DIR=/your/dp_cpp_dcu
+> ```
 
 ---
 
@@ -57,15 +66,14 @@ source matchem_env.sh
 
 ```bash
 cd dp
-# 获取 deepmd-kit 源码（生产环境建议提前上传，通过 DEEPMD_SRC_DIR 指定）
-git clone https://github.com/deepmodeling/deepmd-kit.git
 bash dp_install.sh
 ```
 
 **说明**：
-- `dp_install.sh` 会自动检测 PyTorch 路径并启用 ROCm 后端编译
-- 默认安装 PyTorch + TensorFlow 双后端
-- C++ 接口默认跳过编译；如需自行编译，设置 `COMPILE_DP_CPP=1`
+- 脚本默认从 gitee 自动拉取 DCU 版源码（`deepmd-kit_dcu`）到 `dp/deepmd-kit`；生产环境建议提前上传源码，并通过 `DEEPMD_SRC_DIR` 指定路径
+- **请勿**自行 `git clone` 上游 `deepmodeling/deepmd-kit` 到该目录——上游源码不含 DCU 支持，且脚本检测到目录已存在会跳过拉取，导致编译出错误版本
+- 自动检测 PyTorch 路径并启用 ROCm 后端编译，默认安装 PyTorch + TensorFlow 双后端
+- C++ 接口默认下载预编译包；如需源码编译，设置 `COMPILE_DP_CPP=1`
 
 ---
 
@@ -73,22 +81,25 @@ bash dp_install.sh
 
 ```bash
 cd nep
-export MATPL_SRC_DIR=/path/to/matpl_dcu  # 默认使用 $(pwd)/matpl_dcu
+# 可选：通过环境变量指定 MatPL 源码路径，默认拉取到 nep/matpl_dcu
+# export MATPL_SRC_DIR=/your/matpl_dcu
 bash matpl_install.sh
 ```
 
 **说明**：
-- `matpl_install.sh` 会自动生成 `dcu_install.sh` 并完成 C++ 扩展编译
+- 脚本默认从 gitee 自动拉取 MatPL DCU 源码（分支 `nep-dcu/2026.3`），自动 patch CMakeLists 并完成 C++ 算子编译
 - 各 NEP 算例的 `submit.sh` 中已 inline 维护 MatPL 运行时环境
 
 ---
 
 ### Step 3: LAMMPS 安装（可选，若需分子动力学推理）
 
-将 DCU 适配优化后的 LAMMPS 安装包解压到目标目录，并在 `matchem_env.sh` 中定义：
-
 ```bash
-export LAMMPS_INSTALL_DIR="/path/to/your/lammps_dcu"
+cd tools/lmp
+# 可选：通过环境变量指定安装路径，默认使用 $(pwd)/lammps_dcu 和 $(pwd)/dp_cpp_dcu
+# export LAMMPS_INSTALL_DIR=/your/lammps_dcu
+# export DP_CPP_DIR=/your/dp_cpp_dcu
+bash lmp_install.sh
 ```
 
 **说明**：
@@ -139,6 +150,11 @@ cd nep/demo/nep_Cu
 sbatch submit.sh
 ```
 
+> **切换 conda 环境**：如果当前环境名不是 `test_pip`，提交前请先设置环境变量：
+> ```bash
+> MATCHEM_CONDA_NAME=your_env sbatch --export=ALL submit.sh
+> ```
+
 ---
 
 ## 5. LAMMPS 推理示例
@@ -158,6 +174,13 @@ sbatch submit.sh
 cd tools/lmp/mace/LiGaClF
 sbatch submit.sh
 ```
+
+> **MACE 模型文件**：`submit.sh` 会优先从 `${ONESCIENCE_MODELS_DIR}/mace/mace-mpa-0-medium.model-lammps.pt` 链接模型；如果集群模型库中没有，请从 [MACE 官方 releases](https://github.com/ACEsuit/mace-mp/releases) 下载后放入算例目录。
+
+> **切换 conda 环境**：如果当前环境名不是 `test_pip`，提交前请先设置环境变量：
+> ```bash
+> MATCHEM_CONDA_NAME=your_env sbatch --export=ALL submit.sh
+> ```
 
 ---
 
@@ -183,6 +206,7 @@ examples/matchem/
 2. **LAMMPS 安装路径**：在 `matchem_env.sh` 中定义 `LAMMPS_INSTALL_DIR`，运行脚本通过该变量获取路径。
 3. **DeepMD C++ 接口**：通过 `DP_CPP_DIR` 管理，LAMMPS+DP 推理时需设置 `LAMMPS_PLUGIN_PATH=${DP_CPP_DIR}/lib`。
 4. **FastEq 源码依赖**、**MatPL 源码依赖**：均为外部私有/合作源码，需单独获取。
+5. **队列名**：各 `submit.sh` 中 `#SBATCH --partition=hx1hdexclu12` 为本集群队列配置，迁移到其他集群时需自行修改。
 
 ---
 

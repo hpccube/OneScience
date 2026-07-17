@@ -123,7 +123,7 @@ if $SUBMIT; then
 # 环境初始化
 SETUP_BLOCK
     echo "set +u
-source \"$DEMO_DIR/../../matchem_env.sh\"
+MATCHEM_CONDA_NAME=\"${MATCHEM_CONDA_NAME:-test_pip}\" source \"$DEMO_DIR/../../matchem_env.sh\"
 set -u" >> "$SLURM_SCRIPT"
 
     # 添加预检
@@ -205,7 +205,7 @@ echo "========================================="
 
 # 环境初始化
 set +u
-source "$DEMO_DIR/../../matchem_env.sh"
+MATCHEM_CONDA_NAME="${MATCHEM_CONDA_NAME:-test_pip}" source "$DEMO_DIR/../../matchem_env.sh"
 set -u
 
 # 预检

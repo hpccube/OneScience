@@ -13,8 +13,34 @@ cd "$SCRIPT_DIR"
 echo ">>> Step 1: 加载环境"
 source "$SCRIPT_DIR/../matchem_env.sh"
 
+# 1.5 确保 gflags/glog 运行库存在（torch cmake 的运行时依赖，pip 环境通常缺失）
+echo ">>> Step 1.5: 检查 gflags/glog 运行库"
+MISSING_PKGS=""
+ls "$CONDA_PREFIX"/lib/libgflags.so* >/dev/null 2>&1 || MISSING_PKGS="${MISSING_PKGS} gflags"
+ls "$CONDA_PREFIX"/lib/libglog.so* >/dev/null 2>&1 || MISSING_PKGS="${MISSING_PKGS} glog"
+if [ -n "${MISSING_PKGS}" ]; then
+    echo ">>> 安装缺失的运行库:${MISSING_PKGS}（conda-forge）"
+    conda install -y -c conda-forge ${MISSING_PKGS}
+else
+    echo ">>> gflags/glog 已存在，跳过"
+fi
+
+# 下载辅助：优先 curl，失败时回退 wget（部分节点 curl 存在 TLS/代理问题）
+download_file() {
+    local url="$1" out="$2"
+    if command -v curl >/dev/null 2>&1 && curl -fL -o "$out" "$url"; then
+        return 0
+    fi
+    echo "[提示] curl 下载失败，改用 wget: $url"
+    if command -v wget >/dev/null 2>&1 && wget -O "$out" "$url"; then
+        return 0
+    fi
+    echo "[错误] 下载失败: $url"
+    return 1
+}
+
 # 2. 交互式配置源码路径
-MATPL_SRC="${MATPL_SRC_DIR:-/public/home/easyscience2024/wangrui/software/matpl_dcu}"
+MATPL_SRC="${MATPL_SRC_DIR:-${SCRIPT_DIR}/matpl_dcu}"
 if [ -t 0 ]; then
     read -rp "请输入 MatPL 源码路径 [默认: ${MATPL_SRC}]: " input_src
     MATPL_SRC="${input_src:-${MATPL_SRC}}"
@@ -41,6 +67,23 @@ echo " MatPL DCU 一键安装脚本"
 echo "=========================================="
 echo "工作目录: $MATPL_SRC"
 
+# 3.5 Patch MatPL CMakeLists.txt：避免在登录节点触发 torch 动态库加载
+echo ">>> Step 3.5: Patch MatPL CMakeLists.txt，避免登录节点 import torch"
+OP_CMAKE="$MATPL_SRC/src/op/CMakeLists.txt"
+CHEB_CMAKE="$MATPL_SRC/src/feature/chebyshev/CMakeLists.txt"
+
+if [ -f "$OP_CMAKE" ]; then
+    sed -i "s|import torch; print(torch.utils.cmake_prefix_path)|import importlib.util, os; spec = importlib.util.find_spec('torch'); p = os.path.dirname(spec.origin) if spec and spec.origin else ''; print((p + '/share/cmake') if p else '')|" "$OP_CMAKE"
+    sed -i "s|import torch; print(torch.__path__\[0\])|import importlib.util, os; spec = importlib.util.find_spec('torch'); print(os.path.dirname(spec.origin) if spec and spec.origin else '')|" "$OP_CMAKE"
+    sed -i "s|import torch; print(torch.version.hip is not None)|print(True)|" "$OP_CMAKE"
+    echo ">>> 已 patch $OP_CMAKE"
+fi
+
+if [ -f "$CHEB_CMAKE" ]; then
+    sed -i "s|import torch; print(torch.utils.cmake_prefix_path)|import importlib.util, os; spec = importlib.util.find_spec('torch'); p = os.path.dirname(spec.origin) if spec and spec.origin else ''; print((p + '/share/cmake') if p else '')|" "$CHEB_CMAKE"
+    echo ">>> 已 patch $CHEB_CMAKE"
+fi
+
 # 4. 修复 torch cmake 中硬编码的 /opt/dtk 路径
 TORCH_CMAKE="$CONDA_PREFIX/lib/python3.11/site-packages/torch/share/cmake/Caffe2/Caffe2Targets.cmake"
 if [ -f "$TORCH_CMAKE" ]; then
@@ -62,7 +105,7 @@ else
     echo "从源码编译 glog 0.6 ..."
     GLOG_BUILD_DIR=$(mktemp -d)
     cd "$GLOG_BUILD_DIR"
-    wget -q https://github.com/google/glog/archive/refs/tags/v0.6.0.tar.gz
+    download_file "https://github.com/google/glog/archive/refs/tags/v0.6.0.tar.gz" v0.6.0.tar.gz || exit 1
     tar -xzf v0.6.0.tar.gz
     cd glog-0.6.0
     cmake -S . -B build \
@@ -92,7 +135,14 @@ export CXX=/public/software/sghpc_sdk.bak/Linux_x86_64/26.3/compilers/gcc-12.4.0
 echo ">>> Step 7: 开始编译 MatPL"
 cd src
 rm -rf feature/nep_find_neigh/build feature/NEP_GPU/build op/build
-bash build.sh -j$(nproc)
+
+# 登录节点内存有限，限制并行编译数以避免 OOM
+NPROC=$(nproc)
+if [ "$NPROC" -gt 2 ]; then
+    NPROC=2
+fi
+echo ">>> 限制并行编译数为 ${NPROC}（避免节点 OOM）"
+bash build.sh -j${NPROC}
 
 # 8. 生成 env.sh
 cd "$MATPL_SRC"

@@ -1,5 +1,8 @@
 #!/bin/bash
 
+# 动态定位 torch 目录与安装前缀（用 find_spec 避免在登录节点 import torch 触发动态库加载）
+TORCH_DIR="$(python -c "import importlib.util, os; spec = importlib.util.find_spec('torch'); print(os.path.dirname(spec.origin) if spec and spec.origin else '')" 2>/dev/null)"
+
 cmake -C ../cmake/presets/basic.cmake \
       -C ../cmake/presets/kokkos-hip.cmake \
       -C ../cmake/presets/hip.cmake \
@@ -11,8 +14,8 @@ cmake -C ../cmake/presets/basic.cmake \
       -DCMAKE_C_FLAGS="-w -fopenmp --offload-arch=gfx936" \
       -DCMAKE_HIP_FLAGS="-O3 -w -ffast-math --offload-arch=gfx936" \
       -DCMAKE_HIP_ARCHITECTURES=gfx936 \
-      -DCMAKE_PREFIX_PATH="/public/home/easyscience2024/.conda/envs/matchem_opt/lib/python3.11/site-packages/torch" \
-      -DCMAKE_INSTALL_PREFIX="/public/home/easyscience2024/wangrui/software/lammps_dcu" \
+      -DCMAKE_PREFIX_PATH="${TORCH_DIR}" \
+      -DCMAKE_INSTALL_PREFIX="${LAMMPS_INSTALL_DIR:-$HOME/lammps_dcu}" \
       -DLAMMPS_MACHINE=mpi \
       -DBUILD_SHARED_LIBS=ON \
       -DBUILD_MPI=ON \

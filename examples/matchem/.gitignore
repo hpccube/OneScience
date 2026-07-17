@@ -1,0 +1,14 @@
+# 作业日志
+*.err
+slurm_*.out
+J_*.out
+J_*.err
+log.lammps
+OUTCAR
+
+# 训练输出与模型产物
+checkpoint
+out.json
+lcurve.out
+*.hdf5
+model_record/
