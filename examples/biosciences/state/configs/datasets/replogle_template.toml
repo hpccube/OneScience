@@ -1,0 +1,14 @@
+# Replace the token with a directory containing prepared Replogle h5ad files.
+[datasets]
+replogle = "__STATE_DATASET_DIR__"
+
+[training]
+replogle = "train"
+
+[zeroshot]
+"replogle.jurkat" = "test"
+
+[fewshot]
+[fewshot."replogle.k562"]
+val = ["AARS"]
+test = ["NUP107"]

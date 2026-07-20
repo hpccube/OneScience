@@ -1,0 +1,22 @@
+name:
+kwargs:
+  embed_key: X_uce
+  embed_size: null
+  pert_rep: onehot
+  basal_rep: sample
+  only_keep_perts_with_expression: false # only keep perturbations for which expression data is available
+  esm_perts_only: false
+  n_basal_samples: 1
+  sampling_random_state: 42
+  split_random_state: 42
+  normalize: true
+  pseudobulk: false
+  load_from_path: null
+  test_cell_type:
+  dataloader_preprocess: null
+  k562_rpe1_name: replogle_k562_rpe1_filtered
+  jurkat_name: replogle_jurkat_filtered
+  hepg2_name: replogle_hepg2_filtered
+  use_consecutive_loading: false
+output_dir: null
+debug: true

@@ -1,0 +1,14 @@
+[datasets]
+replogle = "/data/replogle_nogwps_v2" # ADDS ALL h5 or h5ad files in this folder to training
+
+# Training specifications
+# All cell types in a dataset automatically go into training (excluding zeroshot/fewshot overrides)
+[training]
+replogle = "train"
+
+# Zeroshot specifications - entire cell types go to val or test
+[zeroshot]
+"replogle.k562" = "test"
+
+# Fewshot specifications - explicit perturbation lists
+[fewshot]

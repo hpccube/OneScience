@@ -1,0 +1,44 @@
+# MatterSim 微调基础配置
+# 请复制此文件后，修改下方带 "TODO:" 标记的路径为你本地实际路径。
+
+# 数据路径（TODO: 修改为你的训练数据路径）
+# 默认使用 $ONESCIENCE_DATASETS_DIR/matchem/mattersim/high_level_water.xyz
+train_data_path: ${ONESCIENCE_DATASETS_DIR}/matchem/mattersim/high_level_water.xyz
+
+# 验证数据路径，不需要可保持 null（TODO: 按需修改）
+valid_data_path: null
+
+# checkpoint 路径（TODO: 修改为你的预训练模型路径）
+# 默认使用 $ONESCIENCE_MODELS_DIR/mattersim/mattersim-v1.0.0-1M.pth
+checkpoint: ${ONESCIENCE_MODELS_DIR}/mattersim/mattersim-v1.0.0-1M.pth
+
+# 输出设置
+save_path: ./results/mattersim
+run_name: onescience-mattersim
+
+# 训练超参数
+epochs: 1
+batch_size: 16
+lr: 2.0e-4
+seed: 42
+
+# 设备：cuda 或 cpu，留空则自动检测
+device: cuda
+
+# 训练目标
+cutoff: 5.0
+threebody_cutoff: 4.0
+include_forces: true
+include_stresses: false
+
+# 损失权重
+force_loss_ratio: 1.0
+stress_loss_ratio: 0.1
+
+# 保存与早停
+save_checkpoint: true
+ckpt_interval: 10
+early_stop_patience: 10
+
+# 重新归一化（可选）
+re_normalize: false

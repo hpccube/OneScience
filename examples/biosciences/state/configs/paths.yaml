@@ -1,0 +1,14 @@
+# All large assets live outside the source tree.
+data_root: ${oc.env:ONESCIENCE_DATASETS_DIR,./datasets}/State_dataset
+weights_root: ${oc.env:ONESCIENCE_MODELS_DIR,./weights}/State
+output_root: ${oc.env:STATE_OUTPUT_DIR,./outputs}
+
+transition:
+  data_root: ${paths.data_root}
+  weights_root: ${paths.weights_root}
+  output_root: ${paths.output_root}/transition
+
+embedding:
+  data_root: ${paths.data_root}
+  weights_root: ${paths.weights_root}
+  output_root: ${paths.output_root}/embedding

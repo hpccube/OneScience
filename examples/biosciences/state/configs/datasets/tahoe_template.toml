@@ -1,0 +1,11 @@
+# Replace the token with a directory containing prepared Tahoe h5ad files.
+[datasets]
+tahoe = "__STATE_DATASET_DIR__"
+
+[training]
+tahoe = "train"
+
+[fewshot]
+[fewshot."tahoe.C32"]
+val = []
+test = []

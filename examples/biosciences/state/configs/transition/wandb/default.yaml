@@ -1,0 +1,6 @@
+# Generic wandb configuration
+# Users should customize these values for their own use
+entity: your_entity_name
+project: state
+local_wandb_dir: ./wandb_logs
+tags: []

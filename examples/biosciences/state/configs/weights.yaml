@@ -1,0 +1,31 @@
+# Paths are relative to ${ONESCIENCE_MODELS_DIR}/State.
+transition:
+  st_hvg_replogle:
+    directory: ST-HVG-Replogle/{split_mode}/{cell_line}
+    checkpoint_order:
+      - checkpoints/final.ckpt
+      - checkpoints/best.ckpt
+      - checkpoints/last.ckpt
+    embed_key: X_hvg
+    dataset: Replogle-Nadig-Preprint
+  st_se_replogle:
+    directory: ST-SE-Replogle/{split_mode}/{cell_line}
+    checkpoint_order:
+      - checkpoints/final.ckpt
+      - checkpoints/best.ckpt
+      - checkpoints/last.ckpt
+    embed_key: X_state
+    dataset: Replogle-Nadig-Preprint
+  required_artifacts:
+    - config.yaml
+    - var_dims.pkl
+    - pert_onehot_map.pt
+    - batch_onehot_map.pkl
+
+embedding:
+  se_600m:
+    directory: SE-600M
+    checkpoint: se600m_epoch16.ckpt
+    required_artifacts:
+      - config.yaml
+      - protein_embeddings.pt

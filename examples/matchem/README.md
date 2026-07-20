@@ -20,6 +20,7 @@
 | MACE 训练 | `mace/` | 已包含在 `onescience[matchem]` 基础环境中 |
 | UMA 训练 | `uma/` | 已包含在 `onescience[matchem]` 基础环境中 |
 | MatRIS 训练 | `matris/` | 已包含在 `onescience[matchem]` 基础环境中 |
+| MatterSim 推理/微调 | `mattersim/` | 源码内嵌在 `src/onescience/`，随 `onescience[matchem]` 一起安装 |
 | DP 训练 | `dp/` | 需额外编译安装 deepmd-kit（PyTorch 后端） |
 | NEP 训练 | `nep/` | 需额外编译安装 MatPL（DCU 原生算子） |
 | LAMMPS 推理 | `tools/lmp/` | 需自行编译/解压 LAMMPS with HIP，支持 DP/NEP/MACE 后端 |
@@ -132,6 +133,16 @@ cd matris/demo
 # 根据实际算例执行
 ```
 
+### MatterSim 推理与微调
+
+```bash
+cd mattersim
+python single_point.py
+```
+
+MatterSim 的结构弛豫、MD 和 OneScience `torchrun` 微调命令见
+`mattersim/README.md`。
+
 ### DP 训练
 
 ```bash
@@ -193,6 +204,7 @@ examples/matchem/
 ├── dp/                     # DeepMD-kit 训练
 ├── mace/                   # MACE 训练
 ├── matris/                 # MatRIS 训练
+├── mattersim/              # MatterSim 推理与微调
 ├── nep/                    # NEP 训练
 ├── uma/                    # UMA 训练
 └── tools/lmp/              # LAMMPS 推理

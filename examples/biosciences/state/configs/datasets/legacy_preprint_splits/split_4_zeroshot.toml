@@ -1,0 +1,15 @@
+# Dataset paths - maps dataset names to their directories
+[datasets]
+parse = "/data/parse_final_concat"
+
+# Training specifications
+# All cell types in a dataset automatically go into training (excluding zeroshot/fewshot overrides)
+[training]
+parse = "train"
+
+# Zeroshot specifications - entire cell types go to val or test
+[zeroshot]
+"parse.CD4_Memory" = "test"
+
+# Fewshot specifications - explicit perturbation lists
+[fewshot]

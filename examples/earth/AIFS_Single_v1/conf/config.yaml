@@ -1,0 +1,293 @@
+# =============================================================================
+# AIFS v1.1 — Configuration
+# =============================================================================
+
+# ═════════════════════════════════════════════════════════════════════════════
+# Data  (most frequently modified)
+# ═════════════════════════════════════════════════════════════════════════════
+data:
+  data_dir: "./fake_era5"       # ERA5 H5 root (contains data/{year}.h5)
+  # data_dir: "/work2/share/sugonhpcapp01/ERA5"
+  train_years:                      # training set
+    - 2005
+    - 2006
+  val_years:                        # validation set
+    - 2007
+  test_years:                       # test / inference set
+    - 2008
+  test_lead_time: 24                # hours (240 = 10 days, official default)
+  fake_data_nt: 60                   # timesteps per fake-data year
+
+# ═════════════════════════════════════════════════════════════════════════════
+# Hardware
+# ═════════════════════════════════════════════════════════════════════════════
+hardware:
+  device: "dcu"
+  device_ids: "0"
+
+# ═════════════════════════════════════════════════════════════════════════════
+# Checkpoint
+# ═════════════════════════════════════════════════════════════════════════════
+checkpoint:
+  pretrained: "./weights/model_bak.ckpt"   # official AIFS v1.1 checkpoint (relative to aifs_v11/)
+  output_dir: "./weights"
+
+# ═════════════════════════════════════════════════════════════════════════════
+# Model  (src/onescience/models/aifs/aifs.py — onescience-style wrapper)
+# ═════════════════════════════════════════════════════════════════════════════
+model:
+  module: "onescience.models.aifs.AIFS"          # Python import path
+  description: >-
+    Wraps AnemoiModelEncProcDec (encoder-processor-decoder GNN) loaded from
+    the pretrained checkpoint.  Exposes input/output variable ordering,
+    N320 grid coordinates, and node weights via public properties.
+
+# ═════════════════════════════════════════════════════════════════════════════
+# Output
+# ═════════════════════════════════════════════════════════════════════════════
+output:
+  inference_dir: "./output"
+  plot_dir: "./plots"
+
+# ═════════════════════════════════════════════════════════════════════════════
+# Training  (config_pretraining.yaml)
+# ═════════════════════════════════════════════════════════════════════════════
+training:
+  batch_size: 1
+  from_scratch: true               # true: random weights (like FengWu/Fuxi); false: load pretrained
+  accum_grad_batches: 1
+  max_steps: 260000
+  warmup_steps: 0
+  peak_lr: 3.125e-5
+  min_lr: 3.0e-7
+  precision: "16-mixed"
+  amp_dtype: "float16"                # "float16" or "bfloat16" (DCU may need bfloat16)
+  gradient_clip_val: 32.0
+  gradient_clip_algorithm: "value"
+  multistep_input: 2
+  seed: 42
+
+  optimizer:
+    betas: [0.9, 0.95]
+    weight_decay: 0.01              # official AdamW weight_decay
+
+  lr_schedule:
+    type: "cosine"
+    warmup: 1000
+    iterations: 260000
+
+  log_interval: 100
+  val_interval: 500
+  save_interval: 5000
+
+# ═════════════════════════════════════════════════════════════════════════════
+# Normalizer  (config_pretraining.yaml data.normalizer)
+# ═════════════════════════════════════════════════════════════════════════════
+normalizer:
+  default: "mean-std"
+  statistics_path: "weights/era5_stats.npz"  # auto-computed if missing; set "" for identity (fake data)
+  remap:
+    cp: "tp"
+    sf: "tp"
+  std:
+    - tp
+    - cp
+    - sf
+    - ro
+    - tcw
+    - ssrd
+    - q_50
+    - q_100
+    - q_150
+    - q_200
+    - q_250
+    - q_300
+    - q_400
+    - q_500
+    - q_600
+    - q_700
+    - q_850
+    - q_925
+    - q_1000
+  max:
+    - sdor
+    - slor
+    - z
+  none:
+    - cos_latitude
+    - cos_longitude
+    - sin_latitude
+    - sin_longitude
+    - cos_julian_day
+    - cos_local_time
+    - sin_julian_day
+    - sin_local_time
+    - insolation
+    - lsm
+    - tcc
+    - mcc
+    - hcc
+    - lcc
+    - swvl1
+    - swvl2
+
+# ═════════════════════════════════════════════════════════════════════════════
+# Loss scaling  (config_pretraining.yaml training.variable_loss_scaling)
+# ═════════════════════════════════════════════════════════════════════════════
+loss_scaling:
+  default: 1
+  pl:
+    q: 0.6
+    t: 6
+    u: 0.8
+    v: 0.5
+    w: 0.001
+    z: 12
+  sfc:
+    sp: 10
+    10u: 0.5
+    10v: 0.5
+    100u: 0.1
+    100v: 0.1
+    2d: 0.5
+    tp: 0.025
+    cp: 0.0025
+    ro: 0.0025
+    sf: 0.025
+    tcc: 0.1
+    mcc: 0.1
+    lcc: 0.1
+    hcc: 0.1
+    swvl2: 2
+    swvl1: 1
+    stl2: 10
+    stl1: 1
+    ssrd: 0.05
+    strd: 0.1
+  pressure_level_scaler:
+    minimum: 0.2
+    slope: 0.001
+
+# ═════════════════════════════════════════════════════════════════════════════
+# AIFS variable definitions  (immutable — from official checkpoint)
+# ═════════════════════════════════════════════════════════════════════════════
+aifs_variables:
+  surface:
+    - 10u
+    - 10v
+    - 2d
+    - 2t
+    - msl
+    - skt
+    - sp
+    - tcw
+    - lsm
+    - z
+    - slor
+    - sdor
+
+  soil:
+    - stl1
+    - stl2
+    - swvl1
+    - swvl2
+
+  pressure_level:
+    - z
+    - t
+    - u
+    - v
+    - w
+    - q
+
+  pressure_levels:
+    - 50
+    - 100
+    - 150
+    - 200
+    - 250
+    - 300
+    - 400
+    - 500
+    - 600
+    - 700
+    - 850
+    - 925
+    - 1000
+
+  diagnostic:
+    - tp
+    - cp
+    - sf
+    - tcc
+    - hcc
+    - lcc
+    - mcc
+    - ro
+    - ssrd
+    - strd
+    - 100u
+    - 100v
+
+  computed_forcing:
+    - cos_latitude
+    - cos_longitude
+    - sin_latitude
+    - sin_longitude
+    - cos_julian_day
+    - cos_local_time
+    - sin_julian_day
+    - sin_local_time
+    - insolation
+
+# ═════════════════════════════════════════════════════════════════════════════
+# ERA5 H5 → AIFS variable-name mapping
+# ═════════════════════════════════════════════════════════════════════════════
+# Keys = canonical AIFS names (DO NOT CHANGE).
+# Values = ERA5 H5 variable names (update to match your H5).
+era5_mapping:
+  surface:
+    10u: "10m_u_component_of_wind"
+    10v: "10m_v_component_of_wind"
+    2d: "2m_dewpoint_temperature"
+    2t: "2m_temperature"
+    msl: "mean_sea_level_pressure"
+    skt: "skin_temperature"
+    sp: "surface_pressure"
+    tcw: "total_column_water"
+    lsm: "land_sea_mask"
+    z: "geopotential"
+    slor: "slope_of_sub_gridscale_orography"
+    sdor: "standard_deviation_of_orography"
+
+  soil:
+    stl1: "soil_temperature_level_1"
+    stl2: "soil_temperature_level_2"
+    swvl1: "volumetric_soil_water_layer_1"
+    swvl2: "volumetric_soil_water_layer_2"
+
+  pressure_level:
+    z: "geopotential_{level}"
+    t: "temperature_{level}"
+    u: "u_component_of_wind_{level}"
+    v: "v_component_of_wind_{level}"
+    w: "vertical_velocity_{level}"
+    q: "specific_humidity_{level}"
+
+  diagnostic:
+    tp: "total_precipitation"
+    cp: "convective_precipitation"
+    sf: "snowfall_water_equivalent"
+    tcc: "total_cloud_cover"
+    hcc: "high_cloud_cover"
+    lcc: "low_cloud_cover"
+    mcc: "medium_cloud_cover"
+    ro: "runoff"
+    ssrd: "surface_solar_radiation_downwards"
+    strd: "surface_thermal_radiation_downwards"
+    100u: "100m_u_component_of_wind"
+    100v: "100m_v_component_of_wind"
+
+  fuzzy_fixes:
+    surface_solar_radiation_downwards: "surface_solar_radiation"
+    total_column_water_vapour: "total_column_water"

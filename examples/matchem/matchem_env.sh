@@ -16,18 +16,18 @@ export ONESCIENCE_MODELS_DIR="/public/share/sugonhpcapp01/onestore/onemodels"
 export device="gpu"  # 根据实际平台改为 gpu 或 dcu
 export LD_LIBRARY_PATH="${CONDA_PREFIX:-}/lib:${LD_LIBRARY_PATH:-}"
 
-# ---------- 3. 外部软件路径（使用 dp_install.sh / matpl_install.sh / lmp_install.sh 时会自动更新） ----------
+# ---------- 3. 外部软件路径（TODO: 修改为你自己的实际路径，默认当前目录） ----------
 # DeepMD-kit 源码目录
-export DEEPMD_SRC_DIR=/public/home/yuxiaodong/deepmd-kit
+export DEEPMD_SRC_DIR="${DEEPMD_SRC_DIR:-./deepmd-kit}"
 
 # MatPL 源码目录
-export MATPL_SRC_DIR=/public/home/yuxiaodong/MatPL
+export MATPL_SRC_DIR="${MATPL_SRC_DIR:-./MatPL}"
 
 # LAMMPS 安装目录
-export LAMMPS_INSTALL_DIR="/public/home/yuxiaodong/lammps_dcu"
+export LAMMPS_INSTALL_DIR="${LAMMPS_INSTALL_DIR:-./lammps_dcu}"
 
 # DeepMD C++ 接口目录
-export DP_CPP_DIR="/public/home/yuxiaodong/dp_cpp_dcu"
+export DP_CPP_DIR="${DP_CPP_DIR:-./dp_cpp_dcu}"
 
 # ---------- 4. 加载集群模块与 conda ----------
 set +u

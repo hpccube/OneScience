@@ -11,7 +11,8 @@ hydra-core>=1.2.0
 termcolor>=2.1.1
 wandb>=0.13.7
 mlflow>=2.1.1
-pytest>=6.0.0
+# pytest>=6.0.0
+pytest==9.1.1
 pyyaml>=6.0
 h5py>=3.7.0
 netcdf4==1.6.3
@@ -41,6 +42,7 @@ xtb
 pymatgen
 torch-runstats>=0.2.0
 torch-ema>=0.3.0
+deprecated>=1.2.0
 matscipy
 python-hostlist
 configargparse
@@ -62,6 +64,13 @@ chex==0.1.90
 flax==0.10.4
 megatron-core==0.14.0rc2
 pyranges
+
+# earth 
+anemoi-graphs==0.5.2
+anemoi-models==0.9.0
+Cartopy==0.25.0
+earthkit-regrid==0.4.0
+ecmwf-opendata==0.3.30
 
 # evo2
 fiddle==0.3.0
@@ -221,3 +230,9 @@ meeko==0.2
 pdb2pqr==3.6.1
 jinja2==3.1.4
 networkx==3.3
+
+# State
+anndata==0.12.10
+cell-load==0.10.4
+geomloss==0.3.1
+scanpy==1.11.2

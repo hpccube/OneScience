@@ -104,6 +104,30 @@ def discover_build_hooks():
     return hooks
 
 
+def discover_extensions():
+    """Collect extension modules declared by package configs."""
+    extensions = []
+    src_dir = os.path.join(os.path.dirname(__file__), "src", "onescience")
+
+    for root, dirs, files in os.walk(src_dir):
+        if "package_config.py" in files:
+            try:
+                rel_path = os.path.relpath(root, src_dir)
+                module_parts = ["onescience"] + rel_path.split(os.sep) if rel_path != "." else ["onescience"]
+                module_name = ".".join(module_parts)
+                config_path = os.path.join(root, "package_config.py")
+                spec = importlib.util.spec_from_file_location(f"{module_name}.package_config", config_path)
+                config_module = importlib.util.module_from_spec(spec)
+                spec.loader.exec_module(config_module)
+
+                if hasattr(config_module, "get_extensions"):
+                    extensions.extend(config_module.get_extensions(PROJECT_ROOT))
+            except Exception as e:
+                raise RuntimeError(f"Failed to load extensions from {root}: {e}") from e
+
+    return extensions
+
+
 def run_build_hooks():
     """
     执行所有构建钩子
@@ -198,6 +222,13 @@ earth_requires = [
     "seaborn",
     "opencv-python",
     "absl-py",
+    "torch_geometric",
+    "pytest",
+    "ecmwf-opendata",
+    "earthkit-regrid",
+    "Cartopy",
+    "anemoi-graphs",
+    "anemoi-models",
 ]
 
 cfd_requires = [
@@ -377,6 +408,8 @@ matchem_requires = [
     "torchtnt",
     "torchmetrics",
     "torch-ema",
+    "torch-runstats",
+    "deprecated",
     "prettytable",
     'pytest',
     "cuequivariance",
@@ -386,6 +419,9 @@ matchem_requires = [
     "torch_geometric",
     "xtb",
     "rdkit",
+    "loguru",
+    "pydantic",
+    "prettytable",
 ]
 
 
@@ -421,6 +457,7 @@ setup(
     extras_require=extras,
     include_package_data=True,
     package_data=discover_package_data(),
+    ext_modules=discover_extensions(),
     zip_safe=False,
     entry_points={
         "console_scripts": [

@@ -1,0 +1,96 @@
+defaults:
+  - _self_
+
+paths:
+  data_root: ${oc.env:ONESCIENCE_DATASETS_DIR,./datasets}/State_dataset/SE-167M-Human-smoke
+  weights_root: ${oc.env:STATE_OUTPUT_DIR,./outputs}/se_smoke
+  output_root: ${oc.env:STATE_OUTPUT_DIR,./outputs}/se_smoke
+
+experiment:
+  name: state_embedding
+  local: local
+  compiled: false
+  deaware: false
+  cumulative_flops_use_backward: true
+  profile:
+    enable_profiler: false
+    profile_steps: [10, 100]
+    max_steps: 110
+  num_epochs: 16
+  num_nodes: 1
+  num_gpus_per_node: 1
+  port: 12400
+  val_check_interval: 1000
+  limit_val_batches: 100
+  ddp_timeout: 3600
+  checkpoint:
+    path: ${paths.weights_root}/checkpoints
+    save_top_k: 2
+    monitor: validation/val_loss
+    every_n_train_steps: 1000
+
+wandb:
+  enable: false
+  project: state
+
+embeddings:
+  current: null
+  profile:
+    all_embeddings: ${paths.data_root}/profiles/all_embeddings.pt
+    ds_emb_mapping: ${paths.data_root}/profiles/ds_emb_mapping.torch
+    valid_genes_masks: ${paths.data_root}/profiles/valid_genes_masks.torch
+    size: 5120
+    num: 19790
+
+dataset:
+  name: state
+  seed: 42
+  num_cells: 0
+  num_train_workers: 4
+  num_val_workers: 2
+  current: null
+  profile:
+    ds_type: h5ad
+    train: ${paths.data_root}/manifests/train.csv
+    val: ${paths.data_root}/manifests/val.csv
+    filter: true
+  pad_length: 2048
+  pad_token_idx: 0
+  cls_token_idx: 3
+  P: 512
+  N: 512
+  S: 512
+
+tokenizer:
+  token_dim: 5120
+
+model:
+  name: state_embedding
+  batch_size: 128
+  emsize: 512
+  d_hid: 1024
+  nhead: 16
+  nlayers: 8
+  dropout: 0.1
+  output_dim: 512
+  use_flash_attention: true
+  rda: true
+  counts: true
+  dataset_correction: true
+  num_downsample: 1
+  variable_masking: true
+
+task:
+  mask: 0.2
+
+optimizer:
+  max_lr: 1.0e-05
+  weight_decay: 0.01
+  start: 0.33
+  end: 1.0
+  max_grad_norm: 0.8
+  gradient_accumulation_steps: 8
+
+loss:
+  name: tabular
+  apply_normalization: false

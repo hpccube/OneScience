@@ -1,0 +1,15 @@
+# Paths are relative to ${ONESCIENCE_DATASETS_DIR}/State_dataset.
+datasets:
+  replogle:
+    directory: Replogle-Nadig-Preprint
+    format: h5ad
+  se_human_smoke:
+    directory: SE-167M-Human-smoke/19k_human_filtered_scbasecount
+    all_embeddings: SE-167M-Human-smoke/all_embeddings_Preprint-SE-167M-Human.pt
+    format: h5ad
+  parse:
+    directory: State-Parse-Filtered
+    format: h5ad
+  tahoe_smoke:
+    directory: State-Tahoe-Filtered-smoke
+    format: h5ad
