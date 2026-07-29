@@ -1,6 +1,8 @@
 """Preprocess a raw AnnData file for State Transition training."""
 
-from onescience.models.state.cli._tx._preprocess_train import (
+import _bootstrap  # noqa: F401
+
+from _cli._tx._preprocess_train import (
     add_arguments_preprocess_train,
     run_tx_preprocess_train,
 )

@@ -1,6 +1,8 @@
 """Generate State Embeddings for a new AnnData file."""
 
-from onescience.models.state.cli._emb._transform import add_arguments_transform, run_emb_transform
+import _bootstrap  # noqa: F401
+
+from _cli._emb._transform import add_arguments_transform, run_emb_transform
 
 
 def main() -> None:

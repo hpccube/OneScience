@@ -4,8 +4,7 @@ from importlib import import_module
 
 
 _EXPORTS = {
-    "Inference": "onescience.models.state.embedding.inference",
-    "StateEmbeddingModel": "onescience.modules.state.embedding.model",
+    "StateEmbeddingModel": "onescience.models.state.embedding.model",
 }
 
 __all__ = list(_EXPORTS)

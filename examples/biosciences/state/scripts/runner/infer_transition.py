@@ -1,6 +1,8 @@
 """Run State Transition inference on a new AnnData file."""
 
-from onescience.models.state.cli._tx._infer import add_arguments_infer, run_tx_infer
+import _bootstrap  # noqa: F401
+
+from _cli._tx._infer import add_arguments_infer, run_tx_infer
 
 
 def main() -> None:

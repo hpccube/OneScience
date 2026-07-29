@@ -1,0 +1,103 @@
+learning_rate: 0.00003
+seed: 42
+
+groups:
+  EMP:
+    dataset_parent: GUE/EMP
+    tasks: [H3, H3K14ac, H3K36me3, H3K4me1, H3K4me2, H3K4me3, H3K79me3, H3K9ac, H4, H4ac]
+    model_max_length: 128
+    train_batch_size: 8
+    eval_batch_size: 16
+    num_train_epochs: 3
+    save_steps: 200
+    eval_steps: 200
+    warmup_steps: 50
+
+  promoter_core_non_tata:
+    dataset_parent: GUE/prom
+    tasks: [prom_core_all, prom_core_notata]
+    model_max_length: 20
+    train_batch_size: 8
+    eval_batch_size: 16
+    num_train_epochs: 4
+    save_steps: 400
+    eval_steps: 400
+    warmup_steps: 50
+
+  promoter_core_tata:
+    dataset_parent: GUE/prom
+    tasks: [prom_core_tata]
+    model_max_length: 20
+    train_batch_size: 8
+    eval_batch_size: 16
+    num_train_epochs: 10
+    save_steps: 200
+    eval_steps: 200
+    warmup_steps: 50
+
+  promoter_300_non_tata:
+    dataset_parent: GUE/prom
+    tasks: [prom_300_all, prom_300_notata]
+    model_max_length: 70
+    train_batch_size: 8
+    eval_batch_size: 16
+    num_train_epochs: 4
+    save_steps: 400
+    eval_steps: 400
+    warmup_steps: 50
+
+  promoter_300_tata:
+    dataset_parent: GUE/prom
+    tasks: [prom_300_tata]
+    model_max_length: 70
+    train_batch_size: 8
+    eval_batch_size: 16
+    num_train_epochs: 10
+    save_steps: 200
+    eval_steps: 200
+    warmup_steps: 50
+
+  splice:
+    dataset_parent: GUE/splice
+    tasks: [reconstructed]
+    model_max_length: 80
+    train_batch_size: 8
+    eval_batch_size: 16
+    num_train_epochs: 5
+    save_steps: 200
+    eval_steps: 200
+    warmup_steps: 50
+
+  virus:
+    dataset_parent: GUE/virus
+    tasks: [covid]
+    model_max_length: 256
+    train_batch_size: 32
+    eval_batch_size: 32
+    num_train_epochs: 8
+    save_steps: 200
+    eval_steps: 200
+    warmup_steps: 50
+
+  mouse:
+    dataset_parent: GUE/mouse
+    tasks: [0, 1, 2, 3, 4]
+    model_max_length: 30
+    train_batch_size: 8
+    eval_batch_size: 64
+    num_train_epochs: 5
+    max_steps: 1000
+    save_steps: 200
+    eval_steps: 200
+    warmup_steps: 30
+
+  tf:
+    dataset_parent: GUE/tf
+    tasks: [0, 1, 2, 3, 4]
+    model_max_length: 30
+    train_batch_size: 8
+    eval_batch_size: 64
+    num_train_epochs: 3
+    save_steps: 200
+    eval_steps: 200
+    warmup_steps: 30

@@ -40,7 +40,7 @@ https://www.biorxiv.org/content/10.1101/2025.06.26.661135v2
 - 使用 SE-600M 为新 h5ad 生成 `X_state`
 - 通过通用 runner 替换 Tahoe、Parse、Replogle 权重和数据
 - few-shot / zero-shot Replogle 官方划分
-- ST checkpoint 的 `final.ckpt → best.ckpt → last.ckpt` fallbackssh
+- ST checkpoint 的 `final.ckpt → best.ckpt → last.ckpt` fallback
 
 这里的“全量复现”表示数据规模和官方划分资源已具备；严格复现论文还必须使用对应权重目录保存的模型结构、训练参数、随机种子和 split 配置，并记录实际硬件与依赖版本。
 
@@ -87,68 +87,42 @@ https://www.biorxiv.org/content/10.1101/2025.06.26.661135v2
 | `scripts/se_smoke_*.sh` | SE smoke profile 和训练 | 主线一 |
 | `scripts/se600m_smoke_transform.sh` | SE-600M transform | 主线一 |
 | `scripts/st_hvg_replogle_*.sh` | Replogle ST-HVG 四阶段入口 | 主线二 |
-| `scripts/st_se_replogle_*.sh` | Replogle ST-SE 四阶段入口 | 主线三 |
+| `scripts/st_se_replogle_*.sh` | Replogle ST-SE 五阶段入口 | 主线三 |
 | `examples/random.h5ad` | 小型示例 AnnData | 仅用于轻量接口检查 |
 | `outputs/` | 默认输出目录 | 不提交 Git |
 | `licenses/state/` | STATE 许可证副本 | 位于 OneScience 仓库根目录 |
 
 # 使用说明
+## 1. 使用环境
 
-## 1. OneCode 使用
+在安装onescience库环境下执行。
 
-可通过 OneCode 在线环境体验智能化一键式 AI4S 编程：
-
-[点击体验智能化一键式 AI4S 编程](https://web-2069360198568017922-iaaj.ksai.scnet.cn:58043/home)
-
-## 2. 手动安装使用
-
-**硬件要求**
-
-- 推荐使用 NVIDIA GPU 或海光 DCU 运行模型训练和推理。
-- CPU 可用于脚本语法、导入、配置和小数据连通性验证。
-- SE-600M checkpoint 约 11.5 GB，加载和推理需要足够的主存与显存。
-- Parse 全量数据约 343 GB，需要额外考虑读取内存、缓存和输出空间。
-- DCU 用户需要预先安装与集群匹配的 DTK 和 OneScience 推荐环境。
-
-**软件要求**
-
-- Python 3.10 以上；如需与原 `arc-state 0.11.2` 完全一致，建议使用 Python 3.11。
-- OneScience 生信依赖，包括 PyTorch、Lightning、AnnData、Scanpy、cell-load 和 cell-eval。
-- LanceDB 查询为可选功能，需要额外安装 `lancedb`。
-
-安装 OneScience 生信环境：
+## 2.默认数据库
 
 ```bash
-conda create -n onescience-state python=3.11 -y
-conda activate onescience-state
-pip install -e ".[bio]"
-```
-
-**环境检测**
-
-- NVIDIA GPU：
-
-```bash
-nvidia-smi
-```
-
-- 海光 DCU：
-
-```bash
-hy-smi
+ONESCIENCE_MODELS_DIR = /public/share/sugonhpcapp01/onestore/onemodels/
+ONESCIENCE_DATASETS_DIR= /public/share/sugonhpcapp01/onestore/onedatasets/
 ```
 
 ## 3. 快速开始
 
 ### 3.1 设置资产路径
 
-```bash
-cd /path/to/state
+以下命令均从 `examples/biosciences/state` 目录执行。仓库根目录的 `env.sh` 提供站点默认模型和数据路径，输出无需设置环境变量，默认写入当前示例的 `outputs/`：
 
-export ONESCIENCE_MODELS_DIR=../..
-export ONESCIENCE_DATASETS_DIR=../..
-export STATE_OUTPUT_DIR=../..
+```bash
+cd /path/to/onescience/examples/biosciences/state
 ```
+
+仅当模型、数据或输出位于其他目录时才覆盖对应变量：
+
+```bash
+export ONESCIENCE_MODELS_DIR=/path/to/onemodels
+export ONESCIENCE_DATASETS_DIR=/path/to/onedatasets
+export STATE_OUTPUT_DIR=/path/to/state_outputs
+```
+
+所有 shell 入口都由 `_state_common.sh` 将输出默认设为 STATE 示例目录下的 `outputs/`；从本文要求的工作目录执行时，等价于 `${STATE_OUTPUT_DIR:-$PWD/outputs}`。直接调用 Python runner 时不会加载 `_state_common.sh`，因此本文的直接 Python 示例在参数中显式使用这个等价值。
 
 ### 3.2 默认训练数据来源
 
@@ -156,11 +130,11 @@ export STATE_OUTPUT_DIR=../..
 
 | 训练入口 | 原始数据来源 | 训练实际读取位置 | 类型 |
 | :--- | :--- | :--- | :--- |
-| `scripts/se_smoke_train.sh` | `State_dataset/SE-167M-Human-smoke/19k_human_filtered_scbasecount/*.h5ad` | `${STATE_OUTPUT_DIR}/se_smoke/profile` 及生成的 train/val CSV | smoke 训练验证 |
-| `scripts/st_hvg_replogle_train.sh` | `State_dataset/Replogle-Nadig-Preprint/<cell-line>.h5ad` | `${STATE_OUTPUT_DIR}/st_hvg_replogle/data` 中预处理后的 `X_hvg` h5ad | 全量 Replogle 数据的单细胞系/划分训练 |
-| `scripts/st_se_replogle_train.sh` | `State_dataset/Replogle-Nadig-Preprint/<cell-line>.h5ad` | `${STATE_OUTPUT_DIR}/st_se_replogle/data` 中 SE-600M 生成 `X_state` 后的 h5ad | 全量 Replogle 数据的单细胞系/划分训练 |
+| `scripts/se_smoke_train.sh` | `State_dataset/SE-167M-Human-smoke/19k_human_filtered_scbasecount/*.h5ad` | `${STATE_OUTPUT_DIR:-$PWD/outputs}/se_smoke/profile` 及生成的 train/val CSV | smoke 训练验证 |
+| `scripts/st_hvg_replogle_train.sh` | `State_dataset/Replogle-Nadig-Preprint/<cell-line>.h5ad` | `${STATE_OUTPUT_DIR:-$PWD/outputs}/st_hvg_replogle/data` 中预处理后的 `X_hvg` h5ad | 全量 Replogle 数据的单细胞系/划分训练 |
+| `scripts/st_se_replogle_train.sh` | `State_dataset/Replogle-Nadig-Preprint/<cell-line>.h5ad` | `${STATE_OUTPUT_DIR:-$PWD/outputs}/st_se_replogle/data` 或 `data_all` 中 SE-600M 生成并预处理的 `X_state` h5ad | 全量 Replogle 数据的单细胞系/划分训练 |
 
-`STATE_OUTPUT_DIR` 中的文件是从 `State_dataset` 预处理得到的训练中间产物，不是另外的示例数据。运行训练前必须先执行对应主线的 preprocess 脚本。
+输出目录中的文件是从 `State_dataset` 预处理得到的训练中间产物，不是另外的示例数据。运行训练前必须先执行对应主线的 preprocess 脚本。
 
 另外两组现有数据默认不由专用 Shell 自动训练：
 
@@ -176,6 +150,7 @@ export STATE_OUTPUT_DIR=../..
 ```bash
 bash scripts/se_smoke_preprocess.sh
 ```
+
 默认输入：
 
 ```text
@@ -185,9 +160,9 @@ ${ONESCIENCE_DATASETS_DIR}/State_dataset/SE-167M-Human-smoke/
 默认输出：
 
 ```text
-${STATE_OUTPUT_DIR}/se_smoke/manifests/
-${STATE_OUTPUT_DIR}/se_smoke/profile/
-${STATE_OUTPUT_DIR}/se_smoke/config.yaml
+${STATE_OUTPUT_DIR:-$PWD/outputs}/se_smoke/manifests/
+${STATE_OUTPUT_DIR:-$PWD/outputs}/se_smoke/profile/
+${STATE_OUTPUT_DIR:-$PWD/outputs}/se_smoke/config.yaml
 ```
 
 #### 步骤二：训练 SE smoke 模型
@@ -212,7 +187,7 @@ bash scripts/se600m_smoke_transform.sh
 
 ```text
 输入：${ONESCIENCE_DATASETS_DIR}/State_dataset/SE-167M-Human-smoke/19k_human_filtered_scbasecount/SRX10188960.h5ad
-输出：${STATE_OUTPUT_DIR}/se600m_smoke/SRX10188960_x_state.h5ad
+输出：${STATE_OUTPUT_DIR:-$PWD/outputs}/se600m_smoke/SRX10188960_x_state.h5ad
 ```
 
 替换输入输出：
@@ -245,8 +220,7 @@ export STATE_REPLOGLE_CELL_LINE=hepg2
 export STATE_REPLOGLE_SPLIT_MODE=fewshot
 ```
 
-可选细胞系：`hepg2`、`jurkat`、`k562`、`rpe1`。
-可选划分：`fewshot`、`zeroshot`。
+这两个变量可不设置，默认分别为 `hepg2` 和 `fewshot`。可选细胞系：`hepg2`、`jurkat`、`k562`、`rpe1`；可选划分：`fewshot`、`zeroshot`。
 
 #### 步骤一：生成 `X_hvg`
 
@@ -299,7 +273,7 @@ bash scripts/st_se_replogle_preprocess.sh
 ```bash
 bash scripts/st_se_replogle_prepare_all.sh
 
-STATE_ST_SE_DATA_DIR=${STATE_OUTPUT_DIR}/st_se_replogle/data_all \
+STATE_ST_SE_DATA_DIR="${STATE_OUTPUT_DIR:-$PWD/outputs}/st_se_replogle/data_all" \
 bash scripts/st_se_replogle_train.sh \
   training.max_steps=10 \
   training.batch_size=2 \
@@ -308,15 +282,23 @@ bash scripts/st_se_replogle_train.sh \
 
 #### 步骤三：使用 ST-SE-Replogle 预测并评估
 
-如果使用官方权重需要注意数据匹配，以下为上述流程生成的数据进行预测评估的示例；
+使用下载的官方权重和上述流程生成的数据：
+
+```bash
+bash scripts/st_se_replogle_predict.sh --profile minimal
+```
+
+如果步骤二已经生成本地训练 run，也可以直接评估该 run。即使未设置 `STATE_OUTPUT_DIR`，以下命令仍会读取当前示例目录下的 `outputs/`：
 
 ```bash
 python scripts/runner/predict_transition.py \
-  --output-dir ${STATE_OUTPUT_DIR}/st_se_replogle/runs/st_se_replogle \
+  --output-dir "${STATE_OUTPUT_DIR:-$PWD/outputs}/st_se_replogle/runs/st_se_replogle" \
   --checkpoint last.ckpt \
-  --toml ${STATE_OUTPUT_DIR}/st_se_replogle/configs/train.toml \
+  --toml "${STATE_OUTPUT_DIR:-$PWD/outputs}/st_se_replogle/configs/train.toml" \
   --profile minimal
 ```
+
+本地训练预测要求 `--output-dir` 指向完整 run 目录，其中必须存在 `config.yaml`、`data_module.torch`、映射文件和 `checkpoints/last.ckpt`。官方权重预测应使用 shell wrapper；wrapper 会在默认输出目录中创建运行时配置，避免官方 `config.yaml` 中的旧机器绝对路径影响当前用户。
 
 #### 步骤四：完整联合推理
 
@@ -375,8 +357,8 @@ adata.X                         基因表达矩阵
 adata.obs[pert_col]             扰动标签
 adata.obs[cell_type_key]        细胞类型或细胞系
 adata.obs[batch_col]            donor、plate、gem_group 等批次
-adata.obsm["X_hvg"]            ST-HVG 输入
-adata.obsm["X_state"]          ST-SE 输入
+adata.obsm["X_hvg"]             ST-HVG 输入
+adata.obsm["X_state"]           ST-SE 输入
 ```
 
 不同数据的默认字段：
@@ -412,6 +394,7 @@ ST 模型目录不能只包含 checkpoint，至少需要：
 ```text
 <run>/
 ├── config.yaml
+├── data_module.torch
 ├── var_dims.pkl
 ├── pert_onehot_map.pt
 ├── batch_onehot_map.pkl 或 batch_onehot_map.torch

@@ -52,6 +52,16 @@ lmdb==1.6.2
 orjson
 matplotlib
 contextlib2
+emmet-core>=0.84.2
+fire
+pytorch-lightning==2.0.6
+smact>=3.2.0
+pydantic-settings
+blake3
+inflect
+pubchempy
+pybtex
+pymatgen-io-validation
 ml-collections==0.1.1
 dm-tree==0.1.8
 dm-haiku==0.0.14
@@ -236,3 +246,8 @@ anndata==0.12.10
 cell-load==0.10.4
 geomloss==0.3.1
 scanpy==1.11.2
+
+# boltz
+types-requests
+einx==0.3.0
+chembl-structure-pipeline==1.2.2

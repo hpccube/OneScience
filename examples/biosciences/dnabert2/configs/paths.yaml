@@ -1,0 +1,7 @@
+# Large assets remain outside the source tree.
+model_root: ${oc.env:ONESCIENCE_MODELS_DIR,./weights}/DNABERT-2
+dataset_root: ${oc.env:ONESCIENCE_DATASETS_DIR,./datasets}/DNABERT-2_dataset
+output_root: ${oc.env:DNABERT2_OUTPUT_DIR,./outputs}
+
+sample_data: ${dataset_root}/sample_data
+gue_data: ${dataset_root}/GUE

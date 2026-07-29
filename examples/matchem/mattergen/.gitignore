@@ -1,0 +1,4 @@
+__pycache__/
+outputs/
+slurm_*.out
+slurm_*.err

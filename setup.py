@@ -279,6 +279,15 @@ bio_requires = [
     "gemmi",
     "hydra-colorlog",
     "fairscale",
+    # boltz dependencies
+    "types-requests",
+    "einx",
+    "chembl-structure-pipeline",
+     # State dependencies
+  	  "anndata",
+ 	  "cell-load",
+	  "geomloss",
+  	  "scanpy",
     # alphagenome dependencies
     "alphagenome",
     "kagglehub",
@@ -390,6 +399,18 @@ bio_requires = [
 ]
 
 matchem_requires = [
+    "emmet-core",
+    "contextlib2",
+    "fire",
+    "pytorch-lightning",
+    "smact",
+    "pydantic-settings",
+    "blake3",
+    "inflect",
+    "pubchempy",
+    "pybtex",
+    "pymatgen-io-validation",
+    "python-dotenv",
     "torchdata",
     "ase",
     "pymatgen",

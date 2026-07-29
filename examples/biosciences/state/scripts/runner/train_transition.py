@@ -5,9 +5,9 @@ from __future__ import annotations
 import argparse
 from pathlib import Path
 
-from hydra import compose, initialize_config_dir
+import _bootstrap  # noqa: F401
 
-from onescience.models.state.cli._tx._train import run_tx_train
+from _cli._tx._train import run_tx_train
 
 
 def parse_args() -> argparse.Namespace:
@@ -27,6 +27,8 @@ def parse_args() -> argparse.Namespace:
 
 def main() -> None:
     args = parse_args()
+    from hydra import compose, initialize_config_dir
+
     with initialize_config_dir(version_base=None, config_dir=args.config_dir):
         cfg = compose(config_name="config", overrides=args.overrides)
     run_tx_train(cfg)

@@ -1,6 +1,8 @@
 """Train a State Embedding model using a YAML configuration."""
 
-from onescience.models.state.cli._emb._fit import add_arguments_fit, run_emb_fit
+import _bootstrap  # noqa: F401
+
+from _cli._emb._fit import add_arguments_fit, run_emb_fit
 
 
 def main() -> None:

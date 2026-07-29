@@ -1,6 +1,8 @@
 """Evaluate or run prediction from a trained State Transition run."""
 
-from onescience.models.state.cli._tx._predict import add_arguments_predict, run_tx_predict
+import _bootstrap  # noqa: F401
+
+from _cli._tx._predict import add_arguments_predict, run_tx_predict
 
 
 def main() -> None:

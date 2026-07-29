@@ -86,9 +86,9 @@ BIO_WHEELS=(
     "https://download.sourcefind.cn:65024/directlink/9/onesicence/dtk-25.04.2/torch_cluster-1.6.3+das.opt1.dtk25043-cp311-cp311-linux_x86_64.whl"
     "https://download.sourcefind.cn:65024/file/9/onesicence/dtk-25.04.2/torch_sparse-0.6.18-cp311-cp311-linux_x86_64.whl"
     "https://download.sourcefind.cn:65024/file/9/onesicence/dtk-25.04.2/torch_spline_conv-1.2.2-cp311-cp311-linux_x86_64.whl"
-    "https://download.sourcefind.cn:65024/9/main/onesicence/dtk-26.04/numba_mwu-0.1.1+dcucompat-cp311-cp311-linux_x86_64.whl"
-    "https://download.sourcefind.cn:65024/9/main/onesicence/dtk-26.04/pdex-0.2.5+dcucompat-cp311-cp311-linux_x86_64.whl"
-    "https://download.sourcefind.cn:65024/9/main/onesicence/dtk-26.04/cell_eval-0.8.1+dcucompat-cp311-cp311-linux_x86_64.whl"
+    "https://download.sourcefind.cn:65024/file/9/onesicence/dtk-26.04/numba_mwu-0.1.1+dcucompat.1-py3-none-any.whl"
+    "https://download.sourcefind.cn:65024/file/9/onesicence/dtk-26.04/pdex-0.2.5+dcucompat.1-py3-none-any.whl"
+    "https://download.sourcefind.cn:65024/file/9/onesicence/dtk-26.04/cell_eval-0.8.1+dcucompat.1-py3-none-any.whl"
 )
 
 MATCHEM_WHEELS=(
@@ -98,6 +98,9 @@ MATCHEM_WHEELS=(
     "https://download.sourcefind.cn:65024/directlink/4/fastpt/DAS1.7/fastpt-2.1.1+das.dtk25042-cp311-cp311-linux_x86_64.whl"
     "https://download.sourcefind.cn:65024/file/4/triton/DAS1.7/triton-3.1.0+das.opt1.dtk25042-cp311-cp311-manylinux_2_28_x86_64.whl"
     "https://download.sourcefind.cn:65024/file/4/tensorflow/DAS1.7/tensorflow-2.18.0+das.opt1.dtk25042-cp311-cp311-manylinux_2_28_x86_64.whl" # 跑DP模型会有JIT编译错误，需切换到DAS1.8版本
+    "https://download.sourcefind.cn:65024/directlink/9/onesicence/dtk-25.04.2/torch_scatter-2.1.2-cp311-cp311-linux_x86_64.whl"
+    "https://download.sourcefind.cn:65024/directlink/9/onesicence/dtk-25.04.2/torch_cluster-1.6.3-cp311-cp311-linux_x86_64.whl"
+    "https://download.sourcefind.cn:65024/directlink/9/onesicence/dtk-25.04.2/torch_sparse-0.6.18-cp311-cp311-linux_x86_64.whl"
     #"https://download.sourcefind.cn:65024/file/4/tensorflow/DAS1.8/tensorflow-2.18.0+das.opt1.dtk2604-cp311-cp311-manylinux_2_28_x86_64.whl" 
 #torch-geometric torch-scatter torch-sparse torch-cluster torch-spline-conv
     )

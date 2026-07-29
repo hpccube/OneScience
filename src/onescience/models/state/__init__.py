@@ -4,16 +4,15 @@ from importlib import import_module
 
 
 _EXPORTS = {
-    "Inference": "onescience.models.state.embedding.inference",
-    "StateEmbeddingModel": "onescience.modules.state.embedding.model",
-    "ContextMeanPerturbationModel": "onescience.modules.state.transition.context_mean",
-    "DecoderOnlyPerturbationModel": "onescience.modules.state.transition.decoder_only",
-    "EmbedSumPerturbationModel": "onescience.modules.state.transition.embed_sum",
-    "OldNeuralOTPerturbationModel": "onescience.modules.state.transition.old_neural_ot",
-    "PerturbationModel": "onescience.modules.state.transition.base",
-    "PerturbMeanPerturbationModel": "onescience.modules.state.transition.perturb_mean",
-    "PseudobulkPerturbationModel": "onescience.modules.state.transition.pseudobulk",
-    "StateTransitionPerturbationModel": "onescience.modules.state.transition.state_transition",
+    "StateEmbeddingModel": "onescience.models.state.embedding.model",
+    "ContextMeanPerturbationModel": "onescience.models.state.transition.implementations.context_mean",
+    "DecoderOnlyPerturbationModel": "onescience.models.state.transition.implementations.decoder_only",
+    "EmbedSumPerturbationModel": "onescience.models.state.transition.implementations.embed_sum",
+    "OldNeuralOTPerturbationModel": "onescience.models.state.transition.implementations.old_neural_ot",
+    "PerturbationModel": "onescience.models.state.transition.implementations.base",
+    "PerturbMeanPerturbationModel": "onescience.models.state.transition.implementations.perturb_mean",
+    "PseudobulkPerturbationModel": "onescience.models.state.transition.implementations.pseudobulk",
+    "StateTransitionPerturbationModel": "onescience.models.state.transition.implementations.state_transition",
 }
 
 __all__ = list(_EXPORTS)

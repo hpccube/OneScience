@@ -1,0 +1,14 @@
+# 8 卡从头训练。优先修改 batch size 和梯度累积。
+task: train
+args:
+  data_module: mp_20
+  trainer.devices: 8
+  trainer.num_nodes: 1
+  trainer.accumulate_grad_batches: 16
+  data_module.batch_size.train: 4
+  data_module.batch_size.val: 4
+  data_module.batch_size.test: 4
+  data_module.num_workers.train: 2
+  data_module.num_workers.val: 2
+  data_module.num_workers.test: 2
+  ~trainer.logger: true

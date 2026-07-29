@@ -1,0 +1,7 @@
+# 基础模型单样本生成。修改 checkpoint、output、batch_size 和 num_batches。
+task: generate
+args:
+  checkpoint: ${ONESCIENCE_MODELS_DIR}/mattergen/mattergen_base
+  output: outputs/generate/mattergen_base
+  batch_size: 1
+  num_batches: 1

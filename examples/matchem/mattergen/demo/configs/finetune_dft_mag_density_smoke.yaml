@@ -1,0 +1,18 @@
+# 属性微调 smoke test。修改属性和 batch size。
+task: finetune
+args:
+  adapter.model_path: ${ONESCIENCE_MODELS_DIR}/mattergen/mattergen_base
+  data_module: mp_20
+  data_module.properties: '[dft_mag_density]'
+  +lightning_module/diffusion_module/model/property_embeddings@adapter.adapter.property_embeddings_adapt.dft_mag_density: dft_mag_density
+  trainer.devices: 1
+  trainer.num_nodes: 1
+  trainer.max_epochs: 1
+  trainer.check_val_every_n_epoch: 1
+  +trainer.limit_train_batches: 1
+  +trainer.limit_val_batches: 1
+  +trainer.num_sanity_val_steps: 0
+  data_module.batch_size.train: 1
+  data_module.batch_size.val: 1
+  ~trainer.logger: true
+  ~trainer.strategy: true

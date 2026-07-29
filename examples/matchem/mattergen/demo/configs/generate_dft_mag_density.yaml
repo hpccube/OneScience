@@ -1,0 +1,9 @@
+# 磁密度条件生成。checkpoint 必须与 properties 中的属性匹配。
+task: generate
+args:
+  checkpoint: ${ONESCIENCE_MODELS_DIR}/mattergen/dft_mag_density
+  output: outputs/generate/dft_mag_density
+  batch_size: 1
+  num_batches: 1
+  properties:
+    dft_mag_density: 0.15

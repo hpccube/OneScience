@@ -1,6 +1,8 @@
 """Create a State Embedding data profile."""
 
-from onescience.models.state.cli._emb._preprocess import add_arguments_preprocess, run_emb_preprocess
+import _bootstrap  # noqa: F401
+
+from _cli._emb._preprocess import add_arguments_preprocess, run_emb_preprocess
 
 
 def main() -> None:

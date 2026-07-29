@@ -1,6 +1,8 @@
 """Query a LanceDB State Embedding index."""
 
-from onescience.models.state.cli._emb._query import add_arguments_query, run_emb_query
+import _bootstrap  # noqa: F401
+
+from _cli._emb._query import add_arguments_query, run_emb_query
 
 
 def main() -> None:

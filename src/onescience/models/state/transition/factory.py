@@ -18,7 +18,7 @@ def get_lightning_module(model_type: str, data_config: dict, model_config: dict,
         gene_dim = var_dims["gene_dim"]
 
     if model_type.lower() == "embedsum":
-        from onescience.modules.state.transition.embed_sum import EmbedSumPerturbationModel
+        from onescience.models.state.transition.implementations.embed_sum import EmbedSumPerturbationModel
 
         return EmbedSumPerturbationModel(
             input_dim=var_dims["input_dim"],
@@ -30,7 +30,7 @@ def get_lightning_module(model_type: str, data_config: dict, model_config: dict,
             **module_config,
         )
     elif model_type.lower() == "old_neuralot":
-        from onescience.modules.state.transition.old_neural_ot import OldNeuralOTPerturbationModel
+        from onescience.models.state.transition.implementations.old_neural_ot import OldNeuralOTPerturbationModel
 
         return OldNeuralOTPerturbationModel(
             input_dim=var_dims["input_dim"],
@@ -42,7 +42,7 @@ def get_lightning_module(model_type: str, data_config: dict, model_config: dict,
             **module_config,
         )
     elif model_type.lower() in {"neuralot", "pertsets", "state"}:
-        from onescience.modules.state.transition.state_transition import StateTransitionPerturbationModel
+        from onescience.models.state.transition.implementations.state_transition import StateTransitionPerturbationModel
 
         return StateTransitionPerturbationModel(
             input_dim=var_dims["input_dim"],
@@ -55,7 +55,7 @@ def get_lightning_module(model_type: str, data_config: dict, model_config: dict,
             **module_config,
         )
     elif model_type.lower() in {"globalsimplesum", "perturb_mean"}:
-        from onescience.modules.state.transition.perturb_mean import PerturbMeanPerturbationModel
+        from onescience.models.state.transition.implementations.perturb_mean import PerturbMeanPerturbationModel
 
         return PerturbMeanPerturbationModel(
             input_dim=var_dims["input_dim"],
@@ -67,7 +67,7 @@ def get_lightning_module(model_type: str, data_config: dict, model_config: dict,
             **module_config,
         )
     elif model_type.lower() in {"celltypemean", "context_mean"}:
-        from onescience.modules.state.transition.context_mean import ContextMeanPerturbationModel
+        from onescience.models.state.transition.implementations.context_mean import ContextMeanPerturbationModel
 
         return ContextMeanPerturbationModel(
             input_dim=var_dims["input_dim"],
@@ -79,7 +79,7 @@ def get_lightning_module(model_type: str, data_config: dict, model_config: dict,
             **module_config,
         )
     elif model_type.lower() == "decoder_only":
-        from onescience.modules.state.transition.decoder_only import DecoderOnlyPerturbationModel
+        from onescience.models.state.transition.implementations.decoder_only import DecoderOnlyPerturbationModel
 
         return DecoderOnlyPerturbationModel(
             input_dim=var_dims["input_dim"],
@@ -91,7 +91,7 @@ def get_lightning_module(model_type: str, data_config: dict, model_config: dict,
             **module_config,
         )
     elif model_type.lower() == "pseudobulk":
-        from onescience.modules.state.transition.pseudobulk import PseudobulkPerturbationModel
+        from onescience.models.state.transition.implementations.pseudobulk import PseudobulkPerturbationModel
 
         return PseudobulkPerturbationModel(
             input_dim=var_dims["input_dim"],
@@ -103,7 +103,7 @@ def get_lightning_module(model_type: str, data_config: dict, model_config: dict,
             **module_config,
         )
     elif model_type.lower() == "cpa":
-        from onescience.modules.state.transition.cpa import CPAPerturbationModel
+        from onescience.models.state.transition.implementations.cpa import CPAPerturbationModel
 
         return CPAPerturbationModel(
             input_dim=var_dims["input_dim"],
@@ -113,7 +113,7 @@ def get_lightning_module(model_type: str, data_config: dict, model_config: dict,
             **module_config,
         )
     elif model_type.lower() == "scvi":
-        from onescience.modules.state.transition.scvi import SCVIPerturbationModel
+        from onescience.models.state.transition.implementations.scvi import SCVIPerturbationModel
 
         return SCVIPerturbationModel(
             input_dim=var_dims["input_dim"],
@@ -125,7 +125,7 @@ def get_lightning_module(model_type: str, data_config: dict, model_config: dict,
             **module_config,
         )
     elif model_type.lower() in {"scgpt-chemical", "scgpt-genetic"}:
-        from onescience.modules.state.transition.scgpt import scGPTForPerturbation
+        from onescience.models.state.transition.implementations.scgpt import scGPTForPerturbation
 
         pretrained_path = module_config["pretrained_path"]
         assert pretrained_path is not None, "pretrained_path must be provided for scGPT"

@@ -1,11 +1,10 @@
 # MatterSim
 
-本目录提供 MatterSim v1.2.3 在 OneScience 中的集成示例。MatterSim 模型源码位于 `src/onescience/` 下的 model、module、DataPipe 和 utils 层中，无需额外安装 `mattersim` wheel。
+本目录提供 MatterSim v1.2.3 在 OneScience 中的集成示例。
 
-- 上游版本：`1.2.3`
-- 集成版本：`dcu2`
-- 兼容格式：标准的 `.pth` 预训练/微调 checkpoint 字典可直接加载，无需转换
-- 不兼容格式：包含完整 `MatterSimCalculator` 对象的旧 pickle 文件不支持
+## 模型简介
+
+MatterSim 是面向材料体系的通用机器学习原子间势模型。它根据原子种类和三维结构预测体系能量、原子力和应力，可替代大量昂贵的第一性原理计算，用于单点计算、批量推理、结构弛豫、分子动力学和下游数据微调。OneScience 中的 MatterSim 示例默认使用预训练 checkpoint，也支持使用用户数据继续训练。
 
 ## 环境准备
 
@@ -135,12 +134,3 @@ result = trainer.fit()
 python single_point.py --checkpoint results/mattersim/last_model.pth
 ```
 
-## 依赖说明
-
-DCU / Python 3.11 验证环境固定以下关键版本以保持平台 ABI 一致：
-
-- `numpy==1.26.3`
-- `e3nn==0.4.4`
-- `torch==2.5.1+das.opt1.dtk25042`（DTK 定制版）
-
-完整依赖约束见仓库根目录 `constraints.txt`。

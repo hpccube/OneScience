@@ -1,0 +1,10 @@
+_target_: onescience.modules.embedding.mattergen_property_embeddings.PropertyEmbedding
+name: dft_mag_density
+unconditional_embedding_module:
+  _target_: onescience.modules.embedding.mattergen_property_embeddings.EmbeddingVector
+  hidden_dim: ${lightning_module.diffusion_module.model.hidden_dim}
+conditional_embedding_module:
+  _target_: onescience.models.mattergen.diffusion.model_utils.NoiseLevelEncoding
+  d_model: ${lightning_module.diffusion_module.model.hidden_dim}
+scaler:
+  _target_: onescience.models.mattergen.common.utils.data_utils.StandardScalerTorch

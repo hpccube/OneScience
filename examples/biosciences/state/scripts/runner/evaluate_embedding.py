@@ -1,6 +1,8 @@
 """Evaluate State Embeddings on a perturbation AnnData file."""
 
-from onescience.models.state.cli._emb._eval import add_arguments_eval, run_emb_eval
+import _bootstrap  # noqa: F401
+
+from _cli._emb._eval import add_arguments_eval, run_emb_eval
 
 
 def main() -> None:
