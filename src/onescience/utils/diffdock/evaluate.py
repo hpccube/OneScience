@@ -38,9 +38,19 @@ def parse_args():
     return parser.parse_args()
 
 
+def _resolve_env_vars(obj):
+    if isinstance(obj, str):
+        return os.path.expandvars(obj)
+    if isinstance(obj, dict):
+        return {key: _resolve_env_vars(value) for key, value in obj.items()}
+    if isinstance(obj, list):
+        return [_resolve_env_vars(value) for value in obj]
+    return obj
+
+
 def load_config(config_path):
     with open(config_path, "r", encoding="utf-8") as handle:
-        return yaml.safe_load(handle) or {}
+        return _resolve_env_vars(yaml.safe_load(handle) or {})
 
 
 def flatten_config(config):

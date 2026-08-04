@@ -9,7 +9,10 @@ source ${PROJECT_ROOT}/env.sh
 echo ${ONESCIENCE_DATASETS_DIR}
 echo ${ONESCIENCE_MODELS_DIR}
 
-
+# Megatron writes GPTDataset index files during dataset construction. Keep
+# them outside the shared, read-only dataset tree.
+DATA_CACHE_DIR="${EVO2_DATA_CACHE_DIR:-${SCRIPT_DIR}/cache/gptdataset}"
+mkdir -p "$DATA_CACHE_DIR"
 
 # --dataset-dir $PROJECT_ROOT/examples/biosciences/evo2/data/genome_data
 torchrun \
@@ -21,6 +24,7 @@ torchrun \
     train_slurm.py\
     -d ./config/genome_data_config.yaml\
     --dataset-dir ${ONESCIENCE_DATASETS_DIR}/evo2/data_mini/genome_data\
+    --data-cache-dir "${DATA_CACHE_DIR}" \
     --model-size 7b_arc_longcontext \
     --devices ${SLURM_GPUS_PER_NODE:-8} \
     --num-nodes ${SLURM_JOB_NUM_NODES} \

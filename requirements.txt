@@ -177,10 +177,16 @@ spyrmsd
 #medgemma
 backports.tarfile
 peft
-trl 
+trl
 #bitsandbytes
 evaluate
 tf-keras
+langchain
+langchain-community
+google-cloud-aiplatform
+pydicom
+
+
 
 #laproteina
 huggingface-hub>=0.34.0,<1.0

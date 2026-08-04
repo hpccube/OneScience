@@ -1,321 +1,287 @@
-# <div align="center"><strong>Onescience for Evo2</strong></div>
-## <div align="center">使用说明</div>
+# Evo2 
 
+本示例将 Evo2 基因组基础模型集成到 OneScience，提供基因组数据预处理、checkpoint 转换、单节点与多节点训练、自回归序列生成以及 FASTA 批量预测入口。
 
-### 模型简介
+## 简介
 
-Evo2 是一款面向基因组的基础模型，基于 **StripedHyena 2** 架构，支持**最长百万碱基上下文**，在大规模基因组数据集 **OpenGenome2** 上训练，覆盖细菌、古菌和真核等多类物种。模型提供 **7B** 和 **40B** 等版本，具备强大的长序列建模能力，可应用于变异效应预测、基因组设计和跨尺度序列分析。Evo2 已集成至本项目，支持高性能推理和微调，适合科研与实际生物学应用场景。  
-论文链接 ["Genome modeling and design across all domains of life with Evo 2"](https://www.biorxiv.org/content/10.1101/2025.02.18.638918v1)
+Evo2 基于 StripedHyena 2 架构，在 OpenGenome2 数据集上训练，面向长上下文基因组序列建模。模型可用于 DNA 序列生成、序列对数概率计算、变异效应分析及下游微调。
 
-### 模型结构
-![](../../../doc/evo2.jpg)
+- 论文：[Genome modeling and design across all domains of life with Evo 2](https://www.biorxiv.org/content/10.1101/2025.02.18.638918v1)
+- 许可证：[Apache License 2.0](https://github.com/ArcInstitute/evo2/blob/main/LICENSE)
 
-### 环境安装
-```shell
-conda create -n your-name python=3.11 -y
-# 下载适配包脚本，自动下载 constraints.txt 中的包
-sh /tools/install_envs_constraints.sh
-pip install -c constraints.txt .[bio]
-注意:  (1) transformers版本为4.56.2，若版本不符合，可通过pip install transformers==4.56.2进行安装
- (2) 若botocore版本过低，请通过botocore==1.43.36进行版本的升级
-```
+![Evo2 模型结构](../../../doc/evo2.jpg)
 
-### 数据集准备
-OpenGenome2 官方提供了两种格式的数据，该数据集大小约 2.5T，OpenGenome2[数据下载地址](https://modelscope.cn/datasets/arcinstitute/opengenome2)：
-#### 1. 原始 FASTA 文件
-  - 包含原始基因组序列，需要用户自行进行转录、反转录、序列互补、序列反转等预处理操作。
-  - 适合需要 灵活处理 DNA 序列的研究场景。
+## 目录
 
-**依赖工具**：  
-- **`bionemo-noodles`**：基于 `noodles` 的 Python 封装，扩展了 **FAIDX (FASTA indexer)**，支持内存映射 (memmap)，可高效进行 FASTA 文件的随机访问。  
-- 常用函数：  
-  - `back_transcribe_sequence`: RNA → DNA 反转录  
-  - `transcribe_sequence`: DNA → RNA 转录  
-  - `complement_sequence`: DNA 序列互补链  
-  - `reverse_sequence`: DNA 序列反转  
+- [目录结构](#目录结构)
+- [环境准备](#环境准备)
+- [数据准备](#数据准备)
+- [Checkpoint 转换](#checkpoint-转换)
+- [功能与入口](#功能与入口)
+- [模型训练](#模型训练)
+- [序列生成](#序列生成)
+- [FASTA 批量预测](#fasta-批量预测)
+- [输出与复现](#输出与复现)
+- [运行约束](#运行约束)
+- [Issues](#issues)
+- [许可证与引用](#许可证与引用)
 
-```shell
-# shell 脚本
-bash tools/data_process/preprocess_data_fasta.sh
-# Python 脚本
-python tools/data_process/preprocess_data_fasta.py -c <CONFIG_PATH>
-```
-#### 2. 预处理好的 JSON 文件
-  - 官方已经对原始数据做了初步处理。
-  - 仅需进行轻量级处理，例如数据读取、tokenizer 转换、样本长度填充（padding）等操作。
-  - 适合快速实验。
-```bash
-python preprocess_data_json.py \
-    --input "$INPUT_FILE" \
-    --output-prefix "$OUTPUT_PREFIX" \
-    --tokenizer-type CharLevelTokenizer \
-    --dataset-impl mmap \
-    --append-eod \
-    --enforce-sample-length 8192 \
-    --workers 8 \
-    --log-interval 100
-```
+## 目录结构
 
-### 模型转换
-
-- 将单个 PyTorch 或 ZeRO-1 的 checkpoint（.pt 文件）转换为 NeMo2 格式
-- 模型转化的脚本位置
-  `onescience/examples/biosciences/evo2/tools/checkpoint_convert/convert_to_nemo.py`
-- 实用示例
-  `python tools/checkpoint_convert/convert_to_nemo.py --model-path <CKPT_FILE> --output-dir <OUTPUT_DIR>  --model-size <MODEL_SIZE>`
-
-**7B 脚本示例**
-```bash
-srun python tools/checkpoint_convert/convert_to_nemo.py \
-  --model-path checkpoint/evo2_savanna_7b/savanna_evo2_7b.pt \
-  --output-dir /work/share/ac8hkycjba/osmodels/evo2/nemo_model/nemo_evo2_7b \
-  --model-size 7b_arc_longcontext 
-```
-
-**注意事项**
-
-1. **模型权重来源**  
-   - 官网提供了两种模型权重：**训练** 和 **推理**。  
-   - 请务必下载并使用 **训练用权重**（前缀为 `savanna_` 的模型权重）。  
-
-   ![](../../../doc/evo2_model.png)
-
-2. **`--model-size` 参数说明**  
-   - 对于 7B 和 40B 的模型，需注意 `--model-size` 参数取值：  
-
-   | 参数值               | 对应模型              |
-   |----------------------|----------------------|
-   | `7b`                 | `savanna_evo2_7b_base` |
-   | `7b_arc_longcontext` | `savanna_evo2_7b`      |
-   | `40b`                | `savanna_evo2_40b_base`|
-   | `40b_arc_longcontext`| `savanna_evo2_40b`     |
-
-
- ### 训练
-`onescience/examples/biosciences/evo2/checkpoint` 和 `onescience/examples/biosciences/evo2/data`分别用于存放模型与数据，可以通过软链接的方式将目标路径指向这里。
-
-**单节点多卡训练**
-
-1. 需要加载dtk相关环境(以612为例)：
-    ```bash
-    source ~/dtk/dtk-25.04.1/env.sh
-    source ~/dtk/dtk-25.04.1/cuda/env.sh
-    module load compiler/gcc/12.2.0
-    ```
-2. 运行脚本进行训练或微调
-    ```bash
-    # 从零训练只需注释掉 ckpt-dir 参数即可
-    sh train_single_node_evo2_7b.sh
-    ```
-3. 重要参数说明
-- 必要参数：训练脚本 `train_one_node.py`
-- 必要参数：数据配置文件`the path of your data config`,具体格式可以参考config文件夹下示例
-- dataset-dir：数据存放地址，和data config保持一致
-- model-size：模型类型，可选有`1b,1b_nv,40b,40b_arc_longcontext,40b_nv,7b,7b_arc_longcontext,7b_nv,test,test_nv`
-- devices：用到显卡数量
-- ckpt-dir：预加载模型地址
-
-```shell
-python  $PROJECT_ROOT/examples/biosciences/evo2/train_one_node.py\
-    -d $PROJECT_ROOT/examples/biosciences/evo2/config/genome_data_config.yaml\
-    --dataset-dir $PROJECT_ROOT/examples/biosciences/evo2/data/genome_data\
-    --model-size 7b_arc_longcontext\
-    --devices 4 \
-    --num-nodes 1 \
-    --seq-length 8192 \
-    --micro-batch-size 2 \
-    --lr 0.0001 \
-    --warmup-steps 5 \
-    --max-steps 1000 \
-    --clip-grad 1 \
-    --wd 0.01 \
-    --activation-checkpoint-recompute-num-layers 1 \
-    --val-check-interval 50 \
-    --ckpt-async-save\
-    # --ckpt-dir .model \
-```
-
-**多节点多卡训练**
-
-多节点多卡主要涉及sbatch配置文件`train_multi_node_slurm_evo2.sh`和执行文件`train_evo2.sh`：
-```shell
-train_multi_node_slurm_evo2.sh
-
-#!/bin/bash
-#SBATCH -J evo2_for_onescience # 集群项目名字
-#SBATCH -p k100ai # 申请显卡型号
-#SBATCH --nodes=4 # 使用节点个数
-#SBATCH --ntasks-per-node=4 
-#SBATCH --cpus-per-task=4
-#SBATCH --gres=dcu:4 # 单节点使用显卡数
-#SBATCH -o evo2/logs%j.out     # log地址，如需要二级目标，需要先手动建立文件夹 
-
-# 612集群激活相关环境，508有所不同
-source ~/dtk/dtk-25.04.1/env.sh
-source ~/dtk/dtk-25.04.1/cuda/env.sh
-module load compilers/gcc/12.2.0
-source ~/conda.env
-conda activate test-evo2env
-unset ROCBLAS_TENSILE_LIBPATH 
-
-DEVICES=${SLURM_GPUS_PER_NODE:-4}
-echo "SLURM_JOB_NUM_NODES: $SLURM_JOB_NUM_NODES"
-echo "SLURM_NTASKS_PER_NODE: $SLURM_NTASKS_PER_NODE" 
-
-export NCCL_IB_HCA=mlx5_0
-export NCCL_SOCKET_IFNAME=ib0
-export HSA_FORCE_FINE_GRAIN_PCIE=1
-export OMP_NUM_THREADS=1
-export HIP_VISIBLE_DEVICES=0,1,2,3 # 单节点卡数
-export CUDA_DEVICE_MAX_CONNECTIONS=1
-
-nodes=$(scontrol show hostnames $SLURM_JOB_NODELIST)
-nodes_array=($nodes)
-
-# 第一个节点的地址
-master_addr=${nodes_array[0]}
-
-# 主节点的端口（可以根据需要调整）
-master_port=29500
-
-# 在每个节点上启动 torchrun
-echo SLURM_NNODES=$SLURM_NNODES
-echo master_addr=$master_addr
-echo master_port=$master_port
-
-srun train_evo2.sh
-
-```
-```shell
-train_evo2.sh 相关参数含义参考单节点
-
-#!/bin/bash
-
-MODEL_SIZE=1b
-CP_SIZE=1
-TP_SIZE=1
-PP_SIZE=1
-MICRO_BATCH_SIZE=2
-GRAD_ACC_BATCHES=1
-SEQ_LEN=512
-MAX_STEPS=100
-VAL_CHECK=50
-CLIP_GRAD=250 # 梯度剪裁
-EXTRA_ARGS="--enable-preemption --use-megatron-comm-overlap-llama3-8k --ckpt-async-save --overlap-grad-reduce --clip-grad $CLIP_GRAD --eod-pad-in-loss-mask"
-EXTRA_ARG_DESC="BF16_perf_cg250_continue"
-LR=0.0003
-MIN_LR=0.00003
-WU_STEPS=2500
-# 0xDEADBEEF
-SEED=1234
-WD=0.1
-ADO=0.01
-HDO=0.01
-
-# DEVICES=${SLURM_GPUS_PER_NODE:-4}
-# echo "SLURM_JOB_NUM_NODES: $SLURM_JOB_NUM_NODES"
-# echo "SLURM_NTASKS_PER_NODE: $SLURM_NTASKS_PER_NODE" 
-
-PROJECT_ROOT=$(python -c "from pathlib import Path; print(Path(__name__).resolve().parents[5])")
-
-echo "ONESCIENCE_PATH:" $PROJECT_ROOT
-
-cd $PROJECT_ROOT/examples/biosciences/evo2/checkpoint/evo2-7b
-
-DIRS=(
-    "./lightning_logs"
-    "./results"
-)
-
-for DIR in "${DIRS[@]}"; do
-    if [ -d "$DIR" ]; then
-        echo "Del Files: $DIR"
-        rm -rf "$DIR"
-    else
-        echo "Files Not Exist: $DIR"
-    fi
-done
-
-python $PROJECT_ROOT/examples/biosciences/evo2/train_slurm.py\
-    -d $PROJECT_ROOT/examples/biosciences/evo2/config/training_data_config.yaml\
-    --dataset-dir $PROJECT_ROOT/examples/biosciences/evo2/data/data_evo2_612\
-    --model-size 7b_arc_longcontext \
-    --devices 4 \
-    --num-nodes 4 \
-    --seq-length 1024 \
-    --micro-batch-size 4 \
-    --lr 0.0001 \
-    --warmup-steps 5 \
-    --max-steps 1000 \
-    --clip-grad 1 \
-    --wd 0.01 \
-    --activation-checkpoint-recompute-num-layers 1 \
-    --val-check-interval 50 \
-    --ckpt-async-save\
-    # --num-nodes=${SLURM_JOB_NUM_NODES} \
-    # --devices=${DEVICES} \
-    # --grad-acc-batches $GRAD_ACC_BATCHES \
-    # --max-steps=$MAX_STEPS \
-    # --seed $SEED \
-    # ${EXTRA_ARGS} \
-    # --lr $LR \
-    # --wd $WD \
-    # --min-lr $MIN_LR \
-    # --warmup-steps $WU_STEPS \
-    # --attention-dropout $ADO \
-    # --hidden-dropout $HDO \
-    # --limit-val-batches=20 \
-    # --val-check-interval=${VAL_CHECK} \
-    # --seq-length=${SEQ_LEN} \
-    # --tensor-parallel-size=${TP_SIZE} \
-    # --context-parallel-size=${CP_SIZE} \
-    # --pipeline-model-parallel-size=${PP_SIZE} \
-    # --micro-batch-size=${MICRO_BATCH_SIZE} \
-    # --model-size=${MODEL_SIZE} \
-    # --workers 10
-
-```
-
- ### 推理
-在获得预训练或微调后的 **Evo2 checkpoint** 后，可以使用如下命令让模型根据提示生成 DNA 序列：
-```bash
-python infer.py --help 
-```
-**命令行参数说明**
 ```text
-usage: infer_evo2 [-h] [--prompt PROMPT] --ckpt-dir CKPT_DIR
-                  [--temperature TEMPERATURE] [--top-k TOP_K] [--top-p TOP_P]
-                  [--max-new-tokens MAX_NEW_TOKENS]
-                  [--tensor-parallel-size TENSOR_PARALLEL_SIZE]
-                  [--pipeline-model-parallel-size PIPELINE_MODEL_PARALLEL_SIZE]
-                  [--context-parallel-size CONTEXT_PARALLEL_SIZE]
-                  [--output-file OUTPUT_FILE]
-options:
-  -h, --help            显示帮助信息并退出。
-  --prompt PROMPT       用于生成序列的提示词。默认是大肠杆菌 (E. coli) 的系统发育分类标签。
-  --ckpt-dir CKPT_DIR   指向包含预训练 Evo2 模型的 NeMo2 checkpoint 目录。（必填）
-  --temperature TEMPERATURE
-  --top-k TOP_K         
-  --top-p TOP_P         
-  --max-new-tokens MAX_NEW_TOKENS    生成的最大新 token 数。                   
-  --tensor-parallel-size TENSOR_PARALLEL_SIZE    张量并行大小，默认值为 1。
-  --pipeline-model-parallel-size PIPELINE_MODEL_PARALLEL_SIZE    流水线并行大小，默认值为 1。         
-  --context-parallel-size CONTEXT_PARALLEL_SIZE    上下文并行大小，默认值为 1。
-  --output-file OUTPUT_FILE    生成序列的输出文件。如果未指定，输出将直接打印在终端。                   
+examples/biosciences/evo2/
+├── config/
+│   ├── genome_data_config.yaml          # 训练数据配置
+│   ├── genome_preprocess_config.yaml    # FASTA 预处理配置
+│   └── opengenome2.yml                  # OpenGenome2 配置示例
+├── data/
+│   └── prompts.csv                      # 示例提示序列
+├── tools/
+│   ├── checkpoint_convert/
+│   │   └── convert_to_nemo.py           # PyTorch/Savanna 到 NeMo2 转换
+│   ├── data_process/
+│   │   ├── preprocess_data_fasta.py
+│   │   ├── preprocess_data_fasta.sh
+│   │   ├── preprocess_data_json.py
+│   │   └── preprocess_data_json.sh
+│   └── install_envs_constraints.sh
+├── infer.py                             # 自回归 DNA 序列生成
+├── predict.py                           # FASTA 序列 logits/对数概率预测
+├── inference.sh                         # Slurm 推理示例
+├── train_one_node.py                    # 单节点训练入口
+├── train_slurm.py                       # 分布式训练入口
+├── train_evo2_1b.sh                     # 1B 单节点配置示例
+├── train_evo2_7b.sh                     # 7B 单节点配置示例
+├── train_evo2.sh                        # torchrun 多节点入口
+└── train_multi_node_slurm_evo2.sbatch   # Slurm 提交脚本
 ```
-**使用示例**
+
+## 环境准备
+
+在仓库根目录执行以下命令：
+
 ```bash
-# 最简单的调用方式
-srun python infer.py  --ckpt-dir checkpoint/evo2_nemo_7b --prompt "ATGCGT"
-# 将输出结果保存为 .txt 文件
-srun python infer.py  --ckpt-dir checkpoint/evo2_nemo_7b --prompt "ATGCGT" --output-file result.txt
+conda create -n onescience-evo2 python=3.11 -y
+conda activate onescience-evo2
+bash install.sh bio
+source env.sh
 ```
-**注意**   
---ckpt-dir 加载的 checkpoint 需要是 evo2 的 NeMo2 类型的checkpoint。
 
-### 在超算互联网使用
+当前示例要求与 OneScience Evo2 适配层兼容的 NeMo、Megatron Core、PyTorch 和 Transformer Engine 环境。
 
-### 许可证
+以下环境变量用于解析默认数据和模型路径：
 
-evo2项目（包括代码和模型参数）在[Apache 2.0](https://github.com/ArcInstitute/evo2/LICENSE)许可下提供，可免费用于学术研究和商业用途。
+```bash
+export ONESCIENCE_DATASETS_DIR=/path/to/datasets
+export ONESCIENCE_MODELS_DIR=/path/to/models
+```
 
+## 数据准备
+
+OpenGenome2 数据规模约为 2.5 TB，可从 [ModelScope](https://modelscope.cn/datasets/arcinstitute/opengenome2) 获取。完整训练前应根据存储容量、文件系统吞吐和训练规模制定下载与预处理方案。
+
+### FASTA 数据
+
+FASTA 预处理入口读取 `genome_preprocess_config.yaml`，并生成训练所需的数据文件：
+
+```bash
+cd examples/biosciences/evo2
+python tools/data_process/preprocess_data_fasta.py \
+  --config config/genome_preprocess_config.yaml
+```
+
+`tools/data_process/preprocess_data_fasta.sh` 会下载人类参考基因组的 chr20、chr21 和 chr22 示例并启动预处理。该脚本需要网络访问、`wget` 和 `zcat`，适用于功能验证，不代表完整 OpenGenome2 预处理流程。
+
+### JSON/JSONL 数据
+
+预处理后的 JSON 或压缩 JSONL 数据可转换为 Megatron mmap 数据：
+
+```bash
+cd examples/biosciences/evo2
+python tools/data_process/preprocess_data_json.py \
+  --input /path/to/train.jsonl.gz \
+  --output-prefix /path/to/output/train \
+  --tokenizer-type CharLevelTokenizer \
+  --dataset-impl mmap \
+  --append-eod \
+  --workers 8 \
+  --log-interval 100
+```
+
+`preprocess_data_json.sh` 包含集群路径示例。运行前需修改 `INPUT_DIR` 和 `OUTPUT_DIR` 。
+
+训练配置中的数据前缀必须与预处理输出一致。训练启动前应确认 `.bin`、`.idx` 及数据配置引用的文件全部存在。
+
+## Checkpoint 转换
+
+训练与推理入口加载 NeMo2 checkpoint。Savanna/PyTorch 权重需先执行转换：
+
+```bash
+cd examples/biosciences/evo2
+python tools/checkpoint_convert/convert_to_nemo.py \
+  --model-path /path/to/savanna_evo2_7b.pt \
+  --output-dir ${ONESCIENCE_MODELS_DIR}/evo2/evo2_nemo_7b \
+  --model-size 7b_arc_longcontext
+```
+
+`--model-path` 支持未分片的 MP1 checkpoint，也支持 `hf://` 形式的 Savanna Evo2 模型标识。`--model-size` 必须与权重架构一致。
+
+| `--model-size` | 对应架构 |
+|----------------|----------|
+| `1b` | Evo2 1B base |
+| `7b` | Evo2 7B base |
+| `7b_arc_longcontext` | Evo2 7B 长上下文版本 |
+| `40b` | Evo2 40B base |
+| `40b_arc_longcontext` | Evo2 40B 长上下文版本 |
+
+转换完成后，目标目录需包含 NeMo2 checkpoint 元数据和模型分片。Savanna `.pt` 文件不能直接传给 `infer.py` 或 `predict.py`。
+
+## 功能与入口
+
+| 任务 | 推荐入口 | 输入 | 输出 |
+|------|----------|------|------|
+| FASTA 预处理 | `tools/data_process/preprocess_data_fasta.py` | FASTA 和 YAML 配置 | 训练数据文件 |
+| JSON 数据转换 | `tools/data_process/preprocess_data_json.py` | JSON/JSONL | Megatron mmap 数据 |
+| Checkpoint 转换 | `tools/checkpoint_convert/convert_to_nemo.py` | Savanna/PyTorch 权重 | NeMo2 checkpoint |
+| 单节点训练 | `train_one_node.py` | mmap 数据和数据配置 | Lightning/NeMo checkpoint |
+| 多节点训练 | `train_multi_node_slurm_evo2.sbatch` | Slurm 资源和训练配置 | 分布式训练 checkpoint |
+| DNA 序列生成 | `infer.py` | NeMo2 checkpoint 和 prompt | 生成序列或文本文件 |
+| FASTA 批量预测 | `predict.py` | FASTA 和 NeMo2 checkpoint | logits、对数概率和索引映射 |
+
+所有相对路径命令均假定当前目录为 `examples/biosciences/evo2`。
+
+## 模型训练
+
+### 单节点训练
+
+以下命令展示 7B 长上下文架构的单节点训练参数。批大小、序列长度和并行设置必须根据设备显存调整。
+
+```bash
+cd examples/biosciences/evo2
+python train_one_node.py \
+  -d config/genome_data_config.yaml \
+  --dataset-dir ${ONESCIENCE_DATASETS_DIR}/evo2/data_mini/genome_data \
+  --model-size 7b_arc_longcontext \
+  --devices 4 \
+  --num-nodes 1 \
+  --seq-length 8192 \
+  --micro-batch-size 2 \
+  --lr 1e-4 \
+  --warmup-steps 5 \
+  --max-steps 1000 \
+  --clip-grad 1 \
+  --wd 0.01 \
+  --activation-checkpoint-recompute-num-layers 1 \
+  --val-check-interval 50
+```
+
+从已有 NeMo2 checkpoint 继续训练时，增加 `--ckpt-dir /path/to/checkpoint`。从头训练时不设置该参数。
+
+`train_evo2_1b.sh` 和 `train_evo2_7b.sh` 提供固定参数示例。执行前需检查设备数量、模型规格、数据路径、序列长度和输出目录。
+
+### 多节点训练
+
+多节点训练通过 Slurm 提交脚本启动：
+
+```bash
+cd examples/biosciences/evo2
+sbatch train_multi_node_slurm_evo2.sbatch
+```
+
+提交前必须根据集群环境配置以下项目：
+
+- Slurm 分区、节点数、每节点设备数和日志目录；
+- `MASTER_ADDR`、`MASTER_PORT` 和网络接口；
+- `SLURM_GPUS_PER_NODE`、`HIP_VISIBLE_DEVICES` 或 `CUDA_VISIBLE_DEVICES`；
+- 数据目录、模型规格及张量、流水线、上下文并行度；
+- checkpoint 保存目录和恢复策略。
+
+`train_evo2.sh` 使用 `torchrun` 启动 `train_slurm.py`。模型并行度与数据并行度必须与申请的设备资源一致。
+
+## 序列生成
+
+`infer.py` 根据 DNA prompt 执行自回归生成：
+
+```bash
+cd examples/biosciences/evo2
+python infer.py \
+  --ckpt-dir ${ONESCIENCE_MODELS_DIR}/evo2/evo2_nemo_7b \
+  --prompt ATGCGT \
+  --max-new-tokens 1024 \
+  --temperature 1.0 \
+  --top-k 0 \
+  --top-p 0.0 \
+  --seed 1234 \
+  --output-file result.txt
+```
+
+主要参数如下：
+
+| 参数 | 默认值 | 说明 |
+|------|--------|------|
+| `--ckpt-dir` | 必填 | NeMo2 checkpoint 目录 |
+| `--prompt` | 大肠杆菌谱系标签 | 生成起始序列或谱系提示 |
+| `--max-new-tokens` | `1024` | 最大生成 token 数 |
+| `--temperature` | `1.0` | 采样温度 |
+| `--top-k` | `0` | Top-k 采样阈值 |
+| `--top-p` | `0.0` | Top-p 采样阈值 |
+| `--seed` | 未设置 | 随机种子 |
+| `--ckpt-format` | `torch_dist` | Checkpoint 格式；`zarr` 已弃用 |
+| `--tensor-parallel-size` | `1` | 张量并行度 |
+| `--pipeline-model-parallel-size` | `1` | 流水线并行度 |
+| `--context-parallel-size` | `1` | 上下文并行度 |
+| `--fp8` | 关闭 | 启用 vortex 风格 FP8 |
+| `--flash-decode` | 关闭 | 启用 Flash Decode |
+
+并行度乘积不得超过可见设备数。`inference.sh` 内部使用 `srun`，仅适用于 Slurm 环境；非 Slurm 环境应直接执行 `python infer.py`。
+
+## FASTA 批量预测
+
+`predict.py` 对 FASTA 序列执行单步预测，可保存 logits、逐序列对数概率和输入索引映射：
+
+```bash
+cd examples/biosciences/evo2
+python predict.py \
+  --fasta /path/to/sequences.fa \
+  --ckpt-dir ${ONESCIENCE_MODELS_DIR}/evo2/evo2_nemo_7b \
+  --output-dir ./predict_outputs \
+  --model-size 7b_arc_longcontext \
+  --batch-size 1 \
+  --output-log-prob-seqs \
+  --log-prob-collapse-option mean
+```
+
+`--model-size`、并行参数和 checkpoint 架构必须一致。启用 `--fp8` 或 `--full-fp8` 会改变数值精度，进行结果比较时必须记录相关设置。
+
+## 输出与复现
+
+每次训练或推理应记录以下信息：
+
+- Git commit、Python 环境和关键依赖版本；
+- checkpoint 路径、格式和模型规格；
+- 数据版本、数据配置和预处理参数；
+- 序列长度、批大小及模型并行参数；
+- 随机种子、采样温度、Top-k 和 Top-p；
+- 可见设备、设备类型及精度设置；
+- 输出目录和完整启动命令。
+
+生成序列应校验字符集合、长度和终止标记。对数概率结果仅能在相同模型、tokenizer、序列处理和归一化设置下进行比较。
+
+## 运行约束
+
+- Evo2 训练和推理需要 GPU/DCU 设备，模型规模和序列长度对显存需求影响显著。
+- 长上下文模型的架构参数、checkpoint 和 `--model-size` 必须严格匹配。
+- `preprocess_data_fasta.sh` 包含联网下载步骤；离线环境应预先准备 FASTA 文件并直接调用 Python 入口。
+- `preprocess_data_json.sh` 包含特定集群路径，执行前必须完成路径替换。
+- 多节点脚本包含集群相关环境变量，不应未经审核直接提交到其他集群。
+- 模型输出属于计算预测，涉及生物学结论时必须结合实验数据和专业分析进行验证。
+
+## Issues
+
+- 运行过程中若出现 " ImportError: cannot import name 'BaseStore' from 'zarr.storage' "相关问题，可通过 pip install "zarr<3.0"解决。
+- 运行过程中若出现 " 'ml_dtypes' has no attribute 'float4_e2m1fn'"问题，可升级ml_dtypes版本解决，例如：pip install "ml_dtypes>=0.5.0" 。
+- 运行过程中若出现 " cannot import name 'TRANSFORMERS_CACHE' from 'transformers' ", 需检查transforms版本是否符合需求，例如可使用 transformers 4.56.2 版本。
+
+## 许可证与引用
+
+Evo2 代码和模型参数采用 [Apache License 2.0](https://github.com/ArcInstitute/evo2/blob/main/LICENSE)。使用本示例开展研究时，应同时遵循数据集、模型权重及 OneScience 的许可证要求，并引用 Evo2 原始论文。

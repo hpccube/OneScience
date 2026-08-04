@@ -1,8 +1,8 @@
-# TargetDiff 示例
+# TargetDiff
 
 本示例将 TargetDiff（基于 3D 等变扩散模型的靶点感知分子生成模型）集成到 OneScience 生物信息组件中，提供扩散模型训练、分子采样、生成结果评估以及蛋白-配体亲和力预测的一站式入口。
 
-TargetDiff 原始论文：<u003c3D Equivariant Diffusion for Target-Aware Molecule Generation and Affinity Predictionu003e>（ICLR 2023）。[[PDF]](https://openreview.net/pdf?id=kJqXEPXMsE0)
+TargetDiff 原始论文：*3D Equivariant Diffusion for Target-Aware Molecule Generation and Affinity Prediction*（ICLR 2023）。[[PDF]](https://openreview.net/pdf?id=kJqXEPXMsE0)
 
 ![TargetDiff 概览](assets/overview.png)
 
@@ -10,32 +10,64 @@ TargetDiff 原始论文：<u003c3D Equivariant Diffusion for Target-Aware Molecu
 
 ## 目录
 
-- [功能定位](#功能定位)
+- [目录结构](#目录结构)
 - [环境准备](#环境准备)
 - [数据与预训练权重](#数据与预训练权重)
-- [脚本速查表](#脚本速查表)
+- [数据预处理](#数据预处理)
+- [功能定位](#功能定位)
+- [模型任务与基础流程](#模型任务与基础流程)
+- [脚本索引](#脚本索引)
 - [详细使用说明](#详细使用说明)
-  - [1. 扩散模型训练（`train_diiffusion.sh`）](#1-扩散模型训练train_diffusionsh)
+  - [1. 扩散模型训练（`train_diffusion.sh`）](#1-扩散模型训练train_diffusionsh)
   - [2. 分子采样](#2-分子采样)
   - [3. 生成分子评估](#3-生成分子评估)
   - [4. 亲和力预测模型训练（`train_prop.sh`）](#4-亲和力预测模型训练train_propsh)
   - [5. 亲和力预测评估（`eval_prop.py`）](#5-亲和力预测评估eval_proppy)
   - [6. 亲和力预测推理（`inference.sh`）](#6-亲和力预测推理inferencesh)
-- [数据预处理](#数据预处理)
-- [目录结构](#目录结构)
-- [注意事项](#注意事项)
+- [运行约束](#运行约束)
+- [Issues](#issues)
 - [引用](#引用)
 
 ---
 
-## 功能定位
+## 目录结构
 
-- **靶点感知分子生成**：以蛋白口袋为条件，生成符合三维几何约束的候选配体分子。
-- **扩散模型训练**：在 CrossDocked2020 数据集上训练 TargetDiff 扩散生成模型。
-- **分子采样**：支持从测试集口袋或自定义 PDB 口袋文件采样候选分子。
-- **生成结果评估**：对采样得到的分子进行稳定性、多样性及对接打分评估。
-- **结合亲和力预测**：基于 EGNN 预测蛋白-配体复合物的结合亲和力。
-- **亲和力模型训练**：在 PDBbind 数据集上训练属性预测模型。
+```
+examples/biosciences/targetdiff/
+├── train_diffusion.sh                # 扩散模型训练入口脚本
+├── train_prop.sh                     # 亲和力预测模型训练入口脚本
+├── inference.sh                      # 亲和力预测推理入口脚本
+├── scripts/
+│   ├── batch_sample_diffusion.sh     # 多卡批量采样脚本
+│   ├── train_diffusion.py            # 扩散模型训练 Python 入口
+│   ├── sample_diffusion.py           # 测试集分子采样入口
+│   ├── sample_for_pocket.py          # 自定义 PDB 口袋采样入口
+│   ├── evaluate_diffusion.py         # 生成结果评估入口
+│   ├── evaluate_from_meta.py         # 从 meta 文件评估入口
+│   ├── dock_baseline.py              # 对接基线脚本
+│   ├── dock_testset.py               # 测试集对接脚本
+│   ├── likelihood_est_diffusion.py   # 扩散似然估计脚本
+│   ├── data_preparation/             # 数据预处理脚本
+│   │   ├── clean_crossdocked.py
+│   │   ├── extract_pockets.py
+│   │   └── split_pl_dataset.py
+│   └── property_prediction/          # 亲和力预测相关脚本
+│       ├── train_prop.py
+│       ├── fixed_inference.py
+│       ├── inference.py
+│       ├── eval_prop.py
+│       ├── extract_pockets.py
+│       └── pdbbind_split.py
+├── configs/
+│   ├── training.yml                  # 扩散模型训练配置
+│   ├── sampling.yml                  # 分子采样配置
+│   └── prop/
+│       ├── pdbbind_general_egnn.yml
+│       └── pdbbind_general_egnn_enc_final_h.yml
+└── assets/                           # 模型架构示意图
+```
+
+模型实现位于 `src/onescience/models/targetdiff`。
 
 ---
 
@@ -88,7 +120,7 @@ source /path/to/onescience/env.sh
 
 ### 1. 分子生成数据（CrossDocked2020）
 
-训练和评估需要以下数据，建议放在 `${ONESCIENCE_DATASETS_DIR}/targetdiff/data/` 下：
+训练和评估需要以下数据，Scnet上默认放在 `${ONESCIENCE_DATASETS_DIR}/targetdiff/data/`路径下：
 
 | 文件/目录 | 说明 | 来源 |
 |-----------|------|------|
@@ -111,7 +143,7 @@ source /path/to/onescience/env.sh
 
 ### 3. 预训练权重
 
-官方提供的预训练权重可下载后放到 `${ONESCIENCE_MODELS_DIR}/targetdiff/pretrained_models/`：
+官方提供的预训练权重默认存放在 `${ONESCIENCE_MODELS_DIR}/targetdiff/pretrained_models/` 路径下：
 
 | 权重 | 文件名 | 说明 |
 |------|--------|------|
@@ -134,7 +166,200 @@ source /path/to/onescience/env.sh
 
 ---
 
-## 脚本速查表
+## 数据预处理
+
+使用预训练扩散模型进行自定义口袋采样，或使用预训练 EGNN 进行亲和力推理时，无需执行完整训练集预处理。从零训练和正式评估必须执行本节所述流程。
+
+### CrossDocked2020 数据预处理
+
+如需从头处理 CrossDocked2020 数据，按以下步骤执行：
+
+1. 下载 CrossDocked2020 v1.1 并保存到 `data/CrossDocked2020`。
+2. 过滤 RMSD < 1Å 的样本：
+
+    ```bash
+    export PYTHONPATH=../../../src:$PYTHONPATH
+    python scripts/data_preparation/clean_crossdocked.py \
+        --source data/CrossDocked2020 \
+        --dest data/crossdocked_v1.1_rmsd1.0 \
+        --rmsd_thr 1.0
+    ```
+
+3. 从蛋白中提取 10Å 结合口袋：
+
+    ```bash
+    python scripts/data_preparation/extract_pockets.py \
+        --source data/crossdocked_v1.1_rmsd1.0 \
+        --dest data/crossdocked_v1.1_rmsd1.0_pocket10
+    ```
+
+4. 划分训练集与测试集：
+
+    ```bash
+    python scripts/data_preparation/split_pl_dataset.py \
+        --path data/crossdocked_v1.1_rmsd1.0_pocket10 \
+        --dest data/crossdocked_pocket10_pose_split.pt \
+        --fixed_split data/split_by_name.pt
+    ```
+
+### PDBbind 数据预处理
+
+亲和力预测训练脚本 `train_prop.sh` 已自动完成口袋提取与数据集划分。如需单独执行，可使用以下命令：
+
+```bash
+export PYTHONPATH=../../../src:$PYTHONPATH
+
+python scripts/property_prediction/extract_pockets.py \
+    --source data/pdbbind_v2020 \
+    --dest data/pdbbind_v2020_processed \
+    --subset refined \
+    --num_workers 16
+
+python scripts/property_prediction/pdbbind_split.py \
+    --split_mode coreset \
+    --index_path data/pdbbind_v2020_processed/pocket_10_refined/index.pkl \
+    --test_path data/pdbbind_v2016/coreset \
+    --save_path data/pdbbind_v2020_processed/pocket_10_refined/split.pt
+```
+
+---
+
+## 功能定位
+
+- **靶点感知分子生成**：以蛋白口袋为条件，生成符合三维几何约束的候选配体分子。
+- **扩散模型训练**：在 CrossDocked2020 数据集上训练 TargetDiff 扩散生成模型。
+- **分子采样**：支持从测试集口袋或自定义 PDB 口袋文件采样候选分子。
+- **生成结果评估**：对采样得到的分子进行稳定性、多样性及对接打分评估。
+- **结合亲和力预测**：基于 EGNN 预测蛋白-配体复合物的结合亲和力。
+- **亲和力模型训练**：在 PDBbind 数据集上训练属性预测模型。
+
+---
+
+## 模型任务与基础流程
+
+TargetDiff 在本目录中包含两套不同模型 ：
+
+| 模型 | 输入 | 输出 | 对应入口 |
+|------|------|------|----------|
+| 扩散生成模型 | 蛋白结合口袋 | 新生成的小分子三维结构 | sample_diffusion.py / sample_for_pocket.py |
+| EGNN 属性模型 | 已知蛋白 + 已知配体 | Kd/Ki/IC50 等亲和力预测值 | inference.sh / property_prediction |
+
+`inference.sh` 执行亲和力预测，不执行分子生成。
+
+### 两条完整工作流
+
+```text
+分子生成分支
+CrossDocked2020
+    │ 数据预处理
+    ▼
+configs/training.yml ─► train_diffusion.sh ─► diffusion checkpoint
+                                                   │
+                      configs/sampling.yml ─────────┤
+                                                   ▼
+                                      sample_diffusion / sample_for_pocket
+                                                   │
+                                                   ▼
+                                      result_*.pt / generated SDF
+                                                   │
+                                                   ▼
+                                      evaluate_diffusion.py / docking
+
+亲和力分支
+PDBBind
+    │ extract_pockets.py + pdbbind_split.py
+    ▼
+configs/prop/*.yml ─► train_prop.sh ─► EGNN checkpoint
+                                              │
+                                              ▼
+                         eval_prop.py / fixed_inference.py
+                                              │
+                                              ▼
+                                      亲和力预测值
+```
+
+两条分支可以独立使用。扩散模型 checkpoint 不能传给属性预测脚本，EGNN checkpoint 也不能用于采样。
+
+### 配置文件之间的关系
+
+| 配置 | 服务的步骤 | 配置组 |
+|------|------------|--------|
+| configs/training.yml | 扩散模型训练 | data、model、train |
+| configs/sampling.yml | 扩散模型采样 | model.checkpoint、sample |
+| configs/prop/pdbbind_general_egnn.yml | 属性模型训练 | model、train、dataset |
+| configs/prop/pdbbind_general_egnn_enc_final_h.yml | 另一种属性编码配置 | model、train、dataset |
+
+重要字段：
+
+- training.data.path / split：CrossDocked 预处理目录和数据划分。
+- training.model.num_diffusion_timesteps：训练扩散时间步。
+- training.model.center_pos_mode：坐标中心方式，默认以 protein 为中心。
+- training.train.max_iters / batch_size：优化步数和批大小。
+- sampling.model.checkpoint：扩散生成权重，只能加载 diffusion checkpoint。
+- sampling.sample.num_samples：每个口袋尝试生成的样本数。
+- sampling.sample.num_steps：反向扩散步数；正式模型通常与训练时间步匹配。
+- sampling.sample.sample_num_atoms：生成分子原子数的策略，prior 表示从训练先验采样。
+- prop.dataset.path / split：PDBBind 口袋数据及划分。
+- prop.model.encoder：亲和力模型的 EGNN 结构参数，必须与 checkpoint 一致。
+
+命令行中的 --data.path、--train.batch_size 等覆盖 YAML；最终生效值以启动日志打印的配置为准。
+
+### 入口选择
+
+| 目标 | 入口 |
+|------|------|
+| 用预训练模型给一个自定义口袋生成配体 | scripts/sample_for_pocket.py |
+| 对测试集某个口袋采样 | scripts/sample_diffusion.py |
+| 多卡拆分测试集采样 | scripts/batch_sample_diffusion.sh |
+| 评估生成分子的有效性和性质 | scripts/evaluate_diffusion.py |
+| 运行 Vina/QVina 对接评估 | dock_testset.py / dock_baseline.py |
+| 从零训练扩散生成模型 | train_diffusion.sh |
+| 训练亲和力模型 | train_prop.sh |
+| 给一个已知复合物预测亲和力 | inference.sh |
+
+### 输出结果说明
+
+#### 分子生成结果
+
+`sample.pt` 保存完整的 Python/PyTorch 结果对象，用于后续程序分析；`sdf/` 保存适用于可视化和下游化学工具的结构文件。
+
+需要区分三个数量：
+
+- num_samples：模型尝试生成的样本数量。
+- n recon：能重建成 RDKit 分子的数量。
+- n complete：重建后仍为单一连通分子的数量。
+
+最终 sdf/ 中的文件数通常等于 n complete，而不是必然等于 num_samples。生成数量多不代表化学质量高，应继续检查价态、键长、环结构、碰撞和口袋内位置。
+
+#### 亲和力预测结果
+
+inference.sh 输出类似 Prediction: Kd=... m。脚本根据模型输出的 pK 值执行 10 的负幂变换，单位按 molar concentration 表示；选择 Kd、Ki 或 IC50 时，必须与训练标签和实验定义一致。
+
+预测值适用于同一模型和一致预处理条件下的相对比较，不应替代实验测定。蛋白与配体不属于同一复合物或坐标系不一致时，预测结果不具备可解释性。
+
+#### 评估指标
+
+扩散模型评估通常会报告有效性、多样性、对接 RMSD 或 Vina 相关指标。指标必须结合数据划分理解：
+
+- validity：生成分子是否能被化学工具成功解析。
+- completeness：是否为完整、单连通的分子。
+- diversity：样本之间的结构差异。
+- RMSD：有真实参考 pose 时，生成 pose 与参考 pose 的距离。
+- docking/energy：外部对接或能量工具的结果，不是模型训练损失。
+
+### 复现检查清单
+
+- [ ] 先运行 inference.sh 验证亲和力分支，再运行 sample_for_pocket 验证生成分支。
+- [ ] 扩散 checkpoint 与 sampling.yml 的模型配置来自同一次训练。
+- [ ] 自定义口袋 PDB 只包含合理的结合区域，或确认完整蛋白会被正确裁剪。
+- [ ] 记录 num_samples、num_steps、seed 和设备。
+- [ ] 保留 sample.yml、sample.pt 和生成 SDF，便于复现。
+- [ ] 评估时使用与采样相同的数据版本和 split。
+- [ ] 亲和力预测时记录 kind、checkpoint、蛋白文件和配体文件。
+- [ ] 不把生成有效性、模型置信度或预测亲和力直接当作实验结论。
+
+---
+## 脚本索引
 
 以下 4 个 `bash` 脚本为本示例的官方入口，均可直接运行。
 
@@ -145,7 +370,7 @@ source /path/to/onescience/env.sh
 | `train_prop.sh` | 训练亲和力预测模型 | `bash train_prop.sh` | `logs_prop/` |
 | `inference.sh` | 亲和力预测推理（默认 3ug2 示例） | `bash inference.sh` | 控制台输出 |
 
-> 注：脚本名 `train_diffusion.sh` 保持仓库原拼写不变。
+除上述 shell 入口外，`scripts/evaluate_diffusion.py`、`scripts/evaluate_from_meta.py`、`scripts/sample_for_pocket.py` 和 `scripts/property_prediction/eval_prop.py` 是需要手动传参的 Python 入口，详见后续章节。
 
 ---
 
@@ -414,104 +639,7 @@ PDB ID: examples/3ug2_protein.pdb Prediction: Kd=5.23e-09 m
 
 ---
 
-## 数据预处理
-
-### CrossDocked2020 数据预处理
-
-如需从头处理 CrossDocked2020 数据，按以下步骤执行：
-
-1. 下载 CrossDocked2020 v1.1 并保存到 `data/CrossDocked2020`。
-2. 过滤 RMSD < 1Å 的样本：
-
-    ```bash
-    export PYTHONPATH=../../../src:$PYTHONPATH
-    python scripts/data_preparation/clean_crossdocked.py \
-        --source data/CrossDocked2020 \
-        --dest data/crossdocked_v1.1_rmsd1.0 \
-        --rmsd_thr 1.0
-    ```
-
-3. 从蛋白中提取 10Å 结合口袋：
-
-    ```bash
-    python scripts/data_preparation/extract_pockets.py \
-        --source data/crossdocked_v1.1_rmsd1.0 \
-        --dest data/crossdocked_v1.1_rmsd1.0_pocket10
-    ```
-
-4. 划分训练集与测试集：
-
-    ```bash
-    python scripts/data_preparation/split_pl_dataset.py \
-        --path data/crossdocked_v1.1_rmsd1.0_pocket10 \
-        --dest data/crossdocked_pocket10_pose_split.pt \
-        --fixed_split data/split_by_name.pt
-    ```
-
-### PDBbind 数据预处理
-
-亲和力预测训练脚本 `train_prop.sh` 已自动完成口袋提取与数据集划分。如需单独执行，可使用以下命令：
-
-```bash
-export PYTHONPATH=../../../src:$PYTHONPATH
-
-python scripts/property_prediction/extract_pockets.py \
-    --source data/pdbbind_v2020 \
-    --dest data/pdbbind_v2020_processed \
-    --subset refined \
-    --num_workers 16
-
-python scripts/property_prediction/pdbbind_split.py \
-    --split_mode coreset \
-    --index_path data/pdbbind_v2020_processed/pocket_10_refined/index.pkl \
-    --test_path data/pdbbind_v2016/coreset \
-    --save_path data/pdbbind_v2020_processed/pocket_10_refined/split.pt
-```
-
----
-
-## 目录结构
-
-```
-examples/biosciences/targetdiff/
-├── train_diffusion.sh                # 扩散模型训练入口脚本
-├── train_prop.sh                     # 亲和力预测模型训练入口脚本
-├── inference.sh                      # 亲和力预测推理入口脚本
-├── scripts/
-│   ├── batch_sample_diffusion.sh     # 多卡批量采样脚本
-│   ├── train_diffusion.py            # 扩散模型训练 Python 入口
-│   ├── sample_diffusion.py           # 测试集分子采样入口
-│   ├── sample_for_pocket.py          # 自定义 PDB 口袋采样入口
-│   ├── evaluate_diffusion.py         # 生成结果评估入口
-│   ├── evaluate_from_meta.py         # 从 meta 文件评估入口
-│   ├── dock_baseline.py              # 对接基线脚本
-│   ├── dock_testset.py               # 测试集对接脚本
-│   ├── likelihood_est_diffusion.py   # 扩散似然估计脚本
-│   ├── data_preparation/             # 数据预处理脚本
-│   │   ├── clean_crossdocked.py
-│   │   ├── extract_pockets.py
-│   │   └── split_pl_dataset.py
-│   └── property_prediction/          # 亲和力预测相关脚本
-│       ├── train_prop.py
-│       ├── fixed_inference.py
-│       ├── inference.py
-│       ├── eval_prop.py
-│       ├── extract_pockets.py
-│       └── pdbbind_split.py
-├── configs/
-│   ├── training.yml                  # 扩散模型训练配置
-│   ├── sampling.yml                  # 分子采样配置
-│   └── prop/
-│       ├── pdbbind_general_egnn.yml
-│       └── pdbbind_general_egnn_enc_final_h.yml
-└── assets/                           # 模型架构示意图
-```
-
-模型实现位于 `src/onescience/models/targetdiff`。
-
----
-
-## 注意事项
+## 运行约束
 
 - 运行脚本前请确保 `ONESCIENCE_DATASETS_DIR` 与 `ONESCIENCE_MODELS_DIR` 环境变量已正确设置。
 - `train_diffusion.sh` 需要**在 `examples/biosciences/targetdiff` 目录下**执行；其余 `bash` 脚本使用 `BASH_SOURCE` 定位，可在任意目录执行。
@@ -519,7 +647,23 @@ examples/biosciences/targetdiff/
 - 脚本会自动设置 ROCm/DCU 相关的 `LD_LIBRARY_PATH`，在海光 DCU 平台可直接运行；在 CUDA 平台可忽略或按需调整。
 - 分子采样与评估依赖 RDKit、OpenBabel 及可选的 AutoDock Vina/QVina。
 - 亲和力预测模型基于 PDBbind 训练，输入蛋白与配体建议预先添加氢原子。
+- 扩散生成与亲和力预测使用相互独立的 checkpoint。`train_prop.sh` 生成的权重不适用于 `sample_diffusion.py`，扩散模型权重也不适用于属性预测入口。
+- 评估前保留采样产生的 `result_*.pt` 与对应配置，单独的指标文件不足以复现实验。
 - 训练脚本默认单卡运行，多卡训练请调整 `CUDA_VISIBLE_DEVICES` 或 `HIP_VISIBLE_DEVICES` 及分布式配置。
+
+---
+
+### Issues
+
+| 现象 | 处理 |
+|------|------|
+| 生成 SDF 少于 num_samples | 部分样本无法重建成合法或单连通 RDKit 分子，属于生成后过滤 |
+| diffusion checkpoint 加载失败 | 检查 sampling.yml 路径，并确认文件包含训练 config 和 model state |
+| 输出原子类型异常 | ligand_atom_mode 必须与训练 checkpoint 中的配置一致 |
+| 自定义 PDB 生成位置不合理 | 输入应为结合口袋而非未经裁剪的超大完整蛋白，且坐标单位正确 |
+| Vina 评估失败 | 生成本身不依赖 Vina；只有对接评估需要 Vina/Meeko/PDB2PQR |
+| 属性模型预测报 shape mismatch | EGNN 配置或 heavy_only 设置与 checkpoint 不一致 |
+| 显存不足 | 降低 batch_size 和 num_samples；num_steps 主要影响时间 |
 
 ---
 

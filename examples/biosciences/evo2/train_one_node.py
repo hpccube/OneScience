@@ -87,6 +87,13 @@ def parse_args(args: Optional[List[str]] = None) -> argparse.Namespace:
     )
 
     parser.add_argument(
+        "--data-cache-dir",
+        type=Path,
+        default=None,
+        help="Writable directory for Megatron dataset index/cache files. This must not be a read-only shared dataset directory.",
+    )
+
+    parser.add_argument(
         "--num-nodes",
         type=int,
         default=1,
@@ -560,11 +567,17 @@ def train(args: argparse.Namespace) -> nl.Trainer:
         blended_dataset_config = parse_dataset_config(
             dataset_config_path=args.dataset_config, dataset_path=args.dataset_dir
         )
+
         Evo2DatasetPadEodLossMask if args.eod_pad_in_loss_mask else Evo2Dataset
+
+        dataset_cls = Evo2DatasetPadEodLossMask if args.eod_pad_in_loss_mask else Evo2Dataset
         # Instantiate pre-training module.
+        if args.data_cache_dir:
+            print(f"[INFO] Megatron dataset cache: {args.data_cache_dir}")
         data_module = PreTrainingDataModule(
             paths=blended_dataset_config,
-            # dataset_cls=dataset_cls, # 不注释能跑吗？
+            path_to_cache=str(args.data_cache_dir) if args.data_cache_dir else None,
+            dataset_cls=dataset_cls,
             seq_length=args.seq_length,
             micro_batch_size=args.micro_batch_size,
             global_batch_size=global_batch_size,
@@ -897,3 +910,4 @@ def main():
 
 if __name__ == "__main__":
     main()
+

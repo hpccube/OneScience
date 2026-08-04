@@ -1,82 +1,65 @@
-# DiffDock 示例：OneScience 中的分子对接
+# DiffDock ：OneScience 中的分子对接
 
 本示例将 DiffDock（DiffDock-L）分子对接模型集成到 OneScience 生物信息组件中。所有源码入口均通过 `onescience.*` 路由，支持 score 模型训练、分子采样、数据集评估以及 confidence 模型训练。
 
 DiffDock 是由 Corso 等人在 ICLR 2023 提出的扩散模型分子对接方法，通过 SO(3)/SE(3) 上的扩散过程同时建模配体相对受体的平移、旋转和扭转角。DiffDock-L 是其 2024 年更新的版本，在泛化能力上有显著提升。本示例默认对应官方仓库的 DiffDock-L 主路径（CGModel）。
 
-![Alt Text](./assets/overview.png)
+![DiffDock 分子对接流程概览](./assets/overview.png)
 ---
 
 ## 目录
 
-- [DiffDock 简介](#diffdock-简介)
-- [支持范围](#支持范围)
+- [目录结构](#目录结构)
 - [环境准备](#环境准备)
 - [数据准备](#数据准备)
-- [脚本速查表](#脚本速查表)
-- [脚本逐行说明](#脚本逐行说明)
-  - [train.sh](#trainsh)
-  - [train_demo.sh](#train_demosh)
-  - [infer.sh](#infersh)
-  - [train_slurm.sbatch](#train_slurmsbatch)
-  - [infer_slurm.sbatch](#infer_slurmsbatch)
+- [DiffDock 简介](#diffdock-简介)
+- [支持范围](#支持范围)
+- [脚本索引](#脚本索引)
 - [详细使用说明](#详细使用说明)
   - [1. Score 模型训练](#1-score-模型训练)
   - [2. 分子采样](#2-分子采样)
   - [3. 数据集评估](#3-数据集评估)
   - [4. Confidence 模型训练](#4-confidence-模型训练)
 - [Slurm 作业提交](#slurm-作业提交)
-- [目录结构](#目录结构)
-- [常见问题与注意事项](#常见问题与注意事项)
+- [运行约束与故障排查](#运行约束与故障排查)
 - [引用](#引用)
 
 ---
 
-## DiffDock 简介
+## 目录结构
 
-DiffDock 把分子对接看成一个生成式建模问题：给定一个蛋白（受体）和一个小分子（配体），模型学习生成配体在受体结合口袋中的 3D 构象。它同时建模三个自由度：
+```
+examples/biosciences/diffdock/
+├── configs/
+│   ├── training.yml              # 训练配置模板
+│   ├── sampling.yml              # 采样配置模板
+│   └── evaluate.yml              # 评估配置模板
+├── scripts/
+│   ├── train.sh                  # 完整训练入口脚本
+│   ├── train_demo.sh             # Smoke 训练入口脚本
+│   ├── infer.sh                  # 推理采样入口脚本
+│   ├── train_slurm.sbatch        # Slurm 训练提交脚本
+│   ├── infer_slurm.sbatch        # Slurm 推理提交脚本
+│   ├── train_diffdock.py         # Score 模型训练 Python 入口
+│   ├── sample_diffdock.py        # 单复合物 / CSV 采样 Python 入口
+│   └── evaluate.py               # 数据集评估 Python 入口
+├── data/                         # 示例输入数据（6o5u、1a46）
+├── outputs/
+│   ├── train/                    # 训练输出
+│   ├── scnet_inference/          # 采样输出
+│   └── cache/                    # 数据缓存
+└── README.md
+```
 
-- **平移 (translation)**：配体在 3D 空间中的位置；
-- **旋转 (rotation)**：配体整体朝向；
-- **扭转 (torsion)**：配体内部可旋转键的二面角。
+对应源码模块：
 
-模型训练时通过 score matching 学习反向扩散过程的 score；推理时使用逆扩散采样，从一个随机初始姿态逐步去噪，得到候选结合构象。
-
-官方仓库地址：https://github.com/gcorso/DiffDock  
-DiffDock-L 论文：https://arxiv.org/abs/2402.18396  
-原始 DiffDock 论文：https://arxiv.org/abs/2210.01776
-
-官方 README 中最重要的使用约定：
-
-- 蛋白输入必须是 `.pdb` 文件，或一条氨基酸序列（将使用 ESMFold 折叠，但本示例当前未默认启用 ESMFold 路径）；
-- 配体输入可以是 SMILES 字符串，或 RDKit 可读取的 `.sdf` / `.mol2` 文件；
-- 首次在设备上运行会缓存 SO(2)/SO(3) 查找表，耗时几分钟，后续运行复用；
-- Confidence score 不是结合亲和力，而是模型对预测构象质量的置信度。
-
----
-
-## 支持范围
-
-**当前迁移范围：CGModel 主路径。**
-
-| 能力 | 状态 | Python 入口 |
-|---|---|---|
-| Score 模型训练（PDBBind） | 已支持 | `scripts/train_diffdock.py` |
-| Score 模型训练（MOAD） | 已支持 | `scripts/train_diffdock.py` |
-| Score 模型训练（泛化训练 `generalisation`） | 已支持 | `scripts/train_diffdock.py` |
-| 单复合物采样 | 已支持 | `scripts/sample_diffdock.py` |
-| CSV 批量采样 | 已支持 | `scripts/sample_diffdock.py` |
-| Confidence 重排序（采样） | 已支持 | `scripts/sample_diffdock.py` |
-| 数据集评估 | 已支持 | `scripts/evaluate.py` |
-| Confidence 模型训练 | 已支持 | `onescience.confidence.diffdock.confidence_train` |
-| GNINA 能量最小化（评估） | 已支持（可选） | `scripts/evaluate.py` |
-
-** intentionally 未迁移 — 会直接抛出 `NotImplementedError`：**
-
-- `all_atoms=true` / AAModel
-- `old_score_model=true` / `old_confidence_model=true`
-- `dataset=pdbsidechain` / `dataset=distillation`
-- `triple_training=true`
+```
+src/onescience/
+├── datapipes/diffdock/           # PDBBind、MOAD 数据集与 DataLoader
+├── models/diffdock/              # CGModel、TensorProductConvLayer、score_wrapper
+├── utils/diffdock/               # 扩散工具、SO3/torus、采样、训练、评估
+└── confidence/diffdock/          # Confidence 数据集与训练
+```
 
 ---
 
@@ -104,7 +87,7 @@ DiffDock-L 论文：https://arxiv.org/abs/2402.18396
 
 ### 方式二：使用 Docker（与官方仓库一致）
 
-如果仅想复现官方 DiffDock-L，也可以直接拉取官方镜像：
+复现官方 DiffDock-L 时，可使用官方镜像：
 
 ```bash
 # 有 GPU
@@ -130,6 +113,8 @@ python -c "from onescience.models.diffdock.score_wrapper import load_score_model
 
 ## 数据准备
 
+使用内置 6o5u 示例和预训练 Score 模型时，无需下载完整训练集。模型训练或数据集评估需要准备 PDBBind/MOAD 数据和划分文件。
+
 OneScience 示例依赖预先处理好的数据集。常用默认路径：
 
 | 用途 | 默认路径 |
@@ -140,21 +125,16 @@ OneScience 示例依赖预先处理好的数据集。常用默认路径：
 | 数据划分 | `${ONESCIENCE_DATASETS_DIR}/diffdock/datasets/splits` |
 | Score 模型权重 | `${ONESCIENCE_DATASETS_DIR}/diffdock/score_model/best_ema_inference_epoch_model.pt` |
 | Confidence 模型权重 | `${ONESCIENCE_DATASETS_DIR}/diffdock/confidence_model/best_model_epoch75.pt` |
-| ESM torch cache | `${ONESCIENCE_DATASETS_DIR}/diffdock/torch_home` |
-| 训练输出 | `examples/biosciences/diffdock/outputs/train/<RUN_NAME>` |
-| 采样输出 | `examples/biosciences/diffdock/outputs/scnet_inference` |
 
 ### 官方数据集下载说明
 
 根据官方 README，各数据集可从 Zenodo 获取：
 
-- **PDBBind**：https://zenodo.org/record/6408497，下载解压后得到 `PDBBind_processed`。
-- **BindingMOAD**：https://zenodo.org/records/10656052，下载 `BindingMOAD_2020_processed.tar` 并解压。
+- **PDBBind**：https://zenodo.org/record/6408497 ，下载解压后得到 `PDBBind_processed`。
+- **BindingMOAD**：https://zenodo.org/records/10656052 ，下载 `BindingMOAD_2020_processed.tar` 并解压。
 - **DockGen**：使用上面的 BindingMOAD 数据即可；若只想下载 DockGen 子集，可在同一 Zenodo 记录下载 `DockGen.tar`。
-- **PoseBusters**：https://zenodo.org/records/8278563。
-- **van der Mers 增强数据**：https://files.ipd.uw.edu/pub/training_sets/pdb_2021aug02.tar.gz。
-
-将这些目录放置到 `${ONESCIENCE_DATASETS_DIR}/diffdock/datasets/` 下，并确认存在对应 `splits/` 目录中的划分文件（如 `timesplit_no_lig_overlap_train`、`timesplit_no_lig_overlap_val`、`timesplit_test`）。
+- **PoseBusters**：https://zenodo.org/records/8278563 。
+- **van der Mers 增强数据**：https://files.ipd.uw.edu/pub/training_sets/pdb_2021aug02.tar.gz 。
 
 ### 划分文件格式
 
@@ -168,10 +148,48 @@ OneScience 示例依赖预先处理好的数据集。常用默认路径：
 ```
 
 ---
+## DiffDock 简介
 
-## 脚本速查表
+DiffDock 把分子对接看成一个生成式建模问题：给定一个蛋白（受体）和一个小分子（配体），模型学习生成配体在受体结合口袋中的 3D 构象。它同时建模三个自由度：
 
-以下 5 个脚本位于 `examples/biosciences/diffdock/scripts/`，为本示例的官方入口。
+- **平移 (translation)**：配体在 3D 空间中的位置；
+- **旋转 (rotation)**：配体整体朝向；
+- **扭转 (torsion)**：配体内部可旋转键的二面角。
+
+模型训练时通过 score matching 学习反向扩散过程的 score；推理时使用逆扩散采样，从一个随机初始姿态逐步去噪，得到候选结合构象。
+
+官方仓库地址：https://github.com/gcorso/DiffDock
+DiffDock-L 论文：https://arxiv.org/abs/2402.18396
+原始 DiffDock 论文：https://arxiv.org/abs/2210.01776
+
+官方 README 中最重要的使用约定：
+
+- 蛋白输入必须是 `.pdb` 文件，或一条氨基酸序列（将使用 ESMFold 折叠，但本示例当前未默认启用 ESMFold 路径）；
+- 配体输入可以是 SMILES 字符串，或 RDKit 可读取的 `.sdf` / `.mol2` 文件；
+- 首次在设备上运行会缓存 SO(2)/SO(3) 查找表，耗时几分钟，后续运行复用；
+- Confidence score 不是结合亲和力，而是模型对预测构象质量的置信度。
+
+---
+
+## 支持范围
+
+**当前迁移范围：CGModel 主路径。**
+
+| 能力 | 状态 | Python 入口 |
+|---|---|---|
+| Score 模型训练（PDBBind） | 已支持 | `scripts/train_diffdock.py` |
+| Score 模型训练（MOAD） | 已支持 | `scripts/train_diffdock.py` |
+| Score 模型训练（泛化训练 `generalisation`） | 已支持 | `scripts/train_diffdock.py` |
+| 单复合物采样 | 已支持 | `scripts/sample_diffdock.py` |
+| CSV 批量采样 | 已支持 | `scripts/sample_diffdock.py` |
+| Confidence 重排序（采样） | 已支持 | `scripts/sample_diffdock.py` |
+| 数据集评估 | 已支持 | `scripts/evaluate.py` |
+| Confidence 模型训练 | 已支持 | `onescience.confidence.diffdock.confidence_train` |
+| GNINA 能量最小化（评估） | 已支持（可选） | `scripts/evaluate.py` |
+
+## 脚本索引
+
+以下 5 个脚本位于 `examples/biosciences/diffdock/scripts/`。
 
 | 脚本 | 功能 | 推荐运行方式 | 输出 |
 |------|------|--------------|------|
@@ -180,277 +198,6 @@ OneScience 示例依赖预先处理好的数据集。常用默认路径：
 | `scripts/infer.sh` | 单复合物 / CSV 批量采样 | 在 `diffdock` 目录下执行 `bash scripts/infer.sh` | `outputs/scnet_inference/` |
 | `scripts/train_slurm.sbatch` | Slurm 提交训练 | `sbatch scripts/train_slurm.sbatch` | Slurm 日志 + 训练输出 |
 | `scripts/infer_slurm.sbatch` | Slurm 提交采样 | `sbatch scripts/infer_slurm.sbatch` | Slurm 日志 + 采样输出 |
-
----
-
-## 脚本逐行说明
-
-### `train.sh`
-
-`train.sh` 负责生成一个 YAML 训练配置，然后调用 `scripts/train_diffdock.py`。
-
-```bash
-source ${ROCM_PATH}/cuda/env.sh
-export LD_LIBRARY_PATH="$CONDA_PREFIX/lib/python3.11/site-packages/fastpt/torch/lib:$LD_LIBRARY_PATH"
-export LD_LIBRARY_PATH=${ROCM_PATH}/opencl/lib:$LD_LIBRARY_PATH
-```
-
-- 加载 ROCm/DCU 环境变量与 fastpt 库路径，使 PyTorch 能正确调用 DCU 后端。如果在 CUDA 平台运行，可忽略或删除这些行。
-
-```bash
-set -euo pipefail
-```
-
-- 严格模式：命令失败立即退出；未定义变量报错；管道中任一命令失败即整体失败。
-
-```bash
-SCRIPT_DIR=$(cd "$(dirname "${BASH_SOURCE[0]}")" && pwd)
-EXAMPLE_DIR=$(cd "${SCRIPT_DIR}/.." && pwd)
-REPO_ROOT=$(cd "${SCRIPT_DIR}/../../../.." && pwd)
-```
-
-- 计算脚本所在目录、示例目录和仓库根目录，保证脚本无论从哪调用都能找到相对路径。
-
-```bash
-source "${REPO_ROOT}/env.sh"
-```
-
-- 加载项目根目录的环境变量（`ONESCIENCE_DATASETS_DIR`、`ONESCIENCE_MODELS_DIR` 等）。
-
-```bash
-if [[ -n "${ROCM_PATH:-}" && -f "${ROCM_PATH}/cuda/env.sh" ]]; then
-  source "${ROCM_PATH}/cuda/env.sh"
-fi
-```
-
-- 若 `ROCM_PATH` 存在，再次加载 DCU 环境（兼容某些 Slurm 场景）。
-
-```bash
-export PYTHONPATH="${REPO_ROOT}/src:${REPO_ROOT}:${PYTHONPATH:-}"
-export HIP_VISIBLE_DEVICES="${HIP_VISIBLE_DEVICES:-0}"
-export CUDA_VISIBLE_DEVICES="${CUDA_VISIBLE_DEVICES:-${HIP_VISIBLE_DEVICES}}"
-export OMP_NUM_THREADS="${OMP_NUM_THREADS:-4}"
-```
-
-- 将仓库 `src` 加入 Python 路径；默认使用 GPU 0；限制 OpenMP 线程数。
-
-```bash
-DIFFDOCK_DATA_ROOT="${DIFFDOCK_DATA_ROOT:-${ONESCIENCE_DATASETS_DIR}/diffdock}"
-DIFFDOCK_DATASETS_DIR="${DIFFDOCK_DATASETS_DIR:-${DIFFDOCK_DATA_ROOT}/datasets}"
-export TORCH_HOME="${TORCH_HOME:-${DIFFDOCK_DATA_ROOT}/torch_home}"
-```
-
-- 计算数据根目录、数据集子目录与 torch cache 目录。可通过环境变量覆盖。
-
-```bash
-DATASET="${DATASET:-pdbbind}"
-RUN_NAME="${RUN_NAME:-diffdock_${DATASET}_scnet}"
-LOG_DIR="${LOG_DIR:-${EXAMPLE_DIR}/outputs/train}"
-CACHE_PATH="${CACHE_PATH:-${EXAMPLE_DIR}/outputs/cache}"
-CONFIG_PATH="${CONFIG_PATH:-${LOG_DIR}/${RUN_NAME}_train_config.yml}"
-```
-
-- 默认数据集为 `pdbbind`，可改为 `moad` 或 `generalisation`；输出目录为示例目录下的 `outputs/`。
-
-```bash
-PDBBIND_DIR="${PDBBIND_DIR:-${DIFFDOCK_DATASETS_DIR}/PDBBind_processed}"
-MOAD_DIR="${MOAD_DIR:-${DIFFDOCK_DATASETS_DIR}/BindingMOAD_2020_processed}"
-SPLIT_TRAIN="${SPLIT_TRAIN:-${DIFFDOCK_DATASETS_DIR}/splits/timesplit_no_lig_overlap_train}"
-SPLIT_VAL="${SPLIT_VAL:-${DIFFDOCK_DATASETS_DIR}/splits/timesplit_no_lig_overlap_val}"
-```
-
-- 默认训练/验证划分使用官方时间划分。
-
-```bash
-DEVICE="${DEVICE:-auto}"
-if [[ "$DEVICE" == "auto" ]]; then
-    if python -c "import torch; print(torch.cuda.is_available())" | grep -q True; then
-        DEVICE="cuda"
-    else
-        DEVICE="cpu"
-    fi
-fi
-```
-
-- 自动检测 GPU；无 GPU 则回退 CPU。
-
-```bash
-SEED="${SEED:-0}"
-BATCH_SIZE="${BATCH_SIZE:-4}"
-N_EPOCHS="${N_EPOCHS:-10}"
-LR="${LR:-0.001}"
-NUM_WORKERS="${NUM_WORKERS:-1}"
-NUM_DATALOADER_WORKERS="${NUM_DATALOADER_WORKERS:-0}"
-LIMIT_COMPLEXES="${LIMIT_COMPLEXES:-null}"
-```
-
-- 训练超参数默认值。`LIMIT_COMPLEXES` 可限制加载的复合物数量，用于快速 smoke 测试。
-
-```bash
-cat > "${CONFIG_PATH}" <<EOF
-...
-EOF
-```
-
-- 生成完整 YAML 配置文件，写入 `runtime/data/diffusion/model/optimization/validation` 等区块。脚本只暴露常用变量；更多参数可直接编辑生成的 YAML 或手写 `configs/training.yml`。
-
-```bash
-cd "${REPO_ROOT}"
-python "${SCRIPT_DIR}/train_diffdock.py" --config "${CONFIG_PATH}"
-```
-
-- 切换至仓库根目录并启动训练。
-
-### `train_demo.sh`
-
-`train_demo.sh` 与 `train.sh` 结构相同，但默认使用：
-
-- `RUN_NAME=diffdock_pdbbind_smoke100_val20_cpu`
-- `BATCH_SIZE=2`
-- `N_EPOCHS=1`
-- `SPLIT_TRAIN=timesplit_no_lig_overlap_train_smoke100`
-- `SPLIT_VAL=timesplit_no_lig_overlap_val_smoke20`
-- `CACHE_PATH=outputs/cache_pdbbind_smoke100_val20`
-
-适用于快速验证安装和环境是否能跑通训练流程。
-
-### `infer.sh`
-
-`infer.sh` 负责生成采样 YAML 配置并调用 `scripts/sample_diffdock.py`。
-
-```bash
-DIFFDOCK_DATA_ROOT="${DIFFDOCK_DATA_ROOT:-${ONESCIENCE_DATASETS_DIR}/diffdock}"
-export TORCH_HOME="${TORCH_HOME:-${DIFFDOCK_DATA_ROOT}/torch_home}"
-
-SCORE_MODEL_DIR="${SCORE_MODEL_DIR:-${DIFFDOCK_DATA_ROOT}/score_model}"
-SCORE_CKPT="${SCORE_CKPT:-best_ema_inference_epoch_model.pt}"
-CONFIDENCE_MODEL_DIR="${CONFIDENCE_MODEL_DIR:-${DIFFDOCK_DATA_ROOT}/confidence_model}"
-CONFIDENCE_CKPT="${CONFIDENCE_CKPT:-best_model_epoch75.pt}"
-ENABLE_CONFIDENCE="${ENABLE_CONFIDENCE:-true}"
-OLD_CONFIDENCE_MODEL="${OLD_CONFIDENCE_MODEL:-true}"
-```
-
-- 默认加载预训练 score 和 confidence 模型；可通过环境变量覆盖路径。注意示例当前默认 `OLD_CONFIDENCE_MODEL=true`，是因为示例自带的 confidence 权重来自旧版结构；若使用新版，请设为 `false`。
-
-```bash
-DEFAULT_SHARED_CSV="${DIFFDOCK_DATA_ROOT}/datasets/inferdata/protein_ligand_example.csv"
-PROTEIN_LIGAND_CSV="${PROTEIN_LIGAND_CSV:-}"
-if [[ -z "${PROTEIN_LIGAND_CSV}" && -f "${DEFAULT_SHARED_CSV}" ]]; then
-  PROTEIN_LIGAND_CSV="${DEFAULT_SHARED_CSV}"
-fi
-```
-
-- 若未显式指定 `PROTEIN_LIGAND_CSV` 且共享目录存在 CSV，则自动使用 CSV 批量模式；否则回退单复合物模式。
-
-```bash
-COMPLEX_NAME="${COMPLEX_NAME:-6o5u_test}"
-PROTEIN_PATH="${PROTEIN_PATH:-${EXAMPLE_DIR}/data/6o5u_protein_processed.pdb}"
-PROTEIN_SEQUENCE="${PROTEIN_SEQUENCE:-}"
-LIGAND_DESCRIPTION="${LIGAND_DESCRIPTION:-${EXAMPLE_DIR}/data/6o5u_ligand.sdf}"
-```
-
-- 单复合物模式默认值，使用仓库自带的 6o5u 样本。
-
-```bash
-SAMPLES_PER_COMPLEX="${SAMPLES_PER_COMPLEX:-10}"
-BATCH_SIZE="${BATCH_SIZE:-10}"
-INFERENCE_STEPS="${INFERENCE_STEPS:-20}"
-ACTUAL_STEPS="${ACTUAL_STEPS:-}"
-NO_RANDOM="${NO_RANDOM:-false}"
-NO_FINAL_STEP_NOISE="${NO_FINAL_STEP_NOISE:-true}"
-CROP_BEYOND="${CROP_BEYOND:-}"
-```
-
-- 采样超参数。`SAMPLES_PER_COMPLEX` 控制每个复合物生成 pose 数量；`INFERENCE_STEPS` 控制扩散步数。
-
-```bash
-yaml_value() { ... }
-yaml_bool() { ... }
-```
-
-- 小工具函数：为空或 `null` 输出 YAML `null`，否则输出单引号字符串；布尔值统一转为小写 `true`/`false`。
-
-```bash
-if [[ "${ENABLE_CONFIDENCE,,}" == "true" ]]; then
-  CONFIDENCE_MODEL_VALUE=$(yaml_value "${CONFIDENCE_MODEL_DIR}")
-else
-  CONFIDENCE_MODEL_VALUE="null"
-fi
-```
-
-- 若关闭 confidence，则不写入 confidence 模型目录。
-
-```bash
-cat > "${CONFIG_PATH}" <<EOF
-runtime:
-  device: ...
-  out_dir: ...
-model:
-  model_dir: ...
-  ckpt: ...
-confidence:
-  confidence_model_dir: ...
-  confidence_ckpt: ...
-input:
-  protein_ligand_csv: ...
-  complex_name: ...
-  protein_path: ...
-  ligand_description: ...
-sampling:
-  samples_per_complex: ...
-  inference_steps: ...
-EOF
-```
-
-- 生成采样 YAML，结构见 `configs/sampling.yml`。
-
-```bash
-cd "${REPO_ROOT}"
-python "${SCRIPT_DIR}/sample_diffdock.py" --config "${CONFIG_PATH}"
-```
-
-- 启动采样。
-
-### `train_slurm.sbatch`
-
-```bash
-#SBATCH -J diffdock_train
-#SBATCH -p largedev
-#SBATCH -N 1
-#SBATCH --ntasks-per-node=1
-#SBATCH --gres=dcu:1
-#SBATCH --cpus-per-task=8
-#SBATCH --time=24:00:00
-#SBATCH -o slurm-train-%j.out
-#SBATCH -e slurm-train-%j.err
-```
-
-- 在 `largedev` 队列申请 1 节点、1 任务、1 张 DCU、8 CPU 核心，运行 24 小时。如使用 CUDA，把 `--gres=dcu:1` 改为 `--gres=gpu:1`。
-
-```bash
-module purge || true
-module load sghpc-mpi-gcc/25.8 || true
-```
-
-- 加载集群模块，若失败也继续（`|| true`）。
-
-```bash
-srun bash "${SCRIPT_DIR}/train.sh"
-```
-
-- 通过 `srun` 调用 `train.sh`，复用本地脚本逻辑。
-
-### `infer_slurm.sbatch`
-
-与 `train_slurm.sbatch` 类似，区别仅在于：
-
-```bash
-#SBATCH -J diffdock_infer
-#SBATCH --time=02:00:00
-srun bash "${SCRIPT_DIR}/infer.sh"
-```
-
-- 默认运行 2 小时，调用 `infer.sh`。
 
 ---
 
@@ -513,7 +260,7 @@ bash scripts/train_demo.sh
 # 完整训练：MOAD 数据集
 DATASET=moad RUN_NAME=diffdock_moad BATCH_SIZE=4 N_EPOCHS=10 bash scripts/train.sh
 
-# 快速 smoke 测试
+# 最小规模训练验证（smoke test）
 LIMIT_COMPLEXES=100 N_EPOCHS=1 RUN_NAME=diffdock_smoke bash scripts/train.sh
 ```
 
@@ -631,7 +378,9 @@ python scripts/evaluate.py --config configs/evaluate.yml
 - 在测试数据集上评估训练好的 score 模型。
 - 可选 confidence checkpoint 进行重排序。
 - 可选 GNINA 能量最小化（需配置 `gnina.gnina_minimize: true` 并安装 `gnina` 可执行文件）。
-- 输出指标：RMSD 分位数、重心距离、自交比例等，以 `.npy` 文件保存到 `out_dir`。
+- 输出指标：RMSD 分位数、重心距离、自交比例等，以 `.npy` 文件进行保存。
+- 当前模板加载 `${ONESCIENCE_DATASETS_DIR}/diffdock/score_model/best_ema_inference_epoch_model.pt`，并评估 `timesplit_test`。
+- `diffdock_pdbbind_smoke100_val20_cpu` 仅用于验证训练流程；它只训练 100 个样本、1 个 epoch，不能用于报告对接精度。
 
 对应官方 README 中的复现命令，本示例入口为 `scripts/evaluate.py`：
 
@@ -688,50 +437,13 @@ sbatch scripts/infer_slurm.sbatch
 提交前请根据集群环境修改：
 
 - `-p largedev` 队列名；
-- `--gres=dcu:1` 改为 `--gres=gpu:1` 如果是英伟达 GPU；
+- 使用 NVIDIA GPU 时，将 `--gres=dcu:1` 修改为 `--gres=gpu:1`；
 - `--time` 运行时长；
 - `module load ...` 加载正确的编译器/MPI 模块。
 
 ---
 
-## 目录结构
-
-```
-examples/biosciences/diffdock/
-├── configs/
-│   ├── training.yml              # 训练配置模板
-│   ├── sampling.yml              # 采样配置模板
-│   └── evaluate.yml              # 评估配置模板
-├── scripts/
-│   ├── train.sh                  # 完整训练入口脚本
-│   ├── train_demo.sh             # Smoke 训练入口脚本
-│   ├── infer.sh                  # 推理采样入口脚本
-│   ├── train_slurm.sbatch        # Slurm 训练提交脚本
-│   ├── infer_slurm.sbatch        # Slurm 推理提交脚本
-│   ├── train_diffdock.py         # Score 模型训练 Python 入口
-│   ├── sample_diffdock.py        # 单复合物 / CSV 采样 Python 入口
-│   └── evaluate.py               # 数据集评估 Python 入口
-├── data/                         # 示例输入数据（6o5u、1a46）
-├── outputs/
-│   ├── train/                    # 训练输出
-│   ├── scnet_inference/          # 采样输出
-│   └── cache/                    # 数据缓存
-└── README.md
-```
-
-对应源码模块：
-
-```
-src/onescience/
-├── datapipes/diffdock/           # PDBBind、MOAD 数据集与 DataLoader
-├── models/diffdock/              # CGModel、TensorProductConvLayer、score_wrapper
-├── utils/diffdock/               # 扩散工具、SO3/torus、采样、训练、评估
-└── confidence/diffdock/          # Confidence 数据集与训练
-```
-
----
-
-## 常见问题与注意事项
+## 运行约束与故障排查
 
 - **运行脚本前请确保 `ONESCIENCE_DATASETS_DIR` 与 `ONESCIENCE_MODELS_DIR` 已设置**（执行项目根目录 `env.sh` 即可）。
 - 建议所有入口脚本都在 `examples/biosciences/diffdock` 目录下执行，以便正确生成相对路径的输出目录。

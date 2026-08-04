@@ -1,8 +1,8 @@
-# GenScore 示例
+# GenScore 
 
 本示例将 GenScore 集成到 OneScience 生物信息（AI for Biology）组件中，提供蛋白-配体打分、口袋生成、贡献度分析、模型训练以及 CASF-2016 基准评测的统一入口。
 
-## GenScore 简介
+## 简介
 
 GenScore 是一个基于图神经网络的**蛋白质-配体打分框架**，由 RTMScore 扩展而来。它能够预测蛋白-小分子结合亲和力并评估对接构象质量，在多个数据集上展现出均衡的打分（scoring）、排序（ranking）、对接（docking）和虚拟筛选（screening）能力。
 
@@ -12,30 +12,43 @@ GenScore 是一个基于图神经网络的**蛋白质-配体打分框架**，由
 
 ## 目录
 
-- [功能定位](#功能定位)
+- [目录结构](#目录结构)
 - [环境准备](#环境准备)
 - [数据与模型权重](#数据与模型权重)
-- [脚本速查表](#脚本速查表)
-- [详细使用说明](#详细使用说明)
-  - [1. 蛋白-配体打分推理（`run_genscore.sh`）](#1-蛋白-配体打分推理run_genscoresh)
-  - [2. 模型训练](#2-模型训练)
-    - [2.1 小规模冒烟测试（`train_genscore_smoke.sh`）](#21-小规模冒烟测试train_genscore_smokesh)
-    - [2.2 完整训练（`train_genscore_full.sh`）](#22-完整训练train_genscore_fullsh)
-  - [3. CASF-2016 基准评测（`run_genscore_benchmarks.sh`）](#3-cASF-2016-基准评测run_genscore_benchmarkssh)
 - [数据预处理](#数据预处理)
-- [目录结构](#目录结构)
-- [注意事项](#注意事项)
+- [功能定位](#功能定位)
+- [标准处理流程](#标准处理流程)
+- [脚本索引](#脚本索引)
+- [详细使用说明](#详细使用说明)
+  - [1. 模型训练](#1-模型训练)
+    - [1.1 最小规模训练验证（`train_genscore_smoke.sh`）](#11-最小规模训练验证train_genscore_smokesh)
+    - [1.2 完整训练（`train_genscore_full.sh`）](#12-完整训练train_genscore_fullsh)
+  - [2. 蛋白-配体打分推理（`run_genscore.sh`）](#2-蛋白-配体打分推理run_genscoresh)
+  - [3. CASF-2016 基准评测（`run_genscore_benchmarks.sh`）](#3-casf-2016-基准评测run_genscore_benchmarkssh)
+- [运行约束](#运行约束)
 - [引用](#引用)
 
 ---
 
-## 功能定位
+## 目录结构
 
-- **蛋白-配体打分**：对给定蛋白（或已提取的结合口袋）与配体构象预测结合分数。
-- **口袋自动生成**：基于参考配体位置从完整蛋白结构中自动截取结合口袋。
-- **贡献度分析**：输出原子级别和残基级别对最终打分值的贡献，辅助可解释性分析。
-- **模型训练**：基于 PDBbind 预处理后的蛋白-配体图数据训练 GenScore 打分网络。
-- **CASF-2016 基准评测**：支持打分/排序（scoring/ranking）、对接（docking）和虚拟筛选（screening）三项标准测试。
+```
+examples/biosciences/genscore/
+├── run_genscore.sh                   # 蛋白-配体打分推理示例脚本
+├── train_genscore_smoke.sh           # 最小规模训练验证脚本（smoke test）
+├── train_genscore_full.sh            # 完整训练脚本
+├── run_genscore_benchmarks.sh        # CASF-2016 基准测试脚本
+├── genscore.py                       # 推理入口
+├── train_genscore.py                 # 训练入口
+├── preprocess_pdbbind.py             # PDBbind 数据预处理入口
+├── benchmarks/                       # CASF-2016 评测脚本
+│   ├── casf2016_docking.py
+│   ├── casf2016_scoring_ranking.py
+│   └── casf2016_screening.py
+└── README.md                         
+```
+
+模型实现位于 `src/onescience/models/genscore`。
 
 ---
 
@@ -82,20 +95,19 @@ GenScore 是一个基于图神经网络的**蛋白质-配体打分框架**，由
 
 ## 数据与模型权重
 
-### 1. 推理示例数据
+### 1. 训练数据
 
-脚本默认读取：
+脚本默认读取预处理后的 PDBbind v2020 图数据：
 
 ```
-${ONESCIENCE_DATASETS_DIR}/GenScore/genscore_data/inferdata
+${ONESCIENCE_DATASETS_DIR}/GenScore/genscore_data/rtmscore_s
 ```
 
 需要包含以下文件：
 
-- `1qkt_p.pdb`：完整蛋白结构
-- `1qkt_l.sdf`：参考配体（用于自动生成口袋）
-- `1qkt_decoys.sdf`：待打分的 decoy 配体构象
-- `1qkt_p_pocket_10.0.pdb`：已预提取的 10Å 结合口袋
+- `<data_prefix>_ids.npy`
+- `<data_prefix>_lig.pt`
+- `<data_prefix>_prot.pt`
 
 ### 2. 预训练模型权重
 
@@ -111,19 +123,20 @@ ${ONESCIENCE_DATASETS_DIR}/GenScore/trained_models
 - `GatedGCN_0.5_1.pth`：GatedGCN 编码器模型
 - `GatedGCN_ft_1.0_1.pth`：GatedGCN 微调模型（用于贡献度分析）
 
-### 3. 训练数据
+### 3. 推理示例数据
 
-脚本默认读取预处理后的 PDBbind v2020 图数据：
+脚本默认读取：
 
 ```
-${ONESCIENCE_DATASETS_DIR}/GenScore/genscore_data/rtmscore_s
+${ONESCIENCE_DATASETS_DIR}/GenScore/genscore_data/inferdata
 ```
 
-需要包含以下文件：
+包含以下文件：
 
-- `<data_prefix>_ids.npy`
-- `<data_prefix>_lig.pt`
-- `<data_prefix>_prot.pt`
+- `1qkt_p.pdb`：完整蛋白结构
+- `1qkt_l.sdf`：参考配体（用于自动生成口袋）
+- `1qkt_decoys.sdf`：待打分的 decoy 配体构象
+- `1qkt_p_pocket_10.0.pdb`：已预提取的 10Å 结合口袋
 
 ### 4. CASF-2016 基准数据
 
@@ -145,15 +158,82 @@ ${ONESCIENCE_DATASETS_DIR}/GenScore/genscore_data/rtmscore_s
 
 ---
 
-## 脚本速查表
+## 数据预处理
+
+训练需要预处理后的 PDBbind 图数据，包括：
+
+```
+<data_prefix>_ids.npy
+<data_prefix>_lig.pt
+<data_prefix>_prot.pt
+```
+
+可通过以下命令对原始 PDBbind 数据进行预处理：
+
+```bash
+cd examples/biosciences/genscore
+export PYTHONPATH=../../../src:$PYTHONPATH
+python preprocess_pdbbind.py \
+  --dir /path/to/pdbbind \
+  --ref /path/to/pdbbind_2020_general.csv \
+  --cutoff 10.0 \
+  --outprefix /path/to/preprocessed/pdbbind/v2020_train
+```
+
+主要参数：
+
+| 参数 | 说明 |
+|------|------|
+| `--dir` | PDBbind 原始数据目录 |
+| `--ref` | PDBbind 索引 CSV 文件 |
+| `--cutoff` | 蛋白-配体距离截断，默认 `10.0` Å |
+| `--outprefix` | 输出文件前缀 |
+
+---
+
+## 功能定位
+
+- **蛋白-配体打分**：对给定蛋白（或已提取的结合口袋）与配体构象预测结合分数。
+- **口袋自动生成**：基于参考配体位置从完整蛋白结构中自动截取结合口袋。
+- **贡献度分析**：输出原子级别和残基级别对最终打分值的贡献，辅助可解释性分析。
+- **模型训练**：基于 PDBbind 预处理后的蛋白-配体图数据训练 GenScore 打分网络。
+- **CASF-2016 基准评测**：支持打分/排序（scoring/ranking）、对接（docking）和虚拟筛选（screening）三项标准测试。
+
+---
+
+## 标准处理流程：
+
+数据处理 → 训练 → 推理 → 评估
+
+```text
+PDBbind 原始蛋白-配体复合物
+        │
+        ▼ preprocess_pdbbind.py
+预处理图数据
+  *_ids.npy + *_lig.pt + *_prot.pt
+        │
+        ▼ train_genscore.py
+GenScore 模型权重 .pth
+        │
+        ▼ genscore.py / run_genscore.sh
+候选配体 CSV 分数和贡献度
+        │
+        ▼ run_genscore_benchmarks.sh
+CASF-2016 scoring/ranking/docking/screening 指标
+```
+
+完整训练需按上述顺序执行。使用官方预训练权重时，可省略数据处理和训练步骤，直接执行蛋白-配体打分推理。
+
+---
+## 脚本索引
 
 以下 4 个 `bash` 脚本为本示例的官方入口，均可直接运行。
 
 | 脚本 | 功能 | 推荐运行方式 | 默认输出 |
 |------|------|--------------|----------|
-| `run_genscore.sh` | 蛋白-配体打分推理 | `bash run_genscore.sh` | `out/` 目录下的 CSV 文件 |
-| `train_genscore_smoke.sh` | 小规模训练冒烟测试 | `bash train_genscore_smoke.sh` | `genscore_smoke_bs16.pth` |
+| `train_genscore_smoke.sh` | 最小规模训练验证（smoke test） | `bash train_genscore_smoke.sh` | `genscore_smoke_bs16.pth` |
 | `train_genscore_full.sh` | 完整模型训练 | `bash train_genscore_full.sh` | `genscore_gatedgcn_full_3000.pth` |
+| `run_genscore.sh` | 蛋白-配体打分推理 | `bash run_genscore.sh` | `out/` 目录下的 CSV 文件 |
 | `run_genscore_benchmarks.sh` | CASF-2016 基准评测 | `bash run_genscore_benchmarks.sh all` | `benchmark_outputs/` |
 
 以上脚本均位于 `examples/biosciences/genscore/` 目录。
@@ -162,9 +242,100 @@ ${ONESCIENCE_DATASETS_DIR}/GenScore/genscore_data/rtmscore_s
 
 ## 详细使用说明
 
-建议在 `examples/biosciences/genscore` 目录下运行脚本，以便输出目录统一。
+所有命令应在 `examples/biosciences/genscore` 目录下执行，以确保相对路径与输出目录一致。
 
-### 1. 蛋白-配体打分推理（`run_genscore.sh`）
+### 1. 模型训练
+
+#### 1.1 最小规模训练验证（`train_genscore_smoke.sh`）
+
+```bash
+cd examples/biosciences/genscore
+bash train_genscore_smoke.sh
+```
+
+默认配置：
+
+| 参数 | 默认值 |
+|------|--------|
+| 训练轮数 | 100 |
+| 批次大小 | 16 |
+| 验证集样本数 | 1500 |
+| 编码器 | `gatedgcn` |
+| 输出模型 | `genscore_smoke_bs16.pth` |
+
+脚本内部调用：
+
+```bash
+python train_genscore.py \
+  --data_dir "${GENSCORE_DATA_DIR}" \
+  --data_prefix "${GENSCORE_DATA_PREFIX}" \
+  --model_path "${GENSCORE_MODEL_PATH}" \
+  --num_epochs 100 \
+  --batch_size 16 \
+  --num_workers 0 \
+  --valnum 1500 \
+  --encoder "${GENSCORE_ENCODER:-gatedgcn}"
+```
+
+#### 1.2 完整训练（`train_genscore_full.sh`）
+
+```bash
+cd examples/biosciences/genscore
+bash train_genscore_full.sh
+```
+
+默认配置：
+
+| 参数 | 默认值 |
+|------|--------|
+| 训练轮数 | 3000 |
+| 批次大小 | 64 |
+| 验证集样本数 | 1500 |
+| 早停耐心值 | 70 |
+| 编码器 | `gatedgcn` |
+| 输出模型 | `genscore_gatedgcn_full_3000.pth` |
+
+脚本内部调用：
+
+```bash
+python train_genscore.py \
+  --data_dir "${GENSCORE_DATA_DIR}" \
+  --data_prefix "${GENSCORE_DATA_PREFIX}" \
+  --model_path "${GENSCORE_MODEL_PATH}" \
+  --num_epochs 3000 \
+  --batch_size 64 \
+  --num_workers 8 \
+  --valnum 1500 \
+  --patience 70 \
+  --encoder "${GENSCORE_ENCODER}"
+```
+
+支持通过环境变量覆盖关键参数：
+
+| 环境变量 | 说明 | 默认值 |
+|----------|------|--------|
+| `GENSCORE_DATA_DIR` | 训练数据目录 | `${ONESCIENCE_DATASETS_DIR}/GenScore/genscore_data/rtmscore_s` |
+| `GENSCORE_DATA_PREFIX` | 数据文件前缀 | `v2020_train` |
+| `GENSCORE_ENCODER` | 图编码器类型 | `gatedgcn` |
+| `GENSCORE_MODEL_PATH` | 输出模型路径 | `examples/biosciences/genscore/genscore_${GENSCORE_ENCODER}_full_3000.pth` |
+| `GENSCORE_NUM_EPOCHS` | 训练轮数 | `3000` |
+| `GENSCORE_BATCH_SIZE` | 批次大小 | `64` |
+| `GENSCORE_NUM_WORKERS` | 数据加载线程数 | `8` |
+| `GENSCORE_VALNUM` | 验证集样本数 | `1500` |
+| `GENSCORE_PATIENCE` | 早停耐心值 | `70` |
+
+示例：
+
+```bash
+GENSCORE_ENCODER=gt \
+GENSCORE_NUM_EPOCHS=1000 \
+GENSCORE_BATCH_SIZE=32 \
+bash train_genscore_full.sh
+```
+
+---
+
+### 2. 蛋白-配体打分推理（`run_genscore.sh`）
 
 ```bash
 cd examples/biosciences/genscore
@@ -241,16 +412,16 @@ bash run_genscore.sh
 
 | 参数 | 是否必填 | 说明 |
 |------|----------|------|
-| `-p` / `--protein` | 是 | 蛋白 PDB 或口袋 PDB 路径 |
-| `-l` / `--ligand` | 是 | 配体 SDF 路径（可包含多个构象） |
-| `-rl` / `--ref_ligand` | 否 | 参考配体 SDF，用于自动生成口袋 |
+| `-p` / `--prot` | 是 | 蛋白 PDB 或口袋 PDB 路径 |
+| `-l` / `--lig` | 是 | 配体 SDF 路径（可包含多个构象） |
+| `-rl` / `--reflig` | 否 | 参考配体 SDF，用于自动生成口袋 |
 | `-gen_pocket` | 否 | 基于参考配体自动生成结合口袋 |
 | `-c` / `--cutoff` | 否 | 口袋截断距离，默认 `10.0` Å |
 | `-e` / `--encoder` | 否 | 图编码器类型，可选 `gt`、`gatedgcn`，默认 `gt` |
 | `-m` / `--model` | 是 | 模型权重路径 |
-| `-o` / `--out` | 否 | 输出目录前缀 |
+| `-o` / `--outprefix` | 否 | 输出目录前缀 |
 | `-ac` / `--atom_contribution` | 否 | 计算原子级别贡献 |
-| `-rc` / `--residue_contribution` | 否 | 计算残基级别贡献 |
+| `-rc` / `--res_contribution` | 否 | 计算残基级别贡献 |
 | `--batch_size` | 否 | 推理批次大小 |
 | `--num_workers` | 否 | 数据加载线程数 |
 
@@ -260,97 +431,6 @@ bash run_genscore.sh
 - `out_gatedgcn.csv`：GatedGCN 模型打分结果
 - `out_at.csv`：原子贡献分析结果
 - `out_res.csv`：残基贡献分析结果
-
----
-
-### 2. 模型训练
-
-#### 2.1 小规模冒烟测试（`train_genscore_smoke.sh`）
-
-```bash
-cd examples/biosciences/genscore
-bash train_genscore_smoke.sh
-```
-
-默认配置：
-
-| 参数 | 默认值 |
-|------|--------|
-| 训练轮数 | 100 |
-| 批次大小 | 16 |
-| 验证集样本数 | 1500 |
-| 编码器 | `gatedgcn` |
-| 输出模型 | `genscore_smoke_bs16.pth` |
-
-脚本内部调用：
-
-```bash
-python train_genscore.py \
-  --data_dir "${GENSCORE_DATA_DIR}" \
-  --data_prefix "${GENSCORE_DATA_PREFIX}" \
-  --model_path "${GENSCORE_MODEL_PATH}" \
-  --num_epochs 100 \
-  --batch_size 16 \
-  --num_workers 0 \
-  --valnum 1500 \
-  --encoder "${GENSCORE_ENCODER:-gatedgcn}"
-```
-
-#### 2.2 完整训练（`train_genscore_full.sh`）
-
-```bash
-cd examples/biosciences/genscore
-bash train_genscore_full.sh
-```
-
-默认配置：
-
-| 参数 | 默认值 |
-|------|--------|
-| 训练轮数 | 3000 |
-| 批次大小 | 64 |
-| 验证集样本数 | 1500 |
-| 早停耐心值 | 70 |
-| 编码器 | `gatedgcn` |
-| 输出模型 | `genscore_gatedgcn_full_3000.pth` |
-
-脚本内部调用：
-
-```bash
-python train_genscore.py \
-  --data_dir "${GENSCORE_DATA_DIR}" \
-  --data_prefix "${GENSCORE_DATA_PREFIX}" \
-  --model_path "${GENSCORE_MODEL_PATH}" \
-  --num_epochs 3000 \
-  --batch_size 64 \
-  --num_workers 8 \
-  --valnum 1500 \
-  --patience 70 \
-  --encoder "${GENSCORE_ENCODER}"
-```
-
-支持通过环境变量覆盖关键参数：
-
-| 环境变量 | 说明 | 默认值 |
-|----------|------|--------|
-| `GENSCORE_DATA_DIR` | 训练数据目录 | `${ONESCIENCE_DATASETS_DIR}/GenScore/genscore_data/rtmscore_s` |
-| `GENSCORE_DATA_PREFIX` | 数据文件前缀 | `v2020_train` |
-| `GENSCORE_ENCODER` | 图编码器类型 | `gatedgcn` |
-| `GENSCORE_MODEL_PATH` | 输出模型路径 | `examples/biosciences/genscore/genscore_${GENSCORE_ENCODER}_full_3000.pth` |
-| `GENSCORE_NUM_EPOCHS` | 训练轮数 | `3000` |
-| `GENSCORE_BATCH_SIZE` | 批次大小 | `64` |
-| `GENSCORE_NUM_WORKERS` | 数据加载线程数 | `8` |
-| `GENSCORE_VALNUM` | 验证集样本数 | `1500` |
-| `GENSCORE_PATIENCE` | 早停耐心值 | `70` |
-
-示例：
-
-```bash
-GENSCORE_ENCODER=gt \
-GENSCORE_NUM_EPOCHS=1000 \
-GENSCORE_BATCH_SIZE=32 \
-bash train_genscore_full.sh
-```
 
 ---
 
@@ -464,68 +544,14 @@ bash run_genscore_benchmarks.sh all
 
 ---
 
-## 数据预处理
-
-训练需要预处理后的 PDBbind 图数据，包括：
-
-```
-<data_prefix>_ids.npy
-<data_prefix>_lig.pt
-<data_prefix>_prot.pt
-```
-
-可通过以下命令对原始 PDBbind 数据进行预处理：
-
-```bash
-cd examples/biosciences/genscore
-export PYTHONPATH=../../../src:$PYTHONPATH
-python preprocess_pdbbind.py \
-  --dir /path/to/pdbbind \
-  --ref /path/to/pdbbind_2020_general.csv \
-  --cutoff 10.0 \
-  --outprefix /path/to/preprocessed/pdbbind/v2020_train
-```
-
-主要参数：
-
-| 参数 | 说明 |
-|------|------|
-| `--dir` | PDBbind 原始数据目录 |
-| `--ref` | PDBbind 索引 CSV 文件 |
-| `--cutoff` | 蛋白-配体距离截断，默认 `10.0` Å |
-| `--outprefix` | 输出文件前缀 |
-
----
-
-## 目录结构
-
-```
-examples/biosciences/genscore/
-├── run_genscore.sh                   # 蛋白-配体打分推理示例脚本（已提供）
-├── train_genscore_smoke.sh           # 小规模训练冒烟测试脚本（已提供）
-├── train_genscore_full.sh            # 完整训练脚本（已提供）
-├── run_genscore_benchmarks.sh        # CASF-2016 基准测试脚本（已提供）
-├── genscore.py                       # 推理入口
-├── train_genscore.py                 # 训练入口
-├── preprocess_pdbbind.py             # PDBbind 数据预处理入口
-├── benchmarks/                       # CASF-2016 评测脚本
-│   ├── casf2016_docking.py
-│   ├── casf2016_scoring_ranking.py
-│   └── casf2016_screening.py
-├── benchmark_data/                   # 评测辅助数据
-└── README.md                         # 本文档
-```
-
-模型实现位于 `src/onescience/models/genscore`。
-
----
-
-## 注意事项
+## 运行约束
 
 - 运行脚本前需确保 `ONESCIENCE_DATASETS_DIR` 环境变量已正确设置。
 - 脚本会自动设置 ROCm/DCU 相关的 `LD_LIBRARY_PATH`，在海光 DCU 平台可直接运行。
 - 自动生成口袋依赖 OpenBabel 和 ProDy；如 OpenBabel 需要显式数据路径，请提前设置 `BABEL_LIBDIR` 和 `BABEL_DATADIR`。
 - 训练与推理默认使用单卡（`HIP_VISIBLE_DEVICES=0` 或 `CUDA_VISIBLE_DEVICES=0`），多卡训练请调整训练脚本中的并行策略。
+- `train_genscore_smoke.sh` 用于验证数据、模型和反向传播链路（smoke test）；其 checkpoint 不适用于 CASF-2016 结果复现。正式推理和基准评测应使用完整训练或官方预训练权重。
+- 比较不同 checkpoint 时需保持 `model_type`、口袋构建方式和输入预处理一致，否则分数不可直接横向比较。
 - 训练脚本会检查 `<data_prefix>_ids.npy`、`<data_prefix>_lig.pt`、`<data_prefix>_prot.pt` 是否存在，缺失会报错退出。
 - CASF-2016 评测中 `docking` 和 `screening` 任务需要完整的 CASF-2016 与 PDBbind v2020 数据。
 

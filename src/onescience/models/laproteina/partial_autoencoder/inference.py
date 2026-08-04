@@ -67,6 +67,14 @@ def parse_args_and_cfg() -> Tuple[Dict, Dict, str]:
         help="(Optional) Name of directory with config files, if not included uses base inference config.\
             Likely only used when submitting to the cluster with script.",
     )
+    parser.add_argument(
+        "--output_dir",
+        "--output-dir",
+        type=str,
+        default=None,
+        help="Directory for inference CSV outputs. Defaults to ./inference/<config_name>.",
+    )
+
     args = parser.parse_args()
 
     # Inference config
@@ -98,6 +106,7 @@ def extract_ckpt_info(ckpt_file_path):
 def setup(
     cfg: Dict,
     config_name: str,
+    output_dir: str = None,
     create_root: bool = True,
 ) -> str:
     """
@@ -118,7 +127,8 @@ def setup(
     )  # Send to stdout
 
     # Set root path for this inference run
-    root_path = f"./inference/{config_name}"
+    root_path = os.path.abspath(output_dir or f"./inference/{config_name}")
+    print(f"[INFO] Inference output directory: {root_path}")
     if create_root:
         os.makedirs(root_path, exist_ok=True)
     else:
@@ -245,10 +255,15 @@ def main() -> None:
     ae_name, ckpt_name = extract_ckpt_info(cfg.ckpt_file)
 
     # Some setup
-    root_path = setup(cfg, create_root=True, config_name=config_name)
-    df_file_store = os.path.join(root_path, f"../results_{config_name}.csv")
+    root_path = setup(
+        cfg,
+        create_root=True,
+        config_name=config_name,
+        output_dir=args.output_dir,
+    )
+    df_file_store = os.path.join(root_path, f"results_{config_name}.csv")
     df_file_store_summary = os.path.join(
-        root_path, f"../results_{config_name}_summary.csv"
+        root_path, f"results_{config_name}_summary.csv"
     )
 
     # Get dataloader
@@ -297,15 +312,13 @@ def main() -> None:
         {col_names[i]: [values[i]] for i in range(len(col_names))}
     )
 
-    # Save dataframes
+    # Save detailed and aggregate metrics in the run-specific output directory.
     df.to_csv(df_file_store, index=False)
     df_summary.to_csv(df_file_store_summary, index=False)
-
-    # Save df
-    df.to_csv(df_file_store, index=False)
-    df_summary.to_csv(df_file_store_summary, index=False)
-    print("Done saving dataframes")
+    print(f"Saved detailed results to {df_file_store}")
+    print(f"Saved summary results to {df_file_store_summary}")
 
 
 if __name__ == "__main__":
     main()
+

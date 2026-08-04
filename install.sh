@@ -72,7 +72,7 @@ BIO_WHEELS=(
     "https://download.sourcefind.cn:65024/directlink/4/transformer_engine/DAS1.7/transformer_engine-2.5.0+das.opt1.dtk25042-cp311-cp311-manylinux_2_28_x86_64.whl"
     "https://download.sourcefind.cn:65024/directlink/4/flash_attn/DAS1.7/flash_attn-2.6.1+das.opt1.dtk25042-cp311-cp311-manylinux_2_28_x86_64.whl"
     "https://download.sourcefind.cn:65024/directlink/9/onesicence/dtk-25.04.2/bionemo_noodles-0.1.2-cp311-cp311-manylinux_2_28_x86_64.whl"
-    "https://download.sourcefind.cn:65024/directlink/9/onesicence/dtk-25.04.2/nemo_toolkit-2.5.0rc0-py3-none-any.whl"
+    "https://download.sourcefind.cn:65024/file/9/onesicence/dtk-26.04/nemo_toolkit-2.5.0rc0-py3-none-any.whl"
     "https://download.sourcefind.cn:65024/directlink/9/onesicence/dtk-25.04.2/openmm-8.3.1-cp311-cp311-linux_x86_64.whl"
     "https://download.sourcefind.cn:65024/file/4/triton/DAS1.7/triton-3.1.0+das.opt1.dtk25042-cp311-cp311-manylinux_2_28_x86_64.whl"
     "https://download.sourcefind.cn:65024/file/4/jax_triton/DAS1.7/jax_triton-0.2.0+das.opt1.dtk25042-py3-none-any.whl"

@@ -14,13 +14,14 @@ runtime:
   run_name: diffdock_eval_example
   project: diffdock
   device: auto
-  out_dir: examples/biosciences/diffdock/outputs/evaluate
+  out_dir: ./outputs/evaluate
   wandb: false
   num_cpu: null
   restrict_cpu: false
 
 model:
-  model_dir: examples/biosciences/diffdock/outputs/train/diffdock_cg_example
+  #model_dir: examples/biosciences/diffdock/outputs/train/diffdock_cg_example
+  model_dir: ${ONESCIENCE_DATASETS_DIR}/diffdock/outputs/train/diffdock_pdbbind_smoke100_val20_cpu
   ckpt: best_model.pt
   old_score_model: false  # must stay false; old_* score-model paths are intentionally not migrated
   no_model: false
@@ -33,9 +34,9 @@ confidence:
 
 data:
   dataset: pdbbind  # supported: pdbbind | moad | generalisation; unsupported: pdbsidechain | distillation
-  cache_path: D:/data/diffdock/cache
-  data_dir: D:/data/pdbbind_processed
-  split_path: D:/data/diffdock/splits/timesplit_no_lig_overlap_val
+  cache_path: ./data/cache
+  data_dir: ${ONESCIENCE_DATASETS_DIR}/diffdock/datasets/PDBBind_processed
+  split_path: ${ONESCIENCE_DATASETS_DIR}/diffdock/datasets/splits/timesplit_no_lig_overlap_val
   split: val
   limit_complexes: 0
   num_workers: 1

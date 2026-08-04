@@ -396,6 +396,10 @@ bio_requires = [
 	"botocore",
     "boto3",
     "huggingface-hub",
+    "langchain",
+    "langchain-community",
+    "google-cloud-aiplatform",
+    "pydicom",
 ]
 
 matchem_requires = [

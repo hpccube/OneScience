@@ -83,6 +83,8 @@ def main():
     ckpt_dir = os.path.join(log_dir, 'checkpoints')
     os.makedirs(ckpt_dir, exist_ok=True)
     logger = utils_misc.get_logger('train', log_dir)
+    logger.info(f'Log directory: {os.path.abspath(log_dir)}')
+    logger.info(f'Checkpoint directory: {os.path.abspath(ckpt_dir)}')
     writer = torch.utils.tensorboard.SummaryWriter(log_dir)
     logger.info(args)
     logger.info(config)
@@ -215,7 +217,7 @@ def main():
                         'scheduler': scheduler.state_dict(),
                         'epoch': epoch,
                     }, ckpt_path)
-                    logger.info(f'Model {log_dir}/{epoch}.pt saved!')
+                    logger.info(f'Model checkpoint saved to {os.path.abspath(ckpt_path)}')
                 else:
                     patience += 1
                     logger.info(f'Val loss does not improve, patience: {patience} '
@@ -227,3 +229,4 @@ def main():
 
 if __name__ == '__main__':
     main()
+

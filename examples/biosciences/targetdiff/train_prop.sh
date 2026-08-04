@@ -29,8 +29,10 @@ PROCESSED_ROOT=${PROCESSED_ROOT:-${PROJECT_ROOT}/examples/biosciences/targetdiff
 POCKET_ROOT=${PROCESSED_ROOT}/pocket_10_refined
 INDEX_PATH=${POCKET_ROOT}/index.pkl
 SPLIT_PATH=${POCKET_ROOT}/split.pt
+LOGDIR=${TARGETDIFF_LOGDIR:-${PROJECT_ROOT}/examples/biosciences/targetdiff/logs_prop}
 
 mkdir -p ${PROCESSED_ROOT}
+echo "TargetDiff property prediction logs: ${LOGDIR}"
 
 ## Extract protein binding pockets from the PDBbind refined set for downstream property prediction.
 python scripts/property_prediction/extract_pockets.py \
@@ -49,7 +51,7 @@ python scripts/property_prediction/pdbbind_split.py \
 ## Train a TargetDiff-based property prediction model on the PDBbind pocket dataset with the specified configuration.
 python scripts/property_prediction/train_prop.py ${CONFIG_PATH} \
     --device cuda \
-    --logdir ./logs_prop \
+    --logdir ${LOGDIR} \
     --tag targetdiff_prop_train \
     --dataset.path ${POCKET_ROOT} \
     --dataset.split ${SPLIT_PATH} \
@@ -58,8 +60,8 @@ python scripts/property_prediction/train_prop.py ${CONFIG_PATH} \
     --train.seed 2021 \
     --train.batch_size 4 \
     --train.num_workers 4 \
-    --train.max_epochs 200 \
-    --train.report_iter 200 \
+    --train.max_epochs 10 \
+    --train.report_iter 10 \
     --train.val_freq 1 \
     --train.pos_noise_std 0.1 \
     --train.max_grad_norm 10. \
@@ -73,3 +75,4 @@ python scripts/property_prediction/train_prop.py ${CONFIG_PATH} \
     --train.scheduler.patience 10 \
     --train.scheduler.min_lr 1.e-5 \
     "${CONFIG_OVERRIDES[@]}"
+

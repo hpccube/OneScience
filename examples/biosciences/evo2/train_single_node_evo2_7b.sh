@@ -26,9 +26,15 @@ done
 
 cd -
 
+# Megatron writes GPTDataset index files during dataset construction. Keep
+# them outside the shared, read-only dataset tree.
+DATA_CACHE_DIR="${EVO2_DATA_CACHE_DIR:-${SCRIPT_DIR}/cache/gptdataset}"
+mkdir -p "$DATA_CACHE_DIR"
+
 python  ./train_one_node.py\
     -d ./config/genome_data_config.yaml\
     --dataset-dir ${ONESCIENCE_DATASETS_DIR}/evo2/data_mini/genome_data\
+    --data-cache-dir "${DATA_CACHE_DIR}" \
     --model-size 1b\
     --devices 4 \
     --num-nodes 1 \
