@@ -1,0 +1,35 @@
+# eSEN oxide PBE fine-tuning: 1 node x 2 DCUs.
+# Run from examples/matchem/esen:
+#   bash demo/run.sh --config configs/finetune_2dcu.yaml
+name: esen_oxides_2dcu
+description: "eSEN oxide PBE fine-tuning on 1 node x 2 DCUs"
+
+launch:
+  mode: local
+  num_nodes: 1
+  num_gpus: 2
+  omp_num_threads: 1
+
+slurm:
+  partition: hx1hdexclu12
+  time: "24:00:00"
+  cpus_per_task: 32
+
+nccl: {}
+
+checkpoint: "${ONESCIENCE_MODELS_DIR}/eSEN/esen_30m_mptrj.pt"
+train: "${ONESCIENCE_DATASETS_DIR}/matchem/esen/oxides/train.db"
+val: "${ONESCIENCE_DATASETS_DIR}/matchem/esen/oxides/val.db"
+output: "checkpoints/esen_oxides_2dcu_finetuned.pt"
+
+device: cuda
+backend: nccl
+seed: 0
+fit_element_references: true
+epochs: 10
+batch_size: 2
+workers: 0
+lr: 1.0e-6
+energy_weight: 1.0
+force_weight: 10.0
+stress_weight: 0.0

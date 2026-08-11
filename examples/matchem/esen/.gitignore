@@ -1,0 +1,7 @@
+outputs/
+checkpoints/
+__pycache__/
+demo/__pycache__/
+*.log
+*.traj
+relaxed.cif

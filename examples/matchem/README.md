@@ -22,6 +22,7 @@
 | MatRIS 训练 | `matris/` | 已包含在 `onescience[matchem]` 基础环境中 |
 | MatterGen 训练/微调/生成 | `mattergen/` | 源码内嵌在 `src/onescience/`，随 `onescience[matchem]` 一起安装 |
 | MatterSim 推理/微调 | `mattersim/` | 源码内嵌在 `src/onescience/`，随 `onescience[matchem]` 一起安装 |
+| eSEN 推理/微调/弛豫/MD | `esen/` | 源码内嵌在 `src/onescience/`，随 `onescience[matchem]` 一起安装 |
 | DP 训练 | `dp/` | 需额外编译安装 deepmd-kit（PyTorch 后端） |
 | NEP 训练 | `nep/` | 需额外编译安装 MatPL（DCU 原生算子） |
 | LAMMPS 推理 | `tools/lmp/` | 需自行编译/解压 LAMMPS with HIP，支持 DP/NEP/MACE 后端 |
@@ -154,6 +155,16 @@ bash run.sh --config configs/train_8dcu.yaml --submit
 MatterGen 的晶体生成、属性微调、数据预处理和训练参数说明见
 `mattergen/README.md`。
 
+### eSEN 推理、微调与分子动力学
+
+```bash
+cd esen
+python single_point.py
+```
+
+eSEN 的结构弛豫、MD、单卡/多卡微调及 Slurm 多节点微调命令见
+`esen/README.md`。
+
 ### DP 训练
 
 ```bash
@@ -213,6 +224,7 @@ examples/matchem/
 ├── matchem_env.sh          # 统一环境入口
 ├── README.md               # 本文件：基于 PyPI 安装后的使用指南
 ├── dp/                     # DeepMD-kit 训练
+├── esen/                   # eSEN 推理、微调、结构弛豫和 MD
 ├── mace/                   # MACE 训练
 ├── matris/                 # MatRIS 训练
 ├── mattergen/              # MatterGen 训练、微调与晶体生成
