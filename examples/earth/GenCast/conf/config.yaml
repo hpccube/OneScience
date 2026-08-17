@@ -1,0 +1,80 @@
+runtime:
+  platform: "auto"
+
+data:
+  data_dir: "./data"
+  static_dir: "./data/static"
+  stats_dir: "./data/stats"
+  train_years: [2000, 2001]
+  test_years: [2003]
+  train_stride: 1
+  test_stride: 1
+  reintroduce_sst_nans: true
+  # Source total_precipitation must be accumulated over each source interval,
+  # in the same units as the official GenCast statistics.
+  precipitation_interval_hours: 6
+
+# Full-scale random initialization. For released weights, inference ignores
+# this section and loads every architecture field from the official checkpoint.
+model:
+  mesh_size: 4  # GenCast Mini (2562 nodes); 6=full (40962 nodes, TPU-scale)
+  latent_size: 512
+  hidden_layers: 1
+  radius_query_fraction_edge_length: 0.6
+  attention_k_hop: 16
+  attention_type: "triblockdiag_mha"  # GPU/CPU; use "splash_mha" only for TPU
+  mask_type: "lazy"
+  num_layers: 16
+  num_heads: 4
+  ffw_hidden: 2048
+
+sampler:
+  max_noise_level: 80.0
+  min_noise_level: 0.03
+  num_noise_levels: 20
+  rho: 7.0
+  stochastic_churn_rate: 2.5
+  churn_min_noise_level: 0.75
+  churn_max_noise_level: .inf
+  noise_level_inflation_factor: 1.05
+
+training:
+  max_steps: 10
+  learning_rate: 0.0001
+  betas: [0.9, 0.999]
+  epsilon: 1.0e-8
+  seed: 42
+  save_interval: 1000
+
+parallel:
+  mode: "pmap"
+  num_devices: 1
+  # Number of JAX processes. Set to 0 to infer from JAX/SLURM environment.
+  num_processes: 0
+  coordinator_address: null
+  coordinator_port: 12355
+  global_batch_size: 1
+  axis_name: "devices"
+
+inference:
+  official_checkpoint: null
+  # Officially documented GPU substitution for TPU splash attention.
+  attention_type_override: null
+  prediction_steps: 30
+  num_members: 4
+  seed: 42
+  # Keep full-resolution ensemble memory bounded by writing each lead/member.
+  stream_chunks: true
+
+checkpoint:
+  trainer: "./data/checkpoints/model_bak.npz"
+  resume: null
+
+output:
+  prediction: "./result/prediction.nc"
+  plot: "./result/gencast_forecast.png"
+
+fake_data:
+  height: 9
+  width: 16
+  timesteps: 37

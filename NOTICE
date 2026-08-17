@@ -20,6 +20,14 @@ This project also includes components from the following open-source projects:
    NOTICE: This product includes software developed by NVIDIA as part of
    the NeMo project.
 
+2. scGPT
+   Copyright (c) 2022 suber
+   Licensed under the MIT License.
+   Source: https://github.com/bowang-lab/scGPT
+   Integrated from upstream commit cebd6fae655b9c585a4807daa3ac31bb764f06b4.
+   The license text is distributed as
+   src/onescience/models/scgpt/LICENSE.scgpt.
+
 
 End of Third-Party Notices
 =

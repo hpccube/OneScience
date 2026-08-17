@@ -23,6 +23,7 @@
 | MatterGen 训练/微调/生成 | `mattergen/` | 源码内嵌在 `src/onescience/`，随 `onescience[matchem]` 一起安装 |
 | MatterSim 推理/微调 | `mattersim/` | 源码内嵌在 `src/onescience/`，随 `onescience[matchem]` 一起安装 |
 | eSEN 推理/微调/弛豫/MD | `esen/` | 源码内嵌在 `src/onescience/`，随 `onescience[matchem]` 一起安装 |
+| Equiformer V3 训练/评估/推理 | `equiformer_v3/` | OC20 训练示例；共享 checkpoint 评估与 ASE calculator 推理 |
 | DP 训练 | `dp/` | 需额外编译安装 deepmd-kit（PyTorch 后端） |
 | NEP 训练 | `nep/` | 需额外编译安装 MatPL（DCU 原生算子） |
 | LAMMPS 推理 | `tools/lmp/` | 需自行编译/解压 LAMMPS with HIP，支持 DP/NEP/MACE 后端 |
@@ -165,6 +166,16 @@ python single_point.py
 eSEN 的结构弛豫、MD、单卡/多卡微调及 Slurm 多节点微调命令见
 `esen/README.md`。
 
+### Equiformer V3 训练、评估与推理
+
+```bash
+cd equiformer_v3
+bash demo/run.sh --config configs/oc20_scratch_8dcu_smoke.yaml
+```
+
+OC20 训练配置、共享模型评估命令、ASE 推理示例和验证状态见
+`equiformer_v3/README.md`。
+
 ### DP 训练
 
 ```bash
@@ -225,6 +236,7 @@ examples/matchem/
 ├── README.md               # 本文件：基于 PyPI 安装后的使用指南
 ├── dp/                     # DeepMD-kit 训练
 ├── esen/                   # eSEN 推理、微调、结构弛豫和 MD
+├── equiformer_v3/          # Equiformer V3 OC20 训练、模型评估和 ASE 推理
 ├── mace/                   # MACE 训练
 ├── matris/                 # MatRIS 训练
 ├── mattergen/              # MatterGen 训练、微调与晶体生成

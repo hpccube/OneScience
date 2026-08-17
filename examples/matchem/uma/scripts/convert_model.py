@@ -21,7 +21,54 @@ RULES = [
     ("fairchem.core.models.uma.escn_md", BACKBONE_MD),
     ("fairchem.core.models.uma.escn_moe", BACKBONE_MOE),
     ("onescience.models.UMA.units", "onescience.utils.uma.units"),
-    ("onescience.models.UMA.modules", "onescience.utils.uma.modules"),
+    # UMA checkpoints contain loss and normalization objects under the old
+    # ``models.UMA.modules`` namespace.  These components were split into
+    # public OneScience modules and must not be mapped to the removed
+    # ``utils.uma.modules`` package.
+    (
+        "onescience.models.UMA.modules.loss",
+        "onescience.modules.loss.uma_loss",
+    ),
+    (
+        "onescience.models.UMA.modules.normalization.element_references",
+        "onescience.utils.uma.normalization.element_references",
+    ),
+    (
+        "onescience.models.UMA.modules.normalization.normalizer",
+        "onescience.utils.uma.normalization.normalizer",
+    ),
+    # Also repair checkpoints produced by the earlier converter.
+    ("onescience.utils.uma.modules.loss", "onescience.modules.loss.uma_loss"),
+    (
+        "onescience.utils.uma.modules.normalization.element_references",
+        "onescience.utils.uma.normalization.element_references",
+    ),
+    (
+        "onescience.utils.uma.modules.normalization.normalizer",
+        "onescience.utils.uma.normalization.normalizer",
+    ),
+    # These are the corresponding upstream namespaces used by older
+    # fairchem foundation-model checkpoints.
+    (
+        "fairchem.experimental.foundation_models.modules.loss",
+        "onescience.modules.loss.uma_loss",
+    ),
+    (
+        "fairchem.experimental.foundation_models.modules.element_references",
+        "onescience.utils.uma.normalization.element_references",
+    ),
+    (
+        "fairchem.core.modules.loss",
+        "onescience.modules.loss.uma_loss",
+    ),
+    (
+        "fairchem.core.modules.normalization.element_references",
+        "onescience.utils.uma.normalization.element_references",
+    ),
+    (
+        "fairchem.core.modules.normalization.normalizer",
+        "onescience.utils.uma.normalization.normalizer",
+    ),
     ("onescience.models.UMA.common", "onescience.utils.uma.common"),
     ("fairchem.core.units", "onescience.utils.uma.units"),
     ("fairchem.core.modules", "onescience.utils.uma.modules"),
@@ -35,6 +82,10 @@ LEGACY_PREFIX = (
     "onescience.models.UMA.uma.",
     "onescience.utils.uma.models.",
     "fairchem.core.models.",
+    "onescience.models.UMA.modules.",
+    "onescience.utils.uma.modules.",
+    "fairchem.core.modules.",
+    "fairchem.experimental.foundation_models.modules.",
 )
 
 def remap(s: str) -> str:
@@ -113,7 +164,8 @@ def main():
     sf(obj, "tasks_config", tc)
 
     cfg_py = OmegaConf.to_container(mc, resolve=False)
-    bad = find_legacy(cfg_py)
+    tasks_py = OmegaConf.to_container(tc, resolve=False)
+    bad = find_legacy({"model_config": cfg_py, "tasks_config": tasks_py})
     if bad:
         print("[FATAL] legacy paths still exist in model_config:")
         for p, v in bad[:20]:

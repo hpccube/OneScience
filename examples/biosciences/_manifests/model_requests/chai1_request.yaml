@@ -1,0 +1,24 @@
+model_family: Chai-1
+inference_mode: biomolecular_complex_structure
+input:
+  fasta_path: ${ONESCIENCE_ROOT}/examples/biosciences/chai1/inputs/monomer.fasta
+runtime:
+  cwd: ${ONESCIENCE_ROOT}/examples/biosciences/chai1
+  entrypoint: predict.sh
+  device: gpu_or_dcu
+  precision: model_default
+checkpoint:
+  model_dir: "${ONESCIENCE_MODELS_DIR}/chai-lab"
+parameters:
+  seed: 42
+  num_trunk_recycles: 1
+  num_diffusion_timesteps: 20
+  num_diffusion_samples: 1
+  use_esm_embeddings: true
+  use_msa_server: false
+outputs:
+  output_dir: outputs/monomer
+validation:
+  check_structure_files: true
+  check_confidence: true
+  check_ranking_summary: true

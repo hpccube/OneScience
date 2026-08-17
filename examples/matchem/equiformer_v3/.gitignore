@@ -1,0 +1,6 @@
+outputs/
+checkpoints/
+.trainer_work/
+__pycache__/
+demo/__pycache__/
+*.log

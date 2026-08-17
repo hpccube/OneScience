@@ -26,6 +26,13 @@ def resolve_jd_path(jd_path: str | None = None) -> str:
     if env_path:
         candidates.append(Path(env_path))
 
+    # Shared MatChem installations keep UMA assets below the common models
+    # root.  This fallback lets ``source matchem_env.sh`` configure the model
+    # without requiring every inference script to export a UMA-specific path.
+    models_root = os.environ.get("ONESCIENCE_MODELS_DIR")
+    if models_root:
+        candidates.append(Path(models_root) / "UMA" / "checkpoint" / "Jd.pt")
+
     candidates.append(Path.cwd() / "models" / "Jd.pt")
     candidates.append(Path(__file__).resolve().parents[3] / "models" / "Jd.pt")
 

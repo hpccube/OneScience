@@ -15,7 +15,7 @@ import torch.nn as nn
 from e3nn import o3
 
 from onescience.models.UMA.base import BackboneInterface, HeadInterface
-from onescience.models.esen.graph import GraphModelMixin
+from onescience.modules.func_utils.uma_graph.mixin import GraphModelMixin
 from onescience.utils.uma.common.registry import registry
 from onescience.utils.uma.common.utils import conditional_grad
 

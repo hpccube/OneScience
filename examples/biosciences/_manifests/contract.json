@@ -12,6 +12,7 @@
       "model_requests": [
         "af2_inference_request.yaml",
         "af3_protenix_request.yaml",
+        "chai1_request.yaml",
         "evo2_request.yaml",
         "molsculptor_request.yaml",
         "proteinmpnn_request.yaml",

@@ -49,6 +49,10 @@ EARTH_WHEELS=(
     "https://download.sourcefind.cn:65024/directlink/4/dgl/DAS1.7/dgl-2.2.1+das.opt1.dtk25042-cp311-cp311-manylinux_2_28_x86_64.whl"
     "https://download.sourcefind.cn:65024/file/4/flash_attn/DAS1.6/flash_attn-2.6.1+das.opt1.dtk25041-cp311-cp311-manylinux_2_28_x86_64.whl"
     "https://download.sourcefind.cn:65024/file/4/triton/DAS1.7/triton-3.1.0+das.opt1.dtk25042-cp311-cp311-manylinux_2_28_x86_64.whl"
+    "https://download.sourcefind.cn:65024/file/4/jax/DAS1.7/jax-0.4.34+das.opt1.dtk25042-py3-none-any.whl"
+    "https://download.sourcefind.cn:65024/file/4/jax/DAS1.7/jaxlib-0.4.34+das.opt1.dtk25042-cp311-cp311-manylinux2014_x86_64.whl"
+    "https://download.sourcefind.cn:65024/file/4/jax/DAS1.7/jax_rocm60_pjrt-0.4.34+das.opt1.dtk25042-py3-none-manylinux2014_x86_64.whl"
+    "https://download.sourcefind.cn:65024/file/4/jax/DAS1.7/jax_rocm60_plugin-0.4.34+das.opt1.dtk25042-cp311-cp311-manylinux2014_x86_64.whl"
 )
 
 CFD_WHEELS=(

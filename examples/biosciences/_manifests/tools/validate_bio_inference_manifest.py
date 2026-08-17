@@ -37,6 +37,7 @@ KNOWN_MODELS = {
     "ProToken",
     "Evo2",
     "MolSculptor",
+    "Chai-1",
 }
 
 

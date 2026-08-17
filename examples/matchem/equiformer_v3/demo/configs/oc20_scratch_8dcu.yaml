@@ -1,0 +1,103 @@
+# Complete FP32 OC20 scratch training on the bundled ASE-LMDB subset with eight DCUs.
+# The official model scale and effective global batch of 64 are retained.
+# Per-DCU batch 1 plus accumulation 8 retains global batch 64. Energy element
+# references are fitted offline, following the official OC20 configuration.
+# FP32 is intentional: controlled 20-step FP16/BF16 runs raised DCU kernel
+# VMFaults, while the otherwise equivalent FP32 run completed and checkpointed.
+name: equiformer_v3_oc20_scratch_8dcu
+description: "Complete Equiformer V3 OC20 scratch training on eight DCUs in FP32"
+
+launch: {mode: local, num_nodes: 1, num_gpus: 8, omp_num_threads: 8}
+slurm: {partition: hx1hdnormal01, time: "24:00:00", cpus_per_task: 64}
+nccl: {}
+
+mode: train_from_scratch
+train: "${ONESCIENCE_DATASETS_DIR}/matchem/oc20/uma_oc20_finetune/train"
+val: "${ONESCIENCE_DATASETS_DIR}/matchem/oc20/uma_oc20_finetune/val"
+output: "checkpoints/equiformer_v3_oc20_scratch_8dcu.pt"
+device: cuda
+backend: nccl
+seed: 0
+amp: false
+load_balancing: atoms
+load_balancing_on_error: raise
+
+epochs: 12
+batch_size: 1
+eval_batch_size: 1
+workers: 0
+grad_accumulation_steps: 8
+log_every_n_steps: 10
+log_every_n_validation_batches: 100
+clip_grad_norm: 100
+ema_decay: 0.999
+
+transforms:
+  element_references:
+    energy:
+      file: "${ONESCIENCE_EQUIFORMER_V3_DIR}/demo/reference_data/oc20_subset_energy_element_references.npz"
+  normalizers:
+    energy: {mean: 0.0, rmsd: 24.901469505465872}
+    forces: {mean: 0.0, rmsd: 0.5111534595489502}
+
+losses:
+  energy: {fn: mae, coefficient: 4}
+  forces: {fn: l2mae, coefficient: 100, free_atoms_only: true}
+
+optimizer:
+  name: AdamW
+  lr: 2.0e-4
+  weight_decay: 1.0e-3
+  betas: [0.9, 0.999]
+  eps: 1.0e-8
+
+scheduler:
+  name: cosine
+  warmup_factor: 0.2
+  warmup_epochs: 0.1
+  lr_min_factor: 0.01
+
+model:
+  name: equiformer_v3
+  use_pbc: true
+  use_pbc_single: false
+  otf_graph: true
+  regress_forces: true
+  regress_stress: false
+  direct_prediction: true
+  max_neighbors: 20
+  max_radius: 12.0
+  num_radial_basis: 128
+  max_num_elements: 128
+  num_layers: 8
+  num_channels: 128
+  attn_hidden_channels: 64
+  num_heads: 8
+  attn_alpha_channels: 64
+  attn_value_channels: 16
+  ffn_hidden_channels: 512
+  norm_type: merge_layer_norm
+  lmax: 6
+  mmax: 2
+  attn_grid_resolution_list: [20, 8]
+  ffn_grid_resolution_list: [20, 20]
+  edge_channels: 128
+  use_atom_edge_embedding: true
+  use_envelope: true
+  attn_activation: sep-merge_gates2_swiglu
+  use_attn_renorm: true
+  use_add_merge: false
+  use_rad_l_parametrization: true
+  softcap: null
+  ffn_activation: sep-merge_gates2_swiglu
+  use_grid_mlp: true
+  use_gate_force_head: true
+  alpha_drop: 0.0
+  attn_mask_rate: 0.0
+  attn_weights_drop: 0.1
+  value_drop: 0.0
+  drop_path_rate: 0.05
+  proj_drop: 0.0
+  ffn_drop: 0.0
+  gradient_checkpointing_block_list: [1, 1, 1, 1, 1, 1, 1, 1]
+  enforce_max_neighbors_strictly: true

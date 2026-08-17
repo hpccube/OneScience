@@ -229,6 +229,13 @@ earth_requires = [
     "Cartopy",
     "anemoi-graphs",
     "anemoi-models",
+    "dm-haiku",
+    "chex",
+    "jraph",
+    "trimesh",
+    "dm-tree",
+    "dinosaur",
+    "rtree",
 ]
 
 cfd_requires = [
@@ -262,6 +269,8 @@ bio_requires = [
     "lightning",
     "sentencepiece",
     "datasets",
+    "pyarrow",
+    "typing-extensions",
     "braceexpand",
     "webdataset",
     "nemo_run",
@@ -283,6 +292,11 @@ bio_requires = [
     "types-requests",
     "einx",
     "chembl-structure-pipeline",
+    # Chai-1 dependencies
+    "pandera",
+    "beartype",
+    "antipickle",
+    "tmtools",
      # State dependencies
   	  "anndata",
  	  "cell-load",

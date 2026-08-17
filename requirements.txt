@@ -26,6 +26,8 @@ einops>=0.7.0
 shapely>=2.0.6
 onnx>=1.14.0
 pandas>=2.2.2
+pyarrow>=12
+typing-extensions>=4.2,<5
 omegaconf>=2.3.0
 dask>=2024.11.1
 mpi4py
@@ -81,6 +83,11 @@ anemoi-models==0.9.0
 Cartopy==0.25.0
 earthkit-regrid==0.4.0
 ecmwf-opendata==0.3.30
+rtree
+dinosaur==1.2.1
+trimesh
+jraph
+
 
 # evo2
 fiddle==0.3.0
@@ -257,3 +264,10 @@ scanpy==1.11.2
 types-requests
 einx==0.3.0
 chembl-structure-pipeline==1.2.2
+
+# chai1
+pandera>=0.24
+beartype>=0.18
+antipickle==0.2.0
+tmtools>=0.0.3
+
