@@ -35,5 +35,6 @@ cc_memory
 **/outputs/
 examples/biosciences/simplefold/artifacts/
 examples/earth/xihe/data/
+nequip-upstream/
 label.npy
 pred.npy

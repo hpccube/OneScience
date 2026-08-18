@@ -421,6 +421,7 @@ matchem_requires = [
     "contextlib2",
     "fire",
     "pytorch-lightning",
+    "lightning",
     "smact",
     "pydantic-settings",
     "blake3",

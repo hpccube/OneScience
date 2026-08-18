@@ -1,0 +1,95 @@
+# Fine-tuning smoke test for the official NequIP OAM-L package.
+# The bundled Cu data only validates the workflow; replace it with consistent
+# reference calculations and remove the batch limits for a scientific run.
+run: [train, test]
+
+package_path: ${oc.env:ONESCIENCE_MODELS_DIR}/NequIP/NequIP-OAM-L-0.1.nequip.zip
+model_type_names: ${type_names_from_package:${package_path}}
+cutoff_radius: ${cutoff_radius_from_package:${package_path}}
+monitored_metric: val0_epoch/weighted_sum
+
+data:
+  _target_: onescience.datapipes.materials.nequip.datamodule.ASEDataModule
+  seed: 456
+  split_dataset:
+    file_path: ${demo_dir:reference_data/smoke.xyz}
+    train: 0.75
+    val: 0.125
+    test: 0.125
+  transforms:
+    - _target_: onescience.datapipes.materials.nequip.transforms.ChemicalSpeciesToAtomTypeMapper
+      model_type_names: ${model_type_names}
+    - _target_: onescience.datapipes.materials.nequip.transforms.NeighborListTransform
+      r_max: ${cutoff_radius}
+  train_dataloader:
+    _target_: torch.utils.data.DataLoader
+    batch_size: 1
+    num_workers: 0
+    shuffle: true
+  val_dataloader:
+    _target_: torch.utils.data.DataLoader
+    batch_size: 1
+    num_workers: 0
+  test_dataloader: ${data.val_dataloader}
+
+trainer:
+  _target_: lightning.Trainer
+  accelerator: gpu
+  devices: 1
+  num_nodes: 1
+  max_epochs: 1
+  limit_train_batches: 1
+  limit_val_batches: 1
+  limit_test_batches: 1
+  num_sanity_val_steps: 0
+  enable_checkpointing: true
+  logger:
+    _target_: lightning.pytorch.loggers.CSVLogger
+    save_dir: ${hydra:runtime.output_dir}
+    name: metrics
+    version: 0
+  enable_progress_bar: true
+  log_every_n_steps: 1
+  callbacks:
+    - _target_: onescience.utils.nequip.train.callbacks.PlainTextMetricsLogger
+    - _target_: lightning.pytorch.callbacks.ModelCheckpoint
+      monitor: ${monitored_metric}
+      dirpath: ${hydra:runtime.output_dir}/checkpoints
+      filename: best
+      save_last: true
+
+training_module:
+  _target_: onescience.utils.nequip.train.EMALightningModule
+  ema_decay: 0.999
+  loss:
+    _target_: onescience.utils.nequip.train.EnergyForceLoss
+    per_atom_energy: true
+    coeffs:
+      total_energy: 1.0
+      forces: 1.0
+  train_metrics:
+    _target_: onescience.utils.nequip.train.EnergyForceMetrics
+    coeffs:
+      total_energy_mae: 1.0
+      forces_mae: 1.0
+  val_metrics: ${training_module.train_metrics}
+  test_metrics: ${training_module.train_metrics}
+  optimizer:
+    _target_: torch.optim.Adam
+    lr: 1.0e-5
+  model:
+    _target_: onescience.models.nequip.model.ModelFromPackage
+    package_path: ${package_path}
+
+name: nequip_oam_l_finetune_smoke
+launch:
+  mode: local
+  num_nodes: 1
+  num_gpus: 1
+slurm:
+  partition: hx1hdnormal01
+  nodelist: ""
+  time: "00:30:00"
+  cpus_per_task: 8
+env:
+  OMP_NUM_THREADS: 8
