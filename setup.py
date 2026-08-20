@@ -301,7 +301,16 @@ bio_requires = [
   	  "anndata",
  	  "cell-load",
 	  "geomloss",
-  	  "scanpy",
+    "scanpy",
+    # Geneformer dependencies
+    "hyperopt",
+    "loompy",
+    "optuna",
+    "optuna-integration",
+    "packaging",
+    "ray",
+    "statsmodels",
+    "tdigest",
     # alphagenome dependencies
     "alphagenome",
     "kagglehub",

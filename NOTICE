@@ -28,6 +28,13 @@ This project also includes components from the following open-source projects:
    The license text is distributed as
    src/onescience/models/scgpt/LICENSE.scgpt.
 
+3. Geneformer
+   Licensed under the Apache License, Version 2.0.
+   Source: https://huggingface.co/ctheodoris/Geneformer
+   Integrated from upstream commit 04c2b2e84da7c0f385c3f9ad8f3ec24bab6650e5.
+   The license text is distributed as
+   src/onescience/models/geneformer/LICENSE.geneformer.
+
 
 End of Third-Party Notices
 =
