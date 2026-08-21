@@ -1,23 +1,27 @@
-#!/bin/bash
-#SBATCH --job-name=dp_pt_4card
-#SBATCH --partition=hx1hdexclu12
+#!/usr/bin/env bash
+#SBATCH --job-name=dp_pt_se_e2_a_4card
+#SBATCH --partition=hx1hdnormal01
 #SBATCH --nodes=1
 #SBATCH --ntasks-per-node=1
 #SBATCH --gres=dcu:4
 #SBATCH --cpus-per-task=16
-#SBATCH --time=2:00:00
-#SBATCH --output=slurm_4card_%j.out
-#SBATCH --error=slurm_4card_%j.err
+#SBATCH --time=02:00:00
+#SBATCH --output=slurm_%j.out
+#SBATCH --error=slurm_%j.err
 
-SCRIPT_DIR="$SLURM_SUBMIT_DIR"
+set -Eeuo pipefail
 
-# 统一走 matchem_env.sh 路径
-source /public/software/sghpc_sdk/Linux_x86_64/25.6/das/conda/etc/profile.d/conda.sh
-export MATCHEM_CONDA_NAME="${MATCHEM_CONDA_NAME:-test_pip}"
-source "$SCRIPT_DIR/../../../matchem_env.sh"
+SCRIPT_DIR="${SLURM_SUBMIT_DIR:-$(cd "$(dirname "${BASH_SOURCE[0]}")" && pwd)}"
+source "${SCRIPT_DIR}/../../../matchem_env.sh"
 
-# DeepMD 训练环境已由 matchem_env.sh 覆盖
+# DeepMD PyTorch 自定义算子需要能够找到当前环境的 Torch 动态库。
+export LD_LIBRARY_PATH="${CONDA_PREFIX}/lib/python3.11/site-packages/torch/lib:${LD_LIBRARY_PATH:-}"
 
-# 多卡训练（4卡）
-cd "$SCRIPT_DIR"
-torchrun --nproc_per_node=4 -m deepmd --pt train input_torch.json
+export OMP_NUM_THREADS="${OMP_NUM_THREADS:-1}"
+export DP_INTRA_OP_PARALLELISM_THREADS="${DP_INTRA_OP_PARALLELISM_THREADS:-1}"
+export DP_INTER_OP_PARALLELISM_THREADS="${DP_INTER_OP_PARALLELISM_THREADS:-1}"
+
+RUN_DIR="${RUN_DIR:-${SCRIPT_DIR}/run_${SLURM_JOB_ID:-manual_$(date +%Y%m%d_%H%M%S)}}"
+mkdir -p "${RUN_DIR}"
+cd "${RUN_DIR}"
+torchrun --standalone --nproc_per_node=4 -m deepmd --pt train "${INPUT_JSON:-${SCRIPT_DIR}/input_torch.json}"

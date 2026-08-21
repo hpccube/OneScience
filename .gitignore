@@ -38,3 +38,12 @@ examples/earth/xihe/data/
 nequip-upstream/
 label.npy
 pred.npy
+# DeepMD runtime outputs (traditional PT, DPA3 and DPA4)
+examples/matchem/dp/demo/**/run_*/
+examples/matchem/dp/demo/**/input_expanded.json
+examples/matchem/dp/demo/**/input_*_expanded.json
+examples/matchem/dp/demo/**/slurm_*.err
+examples/matchem/dp/demo/**/checkpoint
+examples/matchem/dp/demo/**/model.ckpt*
+examples/matchem/dp/demo/**/lcurve.out
+examples/matchem/dp/demo/**/detail.*.out

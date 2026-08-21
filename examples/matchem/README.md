@@ -22,8 +22,6 @@
 | MatRIS 训练 | `matris/` | 已包含在 `onescience[matchem]` 基础环境中 |
 | MatterGen 训练/微调/生成 | `mattergen/` | 源码内嵌在 `src/onescience/`，随 `onescience[matchem]` 一起安装 |
 | MatterSim 推理/微调 | `mattersim/` | 源码内嵌在 `src/onescience/`，随 `onescience[matchem]` 一起安装 |
-| eSEN 推理/微调/弛豫/MD | `esen/` | 源码内嵌在 `src/onescience/`，随 `onescience[matchem]` 一起安装 |
-| Equiformer V3 训练/评估/推理 | `equiformer_v3/` | OC20 训练示例；共享 checkpoint 评估与 ASE calculator 推理 |
 | DP 训练 | `dp/` | 需额外编译安装 deepmd-kit（PyTorch 后端） |
 | NEP 训练 | `nep/` | 需额外编译安装 MatPL（DCU 原生算子） |
 | LAMMPS 推理 | `tools/lmp/` | 需自行编译/解压 LAMMPS with HIP，支持 DP/NEP/MACE 后端 |
@@ -52,7 +50,7 @@ source matchem_env.sh
 - 设置 `ONESCIENCE_DATASETS_DIR`、`ONESCIENCE_MODELS_DIR`、`device`、`LD_LIBRARY_PATH` 等运行时变量
 - 定义 `LAMMPS_INSTALL_DIR`、`DEEPMD_SRC_DIR`、`DP_CPP_DIR`、`MATPL_SRC_DIR` 等关键路径变量
 
-> 如果你需要使用 **DP 训练**、**NEP 训练** 或 **LAMMPS 推理**，对应的安装脚本（`dp_install.sh`、`matpl_install.sh`、`lmp_install.sh`）会自动将实际安装路径写回 `matchem_env.sh`，无需手动编辑。
+> NEP 和 LAMMPS 安装器可按各自说明管理外部路径。统一 DeepMD 安装器不会改写受版本控制的 `matchem_env.sh`，可通过下述环境变量覆盖其缓存或 C++ 安装位置。
 >
 > 如需自定义路径，可在运行安装脚本前通过环境变量指定：
 > ```bash
@@ -68,16 +66,36 @@ source matchem_env.sh
 
 ### Step 1: DP 训练环境（可选）
 
+统一安装入口面向现有 Python 3.11 OneScience 环境，不再创建 DPA4 专用环境。
+默认环境名是 `onescience311`；如果使用其他环境，安装前先设置自己的环境名：
+
 ```bash
+export MATCHEM_CONDA_NAME=onescience311  # 按实际环境名修改
 cd dp
 bash dp_install.sh
 ```
 
-**说明**：
-- 脚本默认从 gitee 自动拉取 DCU 版源码（`deepmd-kit_dcu`）到 `dp/deepmd-kit`；生产环境建议提前上传源码，并通过 `DEEPMD_SRC_DIR` 指定路径
-- **请勿**自行 `git clone` 上游 `deepmodeling/deepmd-kit` 到该目录——上游源码不含 DCU 支持，且脚本检测到目录已存在会跳过拉取，导致编译出错误版本
-- 自动检测 PyTorch 路径并启用 ROCm 后端编译，默认安装 PyTorch + TensorFlow 双后端
-- C++ 接口默认下载预编译包；如需源码编译，设置 `COMPILE_DP_CPP=1`
+安装脚本不需要附加参数。所有传统 PyTorch、DPA3 和 DPA4 算例均使用
+`MATCHEM_CONDA_NAME` 指定的同一个环境，未设置时由 `matchem_env.sh` 使用默认值
+`onescience311`。安装器和各算例提交脚本不会再次覆盖该变量。安装器
+固定 Gitee `dpa4-torch251` 分支和完整提交
+`40a7d99fa46c8ff1e75b5be9d64540d95dbac184`，保留环境中已适配 DTK 的
+Torch 2.5.1、TensorFlow 2.18 和 Triton 3.1，不重新安装这些核心框架。
+交互式运行时会询问 DeepMD-kit 源码和 C++ 接口目录，默认使用
+`${HOME}/.cache/onescience/deepmd-unified`，不会在项目 `dp/` 目录中创建它们；
+DeepMD Python 包始终安装到 `MATCHEM_CONDA_NAME` 对应的 Conda 环境。
+
+为兼容 Torch 2.5.1，固定源码包含 Triton 图算子的能力检测/惰性导入，以及
+梯度裁剪兼容实现。安装器还会自动下载 vesin 0.6.1，以及针对 DTK PyTorch
+2.5.1 编译并校验过的 `vesin-torch 0.6.1` wheel；下载文件仅保存在用户缓存
+目录，不会作为 wheel 提交到 OneScience 仓库。DeepMD 缺少的 Python 运行
+依赖由安装器按验证版本补齐，不会重新安装 Torch、TensorFlow 或 Triton。
+构建时还会禁止从账号环境自动引入外部 Intel MKL，并在安装前审计
+`libdeepmd_op_pt.so`，避免生成依赖额外 ILP64 运行库的 wheel。
+
+本轮支持范围为 PyTorch eager、普通 DDP、传统模型、DPA3 和 DPA4。
+TensorFlow 后端仍参与构建并保留 CLI，但 TensorFlow DCU 训练尚未纳入验收。
+旧的预编译 C++/LAMMPS 包保持不变，与 Python DeepMD 的统一升级分开管理。
 
 ---
 
@@ -156,26 +174,6 @@ bash run.sh --config configs/train_8dcu.yaml --submit
 MatterGen 的晶体生成、属性微调、数据预处理和训练参数说明见
 `mattergen/README.md`。
 
-### eSEN 推理、微调与分子动力学
-
-```bash
-cd esen
-python single_point.py
-```
-
-eSEN 的结构弛豫、MD、单卡/多卡微调及 Slurm 多节点微调命令见
-`esen/README.md`。
-
-### Equiformer V3 训练、评估与推理
-
-```bash
-cd equiformer_v3
-bash demo/run.sh --config configs/oc20_scratch_8dcu_smoke.yaml
-```
-
-OC20 训练配置、共享模型评估命令、ASE 推理示例和验证状态见
-`equiformer_v3/README.md`。
-
 ### DP 训练
 
 ```bash
@@ -235,8 +233,6 @@ examples/matchem/
 ├── matchem_env.sh          # 统一环境入口
 ├── README.md               # 本文件：基于 PyPI 安装后的使用指南
 ├── dp/                     # DeepMD-kit 训练
-├── esen/                   # eSEN 推理、微调、结构弛豫和 MD
-├── equiformer_v3/          # Equiformer V3 OC20 训练、模型评估和 ASE 推理
 ├── mace/                   # MACE 训练
 ├── matris/                 # MatRIS 训练
 ├── mattergen/              # MatterGen 训练、微调与晶体生成

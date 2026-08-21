@@ -1,5 +1,5 @@
 #!/usr/bin/env bash
-#SBATCH --job-name=dp_pt_atten_8card
+#SBATCH --job-name=dpa4_water_8card
 #SBATCH --partition=hx1hdnormal01
 #SBATCH --nodes=1
 #SBATCH --ntasks-per-node=1
@@ -21,7 +21,13 @@ export OMP_NUM_THREADS="${OMP_NUM_THREADS:-1}"
 export DP_INTRA_OP_PARALLELISM_THREADS="${DP_INTRA_OP_PARALLELISM_THREADS:-1}"
 export DP_INTER_OP_PARALLELISM_THREADS="${DP_INTER_OP_PARALLELISM_THREADS:-1}"
 
+INPUT_TEMPLATE="${INPUT_JSON:-${SCRIPT_DIR}/input_torch.json}"
+EXPANDED_INPUT="$(mktemp "${TMPDIR:-/tmp}/deepmd_input.XXXXXX.json")"
+trap 'rm -f "${EXPANDED_INPUT}"' EXIT
+sed "s|\${ONESCIENCE_DATASETS_DIR}|${ONESCIENCE_DATASETS_DIR}|g" \
+    "${INPUT_TEMPLATE}" > "${EXPANDED_INPUT}"
+
 RUN_DIR="${RUN_DIR:-${SCRIPT_DIR}/run_${SLURM_JOB_ID:-manual_$(date +%Y%m%d_%H%M%S)}}"
 mkdir -p "${RUN_DIR}"
 cd "${RUN_DIR}"
-torchrun --standalone --nproc_per_node=8 -m deepmd --pt train "${INPUT_JSON:-${SCRIPT_DIR}/input_torch.json}"
+torchrun --standalone --nproc_per_node=8 -m deepmd --pt train "${EXPANDED_INPUT}"

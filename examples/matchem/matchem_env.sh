@@ -8,13 +8,12 @@
 # ==========================================
 
 # ---------- 1. 基础环境配置 ----------
-export MATCHEM_CONDA_NAME="${MATCHEM_CONDA_NAME:-test_pip}"
+export MATCHEM_CONDA_NAME="${MATCHEM_CONDA_NAME:-onescience311}"
 
 # ---------- 2. OneScience 运行时环境变量 ----------
 export ONESCIENCE_DATASETS_DIR="/public/share/sugonhpcapp01/onestore/onedatasets"
 export ONESCIENCE_MODELS_DIR="/public/share/sugonhpcapp01/onestore/onemodels"
 export device="gpu"  # 根据实际平台改为 gpu 或 dcu
-export LD_LIBRARY_PATH="${CONDA_PREFIX:-}/lib:${LD_LIBRARY_PATH:-}"
 
 # ---------- 3. 外部软件路径（TODO: 修改为你自己的实际路径，默认当前目录） ----------
 # DeepMD-kit 源码目录
@@ -37,6 +36,10 @@ module load sghpcdas/25.6        # DTK / PyTorch 等 SDK
 module load sghpc-mpi-gcc/26.3   # MPI 与 GCC 编译器
 
 conda activate "$MATCHEM_CONDA_NAME"
+
+# 必须在 ~/.bashrc、集群模块和目标 Conda 环境加载完成后再加入环境库。
+# 否则系统命令可能误加载 Conda OpenSSL，触发 flatpak/Kerberos 符号冲突。
+export LD_LIBRARY_PATH="${CONDA_PREFIX}/lib:${LD_LIBRARY_PATH:-}"
 
 # ---------- 6. LAMMPS 运行时环境 ----------
 export LD_LIBRARY_PATH=${LAMMPS_INSTALL_DIR}/lib64:${LD_LIBRARY_PATH:-}
