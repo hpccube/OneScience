@@ -36,7 +36,7 @@ if [[ "${USE_LORA}" == "1" ]]; then
 fi
 
 HIP_VISIBLE_DEVICES=${HIP_VISIBLE_DEVICES} \
-python ./notebook_conver/reinforcement_learning_with_hugging_face.py \
+${LAUNCHER:-python} ./notebook_conver/reinforcement_learning_with_hugging_face.py \
     --model_path "${MODEL_PATH}" \
     --parquet_dir "${PARQUET_DIR}" \
     --output_dir "${RL_OUTPUT_DIR}" \

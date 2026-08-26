@@ -3,6 +3,8 @@ import argparse
 import os
 from pathlib import Path
 
+import torch
+
 from medgemma_script_utils import (
     LocalMedGemmaRunner,
     add_common_args,
@@ -52,7 +54,7 @@ def build_notebook_messages(instruction: str, query: str, images) -> list[dict]:
 def main():
     parser = argparse.ArgumentParser(description="Analyze CT slices with local Hugging Face MedGemma.")
     add_common_args(parser, multimodal=True)
-    parser.set_defaults(max_new_tokens=int(os.getenv("MAX_NEW_TOKENS", "2000")))
+    parser.set_defaults(max_new_tokens=int(os.getenv("MAX_NEW_TOKENS", "2000")), device_map=os.getenv("MEDGEMMA_DEVICE_MAP", "cuda:0"), torch_dtype=os.getenv("MEDGEMMA_TORCH_DTYPE", "bfloat16"))
     parser.add_argument("--dicom_dir", default=os.getenv("CT_DICOM_DIR") or default_ct_dicom_dir())
     parser.add_argument("--image_dir", default=None)
     parser.add_argument("--max_slices", type=int, default=int(os.getenv("CT_MAX_SLICES", "85")))
@@ -88,7 +90,23 @@ def main():
     print(f"Notebook default prompt: {args.instruction == NOTEBOOK_INSTRUCTION and args.prompt == NOTEBOOK_QUERY}")
     print(f"Max new tokens: {args.max_new_tokens}")
 
-    runner = LocalMedGemmaRunner(args.model_path, multimodal=True, device_map=args.device_map, torch_dtype=args.torch_dtype)
+    load_device_map = None if args.device_map == "cuda:0" else args.device_map
+    runner = LocalMedGemmaRunner(
+        args.model_path,
+        multimodal=True,
+        device_map=load_device_map,
+        torch_dtype=args.torch_dtype,
+    )
+    if args.device_map == "cuda:0":
+        if not torch.cuda.is_available():
+            raise RuntimeError("CUDA/ROCm is unavailable; cannot use cuda:0.")
+        runner.model = runner.model.to("cuda:0")
+        print("MedGemma device: cuda:0", flush=True)
+        print(
+            "MedGemma GPU memory allocated: "
+            f"{torch.cuda.memory_allocated() / 1024**3:.2f} GB",
+            flush=True,
+        )
     messages = build_notebook_messages(args.instruction, args.prompt, images)
     response = runner.generate_messages(messages, max_new_tokens=args.max_new_tokens)
     print(response)

@@ -7,7 +7,7 @@ from typing import Any, Dict, List, Optional
 import torch
 import torch.nn as nn
 
-from onescience.modules import Module
+from onescience.modules.module import Module
 from onescience.models.medgemma.model_runner import VLLMModelRunner, TransformersModelRunner
 from onescience.models.medgemma.predictor_wrapper import MedGemmaPredictor
 
@@ -66,7 +66,11 @@ class MedGemma(Module):
                     max_model_len=self.configs.inference.max_model_len,
                     tensor_parallel_size=self.configs.inference.tensor_parallel_size,
                 )
-                logger.info("Using vLLM model runner")
+                if not getattr(self.model_runner, "vllm_available", True):
+                    logger.info("Falling back to Transformers model runner")
+                    self._init_transformers_runner()
+                else:
+                    logger.info("Using vLLM model runner")
             except Exception as e:
                 logger.warning(f"vLLM initialization failed: {e}")
                 logger.info("Falling back to Transformers model runner")

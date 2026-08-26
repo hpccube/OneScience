@@ -9,7 +9,8 @@ base_dir: "./medgemma_output"
 # 模型设置
 model:
   variant: "4b"  # "4b" (多模态) 或 "27b" (仅文本)
-  model_path: "/path/to/medgemma/4b/model"  # 替换为实际模型路径
+  #model_path: "/path/to/medgemma/4b/model"  # 替换为实际模型路径
+  model_path: "${ONESCIENCE_DATASETS_DIR}/medgemma/modelscope/google/medgemma-1.5-4b-it"
   tokenizer_path: null  # null 表示使用 model_path
   prompt_format: "chat"  # "chat" 或 "instruct"
   is_multimodal: true  # 4B 支持多模态
@@ -26,7 +27,7 @@ inference:
   min_p: null
   batch_size: 1
   num_workers: 0
-  use_vllm: true  # 使用 vLLM 加速
+  use_vllm: false  # 使用 vLLM 加速
 
 # 数据设置
 data:

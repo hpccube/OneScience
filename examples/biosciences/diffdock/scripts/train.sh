@@ -37,8 +37,8 @@ CONFIG_PATH=$(cd "${CONFIG_DIR}" && pwd)/"${CONFIG_NAME}"
 
 PDBBIND_DIR="${PDBBIND_DIR:-${DIFFDOCK_DATASETS_DIR}/PDBBind_processed}"
 MOAD_DIR="${MOAD_DIR:-${DIFFDOCK_DATASETS_DIR}/BindingMOAD_2020_processed}"
-SPLIT_TRAIN="${SPLIT_TRAIN:-${DIFFDOCK_DATASETS_DIR}/splits/timesplit_no_lig_overlap_train}"
-SPLIT_VAL="${SPLIT_VAL:-${DIFFDOCK_DATASETS_DIR}/splits/timesplit_no_lig_overlap_val}"
+SPLIT_TRAIN="${SPLIT_TRAIN:-${DIFFDOCK_DATASETS_DIR}/clean_splits/timesplit_no_lig_overlap_train_cached_clean}"
+SPLIT_VAL="${SPLIT_VAL:-${DIFFDOCK_DATASETS_DIR}/clean_splits/timesplit_no_lig_overlap_val_cached_clean}"
 
 DEVICE="${DEVICE:-auto}"
 if [[ "$DEVICE" == "auto" ]]; then
@@ -228,3 +228,4 @@ echo "Batch normalization disabled: ${NO_BATCH_NORM}"
 
 cd "${REPO_ROOT}"
 python "${SCRIPT_DIR}/train_diffdock.py" --config "${CONFIG_PATH}"
+

@@ -444,19 +444,28 @@ bash scripts/run_quick_start_with_dicom.sh
 常用变量为 `MODEL_PATH`、`DICOM_PATH`、`PROMPT`、`MAX_NEW_TOKENS`、`OUTPUT_DIR` 和 `HIP_VISIBLE_DEVICES`。输出包括作为模型输入的 `quick_start_with_dicom_input.png`，以及 JSON、TXT 和 Markdown 结果。可追加 `--revision_pass`，在初稿存在明显矛盾时执行第二次校订；这仍不替代放射科医师复核。
 
 ### 8. CT 多切片推理
-
+默认使用 MedGemma 4B 对 CT 切片进行多模态推理：
 ```bash
-CT_DICOM_DIR=/path/to/ct/dicom \
-CT_MAX_SLICES=32 \
-CT_OUTPUT_DIR=./outputs/ct \
-bash scripts/run_high_dimensional_ct_hugging_face.sh
+示例：
+cd /path/xx/onescience/examples/biosciences/medgemma/scripts
+export MODEL_PATH=${ONESCIENCE_DATASETS_DIR}/medgemma/modelscope/google/medgemma-1.5-4b-it
+export CT_DICOM_DIR=${ONESCIENCE_DATASETS_DIR}/medgemma/CTLM
+export CT_MAX_SLICES=1
+export MAX_NEW_TOKENS=128
+export HIP_VISIBLE_DEVICES=0
+export MEDGEMMA_DEVICE_MAP=auto
+export MEDGEMMA_TORCH_DTYPE=bfloat16
+export PYTHONUNBUFFERED=1
+export CT_OUTPUT_DIR=./outputs/ct_smoke
+
+MEDGEMMA_DEVICE_MAP=cuda:0 bash run_high_dimensional_ct_hugging_face.sh 
 
 # 已转换为图片时
 IMAGE_DIR=/path/to/ct/png \
-bash scripts/run_high_dimensional_ct_hugging_face.sh
+bash run_high_dimensional_ct_hugging_face.sh
 ```
 
-DICOM 模式可用 `CT_STUDY_INSTANCE_UID` 和 `CT_SERIES_INSTANCE_UID` 选择序列，并用 `CT_PROMPT`、`CT_INSTRUCTION` 自定义任务。`CT_MAX_SLICES` 直接影响显存和上下文长度，首次运行建议从 8 到 32 张开始。
+DICOM 模式可用 `CT_STUDY_INSTANCE_UID` 和 `CT_SERIES_INSTANCE_UID` 选择序列，并用 `CT_PROMPT`、`CT_INSTRUCTION` 自定义任务。`CT_MAX_SLICES` 直接影响显存和上下文长度，首次运行建议从 2 到 32 张开始。
 
 ### 9. 病理图像块推理
 
@@ -479,12 +488,19 @@ bash scripts/run_high_dimensional_pathology_hugging_face.sh
 
 ```bash
 # 参数解析验证：不加载模型或训练依赖
+cd /path/xx/onescience/examples/biosciences/medgemma
 bash scripts/run_reinforcement_learning_with_hugging_face.sh --dry_run
 
-MAX_TRAIN_SAMPLES=256 \
-MAX_EVAL_SAMPLES=64 \
-USE_LORA=1 \
-bash scripts/run_reinforcement_learning_with_hugging_face.sh
+示例：8卡并行
+cd /path/xx/onescience/examples/biosciences/medgemma/scripts
+LAUNCHER="torchrun --standalone --nproc_per_node=8" \
+    DEEPSPEED_CONFIG=$PWD/deepspeed_zero3.json \
+    USE_LORA=1 MAX_TRAIN_SAMPLES=1 \
+    MAX_EVAL_SAMPLES=1 MAX_SEQ_LENGTH=16 \
+    HIP_VISIBLE_DEVICES=0,1,2,3,4,5,6,7 \
+    PYTHONUNBUFFERED=1 \
+    bash run_reinforcement_learning_with_hugging_face.sh 
+
 ```
 
 该脚本沿用 `reinforcement_learning_with_hugging_face` 文件名，但当前 Python 入口为 `local_sft_no_trl`。其实现使用 `transformers.Trainer` 执行因果语言模型监督微调，不包含奖励函数、奖励模型、PPO、DPO 或 GRPO，因此不属于强化学习。
@@ -545,7 +561,7 @@ print(result["choices"][0]["message"]["content"])
 
 - 运行脚本前需确保 `ONESCIENCE_DATASETS_DIR` 环境变量已正确设置。
 - 脚本默认使用 `HIP_VISIBLE_DEVICES=0`，在海光 DCU 平台可直接运行；在 CUDA 平台可替换为 `CUDA_VISIBLE_DEVICES=0` 或根据设备调整。
-- 如需使用 vLLM 加速推理，请确保已安装对应版本的 vLLM 并配置 `use_vllm: true`。
+- 默认配置使用 Transformers 后端；如需使用 vLLM 加速推理，请确保已安装兼容版本的 vLLM 并配置 `use_vllm: true`。如果未安装 vLLM 但仍配置了 `use_vllm: true`，程序会自动 fallback 到 Transformers 后端。
 - `run_fine_tune.sh` 会检查并可能升级 `transformers` 和 `accelerate`；在离线节点或受控环境中应提前安装并固定版本。
 - 所有 sh 脚本内部自动加载项目根目录 `env.sh`，无需手动 source。
 - 基础图像、DICOM、CT 和病理推理脚本使用本地模型，不会自动下载缺失权重。
@@ -565,6 +581,7 @@ print(result["choices"][0]["message"]["content"])
 | 定位 JSON 无法解析 | 模型输出未遵循 bounding-box 格式；保留原始文本并调整 prompt/temperature |
 | LoRA 训练后效果没有变化 | 推理时可能仍加载基础模型，需要显式加载 output_dir 中的 PEFT adapter |
 | 医学回答缺少可验证依据 | 模型可能产生事实性错误或幻觉，结果必须由专业人员复核 |
+| 若出现"Using `or_mask_function` or `and_mask_function` arguments require torch>=2.6"问题 | 安装 pip install transformers==4.52.0 即可 |
 
 ---
 

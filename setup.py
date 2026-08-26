@@ -423,6 +423,7 @@ bio_requires = [
     "langchain-community",
     "google-cloud-aiplatform",
     "pydicom",
+    "deepspeed",
 ]
 
 matchem_requires = [

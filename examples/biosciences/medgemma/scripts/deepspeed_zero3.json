@@ -1,0 +1,23 @@
+{
+  "train_micro_batch_size_per_gpu": 1,
+  "train_batch_size": 32,
+  "gradient_accumulation_steps": 4,
+  "gradient_clipping": 1.0,
+  "steps_per_print": 100,
+  "bf16": {
+    "enabled": true
+  },
+  "zero_optimization": {
+    "stage": 3,
+    "offload_param": {
+      "device": "cpu",
+      "pin_memory": true
+    },
+    "overlap_comm": false,
+    "contiguous_gradients": false,
+    "reduce_bucket_size": 50000000,
+    "stage3_prefetch_bucket_size": 50000000,
+    "stage3_param_persistence_threshold": 0
+  },
+  "wall_clock_breakdown": false
+}

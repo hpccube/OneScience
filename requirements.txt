@@ -192,7 +192,7 @@ langchain
 langchain-community
 google-cloud-aiplatform
 pydicom
-
+deepspeed
 
 
 #laproteina

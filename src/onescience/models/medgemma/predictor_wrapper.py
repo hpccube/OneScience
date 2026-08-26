@@ -37,6 +37,10 @@ class MedGemmaPredictor:
                 os.path.join(os.path.dirname(__file__), "..", "..", "..", "..", "..", "..", "medgemma", "python")
             )
 
+            if not os.path.exists(medgemma_base):
+                self.has_original_predictor = False
+                return
+
             if os.path.exists(medgemma_base) and medgemma_base not in sys.path:
                 sys.path.insert(0, medgemma_base)
                 logger.info(f"Added MedGemma path: {medgemma_base}")
@@ -47,11 +51,11 @@ class MedGemmaPredictor:
                 self.has_original_predictor = True
                 logger.info("Successfully imported original MedGemma predictor")
             except ImportError as e:
-                logger.warning(f"Could not import original MedGemma predictor: {e}")
+                logger.info(f"Original MedGemma predictor is not available: {e}")
                 self.has_original_predictor = False
 
         except Exception as e:
-            logger.warning(f"Error initializing MedGemma components: {e}")
+            logger.info(f"Original MedGemma components are not available: {e}")
             self.has_original_predictor = False
 
     def predict(
