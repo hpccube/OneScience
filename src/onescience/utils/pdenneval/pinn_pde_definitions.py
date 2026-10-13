@@ -102,13 +102,11 @@ def pde_CFD1d(x, y, gamma):
     zeta = 0.1
     eta = 0.1
 
-    h = y[..., 0].unsqueeze(1)  # rho
-    u = y[..., 1].unsqueeze(1)  # v
-    p = y[..., 2].unsqueeze(1)  # p
+    h = y[:, 0:1]  # rho
+    u = y[:, 1:2]  # v
+    p = y[:, 2:3]  # p
     E = p/(gamma - 1.) + 0.5 * h * u**2
-    E = E.unsqueeze(1)
     Fx = u * (E + p)
-    Fx = Fx.unsqueeze(1)
 
     # non conservative form
     hu_x = dde.grad.jacobian(h * u, x, i=0, j=0)
@@ -130,16 +128,13 @@ def pde_CFD2d(x, y, gamma):
     zeta = 0.1
     eta = 0.1
 
-    h = y[..., 0].unsqueeze(1)  # rho
-    ux = y[..., 1].unsqueeze(1)  # vx
-    uy = y[..., 2].unsqueeze(1)  # vy
-    p = y[..., 3].unsqueeze(1)  # p
+    h = y[:, 0:1]  # rho
+    ux = y[:, 1:2]  # vx
+    uy = y[:, 2:3]  # vy
+    p = y[:, 3:4]  # p
     E = p/(gamma - 1.) + 0.5 * h * (ux**2 + uy**2)
-    E = E.unsqueeze(1)
     Fx = ux * (E + p)
-    Fx = Fx.unsqueeze(1)
     Fy = uy * (E + p)
-    Fy = Fy.unsqueeze(1)
 
     # non conservative form
     hu_x = dde.grad.jacobian(h * ux, x, i=0, j=0)
@@ -175,26 +170,22 @@ def pde_CFD3d(x, y, gamma):
     zeta = 1e-8
     eta = 1e-8
 
-    h = y[..., 0].unsqueeze(1)  # rho
-    ux = y[..., 1].unsqueeze(1)  # vx
-    uy = y[..., 2].unsqueeze(1)  # vy
-    uz = y[..., 3].unsqueeze(1)  # vz
-    p = y[..., 4].unsqueeze(1)  # p
+    h = y[:, 0:1]  # rho
+    ux = y[:, 1:2]  # vx
+    uy = y[:, 2:3]  # vy
+    uz = y[:, 3:4]  # vz
+    p = y[:, 4:5]  # p
     E = p/(gamma - 1.) + 0.5 * h * (ux**2 + uy**2 + uz**2)
-    E = E.unsqueeze(1)
     Fx = ux * (E + p)
-    Fx = Fx.unsqueeze(1)
     Fy = uy * (E + p)
-    Fy = Fy.unsqueeze(1)
     Fz = uz * (E + p)
-    Fz = Fz.unsqueeze(1)
 
     # print(Fx.shape)
 
     # non conservative form
     hu_x = dde.grad.jacobian(h * ux, x, i=0, j=0)
     hu_y = dde.grad.jacobian(h * uy, x, i=0, j=1)
-    hu_z = dde.grad.jacobian(h * uy, x, i=0, j=2)
+    hu_z = dde.grad.jacobian(h * uz, x, i=0, j=2)
     h_t = dde.grad.jacobian(y, x, i=0, j=3)
     ux_x = dde.grad.jacobian(y, x, i=1, j=0)
     ux_y = dde.grad.jacobian(y, x, i=1, j=1)
@@ -295,7 +286,7 @@ def pde_darcy_flow(x, y, beta):
     u_x = dde.grad.jacobian(y, x, i = 0, j = 0)
     u_y = dde.grad.jacobian(y, x, i = 0, j = 1)
     # u_t = dde.grad.jacobian(y, x, i = 0, j = 2)
-    a = x[..., 3].unsqueeze(1)
+    a = x[:, 2:3]
     au_x = a*u_x
     # print(au_x.shape, x.shape)
     au_y = a*u_y
@@ -309,28 +300,22 @@ def pde_euler(x, y, gamma):
     zeta = 0
     eta = 0
 
-    print(x[1])
-
-    h = y[..., 0].unsqueeze(1)  # rho
-    ux = y[..., 1].unsqueeze(1)  # vx
-    uy = y[..., 2].unsqueeze(1)  # vy
-    uz = y[..., 3].unsqueeze(1)  # vz
-    p = y[..., 4].unsqueeze(1)  # p
+    h = y[:, 0:1]  # rho
+    ux = y[:, 1:2]  # vx
+    uy = y[:, 2:3]  # vy
+    uz = y[:, 3:4]  # vz
+    p = y[:, 4:5]  # p
     E = p/(gamma - 1.) + 0.5 * h * (ux**2 + uy**2 + uz**2)
-    E = E.unsqueeze(1)
     Fx = ux * (E + p)
-    Fx = Fx.unsqueeze(1)
     Fy = uy * (E + p)
-    Fy = Fy.unsqueeze(1)
     Fz = uz * (E + p)
-    Fz = Fz.unsqueeze(1)
 
     # print(Fx.shape)
 
     # non conservative form
     hu_x = dde.grad.jacobian(h * ux, x, i=0, j=0)
     hu_y = dde.grad.jacobian(h * uy, x, i=0, j=1)
-    hu_z = dde.grad.jacobian(h * uy, x, i=0, j=2)
+    hu_z = dde.grad.jacobian(h * uz, x, i=0, j=2)
     h_t = dde.grad.jacobian(y, x, i=0, j=3)
     ux_x = dde.grad.jacobian(y, x, i=1, j=0)
     ux_y = dde.grad.jacobian(y, x, i=1, j=1)

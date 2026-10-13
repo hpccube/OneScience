@@ -35,7 +35,6 @@
 | 1D Cahn Hilliard           | 1024/4                      | 101/1                       | 1.e-4  | 64     | 1.e-8    | 3        | 500      | "StepLR", 100, 0.5    |
 | 2D Shallow Water           | 128/2                       | 101/1                       | 1.e-4  | 8      | 1.e-8    | 1        | 500      | "StepLR", 100, 0.5    |
 | 2D Compressible NS         | 128/2                       | 21/1                        | 1.e-4  | 16     | 1.e-8    | 1        | 500      | "StepLR", 100, 0.5    |
-| 2D Burgers                 | 128/2                       | 101/1                       | 1.e-4  | 8      | 1.e-8    | 1        | 500      | "StepLR", 100, 0.5    |
 | 2D Allen-Cahn              | 128/2                       | 101/1                       | 1.e-4  | 8      | 1.e-8    | 1        | 500      | "StepLR", 100, 0.5    |
 | 2D Black-Scholes-Barenblatt| 128/2                       | 101/1                       | 1.e-4  | 8      | 1.e-8    | 1        | 500      | "StepLR", 100, 0.5    |
 
@@ -71,23 +70,3 @@ CUDA_VISIBLE_DEVICES=0 python train.py ./config/${配置文件名}
 # 示例：CUDA_VISIBLE_DEVICES=0 python train.py ./config/config_1D_Advection.yaml
 ```
 
-## 继续训练
-
-1. 修改配置文件：
-    1. 确保 `if_training` 为 `True`；
-    2. 设置 `continue_training` 为 `True`；
-    3. 将 `model_path` 设置为重新训练所用的检查点路径；
-2. 运行命令：
-```bash
-CUDA_VISIBLE_DEVICES=0 python train.py ./config/${配置文件名}
-```
-
-## 测试
-
-1. 修改配置文件：
-    1. 将 `if_training` 设置为 `False`；
-    2. 将 `model_path` 设置为待评估模型的检查点路径；
-2. 运行命令：
-```bash
-CUDA_VISIBLE_DEVICES=0 python train.py ./config/${配置文件名}
-```

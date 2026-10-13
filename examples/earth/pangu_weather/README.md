@@ -1,73 +1,50 @@
-# Pangu-weather
+# Pangu-Weather
 
-该项目为在onescience中重新实现华为的[pangu](https://www.nature.com/articles/s41586-023-06185-3) 模型。
-s
-## 模型简介
+Pangu-Weather（盘古气象大模型）是华为云提出的首个精度超过传统数值预报的 AI 气象模型，基于 3D Earth-Specific Transformer 架构，速度比传统数值预报提升 10000 倍以上。
 
-华为云盘古气象大模型是首个精度超过传统数值预报方法的AI模型，速度相比传统数值预报提速10000倍以上。目前，盘古气象大模型能够提供全球气象秒级预报，其气象预测结果包括位势、湿度、风速、温度、海平面气压等，可以直接应用于多个气象研究细分场景，欧洲中期预报中心和中央气象台等都在实测中发现盘古预测的优越性。
+> 论文：[Accurate medium-range global weather forecasting with 3D neural networks](https://www.nature.com/articles/s41586-023-06185-3)
 
-![](../../../doc/pangu_architecture.jpg)
+## 数据准备
 
-## 数据集
+真实数据的存储格式参照 `../era5_dataset_prepare/README.md`，在 `conf/config.yaml` 中修改：
 
-该模型在ERA5再分析数据上进行训练，这些大气变量在单层和压力层上经过预处理并存储到HDF5文件中，数据集中包含了4个地表变量、5个13压力层级的大气变量，除此之外还包含3个静态变量，例如陆地掩模和位势。
-
-数据集格式如下：
-
-```
-dataset\
-|----train\
-|    |----1980.h5
-|    |----1981.h5
-|    |----1982.h5
-|    |----...
-|----val\
-|    |----2016.h5
-|    |----2017.h5
-|----test\
-|    |----2018.h5
-|    |----2019.h5
-|----stats\
-|    |----global_means.npy
-|    |----global_stds.npy
-|----static\
-|    |----soil_type.npy
-|    |----land_mask.npy
-|    |----topography.npy
+```yaml
+data_dir: 存放ERA5年度数据、均值/标准差文件、静态文件，存放方式参考'../era5_dataset_prepare/README.md'
+train_time: [2000, 2001]   # 训练年份
+val_time: [2002]            # 验证年份
+test_time: [2003]           # 测试年份
 ```
 
-## 模型训练
-
-单机单卡训练：
+无真实数据时，可生成虚拟数据快速验证流程(若快速验证，则需将conf/config.yaml中max_epoch设为1)：
 
 ```bash
-bash train_single_node_single_device.sh
+source ../earth_env.sh
+python fake_data.py
 ```
 
-单机多卡训练：
+## 运行
 
 ```bash
-bash train_single_node_multi_device.sh
-```
+source ../earth_env.sh
 
-多机多卡训练：
+# 1. 训练（二选一）
+python train.py                # 单卡
+torchrun --nproc_per_node=8 --nnodes=1 --rdzv_id=1000 --rdzv_backend=c10d --max_restarts=0 --master_addr="localhost" --master_port=29500 train.py   # 多卡
 
-```bash
-sbatch slurm.sh
-```
-
-单机单卡推理：
-
-```bash
+# 2. 推理（结果输出至 ./result/output/）
 python inference.py
-```
 
-误差计算：
-
-```bash
+# 3. 评估 & 可视化（result.py 末尾可指定日期和变量）
 python result.py
 ```
 
-## 参考
+## 集群训练
 
-- [Accurate medium-range global weather forecasting with 3D neural networks](https://www.nature.com/articles/s41586-023-06185-3)
+```bash
+mkdir -p logs
+sbatch work_slurm.sh    # 提交前检查分区、节点数等配置
+```
+
+## 许可证
+
+Apache 2.0，可免费用于学术研究和商业用途。

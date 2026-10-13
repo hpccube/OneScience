@@ -13,56 +13,55 @@
 
 Transolver是一种基于物理感知令牌的Transformer PDE求解器，通过将网格点自适应划分为物理相关的切片，实现令牌级别的物理注意力计算，显著降低计算复杂度并提升几何泛化能力。其核心特点包括线性复杂度的高效注意力机制、对非结构化网格的天然适应性，以及在复杂物理场景和分布外条件下的强泛化性能。
 
+除了基础版本Transolver我们还引入了Transolver++模型[[Paper]](https://arxiv.org/pdf/2502.02414)，采用了 局部自适应机制 和 切片重参数化（slice reparameterization） 技术。这些方法使得模型能够自适应地控制切片权重的分布，避免了物理状态之间的区分度丧失。具体来说，Ada-Temp 调整通过动态微调 softmax 函数的温度，确保在必要时产生更加集中或尖锐的分布。此外，使用 Gumbel-Softmax 进行可微分采样，使得 Transolver++ 即使在大规模数据上，也能保持强健和多样的物理状态表示。
+
+可以通过conf目录下的transolver_airfrans.yaml文件中选择相应的Transolver++模型。
+
 ## 模型训练
 
-1. 安装依赖包。为方便起见，请执行以下命令：
 
-```bash
-pip install -r requirements.txt
-```
-
-
-2. 数据准备
+1. 数据准备
 
 实验数据由[AirfRANS](https://github.com/Extrality/AirfRANS)提供。您可以通过此[链接](https://data.isir.upmc.fr/extrality/NeurIPS_2022/Dataset.zip)直接下载（9.3GB），可以通过此通过此[链接](https://airfrans.readthedocs.io/en/latest/notes/introduction.html)查看数据集的一些描述。
 
-3. 训练
+使用SCNET-华中一区计算环境，可在「/public/share/sugonhpcapp01/onestore/onedatasets/Transolver-Airfoil-Design」获取数据集
 
-参数说明
+使用前需要
+```bash
+source ../../../env.sh
+```
 
-| 参数名              | 类型    | 默认值              | 作用说明                                                                                      |
-|---------------------|---------|--------------------|---------------------------------------------------------------------------------------------|
-| `--data_path`        | str     | `./dataset/Dataset`| 数据集路径。注意不要在路径末尾添加多余空格。                                                   |
-| `--save_path`        | str     | `./metrics`        | 模型及相关指标的保存路径。                                                                     |
-| `--result_path`      | str     | `./results`        | 预测结果保存路径。                                                                             |
-| `--model`            | str     | `Transolver`       | 选择训练的模型，可选项包括 Transolver, MLP, GraphSAGE, PointNet, GUNet。默认 Transolver。       |
-| `-n, --nmodel`       | int     | 1                  | 训练模型的数量，用于标准差估计。默认值为1。                                                    |
-| `-w, --weight`       | float   | 1                  | 表面损失项前的权重。默认值为1。                                                                |
-| `-t, --task`         | str     | `full`             | 训练任务类型，可选 "full"、"scarce"、"reynolds"、"aoa"。默认 "full"。                         |
-| `-s, --score`        | int     | 0                  | 是否在训练模型后直接进行推理评估，0表示不计算，非0表示计算。默认0。                             |
-| `--gpu`              | int     | 0                  | 指定使用的GPU编号，默认为0，如无GPU则使用CPU。                                                |
-| `-n_test`            | int     | 3                  | 进行推理的翼型数量，将从给定数据集中随机抽取。默认3个。                                         |
+dataset目录下的dataset_stats.ipynb可以绘制数据的各种信息
 
-我们在文件夹`./scripts/`提供了运行的脚本，脚本中默认为单卡执行。您可以使用以下命令执行:
+2. 训练
+详细的训练参数可以参考transolver_airfrans.yaml文件中的参数注释
+
+单卡训练：
 
 ```bash
-bash scripts/Transolver.sh # for Training Transolver
-bash scripts/Evaluation.sh # for Evaluation
+python train.py
 ```
+
 
 多卡训练：
 
 ```bash
-mpirun -np <num_GPUs> --allow-run-as-root python main.py
+mpirun -np <num_GPUs> --allow-run-as-root python train.py
 ```
 
 torchrun启动多节点多卡训练：
 
 ```bash
-torchrun --standalone --nnodes=<num_nodes> --nproc_per_node=<num_GPUs> main.py
+torchrun --standalone --nnodes=<num_nodes> --nproc_per_node=<num_GPUs> train.py
 ```
 
-注意：您需要将参数`--my_path`更改为数据集路径。`-model`参数可以选择模型，本项目中共支持5个模型Transolver, MLP, GraphSAGE, PointNet, GUNet。可以同时训练多个模型，但是建议一次只训练一个模型。
+具体参数可以通过conf目录下的transolver_airfrans.yaml配置
+
+3. 推理和可视化:
+
+```bash
+python inference.py
+```
 
 4. 使用不同设置测试模型。此基准支持四种类型的设置。
 
@@ -73,15 +72,6 @@ torchrun --standalone --nnodes=<num_nodes> --nproc_per_node=<num_GPUs> main.py
 | Test on out-of-distribution Reynolds         | `-t reynolds` |
 | Test on out-of-distribution Angle of Attacks | `-t aoa`      |
 
-5.您也可以选择添加自己的模型。以下是说明：
-
--在文件夹`./models/`下添加模型文件。
-
--在`./params.yaml`中添加模型参数详细信息。
-
--将模型配置添加到`./main.py`中。
-
--在文件夹 `./scripts/`下添加脚本文件，并更改参数--model。
 
 ## 结果展示
 

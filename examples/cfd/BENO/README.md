@@ -19,9 +19,14 @@ BENO模型架构如下所示：
 
 10 个 4-Corners 例题的样本数据集文件位于 "data/" 目录下。完整的数据集文件可以通过[此链接](https://drive.google.com/file/d/11PbUrzJ-b18VhFGY_uICSciCkeGrsaTZ/view)下载。要在特定边界类型上运行实验，请将链接中的文件下载到本地仓库的 "data/" 文件夹中。**BC_Nxx_xc_all.npy**/**RHS_Nxx_xc_all.npy**/**SOL_Nxx_xc_all.npy** 分别代表特定分辨率和形状的**边界信息**/**源项**/**解项**。
 
-除此之外，我们还提供了精简的数据集，它位于data目录下，仅包含10组数据，用于做快速训练和推理。
+使用SCNET-华中一区计算环境，可在「/public/share/sugonhpcapp01/onestore/onedatasets/BENO」获取数据集
 
-将数据集解压后放入当前目录下的data文件夹中，就像这样
+使用前需要
+```bash
+source ../../../env.sh
+```
+
+将数据集解压，并将解压后的文件存放至当前目录的 data 文件夹中，目录结构如下：
 
 ```
 ▼ data/
@@ -33,22 +38,44 @@ run_beno.ipynb
 README.md
 ```
 
+
 ## 训练
 
-使用以下命令训练BENO，具体使用哪个数据集可以在代码中更改
+详细的训练参数可以参考beno.yaml文件中的参数注释
+
+单卡训练：
+
+使用以下命令训练BENO
 
 ```code
-python train.py --dataset_type=32x32 --epochs 1000
+python train.py 
 ```
 
-运行`python train.py -h`可以查看各参数作用
+多卡训练：
 
-## 预测
+```bash
+mpirun -np <num_GPUs> --allow-run-as-root python train.py
+```
+若在 Docker 容器内运行，多GPU命令可能需加 `--allow-run-as-root`。
+
+torchrun启动多节点多卡训练：
+
+```bash
+torchrun --standalone --nnodes=<num_nodes> --nproc_per_node=<num_GPUs> train.py
+```
+
+如果在支持slurm作业调度系统的环境下进行跨节点并行训练，可以执行如下脚本：
+
+```bash
+sbatch slurm.sh
+```
+
+## 推理
 
 要分析结果，请使用以下命令：
 
 ```code
-python analysis.py 
+python inference.py 
 ```
 
 ## 参考文献:
@@ -56,4 +83,3 @@ python analysis.py
 [Paper](https://openreview.net/forum?id=ZZTkLDRmkg) | [arXiv](https://arxiv.org/abs/2401.09323) | [Tweet](https://twitter.com/tailin_wu/status/1747259448635367756)
 
 [Haixin Wang*](https://willdreamer.github.io/), [Jiaxin Li*](https://github.com/Jiaxinlia/Jiaxin.github.io), [Anubhav Dwivedi](https://dwivedi-anubhav.github.io/website/), [Kentaro Hara](https://aa.stanford.edu/people/ken-hara), [Tailin Wu](https://tailin.org/)
-

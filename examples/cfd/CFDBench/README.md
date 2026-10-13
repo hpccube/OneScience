@@ -19,6 +19,7 @@ CFDBench 是一个用于评估在具有各种边界条件、物理特性和域�
 对于每个问题，我们生成具有不同操作参数的流动，这是我们用来指三种条件的组合的术语：(1)边界BC，(2)流体物理性质(PROP)，和(3)场的几何形状(GEO)。每种运行参数对应一个子集。在每个子集中，相应的操作条件是变化的，而其他参数保持不变。
 数据使用npy文件存储，是NumPy 使用的标准二进制文件格式。每组数据下包含u.npy和v.npy以及一个json文件（用于描述这组数据对应的物理条件）
 
+
 用数值算法生成数据后，将其插值到64x64的网格中，插值前的原始数据非常大。下面的链接是插值数据：
 插值数据 (~13.4GB):
 
@@ -30,12 +31,18 @@ CFDBench 是一个用于评估在具有各种边界条件、物理特性和域�
 - [Baidu Drive (百度网盘)](https://pan.baidu.com/s/1p0q60cv2hFZ7UcIf3XKSaw?pwd=cfd4) (提取码: cfd4)
 
 
+使用SCNET-华中一区计算环境，可在「/public/share/sugonhpcapp01/onestore/onedatasets/CFDBench」获取数据集
+
+使用前需要
+```bash
+source ../../../env.sh
+```
 ### 数据生成
 
 `generation-code`中目录包含创建网格的代码（ICEM代码）和ANSYS Fluent中批量生成的模式代码。
 
 ### 数据准备
-将下载的数据移动到`data`目录中，就像这样
+将数据集解压，并将解压后的文件存放至当前目录的 data 文件夹中，目录结构如下：
 
 ```
 ▼ data/
@@ -77,45 +84,45 @@ README.md
 
 ### 模型训练
 
-运行`train.py`或`train_auto.py`分别训练非自回归或自回归模型。使用`--model`指定模型，它必须是以下之一：
+运行`train.py`或`train_auto.py`分别训练非自回归或自回归模型。使用`conf/cfdbench.yaml`中的`model.name`指定模型，它必须是以下之一：
 
-Model | Value for `--model` | Script
---- | --- | ---
-Non-autoregrssive FFN | `ffn` | `train.py`
-Non-autoregressive DeepONet | `deeponet` | `train.py`
-Autoregressive Auto-FFN | `auto_ffn` | `train_auto.py`
-Autoregressive Auto-DeepONet | `auto_deeponet` | `train_auto.py`
-Autoregressive Auto-EDeepONet | `auto_edeeponet` | `train_auto.py`
-Autoregressive Auto-DeepONetCNN | `auto_deeponet_cnn` | `train_auto.py`
-Autoregressive ResNet | `resnet` | `train_auto.py`
-Autoregressive U-Net | `unet` | `train_auto.py`
-Autoregressive FNO | `fno` | `train_auto.py`
+| Model                           | Value for `--model` | Script          |
+| ------------------------------- | ------------------- | --------------- |
+| Non-autoregrssive FFN           | `ffn`               | `train.py`      |
+| Non-autoregressive DeepONet     | `deeponet`          | `train.py`      |
+| Autoregressive Auto-FFN         | `auto_ffn`          | `train_auto.py` |
+| Autoregressive Auto-DeepONet    | `auto_deeponet`     | `train_auto.py` |
+| Autoregressive Auto-EDeepONet   | `auto_edeeponet`    | `train_auto.py` |
+| Autoregressive Auto-DeepONetCNN | `auto_deeponet_cnn` | `train_auto.py` |
+| Autoregressive ResNet           | `resnet`            | `train_auto.py` |
+| Autoregressive U-Net            | `unet`              | `train_auto.py` |
+| Autoregressive FNO              | `fno`               | `train_auto.py` |
 
 #### 模型训练示例
 
-
-例如，使用FNO模型模拟方腔流子集中的所有子集：
+例如，使用FNO模型模拟方腔流子集中的所有子集,需要在cfdbench.yaml中修改data_name为`cavity_prop_bc_geo`,task_type修改为`auto`，model下name修改为`fno`：
 ```bash
-python train_auto.py --model fno --data_name cavity_prop_bc_geo
+python train_auto.py
 ```
-使用DeepONet模型模拟坝流中的 PROP + GEO 子集：
+
+使用DeepONet模型模拟坝流中的 PROP + GEO 子集，需要将data_name为`dam_prop_geo`，model下name修改为`DeepONet`,task_type修改为`static`：
 
 ```bash
-python train.py --model deeponet --data_name dam_prop_geo
+python train.py
 ```
-默认情况下，结果将保存到`./result/`目录，但可以使用`--output_dir`参数进行自定义。
+默认情况下，结果将保存到`./result/`目录，可以修改`output_dir`参数进行自定义。
 
 多卡训练：
 
 ```bash
-mpirun -np <num_GPUs> --allow-run-as-root python train_auto.py --model unet --data_name tube_prop_bc_geo
+mpirun -np <num_GPUs> --allow-run-as-root python train_auto.py 
 ```
 若在 Docker 容器内运行，多GPU命令可能需加 `--allow-run-as-root`。
 
 torchrun启动多节点多卡训练：
 
 ```bash
-torchrun --standalone --nnodes=<num_nodes> --nproc_per_node=<num_GPUs> train_auto.py ...
+torchrun --standalone --nnodes=<num_nodes> --nproc_per_node=<num_GPUs> train_auto.py
 ```
 
 如果在支持slurm作业调度系统的环境下进行跨节点并行训练，可以执行如下脚本：
@@ -124,14 +131,12 @@ torchrun --standalone --nnodes=<num_nodes> --nproc_per_node=<num_GPUs> train_aut
 sbatch slurm.sh
 ```
 
-如需更多选项，如模型超参数，请运行`python train.py -h`或`python train_auto.py -h`。
-
 注：在cylinder数据集中使用自回归模型训练时，会生成当前目录下生成dataset目录，用于存储预处理后的数据，这样在使用其他模型时能直接读取。
 
 
 ### 模型推理
 
-运行`train.py` 或 `train_auto.py`时使用`--mode test`参数
+将cfdbench.yaml中的mode修改为`test`模式，继续运行`train.py` 或 `train_auto.py`即可
 
 ## 参考文献
 

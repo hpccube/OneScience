@@ -12,7 +12,7 @@ import torch.nn as nn
 
 import argparse
 from tqdm import *
-from onescience.models.mlp import FullyConnected
+from onescience.modules.mlp import FullyConnected
 
 def get_arguments(arg_list=None):
     parser = argparse.ArgumentParser(
@@ -47,6 +47,12 @@ def get_arguments(arg_list=None):
         type=int,
         default=1000,
         help="The beta number"
+    )
+    parser.add_argument(
+        "--data_dir",
+        type=str,
+        required=True,
+        help="Directory containing the PDEBench dataset file",
     )
     return parser.parse_args(arg_list)
 
@@ -257,12 +263,15 @@ def train_pipeline():
     DEVICE = torch.device(f"cuda:{CUDA_ORDER}" if torch.cuda.is_available() else "cpu")
     print(f"Using device: {DEVICE}")
     equation = 'Bu1'
-    dataset = '../data/1D_Burgers_Sols_Nu0.001.hdf5'
+    data_dir = os.path.expanduser(os.path.expandvars(args.data_dir))
+    dataset = os.path.join(data_dir, '1D_Burgers_Sols_Nu0.001.hdf5')
+    if not os.path.isfile(dataset):
+        raise FileNotFoundError(f'Dataset file not found: {dataset}')
     # define equation
     Eq = AdvectionEquation(DIMENSION, DEVICE)
     # define model
-    model_u = FullyConnected(in_features=args.d + 1, layer_size=64, out_features=5, num_layers=6, activation_fn='tanh').to(DEVICE)
-    model_v = FullyConnected(in_features=args.d + 1, layer_size=64, out_features=5, num_layers=6, activation_fn='tanh').to(DEVICE)
+    model_u = FullyConnected(in_features=args.d + 1, layer_size=64, out_features=1, num_layers=6, activation_fn='tanh').to(DEVICE)
+    model_v = FullyConnected(in_features=args.d + 1, layer_size=64, out_features=1, num_layers=6, activation_fn='tanh').to(DEVICE)
 
     optu = torch.optim.Adam(model_u.parameters(), lr=0.0001)
     optv = torch.optim.Adam(model_v.parameters(), lr=0.0014)
@@ -331,7 +340,7 @@ def train_pipeline():
     training_history = np.array(training_history)
     print('l2r_min:', np.min(training_history[:, 3]))
     history = pd.DataFrame(training_history[:, 3])
-    istory.to_csv(os.path.join(dir_path, f'WAN-{equation}.csv'))
+    history.to_csv(os.path.join(dir_path, f'WAN-{equation}.csv'))
     loss_history = pd.DataFrame(training_history[:, 1])
     loss_history.to_csv(os.path.join(dir_path, f'WAN-{equation}-loss_history.csv'))
 
@@ -348,7 +357,7 @@ def train_pipeline():
 
     metric = []
     with torch.no_grad():
-        odel_me = torch.load(os.path.join(dir_path, equation+'_check_point_me.pt'), weights_only=True)
+        model_me = torch.load(os.path.join(dir_path, equation+'_check_point_me.pt'), weights_only=True)
         model_u.load_state_dict(model_me['model_u_state_dict'])
         x_infer = Eq.interior(N=10000)
         start_time = time.time()

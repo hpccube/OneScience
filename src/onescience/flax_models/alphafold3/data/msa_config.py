@@ -34,9 +34,18 @@ class JackhmmerConfig:
       n_cpu: An integer with the number of CPUs to use.
       n_iter: An integer with the number of database search iterations.
       e_value: e-value for the database lookup.
-      z_value: The Z-value representing the number of comparisons done (i.e
-        correct database size) for E-value calculation.
+      z_value: The Z-value representing the database size in number of sequences
+        for E-value and domain E-value calculation. Must be set for sharded
+        databases.
+      dom_z_value: The Z-value representing the database size in number of
+        sequences for domain E-value calculation. Must be set for sharded
+        databases.
       max_sequences: Max sequences to return in MSA.
+      max_parallel_shards: If given, the maximum number of shards to search
+        against in parallel. If None, one Jackhmmer instance will be run per
+        shard. Only applicable if the database is sharded.
+      max_threads: If given, the maximum number of threads used when running
+        sharded databases.
   """
 
   binary_path: str
@@ -44,10 +53,13 @@ class JackhmmerConfig:
   n_cpu: int
   n_iter: int
   e_value: float
-  z_value: float | int | None
+  z_value: int | None
+  dom_z_value: int | None
   max_sequences: int
+  max_parallel_shards: int | None = None
+  max_threads: int | None = None
 
-
+  
 @dataclasses.dataclass(frozen=True, kw_only=True, slots=True)
 class NhmmerConfig:
   """Configuration for a nhmmer run.
@@ -59,8 +71,16 @@ class NhmmerConfig:
       database_config: Database configuration.
       n_cpu: An integer with the number of CPUs to use.
       e_value: e-value for the database lookup.
+      z_value: The Z-value representing the database size in megabases for
+        E-value calculation. Allows fractional values. Must be set for sharded
+        databases.
       max_sequences: Max sequences to return in MSA.
       alphabet: The alphabet when building a profile with hmmbuild.
+      max_parallel_shards: If given, the maximum number of shards to search
+        against in parallel. If None, one Nhmmer instance will be run per shard.
+        Only applicable if the database is sharded.
+      max_threads: If given, the maximum number of threads used when running
+        sharded databases.        
   """
 
   binary_path: str
@@ -69,9 +89,12 @@ class NhmmerConfig:
   database_config: DatabaseConfig
   n_cpu: int
   e_value: float
+  z_value: float | None
   max_sequences: int
   alphabet: str | None
-
+  max_parallel_shards: int | None = None
+  max_threads: int | None = None
+  
 
 @dataclasses.dataclass(frozen=True, kw_only=True, slots=True)
 class MmseqsConfig:

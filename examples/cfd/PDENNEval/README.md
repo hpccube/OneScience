@@ -16,28 +16,36 @@ PDENNEval 对 8 种用于偏微分方程（PDE）的神经网络（NN）方法�
 
 PDEBench 提供了涵盖广泛偏微分方程（PDE）的大规模数据集。可以从 [DaRUS 数据库](https://darus.uni-stuttgart.de/dataset.xhtml?persistentId=doi:10.18419/darus-2986) 下载这些数据集。我们工作中使用的数据文件如下：
 
-| PDE | 文件名 | 文件大小 | 
-| :--- | :---: | :---: |
-| 1D Advection | 1D_Advection_Sols_beta0.1.hdf5 | 7.7G |
-| 1D Diffusion-Reaction | ReacDiff_Nu0.5_Rho1.0.hdf5 | 3.9G | 
-| 1D Burgers| 1D_Burgers_Sols_Nu0.001.hdf5 | 7.7G |
-| 1D Diffusion-Sorption | 1D_diff-sorp_NA_NA.h5 | 4.0G |
-| 1D Compressible NS | 1D_CFD_Rand_Eta0.1_Zeta0.1_periodic_Train.hdf5 | 12G | 
-| 2D Compressible NS | 2D_CFD_Rand_M0.1_Eta0.1_Zeta0.1_periodic_128_Train.hdf5 | 52G | 
-| 2D Darcy Flow | 2D_DarcyFlow_beta1.0_Train.hdf5 | 1.3G |
-| 2D Shallow Water | 2D_rdb_NA_NA.h5 | 6.2G |
-| 3D Compressible NS | 3D_CFD_Rand_M1.0_Eta1e-08_Zeta1e-08 _periodic_Train.hdf5 | 83G |
+使用SCNET-华中一区计算环境，可在「/public/share/sugonhpcapp01/onestore/onedatasets/PDENNEval」获取数据集
+
+使用前需要
+```bash
+source ../../../env.sh
+```
+
+
+| PDE                   |                          文件名                          | 文件大小 |
+| :-------------------- | :------------------------------------------------------: | :------: |
+| 1D Advection          |              1D_Advection_Sols_beta0.1.hdf5              |   7.7G   |
+| 1D Diffusion-Reaction |                ReacDiff_Nu0.5_Rho1.0.hdf5                |   3.9G   |
+| 1D Burgers            |               1D_Burgers_Sols_Nu0.001.hdf5               |   7.7G   |
+| 1D Diffusion-Sorption |                  1D_diff-sorp_NA_NA.h5                   |   4.0G   |
+| 1D Compressible NS    |      1D_CFD_Rand_Eta0.1_Zeta0.1_periodic_Train.hdf5      |   12G    |
+| 2D Compressible NS    | 2D_CFD_Rand_M0.1_Eta0.1_Zeta0.1_periodic_128_Train.hdf5  |   52G    |
+| 2D Darcy Flow         |             2D_DarcyFlow_beta1.0_Train.hdf5              |   1.3G   |
+| 2D Shallow Water      |                     2D_rdb_NA_NA.h5                      |   6.2G   |
+| 3D Compressible NS    | 3D_CFD_Rand_M1.0_Eta1e-08_Zeta1e-08 _periodic_Train.hdf5 |   83G    |
 
 #### 自生成数据
 
-| PDE | 文件大小 | 下载链接 | 
-| :--- | :--- | :---: |
-| 1D Allen-Cahn 方程 | 3.9G | [链接](http://aisccc.cn/database/data-details?id=52&type=resource) |
-| 1D Cahn-Hilliard 方程 | 3.9G | [链接](http://aisccc.cn/database/data-details?id=48&type=resource) | 
-| 2D Allen-Cahn 方程 | 6.2G | [链接](http://aisccc.cn/database/data-details?id=56&type=resource) |
-| 2D Black-Scholes-Barenblatt 方程 | 6.2G | [链接](http://aisccc.cn/database/data-details?id=53&type=resource) |
-| 3D Euler 方程 | 83G | [链接](http://aisccc.cn/database/data-details?id=54&type=resource) | 
-| 3D Maxwell 方程 | 5.9G | [链接](http://aisccc.cn/database/data-details?id=55&type=resource) |
+| PDE                              | 文件大小 |                              下载链接                              |
+| :------------------------------- | :------- | :----------------------------------------------------------------: |
+| 1D Allen-Cahn 方程               | 3.9G     | [链接](http://aisccc.cn/database/data-details?id=52&type=resource) |
+| 1D Cahn-Hilliard 方程            | 3.9G     | [链接](http://aisccc.cn/database/data-details?id=48&type=resource) |
+| 2D Allen-Cahn 方程               | 6.2G     | [链接](http://aisccc.cn/database/data-details?id=56&type=resource) |
+| 2D Black-Scholes-Barenblatt 方程 | 6.2G     | [链接](http://aisccc.cn/database/data-details?id=53&type=resource) |
+| 3D Euler 方程                    | 83G      | [链接](http://aisccc.cn/database/data-details?id=54&type=resource) |
+| 3D Maxwell 方程                  | 5.9G     | [链接](http://aisccc.cn/database/data-details?id=55&type=resource) |
 
 ### 训练与测试
 
@@ -55,27 +63,6 @@ PDEBench 提供了涵盖广泛偏微分方程（PDE）的大规模数据集。�
 ```bash
 CUDA_VISIBLE_DEVICES=0 python train.py ./configs/${config_filename}
 # 示例：CUDA_VISIBLE_DEVICES=0 python train.py ./config/config_2D_Darcy_Flow.yaml
-```
-
-#### 继续训练
-
-1. 修改配置文件：
-    1. 确保 `if_training` 为 `True`；
-    2. 设置 `continue_training` 为 `True`；
-    3. 将 `model_path` 设置为重新训练所用的检查点路径；
-2. 运行命令：
-```bash
-CUDA_VISIBLE_DEVICES=0 python train.py ./config/${config_filename}
-```
-
-#### 测试
-
-1. 修改配置文件：
-    1. 将 `if_training` 设置为 `False`；
-    2. 将 `model_path` 设置为待评估模型的检查点路径；
-2. 运行命令：
-```bash
-CUDA_VISIBLE_DEVICES=0 python train.py ./config/${config_filename}
 ```
 
 ## 参考

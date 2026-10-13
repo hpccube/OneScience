@@ -1,10 +1,10 @@
 import sys, os
+os.environ.setdefault("DDE_BACKEND", "pytorch")
 import yaml
 from functools import reduce
 
 from timeit import default_timer
 import deepxde as dde
-dde.backend.set_default_backend("pytorch")
 sys.path.append(os.path.dirname(os.path.dirname(os.path.abspath(__file__))))
 
 
@@ -24,7 +24,7 @@ def main(config):
                 seed=cfg['seed'],
                 input_ch=cfg['input_ch'],
                 output_ch=cfg['output_ch'],
-                root_path=cfg['root_path'],
+                root_path=os.path.expandvars(cfg['root_path']),
                 val_num=cfg['val_num'],
                 if_periodic_bc=cfg['if_periodic_bc'],
                 aux_params=cfg['aux_params'],

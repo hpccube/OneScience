@@ -1,78 +1,48 @@
 import torch
 import os
-from onescience.datapipes.climate import ERA5HDF5Datapipe
-from onescience.distributed import DistributedManager
-
-import hydra
-from hydra.utils import to_absolute_path
-from omegaconf import DictConfig
+import sys
 import numpy as np
+from tqdm import tqdm
+from onescience.datapipes.climate import ERA5Datapipe
+from onescience.utils.YParams import YParams
 
-from loss.utils import normalized_grid_cell_area
 
-
-@hydra.main(version_base="1.3", config_path="conf", config_name="config")
-def main(cfg: DictConfig) -> None:
-
-    # initialize distributed manager
-    DistributedManager.initialize()
-    dist = DistributedManager()
-
+def main():
     # instantiate the training datapipe
-    DataPipe = ERA5HDF5Datapipe  # [T,num_channel, 721, 1440], grid features
-    dataset = DataPipe(
-        data_dir=to_absolute_path(os.path.join(cfg.dataset_path, "train")),
-        stats_dir=to_absolute_path(os.path.join(cfg.dataset_path, "stats")),
-        channels=[i for i in range(cfg.num_channels_climate)],
-        latlon_resolution=cfg.latlon_res,
-        num_samples_per_year=cfg.num_samples_per_year_train,
-        use_cos_zenith=cfg.use_cos_zenith,
-        num_steps=1,
-        batch_size=1,
-        num_workers=cfg.num_workers,
-        device=dist.device,
-        process_rank=dist.rank,
-        world_size=dist.world_size,
-        shuffle=False,
+    config_file_path = os.path.join(current_path, 'conf/config.yaml')
+    cfg_data = YParams(config_file_path, "datapipe")
+    datapipe = ERA5Datapipe(
+        dataset_dir=cfg_data.dataset.data_dir,
+        used_variables=cfg_data.dataset.channels,
+        used_years=cfg_data.dataset.train_time,
+        distributed=False
     )
-    datapipe = dataset.train_dataloader()
-    print(f"Loaded training datapipe of length {len(datapipe)}")
+    train_dataloader, train_sampler = datapipe.get_dataloader("train")
+    
+    print(f"Loaded training datapipe of length {len(train_dataloader)}")
 
-    area = (
-        normalized_grid_cell_area(
-            torch.linspace(-90, 90, steps=cfg.latlon_res[0]), unit="deg"
-        )
-        .unsqueeze(1)
-        .to(dist.device)
-    )
+    area = torch.abs(torch.cos(torch.linspace(-90, 90, steps=cfg_data.dataset.img_size[0]) * np.pi / 180))
+    area /= torch.mean(area)
+    area = area.unsqueeze(1)
 
     mean, mean_sqr = 0, 0
-    for i, data in enumerate(datapipe):
-        invar = data[0]["invar"].to(dist.device)
-        outvar = data[0]["outvar"][0].to(dist.device)
+    for data in tqdm(train_dataloader):
+        invar = data[0]  # [b, N, h, w]
+        outvar = data[1]  # [b, N, h, w]
         diff = outvar - invar
         weighted_diff = area * diff
         weighted_diff_sqr = torch.square(weighted_diff)
+        mean += torch.mean(weighted_diff, dim=(2, 3)) / len(train_dataloader)
+        mean_sqr += torch.mean(weighted_diff_sqr, dim=(2, 3)) / len(train_dataloader)
 
-        mean += torch.mean(weighted_diff, dim=(2, 3)) / len(datapipe)
-        mean_sqr += torch.mean(weighted_diff_sqr, dim=(2, 3)) / len(datapipe)
+    variance = mean_sqr - mean**2  # [1,num_channel, 1,1]
+    std = torch.sqrt(variance)
 
-        if i % 100 == 0 and i != 0 and dist.rank == 0:
-            print("Number of iterations %d" % i)
-
-    if dist.world_size > 1:
-        torch.distributed.all_reduce(mean, op=torch.distributed.ReduceOp.SUM)
-        torch.distributed.all_reduce(mean_sqr, op=torch.distributed.ReduceOp.SUM)
-        mean /= dist.world_size
-        mean_sqr /= dist.world_size
-    if dist.rank == 0:
-        variance = mean_sqr - mean**2  # [1,num_channel, 1,1]
-        std = torch.sqrt(variance)
-        np.save("time_diff_std_new.npy", std.to(torch.device("cpu")).numpy())
-        np.save("time_diff_mean_new.npy", mean.to(torch.device("cpu")).numpy())
-
-    print("ended!")
+    np.save("time_diff_std.npy", std.numpy())
+    print(f"saving time_diff_std.npy, shapes are {std.numpy().shape}")
 
 
 if __name__ == "__main__":
+    current_path = os.getcwd()
+    sys.path.append(current_path)
     main()

@@ -1,3 +1,17 @@
 # from .climate import ClimateDatapipe, ClimateDataSourceSpec
-from .era5_hdf5 import ERA5HDF5Datapipe
+from .era5 import ERA5Datapipe, ERA5Dataset
 from .synthetic import SyntheticWeatherDataLoader, SyntheticWeatherDataset
+# from .cmems import CMEMSDatapipe, CMEMSHDF5Dataset
+from .cmems_new import CMEMSDatapipe, CMEMSDataset
+from .tjweather import TJDatapipe, TJDataset
+
+__all__ = [
+    "ERA5Datapipe",
+    "ERA5Dataset",
+    "SyntheticWeatherDataLoader",
+    "SyntheticWeatherDataset",
+    "CMEMSDatapipe",
+    "CMEMSDataset",
+    "TJDatapipe",
+    "TJDataset",
+]      

@@ -1,34 +1,80 @@
-# OceanCast
+# Oceancast
 
-该项目实现海浪(海流/洋流)细时空分辨率预测，模型参照 [FourCastNet：使用自适应傅里叶神经算子的全球数据驱动高分辨率天气模型](https://arxiv.org/abs/2202.11214) 的代码构建。
+OceanCast 现在采用和旧版 OceanCast 一致的通道组织方式，目录组织尽量向 `fourcastnet` 对齐，模型直接使用 `FourCastNet`。
 
-## 模型简介
+目录内新增了本地 [`dataloader.py`](/Users/zhao/Desktop/OneScience/onescience/examples/earth/oceancast/dataloader.py)，不再依赖外部 `data_loader_ocean`。
 
-OceanCast 是一种全球数据驱动的海浪/海流/洋流预报模型，可提供1° 分辨率的精确超短期全球预测。
-OceanCast 可准确预测高分辨率、快速时间尺度变量，例如海浪高度、海浪周期、海浪方向(海表温、海表盐、海面高度或洋流)等。
-通过修改conf/oceancast.yaml中待预测的input/output_type，可切换海浪/海流/洋流预报模型
+## 数据准备
 
+在 `conf/config.yaml` 中修改：
 
-## 环境构建与配置
+```yaml
+stats_dir: 均值/标准差文件路径，用于归一化
+static_dir: 掩码文件路径
+ocean_data_dir: 海浪数据根路径，年度 h5 文件位于 Wave_*/{year}.h5
+wind_uv_dir: 原始风场根路径，年度 h5 文件位于 Wind_U10/{year}.h5、Wind_V10/{year}.h5
+wind_data_dir: 预处理后风场根路径
+train_time: [2000, 2001, ...]   # 训练年份
+val_time: [2008]                # 验证年份
+test_time: [2009]               # 测试年份
+channels: [Wind_Sin, Wind_Cos, Wind_Strength, Wind_Sin_Forecast, Wind_Cos_Forecast, Wind_Strength_Forecast, Wave_Period, Wave_Height, Wave_Direction, ...]
+output_channels: [Wave_Period, Wave_Height, Wave_Direction, ...]
+input_types: [Wind_Sin, Wind_Cos, Wind_Strength, Wind_Sin_Forecast, Wind_Cos_Forecast, Wind_Strength_Forecast, Wave_Period, Wave_Height, Wave_Direction]
+output_types: [Wave_Period, Wave_Height, Wave_Direction]
+history_steps: 8
+forecast_steps: 8
+```
 
-conf/oceancast.yaml中包含数据路径、模型训练参数等，需要注意或修改的内容如下：
+真实数据下，先生成风场派生变量：
 
-    data_path为包含训练集、验证集、测试集的路径，默认为当前路径
-    
-    global_means_path为数据集不同变量的均值，用于归一化
-    
-    global_stds_path为数据集不同变量的标准差，用于归一化 
-    
-    maskpath为海洋陆地掩码
-    
-    目前本文件夹没有数据，具体数据构造加载参照oceancast-pytorch.ipynb中构建方法
-    
+```bash
+source ../earth_env.sh
+python data_preprocess.py
+```
 
-//目前没有风的预测值，因此在data_loader中将预测值临时替换为了真实值
+再生成均值和标准差：
 
+```bash
+python get_means_stds.py
+```
 
-## 参考
+无真实数据时，可生成虚拟数据快速验证流程(若快速验证，则建议将 `conf/config.yaml` 中 `max_epoch` 设为 `1`)：
 
-[FourCastNet: A Global Data-driven High-resolution Weather Model using Adaptive Fourier Neural Operators](https://arxiv.org/abs/2202.11214)
-[Adaptive Fourier Neural Operators:
-Efficient Token Mixers for Transformers](https://openreview.net/pdf?id=EXHG-A3jlM)
+```bash
+source ../earth_env.sh
+python fake_data.py
+```
+
+`fake_data.py` 会同时生成：
+
+- `Wave_Period` / `Wave_Height` / `Wave_Direction` 年度 h5 文件
+- `Wind_Sin` / `Wind_Cos` / `Wind_Strength` 目录
+- `means_stds` 下的均值和标准差
+- `artifacts/ocean_mask.npy` 掩码文件
+
+## 运行
+
+```bash
+source ../earth_env.sh
+
+# 1. 训练（二选一）
+python train.py
+torchrun --nproc_per_node=8 --nnodes=1 --rdzv_id=1000 --rdzv_backend=c10d --max_restarts=0 --master_addr="localhost" --master_port=29500 train.py
+
+# 2. 推理（结果输出至 ./result/output/）
+python inference.py
+
+# 3. 评估 & 可视化（result.py 末尾可指定样例）
+python result.py
+```
+
+## 集群训练
+
+```bash
+mkdir -p logs
+sbatch work_slurm.sh
+```
+
+## 许可证
+
+Apache 2.0，可免费用于学术研究和商业用途。

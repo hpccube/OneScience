@@ -16,13 +16,13 @@
 其中一些数据集包含基于粒子的流体飞溅和反弹模拟在盒子或立方体内，而其他人则使用沙子或粘稠物等材料。
 总共有17个数据集，其中一些如下：
 
-| Datasets     | Num Particles | Num Time Steps |    dt    | Ground Truth Simulator |
-|--------------|---------------|----------------|----------|------------------------|
-| Water-3D     | 14k           | 800            | 5ms      | SPH                    |
-| Water        | 2k            | 1000           | 2.5ms    | MPM                    |
-| WaterRamp    | 2.5k          | 600            | 2.5ms    | MPM                    |
-| Sand         | 2k            | 320            | 2.5ms    | MPM                    |
-| Goop         | 1.9k          | 400            | 2.5ms    | MPM                    |
+| Datasets  | Num Particles | Num Time Steps | dt    | Ground Truth Simulator |
+| --------- | ------------- | -------------- | ----- | ---------------------- |
+| Water-3D  | 14k           | 800            | 5ms   | SPH                    |
+| Water     | 2k            | 1000           | 2.5ms | MPM                    |
+| WaterRamp | 2.5k          | 600            | 2.5ms | MPM                    |
+| Sand      | 2k            | 320            | 2.5ms | MPM                    |
+| Goop      | 1.9k          | 400            | 2.5ms | MPM                    |
 
 请参阅[原始论文]中的**B.1**节(https://arxiv.org/abs/2002.09405).
 
@@ -47,64 +47,114 @@
 
 
 ## 训练
+### 数据集准备
 
-此示例需要使用`tensorflow`库加载`.tfrecord`格式的数据集
+本示例使用 `Water` 子数据集进行模型训练。可以通过以下任一方式获取数据集。
 
-```bash
-pip install "tensorflow<=2.17.1"
-```
+#### 方式一：从 DeepMind 仓库下载
 
-要从DeepMind的仓库下载数据，请运行：
+进入数据集下载脚本所在目录，并执行：
 
 ```bash
 cd raw_dataset
 bash download_dataset.sh Water ./data/
 ```
 
-此示例使用[Hydra](https://hydra.cc/docs/intro/)用于[实验](https://hydra.cc/docs/patterns/configuring_experiments/)
-配置。Hydra提供了一种方便的方法来修改几乎任何实验参数，
-例如数据集设置、模型配置和优化器选项，
-通过命令行或配置文件。
+下载完成后，请确认数据集目录结构类似于：
 
-要查看完整脚本选项，请运行以下命令：
+```text
+./data/
+└── Water/
+```
+
+#### 方式二：使用超算互联网共享数据集
+
+数据集已统一存放在超算互联网华中一区共享节点的存储地址：
+
+```text
+/public/share/sugonhpcapp01/onestore/onedatasets
+```
+
+`source ../../../env.sh`加载平台环境变量后，可以通过以下路径访问 `Water` 子数据集：
 
 ```bash
-python train.py --help
+${ONESCIENCE_DATASETS_DIR}/Lagrangian_MGN/data/Water
 ```
+
+#### 方式三：从魔搭社区下载
+
+也可以使用 ModelScope 命令行工具下载数据集：
+
+```bash
+modelscope download \
+  --dataset OneScience/lagrangian \
+  --local_dir ./data
+```
+
+下载完成后，请根据实际目录结构设置训练命令中的 `data.data_dir` 参数。
+
+### 实验配置
+
+本示例使用 [Hydra](https://hydra.cc/docs/intro/) 管理实验配置。Hydra 支持通过配置文件或命令行参数修改实验设置。
+
+完整的参数说明请查看：
+
+```text
+conf/config.yaml
+```
+
+实验相关配置请查看 `conf` 目录下的其他配置文件。
 
 如果遇到 Hydra 配置问题，可能会收到不太有帮助的错误信息。此时，可以设置环境变量 `HYDRA_FULL_ERROR=1`，以获取更详细的错误信息：
 ```bash
 HYDRA_FULL_ERROR=1 python train.py ...
 ```
 
-以使用Water数据集训练模型为例，请运行：
+### 单卡训练
+
+以 `Water` 数据集为例，执行以下命令开始训练：
 
 ```bash
-python train.py +experiment=water data.data_dir=./data/Water resume_dir=./model/Water
+python train.py \
+  +experiment=water \
+  data.data_dir=./data/Water \
+  resume_dir=./model/Water
 ```
 
-可以使用 Weights & Biases 监控训练进度和损失日志。要启用该功能，请在命令行中将 `loggers.wandb.mode` 设置为 `online`：
+主要参数说明：
+
+| 参数 | 是否必需 | 说明 |
+|---|---:|---|
+| `+experiment=water` | 是 | 使用 `Water` 实验配置 |
+| `data.data_dir` | 是 | 指定数据集所在目录 |
+| `resume_dir` | 否 | 指定模型检查点及训练结果的保存目录 |
+
+其中，`data.data_dir` 必须设置为数据集的实际路径。如果未指定 `resume_dir`，训练结果默认保存在 Hydra 自动创建的 `outputs` 子目录中。
+
+例如，使用超算互联网平台共享数据集时，数据路径可以设置为：
 
 ```bash
-python train.py +experiment=water data.data_dir=./data/Water resume_dir=./model/Water loggers.wandb.mode=online
-
+${ONESCIENCE_DATASETS_DIR}/Lagrangian_MGN/data/Water
 ```
-需要一个有效的 Weights & Biases 账户。您还需要通过命令行选项 `loggers.wandb.wandb_key` 设置您的 API 密钥，或者使用环境变量 `WANDB_API_KEY`：
+
+
+### 多卡训练
 
 ```bash
-export WANDB_API_KEY=key
-python train.py ...
-```
-多卡训练：
-
-```bash
-mpirun -np <num_GPUs> --allow-run-as-root python train.py ...
+mpirun -np <num_GPUs> --allow-run-as-root python train.py \
+  +experiment=water \
+  data.data_dir=./data/Water \
+  resume_dir=./model/Water
 ```
 
 torchrun启动多节点多卡训练：
 
 ```bash
-torchrun --standalone --nnodes=<num_nodes> --nproc_per_node=<num_GPUs> train.py  ...
+torchrun --standalone --nnodes=<num_nodes> --nproc_per_node=<num_GPUs> train.py  \
+  +experiment=water \
+  data.data_dir=./data/Water \
+  resume_dir=./model/Water
+```
 
 ## 推理
 
@@ -115,7 +165,7 @@ torchrun --standalone --nnodes=<num_nodes> --nproc_per_node=<num_GPUs> train.py 
 python inference.py +experiment=water \
     data.data_dir=./data/Water \
     data.test.num_sequences=4 \
-    resume_dir=./model /water \
+    resume_dir=./model/Water \
     output=./result/water/inference
 ```
 

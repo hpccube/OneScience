@@ -1,0 +1,77 @@
+import os
+import click
+
+
+def _detect_device() -> str:
+    try:
+        import subprocess
+        r = subprocess.run(["nvidia-smi"], capture_output=True, text=True, timeout=5)
+        if r.returncode == 0:
+            return "gpu"
+    except (FileNotFoundError, PermissionError, subprocess.TimeoutExpired):
+        pass
+    try:
+        r = subprocess.run(["rocm-smi"], capture_output=True, text=True, timeout=5)
+        if r.returncode == 0:
+            return "dcu"
+    except (FileNotFoundError, PermissionError, subprocess.TimeoutExpired):
+        pass
+    return "cpu"
+
+
+def _auto_bootstrap():
+    if _auto_bootstrap._done:
+        return
+    _auto_bootstrap._done = True
+
+    if "device" not in os.environ:
+        os.environ["device"] = _detect_device()
+
+    if "ONESCIENCE_DATASETS_DIR" not in os.environ:
+        from .core.config import _resolve_writable_dir, BUILTIN_DATASETS_DIR
+        os.environ["ONESCIENCE_DATASETS_DIR"] = _resolve_writable_dir(
+            "datasets_dir", BUILTIN_DATASETS_DIR, "datasets"
+        )
+    if "ONESCIENCE_MODELS_DIR" not in os.environ:
+        from .core.config import _resolve_writable_dir, BUILTIN_MODELS_DIR
+        os.environ["ONESCIENCE_MODELS_DIR"] = _resolve_writable_dir(
+            "models_dir", BUILTIN_MODELS_DIR, "models"
+        )
+
+
+_auto_bootstrap._done = False
+
+
+class CLI(click.Group):
+    def main(self, *args, **kwargs):
+        try:
+            return super().main(*args, **kwargs)
+        except SystemExit as e:
+            # None 在 Python 语义中表示正常退出（exit 0），此处不做转换
+            code = e.code if e.code is not None else 0
+            raise SystemExit(code)
+
+    def parse_args(self, ctx, args):
+        """将 -profile 转换为 --profile，允许单短横使用长选项"""
+        args = ['--profile' if a == '-profile' else a for a in args]
+        return super().parse_args(ctx, args)
+
+
+@click.group(cls=CLI)
+@click.version_option(version="0.3.0")
+@click.option('--profile', is_flag=True, default=False,
+              help='使用 hipprof 进行 GPU 性能分析（仅 DCU 平台有效）')
+@click.pass_context
+def cli(ctx, profile):
+    """OneScience 科学计算 CLI 工具"""
+    ctx.meta['profile'] = profile
+    _auto_bootstrap()
+
+
+from .commands import commands_dict
+
+for name, cmd in commands_dict.items():
+    cli.add_command(cmd, name=name)
+
+if __name__ == "__main__":
+    cli()

@@ -11,7 +11,7 @@ import torch.nn as nn
 
 import argparse
 from tqdm import *
-from onescience.models.mlp import FullyConnected
+from onescience.modules.mlp import FullyConnected
 
 def get_arguments(arg_list=None):
     parser = argparse.ArgumentParser(
@@ -46,6 +46,12 @@ def get_arguments(arg_list=None):
         type=int,
         default=1000,
         help="The beta number"
+    )
+    parser.add_argument(
+        "--data_dir",
+        type=str,
+        required=True,
+        help="Directory containing the PDEBench dataset file",
     )
     return parser.parse_args(arg_list)
 
@@ -231,7 +237,8 @@ def loss(eq, model_u, model_v, xt_int, xt_bd_l, xt_bd_r, xt_init, xt_end, ue_ini
 
     # int_l2 = 0.1 * st_s * torch.mean(u * dux * (w * v))
     coef = ((1 - 0.29) / 0.29) * 2880 * 3.5e-4 * 0.874
-    ru = 1 + coef * torch.pow(model_u(xt_int), 0.874-1)
+    concentration = torch.clamp(u, min=0) + 1e-6
+    ru = 1 + coef * torch.pow(concentration, 0.874-1)
     int_r3 = st_s * torch.mean(5e-4 / ru * dux2 * (w * v))
 
     norm = st_s * torch.mean((w * v) ** 2)
@@ -270,12 +277,15 @@ def train_pipeline():
     print(f"Using device: {DEVICE}")
 
     equation = 'DS1'
-    dataset = '../data/1D_diff-sorp_NA_NA.h5'
+    data_dir = os.path.expanduser(os.path.expandvars(args.data_dir))
+    dataset = os.path.join(data_dir, '1D_diff-sorp_NA_NA.h5')
+    if not os.path.isfile(dataset):
+        raise FileNotFoundError(f'Dataset file not found: {dataset}')
     # define equation
     Eq = DiffusionSorptionEquation(DIMENSION, DEVICE)
     # define model
-    model_u = FullyConnected(in_features=args.d + 1, layer_size=64, out_features=5, num_layers=6, activation_fn='tanh').to(DEVICE)
-    model_v = FullyConnected(in_features=args.d + 1, layer_size=64, out_features=5, num_layers=6, activation_fn='tanh').to(DEVICE)
+    model_u = FullyConnected(in_features=args.d + 1, layer_size=64, out_features=1, num_layers=6, activation_fn='tanh').to(DEVICE)
+    model_v = FullyConnected(in_features=args.d + 1, layer_size=64, out_features=1, num_layers=6, activation_fn='tanh').to(DEVICE)
 
     optu = torch.optim.Adam(model_u.parameters(), lr=0.0001)
     optv = torch.optim.Adam(model_v.parameters(), lr=0.001)

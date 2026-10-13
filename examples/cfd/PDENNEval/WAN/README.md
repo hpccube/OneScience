@@ -15,16 +15,19 @@
 >```
 
 ## 训练
-```python
- # training codes
- python WAN_Ad1.py --s 0 --i 15000 --b 1000
- python WAN_DS1.py --s 0 --i 15000 --b 1000
- python WAN_Bu1.py --s 0 --i 15000 --b 1000
- python WAN_AC1.py --s 0 --i 15000 --b 1000 
- python WAN_DR1.py --s 0 --i 15000 --b 1000
- python WAN_AC2.py --s 0 --i 15000 --b 1000
- python WAN_DF2.py --s 0 --i 15000 --b 1000
- python WAN_BS2.py --s 0 --i 15000 --b 1000
+
+运行前需要设置 `ONESCIENCE_DATASETS_DIR`，并通过 `--data_dir` 显式指定对应的数据目录：
+
+```bash
+# training codes
+python WAN_Ad1.py --s 0 --i 15000 --b 1000 --data_dir "${ONESCIENCE_DATASETS_DIR}/PDENNEval/pdebench_data"
+python WAN_DS1.py --s 0 --i 15000 --b 1000 --data_dir "${ONESCIENCE_DATASETS_DIR}/PDENNEval/pdebench_data"
+python WAN_Bu1.py --s 0 --i 15000 --b 1000 --data_dir "${ONESCIENCE_DATASETS_DIR}/PDENNEval/pdebench_data"
+python WAN_AC1.py --s 0 --i 15000 --b 1000 --data_dir "${ONESCIENCE_DATASETS_DIR}/PDENNEval/generated_data"
+python WAN_DR1.py --s 0 --i 15000 --b 1000 --data_dir "${ONESCIENCE_DATASETS_DIR}/PDENNEval/pdebench_data"
+python WAN_AC2.py --s 0 --i 15000 --b 1000 --data_dir "${ONESCIENCE_DATASETS_DIR}/PDENNEval/generated_data"
+python WAN_DF2.py --s 0 --i 15000 --b 1000 --data_dir "${ONESCIENCE_DATASETS_DIR}/PDENNEval/pdebench_data"
+python WAN_BS2.py --s 0 --i 15000 --b 1000 --data_dir "${ONESCIENCE_DATASETS_DIR}/PDENNEval/generated_data"
 ```
 ### 命令行参数说明
 
@@ -38,3 +41,4 @@
 
 - `--b`  ：beta 参数值，控制的是边界条件损失（loss_bd）和初始条件损失（loss_init）在总损失中的权重。
 
+- `--data_dir`：必填参数，指定当前脚本所需数据文件所在的目录。

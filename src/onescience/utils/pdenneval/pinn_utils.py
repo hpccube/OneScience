@@ -588,10 +588,6 @@ class PINNDataset3Dpde(Dataset):
         data_path = os.path.join(root_path, filename)
         h5_file = h5py.File(data_path, "r")
 
-        
-        seed_group = h5_file['0900']
-        print(seed_group['global_maximums'][5])
-
         # build input data from individual dimensions
         # dim x = [x]
         self.data_grid_x = torch.tensor(h5_file["x-coordinate"], dtype=torch.float)
@@ -618,13 +614,19 @@ class PINNDataset3Dpde(Dataset):
         self.data_grid_t = torch.tensor(h5_file["t-coordinate"], dtype=torch.float)
 
         # main data
-        print(len(h5_file["density"].shape))
         if len(h5_file["density"].shape) == 5:
-            _data1 = np.array(h5_file["density"][val_batch_idx])
-            _data2 = np.array(h5_file["Vx"][val_batch_idx])
-            _data3 = np.array(h5_file["Vy"][val_batch_idx])
-            _data4 = np.array(h5_file["Vz"][val_batch_idx])
-            _data5 = np.array(h5_file["pressure"][val_batch_idx])
+            selection = (
+                val_batch_idx,
+                slice(None),
+                slice(None, None, rdc_x),
+                slice(None, None, rdc_y),
+                slice(None, None, rdc_z),
+            )
+            _data1 = np.asarray(h5_file["density"][selection])
+            _data2 = np.asarray(h5_file["Vx"][selection])
+            _data3 = np.asarray(h5_file["Vy"][selection])
+            _data4 = np.asarray(h5_file["Vz"][selection])
+            _data5 = np.asarray(h5_file["pressure"][selection])
             _data = np.concatenate([_data1[...,None], _data2[...,None], _data3[...,None], _data4[...,None], _data5[...,None]],
                                 axis=-1)
         else:
@@ -636,10 +638,9 @@ class PINNDataset3Dpde(Dataset):
             _data = np.concatenate([_data1[...,None], _data2[...,None], _data3[...,None], _data4[...,None], _data5[...,None]],
                                 axis=-1)
         # permute from [t, x, y, z, v] -> [x, y, z, t, v]
-        print(_data.shape)
         _data = np.transpose(_data, (1, 2, 3, 0, 4))
-        # print(_data.shape)
-        _data = _data[::rdc_x, ::rdc_y, ::rdc_z]
+        if len(h5_file["density"].shape) != 5:
+            _data = _data[::rdc_x, ::rdc_y, ::rdc_z]
 
         self.data_output = torch.tensor(_data, dtype=torch.float)
         del(_data, _data1, _data2, _data3, _data4, _data5)
@@ -930,7 +931,7 @@ class PINNDatasetAC(Dataset):
         )
 
 
-class PINNDatasetDarcy(Dataset):
+class PINNDatasetDarcyLegacy(Dataset):
     def __init__(self, filename, root_path, seed):
         self.seed = seed
 
@@ -1103,7 +1104,7 @@ class PINNDatasetDarcy(Dataset):
         )
     
 
-class PINNDatasetMaxwell(Dataset):
+class PINNDatasetMaxwellLegacy(Dataset):
     def __init__(self, filename, root_path, seed):
         self.seed = seed
 
@@ -1222,3 +1223,134 @@ class PINNDatasetMaxwell(Dataset):
             self.data_input[idx, :],
             self.data_output[idx].unsqueeze(1),
         )
+
+
+class PINNDatasetDarcy(Dataset):
+    """Adapter for the steady PDEBench Darcy single-file layout."""
+
+    def __init__(self, filename, root_path, seed):
+        self.seed = int(seed)
+        data_path = os.path.join(os.path.abspath(root_path), filename)
+        with h5py.File(data_path, "r") as h5_file:
+            self.data_grid_x = torch.as_tensor(
+                np.asarray(h5_file["x-coordinate"]), dtype=torch.float32
+            )
+            self.data_grid_y = torch.as_tensor(
+                np.asarray(h5_file["y-coordinate"]), dtype=torch.float32
+            )
+            coefficient = torch.as_tensor(
+                np.asarray(h5_file["nu"][self.seed]), dtype=torch.float32
+            )
+            solution = torch.as_tensor(
+                np.asarray(h5_file["tensor"][self.seed]), dtype=torch.float32
+            ).squeeze()
+
+        if solution.ndim != 2:
+            raise ValueError(
+                f"Expected a 2D Darcy solution, got shape {tuple(solution.shape)}"
+            )
+
+        self.data_grid_t = torch.zeros(1, dtype=torch.float32)
+        self.xdim = len(self.data_grid_x)
+        self.ydim = len(self.data_grid_y)
+        self.tdim = 1
+        xx, yy, tt = torch.meshgrid(
+            self.data_grid_x, self.data_grid_y, self.data_grid_t, indexing="ij"
+        )
+        coefficient = coefficient.unsqueeze(-1).expand_as(xx)
+        # GeometryXTime(Cuboid) orders inputs as x, y, coefficient, time.
+        self.data_input = torch.stack(
+            (xx.ravel(), yy.ravel(), coefficient.ravel(), tt.ravel()), dim=-1
+        )
+        self.data_output = solution.unsqueeze(-1).unsqueeze(-1)
+        self.init_data = solution.reshape(-1, 1)
+        self.data_output = self.data_output.reshape(-1, 1)
+
+    def get_initial_condition(self):
+        return self.data_input, self.init_data
+
+    def get_test_data(self, n_last_time_steps, n_components=1):
+        if n_components != 1:
+            raise ValueError("Darcy data has one output component")
+        return self.data_input, self.data_output
+
+    def unravel_tensor(self, raveled_tensor, n_last_time_steps, n_components=1):
+        return raveled_tensor.reshape(
+            1, self.xdim, self.ydim, self.tdim, n_components
+        )
+
+    def __len__(self):
+        return len(self.data_output)
+
+    def __getitem__(self, idx):
+        return self.data_input[idx], self.data_output[idx]
+
+
+class PINNDatasetMaxwell(Dataset):
+    """Adapter for the grouped 3D Maxwell PDEBench layout."""
+
+    def __init__(self, filename, root_path, seed):
+        self.seed = str(seed).zfill(4)
+        data_path = os.path.join(os.path.abspath(root_path), filename)
+        with h5py.File(data_path, "r") as h5_file:
+            if self.seed not in h5_file:
+                raise KeyError(f"Maxwell sample {self.seed} is absent from {data_path}")
+            group = h5_file[self.seed]
+            grid = group["grid"]
+            self.data_grid_x = torch.as_tensor(np.asarray(grid["x"]), dtype=torch.float32)
+            self.data_grid_y = torch.as_tensor(np.asarray(grid["y"]), dtype=torch.float32)
+            self.data_grid_z = torch.as_tensor(np.asarray(grid["z"]), dtype=torch.float32)
+            self.data_grid_t = torch.as_tensor(np.asarray(grid["t"]), dtype=torch.float32)
+            data = torch.as_tensor(np.asarray(group["data"]), dtype=torch.float32)
+
+        if data.ndim != 5 or data.shape[-1] != 6:
+            raise ValueError(
+                f"Expected Maxwell data shaped [T, X, Y, Z, 6], got {tuple(data.shape)}"
+            )
+
+        self.xdim = len(self.data_grid_x)
+        self.ydim = len(self.data_grid_y)
+        self.zdim = len(self.data_grid_z)
+        self.tdim = len(self.data_grid_t)
+        xx, yy, zz, tt = torch.meshgrid(
+            self.data_grid_x,
+            self.data_grid_y,
+            self.data_grid_z,
+            self.data_grid_t,
+            indexing="ij",
+        )
+        self.data_input = torch.stack(
+            (xx.ravel(), yy.ravel(), zz.ravel(), tt.ravel()), dim=-1
+        )
+        data = data.permute(1, 2, 3, 0, 4).contiguous()
+        self.init_data = data[..., 0, :].reshape(-1, 6)
+        self.data_output = data.reshape(-1, 6)
+
+    def get_initial_condition(self):
+        return self.data_input[::self.tdim], self.init_data
+
+    def get_test_data(self, n_last_time_steps, n_components=6):
+        steps = min(n_last_time_steps, self.tdim)
+        inputs = self.data_input.reshape(
+            self.xdim, self.ydim, self.zdim, self.tdim, 4
+        )[..., -steps:, :]
+        outputs = self.data_output.reshape(
+            self.xdim, self.ydim, self.zdim, self.tdim, 6
+        )[..., -steps:, :n_components]
+        return inputs.reshape(-1, 4), outputs.reshape(-1, n_components)
+
+    def unravel_tensor(self, raveled_tensor, n_last_time_steps, n_components=6):
+        return raveled_tensor.reshape(
+            1,
+            self.xdim,
+            self.ydim,
+            self.zdim,
+            n_last_time_steps,
+            n_components,
+        )
+
+    def __len__(self):
+        return len(self.data_output)
+
+    def __getitem__(self, idx):
+        return self.data_input[idx], self.data_output[idx]

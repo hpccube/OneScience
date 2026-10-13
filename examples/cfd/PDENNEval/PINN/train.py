@@ -1,9 +1,9 @@
+import os
+os.environ.setdefault("DDE_BACKEND", "pytorch")
 import deepxde as dde
-dde.backend.set_default_backend("pytorch")
 import numpy as np
 import pickle
 import matplotlib.pyplot as plt
-import os
 import torch
 import h5py
 
@@ -19,7 +19,8 @@ from onescience.utils.pdenneval.pinn_utils import (
     PINNDataset3Dpde,
     PINNDatasetBurgers,
     PINNDatasetAC,
-    PINNDatasetDarcy
+    PINNDatasetDarcy,
+    PINNDatasetMaxwell,
 )
 from onescience.utils.pdenneval.pinn_pde_definitions import (
     pde_diffusion_reaction,
@@ -606,16 +607,7 @@ def setup_Maxwell3D(filename="Turb_M01.hdf5",
     pde = lambda x, y: pde_Maxwell(x, y)
     geomtime = dde.geometry.GeometryXTime(geom, timedomain)
 
-    data_path = os.path.join(root_path, filename)
-    h5_file = h5py.File(data_path, "r")
-
-        
-    seed_group = h5_file['0900']['data']
-    # print(h5_file['0900']['grid']['y'][-1])
-
-    # p = input()
-
-    dataset = seed_group
+    dataset = PINNDatasetMaxwell(filename, root_path, str(val_batch_idx))
     # prepare initial condition
     # initial_input, initial_u = dataset.get_initial_condition()
     # ic_data_d = dde.icbc.PointSetBC(initial_input.cpu(), initial_u[...,0].unsqueeze(1), component=0)
@@ -727,7 +719,7 @@ def _run_training(scenario, epochs, learning_rate, model_update, flnm,
                                      output_ch=output_ch,
                                      val_batch_idx=val_batch_idx,
                                      aux_params=aux_params)
-        n_components = 5
+        n_components = 6
     else:
         raise NotImplementedError(f"PINN training not implemented for {scenario}")
 
@@ -753,8 +745,9 @@ def _run_training(scenario, epochs, learning_rate, model_update, flnm,
     )
 
     dde.saveplot(losshistory, train_state, issave=True, isplot=True, output_dir='./outputs', loss_fname=model_name+"loss.dat")
+    n_eval_steps = min(10, len(dataset.data_grid_t))
     test_input, test_gt = dataset.get_test_data(
-        n_last_time_steps=10, n_components=n_components
+        n_last_time_steps=n_eval_steps, n_components=n_components
     )
     # select only n_components of output
     # dirty hack for swe2d where we predict more components than we have data on
@@ -762,10 +755,10 @@ def _run_training(scenario, epochs, learning_rate, model_update, flnm,
 
     # prepare data for metrics eval
     test_pred = dataset.unravel_tensor(
-        test_pred, n_last_time_steps=1, n_components=n_components
+        test_pred, n_last_time_steps=n_eval_steps, n_components=n_components
     )
     test_gt = dataset.unravel_tensor(
-        test_gt, n_last_time_steps=1, n_components=n_components
+        test_gt, n_last_time_steps=n_eval_steps, n_components=n_components
     )
 
     if if_single_run:

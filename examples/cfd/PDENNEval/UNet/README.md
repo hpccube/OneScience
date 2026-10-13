@@ -26,7 +26,6 @@
 | 1D Allen Cahn               | 1024/4                        | 101/1                          | 1.e-3  | 500      | 64     | 1.e-4          | 10       | 20         |
 | 1D Cahn Hilliard            | 1024/4                        | 101/1                          | 1.e-3  | 500      | 64     | 1.e-4          | 10       | 20         |
 | 1D Compressible NS          | 1024/4                        | 101/1                          | 1.e-3  | 500      | 64     | 1.e-4          | 10       | 20         |
-| 2D Burgers                  | 128/1                         | 101/1                          | 1.e-3  | 500      | 8      | 1.e-4          | 10       | 20         |
 | 2D Compressible NS          | 128/2                         | 21/1                           | 1.e-3  | 500      | 32     | 1.e-4          | 10       | 20         |
 | 2D DarcyFlow                | 128/1                         | -                             | 1.e-3  | 500      | 64     | 1.e-4          | 1        | 1          |
 | 2D Shallow Water            | 128/1                         | 101/1                          | 1.e-3  | 500      | 8      | 1.e-4          | 10       | 20         |
@@ -81,23 +80,3 @@ $$
 CUDA_VISIBLE_DEVICES=0 python train.py ./config/${config_filename}
 # 示例：CUDA_VISIBLE_DEVICES=0 python train.py ./config/config_2D_Darcy_Flow.yaml
 
-## 继续训练
-
-1. 修改配置文件：
-    1. 确保 `if_training` 为 `True`；
-    2. 设置 `continue_training` 为 `True`；
-    3. 将 `model_path` 设置为重新训练所用的检查点路径；
-2. 运行命令：
-```bash
-CUDA_VISIBLE_DEVICES=0 python train.py ./config/${config_filename}
-```
-
-## 测试
-
-1. 修改配置文件：
-    1. 将 `if_training` 设置为 `False`；
-    2. 将 `model_path` 设置为待评估模型的检查点路径；
-2. 运行命令：
-```bash
-CUDA_VISIBLE_DEVICES=0 python train.py ./config/${config_filename}
-```

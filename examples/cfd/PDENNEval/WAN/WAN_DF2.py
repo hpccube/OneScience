@@ -10,7 +10,7 @@ import torch.nn as nn
 import argparse
 import h5py
 from tqdm import *
-from onescience.models.mlp import FullyConnected
+from onescience.modules.mlp import FullyConnected
 
 def get_arguments(arg_list=None):
     parser = argparse.ArgumentParser(
@@ -45,6 +45,12 @@ def get_arguments(arg_list=None):
         type=int,
         default=1,
         help="The beta number"
+    )
+    parser.add_argument(
+        "--data_dir",
+        type=str,
+        required=True,
+        help="Directory containing the PDEBench dataset file",
     )
     return parser.parse_args(arg_list)
 
@@ -211,7 +217,10 @@ def train_pipeline():
     print(f"Using device: {DEVICE}")
     # define equation
     equation = 'DF2'
-    dataset = '../data/2D_DarcyFlow_beta0.1_Train.hdf5'
+    data_dir = os.path.expanduser(os.path.expandvars(args.data_dir))
+    dataset = os.path.join(data_dir, '2D_DarcyFlow_beta0.1_Train.hdf5')
+    if not os.path.isfile(dataset):
+        raise FileNotFoundError(f'Dataset file not found: {dataset}')
     Eq = DarcyFlowEquation(DIMENSION, DEVICE)
     # define model
     model_u = FullyConnected(in_features=args.d, layer_size=64, out_features=1, num_layers=6, activation_fn='tanh').to(DEVICE)

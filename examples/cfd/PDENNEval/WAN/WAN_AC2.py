@@ -13,7 +13,7 @@ import torch.nn as nn
 import argparse
 
 from tqdm import *
-from onescience.models.mlp import FullyConnected
+from onescience.modules.mlp import FullyConnected
 
 def get_arguments(arg_list=None):
     parser = argparse.ArgumentParser(
@@ -48,6 +48,12 @@ def get_arguments(arg_list=None):
         type=int,
         default=1000,
         help="The beta number"
+    )
+    parser.add_argument(
+        "--data_dir",
+        type=str,
+        required=True,
+        help="Directory containing the PDEBench dataset file",
     )
     return parser.parse_args(arg_list)
 
@@ -273,12 +279,15 @@ def train_pipeline():
     DEVICE = torch.device(f"cuda:{CUDA_ORDER}" if torch.cuda.is_available() else "cpu")
     print(f"Using device: {DEVICE}")
     equation = 'AC2'
-    dataset = '../data/2D_Allen-Cahn_0.0001_1.hdf5'
+    data_dir = os.path.expanduser(os.path.expandvars(args.data_dir))
+    dataset = os.path.join(data_dir, '2D_Allen-Cahn_0.0001_1.hdf5')
+    if not os.path.isfile(dataset):
+        raise FileNotFoundError(f'Dataset file not found: {dataset}')
     # define equation
     Eq = AllenCahn2DEquation(DIMENSION, DEVICE)
     # define model
-    model_u = FullyConnected(in_features=args.d + 1, layer_size=64, out_features=5, num_layers=6, activation_fn='tanh').to(DEVICE)
-    model_v = FullyConnected(in_features=args.d + 1, layer_size=64, out_features=5, num_layers=6, activation_fn='tanh').to(DEVICE)
+    model_u = FullyConnected(in_features=args.d + 1, layer_size=64, out_features=1, num_layers=6, activation_fn='tanh').to(DEVICE)
+    model_v = FullyConnected(in_features=args.d + 1, layer_size=64, out_features=1, num_layers=6, activation_fn='tanh').to(DEVICE)
     optu = torch.optim.Adam(model_u.parameters(), lr=0.0001)
     optv = torch.optim.Adam(model_v.parameters(), lr=0.014)
 

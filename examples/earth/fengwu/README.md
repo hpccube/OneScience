@@ -1,0 +1,50 @@
+# FengWu
+
+FengWu（风乌）是上海人工智能实验室联合多所高校发布的全球中期天气预报大模型，基于多模态和多任务深度学习方法，首次实现在高分辨率上对核心大气变量超过 10 天的有效预报。
+
+> 论文：[FengWu: Pushing the Skillful Global Medium-range Weather Forecast beyond 10 Days Lead](https://arxiv.org/abs/2304.02948)
+
+## 数据准备
+
+真实数据的存储格式参照 `../era5_dataset_prepare/README.md`，在 `conf/config.yaml` 中修改：
+
+```yaml
+data_dir: 存放ERA5年度数据、均值/标准差文件、静态文件，存放方式参考'../era5_dataset_prepare/README.md'
+train_time: [2000, 2001]   # 训练年份
+val_time: [2002]            # 验证年份
+test_time: [2003]           # 测试年份
+```
+
+无真实数据时，可生成虚拟数据快速验证流程(若快速验证，则需将conf/config.yaml中max_epoch设为1)：
+
+```bash
+source ../earth_env.sh
+python fake_data.py
+```
+
+## 运行
+
+```bash
+source ../earth_env.sh
+
+# 1. 训练（二选一）
+python train.py                # 单卡
+torchrun --nproc_per_node=8 --nnodes=1 --rdzv_id=1000 --rdzv_backend=c10d --max_restarts=0 --master_addr="localhost" --master_port=29500 train.py   # 多卡
+
+# 2. 推理（结果输出至 ./result/output/）
+python inference.py
+
+# 3. 评估 & 可视化（result.py 末尾可指定日期和变量）
+python result.py
+```
+
+## 集群训练
+
+```bash
+mkdir -p logs
+sbatch work_slurm.sh    # 提交前检查分区、节点数等配置
+```
+
+## 许可证
+
+Apache 2.0，可免费用于学术研究和商业用途。

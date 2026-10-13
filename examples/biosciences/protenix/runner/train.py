@@ -213,16 +213,32 @@ class AF3Trainer(object):
                 f"Loading from {checkpoint_path}, strict: {self.configs.load_strict}"
             )
             checkpoint = torch.load(checkpoint_path, self.device)
-            sample_key = [k for k in checkpoint["model"].keys()][0]
-            self.print(f"Sampled key: {sample_key}")
-            if sample_key.startswith("module.") and not self.use_ddp:
-                # DDP checkpoint has module. prefix
-                checkpoint["model"] = {
-                    k[len("module.") :]: v for k, v in checkpoint["model"].items()
-                }
+            state_dict = checkpoint["model"]
+            # 官方 checkpoint 可能由 DDP 保存，参数名前带有 module.
+            # 当前模型只需要移除这一层，不做其他键名转换。
+            new_state_dict = {}
+
+            for key, value in state_dict.items():
+                new_key = key
+
+                if new_key.startswith("module."):
+                    new_key = new_key[len("module."):]
+                    
+                # 适配 Distogram Head
+                if new_key.startswith(
+                    "distogram_head.linear."
+                ) and not new_key.startswith(
+                    "distogram_head.linear.Linear."
+                ):
+                    new_key = new_key.replace(
+                        "distogram_head.linear.",
+                        "distogram_head.linear.Linear.",
+                        1,
+                    )
+                new_state_dict[new_key] = value
 
             self.model.load_state_dict(
-                state_dict=checkpoint["model"],
+                state_dict=new_state_dict,
                 strict=self.configs.load_strict,
             )
             if not load_params_only:
